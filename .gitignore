@@ -1,1 +1,10 @@
 /bin/
+/out/
+db.sql
+config.json
+test.aux
+test.log
+test.out
+test.pdf
+test.synctex.gz
+test.tex
