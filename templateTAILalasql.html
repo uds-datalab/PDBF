@@ -997,38 +997,6 @@ editor = CodeMirror.fromTextArea(commandsElm, {
                     },
                 }
             }();
-			
-document.onkeydown = function(e) {
-	e = e || event 
-	if (e.keyCode == 27) { // escape
-		cancel()
-		return false
-	}
-
-	if ((e.ctrlKey && e.keyCode == 'E'.charCodeAt(0)) && !area.offsetHeight) {
-		edit()
-		return false
-	}
-
-	if ((e.ctrlKey && e.keyCode == 'S'.charCodeAt(0)) && area.offsetHeight) {
-		save()
-		return false
-	}
-}
-
-function edit() {
-	alert("edit");
-}
-
-function cancel() {
-	alert("cancel");
-}
-
-function save() {
-	alert("save");
-}
-
-
         </script>
 
   </body>

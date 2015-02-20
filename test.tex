@@ -1,0 +1,106 @@
+\documentclass{scrartcl}
+\usepackage{ucs}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{amsfonts}
+\usepackage{amsmath,amssymb,amstext}
+\usepackage[automark]{scrpage2}
+\usepackage[bottom]{footmisc}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{wrapfig}
+\usepackage{listings}
+\usepackage{setspace}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\usepackage[a4paper,vmargin={30mm,40mm},hmargin={28mm,28mm}]{geometry}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}
+}
+\title{PDBF Testdokument}
+\author{
+ Patrick Bender\\
+  \texttt{s9pabend@stud.uni-saarland.de}
+  \and
+ Christian Goldstein\\
+  \texttt{c.goldstein@goldstein-systemberatung.de}
+}
+\date{\today{}, Saarbrücken}
+\pagestyle{plain}
+\clearscrheadfoot
+\cfoot[]{\pagemark}
+\lstset{
+basicstyle=\ttfamily,
+commentstyle=\itshape,
+keywordstyle=\bfseries,
+    frame=single,
+    breaklines=true,
+    postbreak=,
+keepspaces=true
+}
+\sloppy
+
+\makeatletter
+\def\@maketitle{%
+  \vspace*{-\topskip}      % remove the initial space
+  \begingroup\centering    % instead of \begin{center}
+  \let \footnote \thanks
+  \hrule height \z@        % to avoid the insertion of lineskip glue
+    {\LARGE \@title \par}%
+    \vskip 1.5em 
+    {\large
+      \lineskip .5em 
+      \begin{tabular}[t]{c}%
+        \@author
+      \end{tabular}\par}%
+    \vskip 1em 
+    {\large \@date}%
+  \par\endgroup            % instead of \end{center}
+  \vskip 1.5em             % <--- modify this to adjust the separation
+}
+\makeatother
+
+\definecolor{pblue}{rgb}{0.13,0.13,1}
+\definecolor{pgreen}{rgb}{0,0.5,0}
+\definecolor{pred}{rgb}{0.9,0,0}
+\definecolor{pgrey}{rgb}{0.46,0.45,0.48}
+\lstset{language=Java,
+  showspaces=false,
+  showtabs=false,
+  breaklines=true,
+  showstringspaces=false,
+  breakatwhitespace=true,
+  commentstyle=\color{pgreen},
+  keywordstyle=\color{pblue},
+  stringstyle=\color{pred},
+  basicstyle=\ttfamily\scriptsize,
+  moredelim=[il][\textcolor{pgrey}]{$$},
+  moredelim=[is][\textcolor{pgrey}]{\%\%}{\%\%}
+}
+
+\begin{document}
+\maketitle
+\begin{wrapfigure}{r}{0.47\textwidth}
+  \begin{center}
+    \includegraphics[width=0.4\textwidth]{Tabelle1.png}
+  \end{center}
+  \caption{TestGraph}
+\end{wrapfigure} ~\\
+Test Queries:\\
+\color{blue}
+SELECT * FROM test;\\
+SELECT col2 FROM test\\
+WHERE col1=1;\\
+INSERT INTO test\\
+VALUES (1, 123);\color{black}\\[8pt]
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.\\[8pt]
+Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.   \\[8pt]
+Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.   \\[8pt]
+Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.   
+
+\end{document}
