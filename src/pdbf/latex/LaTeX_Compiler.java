@@ -22,17 +22,27 @@ public class LaTeX_Compiler {
 	    System.exit(-1);
 	}
 
+	System.out.println("Compiling LaTeX (1/2)...");
 	try {
-	    ProcessBuilder pb = new ProcessBuilder(pathToLaTeXScript, "--pdf", latex.getAbsolutePath());
+	    ProcessBuilder pb = new ProcessBuilder(pathToLaTeXScript, "--pdf", "--quiet", latex.getAbsolutePath());
 	    pb.inheritIO();
-	    //pb.redirectError(Redirect.INHERIT);
 	    Process p = pb.start();
 	    p.waitFor();
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
 	
-	//TODO: generate images and then run latex again
+	//TODO: generate images
+	
+	System.out.println("Compiling LaTeX (2/2)...");
+	try {
+	    ProcessBuilder pb = new ProcessBuilder(pathToLaTeXScript, "--pdf", "--quiet", latex.getAbsolutePath());
+	    pb.inheritIO();
+	    Process p = pb.start();
+	    p.waitFor();
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
     }
 
 }

@@ -2,6 +2,7 @@ package pdbf.html;
 
 import java.io.File;
 import java.io.FileInputStream;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 
@@ -22,6 +23,7 @@ public class HTML_Compiler {
     }
 
     public static void main(String[] args) {
+	System.out.println("Compiling HTML...");
 	try {
 	    String viewer;
 	    String viewerHEAD = FileUtils.readFileToString(new File("templateHEADsqlite.html"));
