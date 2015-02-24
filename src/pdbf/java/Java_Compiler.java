@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.FileReader;
 
 import pdbf.common.Overlay;
-import pdbf.common.Unit;
-import pdbf.common.UnitTypeAdapter;
 import pdbf.common.Visualization;
 import pdbf.common.VisualizationTypeAdapter;
 import com.google.gson.Gson;
@@ -35,7 +33,6 @@ public class Java_Compiler {
 	GsonBuilder builder = new GsonBuilder();
 	builder.registerTypeAdapter(Visualization.class,
 		new VisualizationTypeAdapter());
-	builder.registerTypeAdapter(Unit.class, new UnitTypeAdapter());
 	Gson gson = builder.create();
 	Overlay[] overlays = null;
 	try {

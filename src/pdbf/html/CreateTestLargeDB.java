@@ -4,12 +4,9 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Random;
 
-import pdbf.common.CustomUnit;
 import pdbf.common.LineChart;
 import pdbf.common.Overlay;
 import pdbf.common.Text;
-import pdbf.common.Unit;
-import pdbf.common.UnitTypeAdapter;
 import pdbf.common.Visualization;
 import pdbf.common.VisualizationTypeAdapter;
 
@@ -23,18 +20,13 @@ public class CreateTestLargeDB {
 	builder.setPrettyPrinting();
 	builder.registerTypeAdapter(Visualization.class,
 		new VisualizationTypeAdapter());
-	builder.registerTypeAdapter(Unit.class, new UnitTypeAdapter());
 	Gson gson = builder.create();
 
 	ArrayList<Overlay> overlays = new ArrayList<Overlay>();
 
-	//Date date = new Date();
-	//CustomUnit temp = new CustomUnit("Temperatur");
-	CustomUnit z1 = new CustomUnit("Zahl1");
-	CustomUnit z2 = new CustomUnit("Zahl2");
 	LineChart chart = new LineChart("SELECT * FROM data2 WHERE Zahl2 > 0;",
 		0.5150353982300885, 0.8407079646017699, 0.2496875, 0.3601875,
-		false, z1, z2, 1);
+		1, false, "Zahl1", "Zahl2");
 	Overlay cur = new Overlay("Tabelle1", chart);
 	overlays.add(cur);
 

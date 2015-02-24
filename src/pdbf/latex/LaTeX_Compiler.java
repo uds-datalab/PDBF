@@ -1,10 +1,11 @@
 package pdbf.latex;
 
 import java.io.File;
+import java.lang.ProcessBuilder.Redirect;
 
 public class LaTeX_Compiler {
 
-    private static final String pathToTexWorks = "C:\\Program Files (x86)\\MiKTeX 2.9\\miktex\\bin\\texworks.exe";
+    private static final String pathToLaTeXScript = "texify.exe";
 
     public static void main(String[] args) {
 	if (args.length != 1) {
@@ -20,14 +21,18 @@ public class LaTeX_Compiler {
 	    System.err.println("Error: Source PDF file does not exist!");
 	    System.exit(-1);
 	}
-	
+
 	try {
-	    Process p = Runtime.getRuntime().exec(pathToTexWorks + " " + latex);
+	    ProcessBuilder pb = new ProcessBuilder(pathToLaTeXScript, "--pdf", latex.getAbsolutePath());
+	    pb.inheritIO();
+	    //pb.redirectError(Redirect.INHERIT);
+	    Process p = pb.start();
 	    p.waitFor();
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
-	// sp to mm -> 5,36346435546875e-6
+	
+	//TODO: generate images and then run latex again
     }
 
 }

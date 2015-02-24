@@ -783,7 +783,8 @@ function parse(json) {
 function display(json, page) {
 	var container = document.createElement('div');
 	container.id = json.name;
-	var style = "z-index: 8; position: absolute; width:" + (json.type.I.x2 - json.type.I.x1) * 100 + "%; height:" + (json.type.I.y2 - json.type.I.y1) * 100 + "%; left:" + json.type.I.x1 * 100 + "%; top:" + json.type.I.y1 * 100 + "%;";
+	container.className = "overlay";
+	var style = "z-index: 8; position: absolute; width:" + (json.type.I.x2 - json.type.I.x1) * 100 + "%; height:" + (json.type.I.y1 - json.type.I.y2) * 100 + "%; left:" + json.type.I.x1 * 100 + "%; bottom:" + json.type.I.y2 * 100 + "%;";
 	
 	switch(json.type.C) {
 		case "pdbf.common.LineChart":
@@ -806,7 +807,7 @@ function display(json, page) {
 					} 
 				}
 			}
-			var g = new Dygraph(container, results[0].values, { labels: results[0].columns, animatedZooms: true, legend: "always", logscale: json.type.I.logScale, xlabel: json.type.I.xUnit.I.name, ylabel: json.type.I.yUnit.I.name } );
+			var g = new Dygraph(container, results[0].values, { labels: results[0].columns, animatedZooms: true, legend: "always", logscale: json.type.I.logScale, xlabel: json.type.I.xUnitName, ylabel: json.type.I.yUnitName } );
 			style = "background: white;" + style;
 			container.setAttribute('style', style);
 			page.appendChild(container);

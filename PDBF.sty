@@ -1,0 +1,65 @@
+\def\filedate{2015/02/23}
+\def\fileversion{1.0}
+\NeedsTeXFormat{LaTeX2e}
+\AtEndOfPackage{\ProvidesPackage{PDBF}
+             [\filedate\space\space\space\space\fileversion\space\space\space\space(Patrick Bender)]}
+\RequirePackage{zref-savepos}
+\RequirePackage{zref-abspage}
+\RequirePackage{zref-user}
+\RequirePackage{xcolor}
+\RequirePackage{graphicx}
+\RequirePackage{fp}
+\newcounter{overlay}
+\AtBeginDocument{
+	\newwrite\tempfile
+	\immediate\openout\tempfile=config.json
+	\immediate\write\tempfile{[}
+}
+\AtEndDocument{
+	\immediate\write\tempfile{]}
+	\immediate\closeout\tempfile
+}
+\newcommand\lineChart{
+	% Increment overlay counter
+	\stepcounter{overlay}
+	
+	% Place Image
+	\begin{tabular}{c c c}
+	\zlabel{Overlay\arabic{overlay}} \zsavepos{Overlay\arabic{overlay}1} & & \\
+	\IfFileExists{Overlay\arabic{overlay}.png}{
+    		& \includegraphics[width=0.4\textwidth]{Overlay\arabic{overlay}.png} & \\
+	}{
+    		& \includegraphics[width=0.4\textwidth, draft]{Overlay\arabic{overlay}.png} & \\
+	}
+	& & \zsavepos{Overlay\arabic{overlay}2}\\
+	\end{tabular}
+	
+	% Write part of config.json
+	\ifnum \value{overlay} > 1 
+		\immediate\write\tempfile{,\@charlb}
+	\else 
+		\immediate\write\tempfile{\@charlb}
+	\fi
+	\FPdiv\r@xa{\zposx{Overlay\arabic{overlay}1}}{\number\paperwidth}
+	\FPdiv\r@xb{\zposx{Overlay\arabic{overlay}2}}{\number\paperwidth}
+	\FPdiv\r@ya{\zposy{Overlay\arabic{overlay}1}}{\number\paperheight}
+	\FPdiv\r@yb{\zposy{Overlay\arabic{overlay}2}}{\number\paperheight}
+	\immediate\write\tempfile{\space\space\space\space"name": "Overlay\arabic{overlay}",}
+	\immediate\write\tempfile{\space\space\space\space"type": \@charlb}
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.common.LineChart",}
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"logScale": false,}
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xUnitName": "Datum",}
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yUnitName": "Temperatur",}
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"query": "SELECT * FROM data1",}
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x1": \r@xa,}
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x2": \r@xb,}
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y1": \r@ya,}
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y2": \r@yb,}
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"page": \zref@extract{Overlay\arabic{overlay}}{abspage}}
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\@charrb}
+	\immediate\write\tempfile{\space\space\space\space\@charrb}
+	\immediate\write\tempfile{\@charrb}
+}
+
+\endinput

@@ -1,71 +1,53 @@
 [
-  {
-    "name": "Tabelle1",
+{
+    "name": "Overlay1",
     "type": {
-      "C": "pdbf.common.LineChart",
-      "I": {
-        "logScale": false,
-        "xUnit": {
-          "C": "pdbf.common.Date",
-          "I": {
-            "name": "Datum"
-          }
-        },
-        "yUnit": {
-          "C": "pdbf.common.CustomUnit",
-          "I": {
-            "name": "Temperatur"
-          }
-        },
-        "query": "SELECT * FROM data1",
-        "x1": 0.5150353982300885,
-        "x2": 0.8407079646017699,
-        "y1": 0.2496875,
-        "y2": 0.3601875,
-        "page": 1
-      }
+        "C": "pdbf.common.LineChart",
+        "I": {
+            "logScale": false,
+            "xUnitName": "Datum",
+            "yUnitName": "Temperatur",
+            "query": "SELECT * FROM data1",
+            "x1": 0.538116974301933006,
+            "x2": 0.871612657309019426,
+            "y1": 0.710466786527290321,
+            "y2": 0.580314400302342013,
+            "page": 1
+        }
     }
-  },
-  {
-    "name": "SQL1",
+}
+,{
+    "name": "Overlay2",
     "type": {
-      "C": "pdbf.common.Text",
-      "I": {
-        "query": "SELECT * FROM test;",
-        "x1": 0.12831858407079647,
-        "x2": 0.33185840707964603,
-        "y1": 0.2515625,
-        "y2": 0.2671875,
-        "page": 1
-      }
+        "C": "pdbf.common.LineChart",
+        "I": {
+            "logScale": false,
+            "xUnitName": "Datum",
+            "yUnitName": "Temperatur",
+            "query": "SELECT * FROM data1",
+            "x1": 0.538116974301933006,
+            "x2": 0.871612657309019426,
+            "y1": 0.353563343667204215,
+            "y2": 0.125225804016865715,
+            "page": 1
+        }
     }
-  },
-  {
-    "name": "SQL2",
+}
+,{
+    "name": "Overlay3",
     "type": {
-      "C": "pdbf.common.Text",
-      "I": {
-        "query": "SELECT col2 FROM test WHERE col1\u003d1;",
-        "x1": 0.12831858407079647,
-        "x2": 0.3495575221238938,
-        "y1": 0.2671875,
-        "y2": 0.2984375,
-        "page": 1
-      }
+        "C": "pdbf.common.LineChart",
+        "I": {
+            "logScale": false,
+            "xUnitName": "Datum",
+            "yUnitName": "Temperatur",
+            "query": "SELECT * FROM data1",
+            "x1": 0.336290239131058783,
+            "x2": 0.669785922138145203,
+            "y1": 0.696728913657917635,
+            "y2": 0.468391374007579135,
+            "page": 2
+        }
     }
-  },
-  {
-    "name": "SQL3",
-    "type": {
-      "C": "pdbf.common.Text",
-      "I": {
-        "query": "INSERT INTO test VALUES (1, 123);",
-        "x1": 0.12831858407079647,
-        "x2": 0.3008849557522124,
-        "y1": 0.2984375,
-        "y2": 0.334375,
-        "page": 1
-      }
-    }
-  }
+}
 ]
