@@ -1,11 +1,13 @@
 package pdbf.java;
 
 import java.io.File;
-import java.io.FileReader;
+import org.apache.commons.io.FileUtils;
 
 import pdbf.common.Overlay;
+import pdbf.common.Tools;
 import pdbf.common.Visualization;
 import pdbf.common.VisualizationTypeAdapter;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -36,9 +38,8 @@ public class Java_Compiler {
 	Gson gson = builder.create();
 	Overlay[] overlays = null;
 	try {
-	    FileReader reader = new FileReader("config.json");
-	    overlays = gson.fromJson(reader, Overlay[].class);
-	    reader.close();
+	    String json = FileUtils.readFileToString(new File("config.json"), Tools.utf8);
+	    overlays = gson.fromJson(json, Overlay[].class);
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}

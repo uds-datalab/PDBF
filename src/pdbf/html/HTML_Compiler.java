@@ -1,53 +1,38 @@
 package pdbf.html;
 
 import java.io.File;
-import java.io.FileInputStream;
-
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 
-public class HTML_Compiler {
+import pdbf.common.Tools;
 
-    private static String encodeFileToBase64Binary(File file) {
-	String encodedfile = null;
-	try {
-	    FileInputStream fileInputStreamReader = new FileInputStream(file);
-	    byte[] bytes = new byte[(int) file.length()];
-	    fileInputStreamReader.read(bytes);
-	    encodedfile = Base64.encodeBase64String(bytes);
-	    fileInputStreamReader.close();
-	} catch (Exception e) {
-	    e.printStackTrace();
-	} 
-	return encodedfile;
-    }
+public class HTML_Compiler {
 
     public static void main(String[] args) {
 	System.out.println("Compiling HTML...");
 	try {
 	    String viewer;
-	    String viewerHEAD = FileUtils.readFileToString(new File("templateHEADsqlite.html"));
-	    String viewerTAIL = FileUtils.readFileToString(new File("templateTAILsqlite.html"));
+	    String viewerHEAD = FileUtils.readFileToString(new File("templateHEADsqlite.html"), Tools.utf8);
+	    String viewerTAIL = FileUtils.readFileToString(new File("templateTAILsqlite.html"), Tools.utf8);
 	    viewer = viewerHEAD + 
-		    "pdf_base64 = \"" + encodeFileToBase64Binary(new File("test.pdf")) + "\";\r\n" + 
-		    "db_base64 = \"" + encodeFileToBase64Binary(new File("db.sql")) + "\";\r\n" + 
-		    "json_base64 = \"" + encodeFileToBase64Binary(new File("config.json")) + "\";\r\n" + 
+		    "pdf_base64 = \"" + Tools.encodeFileToBase64Binary(new File("test.pdf")) + "\";\r\n" + 
+		    "db_base64 = \"" + Tools.encodeFileToBase64Binary(new File("db.sql")) + "\";\r\n" + 
+		    "json_base64 = \"" + Tools.encodeFileToBase64Binary(new File("config.json")) + "\";\r\n" + 
 		    viewerTAIL;
-	    FileUtils.writeStringToFile(new File("out/web/viewerSqlite.html"), viewer);
+	    FileUtils.writeStringToFile(new File("out/web/viewerSqlite.html"), viewer, Tools.utf8);
 	} catch (Exception e) {
 	    e.printStackTrace();
 	} 
 	
 	try {
 	    String viewer;
-	    String viewerHEAD = FileUtils.readFileToString(new File("templateHEADalasql.html"));
-	    String viewerTAIL = FileUtils.readFileToString(new File("templateTAILalasql.html"));
+	    String viewerHEAD = FileUtils.readFileToString(new File("templateHEADalasql.html"), Tools.utf8);
+	    String viewerTAIL = FileUtils.readFileToString(new File("templateTAILalasql.html"), Tools.utf8);
 	    viewer = viewerHEAD + 
-		    "pdf_base64 = \"" + encodeFileToBase64Binary(new File("test.pdf")) + "\";\r\n" + 
-		    "db_base64 = \"" + encodeFileToBase64Binary(new File("db.sql")) + "\";\r\n" + 
-		    "json_base64 = \"" + encodeFileToBase64Binary(new File("config.json")) + "\";\r\n" + 
+		    "pdf_base64 = \"" + Tools.encodeFileToBase64Binary(new File("test.pdf")) + "\";\r\n" + 
+		    "db_base64 = \"" + Tools.encodeFileToBase64Binary(new File("db.sql")) + "\";\r\n" + 
+		    "json_base64 = \"" + Tools.encodeFileToBase64Binary(new File("config.json")) + "\";\r\n" + 
 		    viewerTAIL;
-	    FileUtils.writeStringToFile(new File("out/web/viewerAlasql.html"), viewer);
+	    FileUtils.writeStringToFile(new File("out/web/viewerAlasql.html"), viewer, Tools.utf8);
 	} catch (Exception e) {
 	    e.printStackTrace();
 	} 

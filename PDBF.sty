@@ -11,6 +11,11 @@
 \RequirePackage{fp}
 \newcounter{overlay}
 \AtBeginDocument{
+	\newwrite\temp
+	\immediate\openout\temp=dim.json
+	\immediate\write\temp{\@charlb "width": "\number\paperwidth",}
+	\immediate\write\temp{"height": "\number\paperheight" \@charrb}
+	\immediate\closeout\temp
 	\newwrite\tempfile
 	\immediate\openout\tempfile=config.json
 	\immediate\write\tempfile{[}
@@ -19,7 +24,7 @@
 	\immediate\write\tempfile{]}
 	\immediate\closeout\tempfile
 }
-\newcommand\lineChart{
+\newcommand\lineChart[2]{
 	% Increment overlay counter
 	\stepcounter{overlay}
 	
@@ -27,9 +32,9 @@
 	\begin{tabular}{c c c}
 	\zlabel{Overlay\arabic{overlay}} \zsavepos{Overlay\arabic{overlay}1} & & \\
 	\IfFileExists{Overlay\arabic{overlay}.png}{
-    		& \includegraphics[width=0.4\textwidth]{Overlay\arabic{overlay}.png} & \\
+    		& \includegraphics[#1]{Overlay\arabic{overlay}.png} & \\
 	}{
-    		& \includegraphics[width=0.4\textwidth, draft]{Overlay\arabic{overlay}.png} & \\
+    		& \includegraphics[#1, draft]{Overlay\arabic{overlay}.png} & \\
 	}
 	& & \zsavepos{Overlay\arabic{overlay}2}\\
 	\end{tabular}
@@ -51,6 +56,42 @@
 	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"logScale": false,}
 	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xUnitName": "Datum",}
 	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yUnitName": "Temperatur",}
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"query": "SELECT * FROM data1",}
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x1": \r@xa,}
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x2": \r@xb,}
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y1": \r@ya,}
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y2": \r@yb,}
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"page": \zref@extract{Overlay\arabic{overlay}}{abspage}}
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\@charrb}
+	\immediate\write\tempfile{\space\space\space\space\@charrb}
+	\immediate\write\tempfile{\@charrb}
+}
+
+\newcommand\sql[1]{
+	% Increment overlay counter
+	\stepcounter{overlay}
+	
+	% Place Image
+	\begin{tabular}{c c c}
+	\zlabel{Overlay\arabic{overlay}} \zsavepos{Overlay\arabic{overlay}1} & & \\
+	& #1 & \\
+	& & \zsavepos{Overlay\arabic{overlay}2}\\
+	\end{tabular}
+	
+	% Write part of config.json
+	\ifnum \value{overlay} > 1 
+		\immediate\write\tempfile{,\@charlb}
+	\else 
+		\immediate\write\tempfile{\@charlb}
+	\fi
+	\FPdiv\r@xa{\zposx{Overlay\arabic{overlay}1}}{\number\paperwidth}
+	\FPdiv\r@xb{\zposx{Overlay\arabic{overlay}2}}{\number\paperwidth}
+	\FPdiv\r@ya{\zposy{Overlay\arabic{overlay}1}}{\number\paperheight}
+	\FPdiv\r@yb{\zposy{Overlay\arabic{overlay}2}}{\number\paperheight}
+	\immediate\write\tempfile{\space\space\space\space"name": "Overlay\arabic{overlay}",}
+	\immediate\write\tempfile{\space\space\space\space"type": \@charlb}
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.common.Text",}
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}
 	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"query": "SELECT * FROM data1",}
 	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x1": \r@xa,}
 	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x2": \r@xb,}
