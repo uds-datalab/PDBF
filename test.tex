@@ -1,28 +1,8 @@
 \documentclass{scrartcl}
-\usepackage{ucs}
-\usepackage[utf8x]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{amsfonts}
-\usepackage{amsmath,amssymb,amstext}
-\usepackage[automark]{scrpage2}
-\usepackage[bottom]{footmisc}
-\usepackage{caption}
-\usepackage{subcaption}
-\usepackage{wrapfig}
-\usepackage{listings}
-\usepackage{setspace}
-\usepackage{xcolor}
 \usepackage{PDBF}
-\usepackage{tabularx}
 \usepackage{wrapfig}
 \usepackage[a4paper,vmargin={30mm,40mm},hmargin={28mm,28mm}]{geometry}
-\usepackage[hidelinks]{hyperref}
-\hypersetup{
-    colorlinks,
-    linkcolor={red!50!black},
-    citecolor={blue!50!black},
-    urlcolor={blue!80!black}
-}
+
 \title{PDBF Testdokument}
 \author{
  Patrick Bender\\
@@ -32,26 +12,13 @@
   \texttt{c.goldstein@goldstein-systemberatung.de}
 }
 \date{\today{}, Saarbrücken}
-\pagestyle{plain}
-\clearscrheadfoot
-\cfoot[]{\pagemark}
-\lstset{
-basicstyle=\ttfamily,
-commentstyle=\itshape,
-keywordstyle=\bfseries,
-    frame=single,
-    breaklines=true,
-    postbreak=,
-keepspaces=true
-}
-\sloppy
 
 \makeatletter
 \def\@maketitle{%
-  \vspace*{-\topskip}      % remove the initial space
-  \begingroup\centering    % instead of \begin{center}
+  \vspace*{-\topskip}%
+  \begingroup\centering%
   \let \footnote \thanks
-  \hrule height \z@        % to avoid the insertion of lineskip glue
+  \hrule height \z@%
     {\LARGE \@title \par}%
     \vskip 1.5em 
     {\large
@@ -61,28 +28,11 @@ keepspaces=true
       \end{tabular}\par}%
     \vskip 1em 
     {\large \@date}%
-  \par\endgroup            % instead of \end{center}
-  \vskip 1.5em             % <--- modify this to adjust the separation
+  \par\endgroup%
+  \vskip 1.5em%
 }
 \makeatother
 
-\definecolor{pblue}{rgb}{0.13,0.13,1}
-\definecolor{pgreen}{rgb}{0,0.5,0}
-\definecolor{pred}{rgb}{0.9,0,0}
-\definecolor{pgrey}{rgb}{0.46,0.45,0.48}
-\lstset{language=Java,
-  showspaces=false,
-  showtabs=false,
-  breaklines=true,
-  showstringspaces=false,
-  breakatwhitespace=true,
-  commentstyle=\color{pgreen},
-  keywordstyle=\color{pblue},
-  stringstyle=\color{pred},
-  basicstyle=\ttfamily\scriptsize,
-  moredelim=[il][\textcolor{pgrey}]{$$},
-  moredelim=[is][\textcolor{pgrey}]{\%\%}{\%\%}
-}
 
 \begin{document}
 \maketitle

@@ -807,7 +807,7 @@ function display(json, page) {
 					} 
 				}
 			}
-			var g = new Dygraph(container, results[0].values, { labels: results[0].columns, animatedZooms: true, legend: "always", logscale: json.type.I.logScale, xlabel: json.type.I.xUnitName, ylabel: json.type.I.yUnitName } );
+			var g = new Dygraph(container, results[0].values, { labels: results[0].columns, animatedZooms: true, legend: "always", logscale: json.type.I.logScale, xlabel: json.type.I.xUnitName, ylabel: json.type.I.yUnitName, labelsDivStyles: { 'text-align': 'right', 'background': 'none' } } );
 			style = "background: white;" + style;
 			container.setAttribute('style', style);
 			page.appendChild(container);

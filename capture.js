@@ -12,7 +12,7 @@ page.open(system.args[1], function() {
 	var h = page.evaluate(function() {
 		return outh;
 	});
-	page.zoomFactor = 1.75;
+	page.zoomFactor = 2.5;
 	page.viewportSize = {
 		width: w,
 		height: h
