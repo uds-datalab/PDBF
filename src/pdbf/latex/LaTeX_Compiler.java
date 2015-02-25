@@ -53,6 +53,7 @@ public class LaTeX_Compiler {
 	new File(base + ".log").delete();
 	new File(base + ".out").delete();
 	new File(base + ".pdf").delete();
+	new File(base + ".synctex.gz").delete();
 	
 	System.out.println("Compiling LaTeX (1/2)...");
 	try {
