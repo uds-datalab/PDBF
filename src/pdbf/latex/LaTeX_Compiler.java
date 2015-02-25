@@ -55,6 +55,8 @@ public class LaTeX_Compiler {
 	new File(base + ".pdf").delete();
 	new File(base + ".synctex.gz").delete();
 	
+	//TODO: clean working dir after work!
+	
 	System.out.println("Compiling LaTeX (1/2)...");
 	try {
 	    ProcessBuilder pb = new ProcessBuilder(commands);
