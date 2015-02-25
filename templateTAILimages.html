@@ -1,0 +1,119 @@
+﻿	</script>
+
+	<script src="dygraphs.js"></script>
+	<script src="diff_match_patch.js"></script>
+	<script src="alasql.min.js"></script>
+
+<!-- This snippet is used in production (included from viewer.html) -->
+<link rel="resource" type="application/l10n" href="locale/locale.properties"/>
+<script src="l10n.js"></script>
+<script src="../build/pdf.js"></script>
+
+    <script src="debugger.js"></script>
+    <script src="viewer.js"></script>
+
+  </head>
+
+  <body onLoad="overlay()" style="width:100%; height:100%;">
+
+<script>
+//Load dim.json
+var json;
+json = JSON.parse(UTF8ArrToStr(base64DecToArr(dim_base64)));
+tmpw = json.width / 655 / 30;
+tmph = json.height / 655 / 30;
+	
+//Load db.sql
+//Create the database
+alasql(UTF8ArrToStr(base64DecToArr(db_base64)));
+
+//Load config.json
+json = JSON.parse(UTF8ArrToStr(base64DecToArr(json_base64)));
+var width = (json.type.I.x2 - json.type.I.x1);
+var height = (json.type.I.y1 - json.type.I.y2);
+outw = tmpw*width;
+outh = tmph*height;
+var pageOverlays = [];
+parse(json);
+function isValidDate(d) {
+  if ( Object.prototype.toString.call(d) !== "[object Date]" )
+    return false;
+  return !isNaN(d.getTime());
+}
+function parse(json) {
+	page = 0;
+	pageOverlay = pageOverlays[page];
+	if (typeof pageOverlay == 'undefined') {
+		pageOverlay = [];
+		pageOverlays[page] = pageOverlay;
+	}
+	pageOverlay[pageOverlay.length] = json;
+}
+function display(json, page) {
+	var container = document.createElement('div');
+	container.id = json.name;
+	var style = "width:100%; height:100%;";
+	switch(json.type.C) {
+		case "pdbf.common.LineChart":
+		case "pdbf.common.BarChart":
+			try {
+			var results = alasql(json.type.I.query);
+			if (results.length == 0) {
+				alert("Query \"" + json.type.I.query + "\" returns empty result!");
+				return;
+			}
+			if (results[0] instanceof Array) {
+				alert("Query \"" + json.type.I.query + "\" contains multiple statements!");
+				return;
+			}
+			var values = [];
+			var columns = [];
+			for (key in results[0]) {
+				columns[columns.length] = key;
+			}
+			for (var i=0; i<results.length; i++) {
+				var cur = results[i];
+				var val = [];
+				for(key in cur) {
+					if (typeof(cur[key]) == "string") {
+						var tmp = cur[key];
+						val[val.length] = new Date(cur[key]);
+						if (!isValidDate(val[val.length-1])) {
+							alert("Found illegal value: \"" + tmp + "\"!\nStrings in the DB can only be valid dates");
+							return;
+						}
+					} else {
+						val[val.length] = cur[key];
+					}
+				}
+				values[values.length] = val;
+			}
+			var g = new Dygraph(container, values, { labels: columns, animatedZooms: true, legend: "always", logscale: json.type.I.logScale, xlabel: json.type.I.xUnitName, ylabel: json.type.I.yUnitName } );
+			style = "background: white;" + style;
+			container.setAttribute('style', style);
+			page.appendChild(container);
+			g.resize();
+			} catch(e) {
+				alert(e);
+			}
+			break;
+		case "pdbf.common.Text":
+			container.setAttribute('style', style);
+			page.appendChild(container);
+			break;
+		default:
+			alert("Unknown: " + json.type.C);
+			break;
+	}
+}
+function overlay() {
+  	var pageNr = 0;
+	for (var i = 0; i < pageOverlays[pageNr].length; ++i) {
+		display(pageOverlays[pageNr][i], document.body)
+	}
+}
+
+</script>
+
+  </body>
+</html>

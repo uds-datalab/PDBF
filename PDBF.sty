@@ -1,3 +1,4 @@
+% TODO: switcher, table, picasso diag
 \def\filedate{2015/02/23}
 \def\fileversion{1.0}
 \NeedsTeXFormat{LaTeX2e}
@@ -8,9 +9,11 @@
 \RequirePackage{zref-user}
 \RequirePackage{xcolor}
 \RequirePackage{graphicx}
+\RequirePackage{tabulary}
 \RequirePackage{fp}
 \newcounter{overlay}
 \AtBeginDocument{
+	\tymin 	1pt
 	\newwrite\temp
 	\immediate\openout\temp=dim.json
 	\immediate\write\temp{\@charlb "width": "\number\paperwidth",}
@@ -25,20 +28,23 @@
 	\immediate\closeout\tempfile
 }
 \newcommand\lineChart[2]{
+	{\fontsize{10sp}{10sp}\selectfont %
 	% Increment overlay counter
 	\stepcounter{overlay}
-	
+	\zlabel{Overlay\arabic{overlay}}
+	\setlength\tabcolsep{1sp}
+	%
 	% Place Image
-	\begin{tabular}{c c c}
-	\zlabel{Overlay\arabic{overlay}} \zsavepos{Overlay\arabic{overlay}1} & & \\
+	\begin{tabular}{lll} 
+	\zsavepos{Overlay\arabic{overlay}1} & & \\
 	\IfFileExists{Overlay\arabic{overlay}.png}{
-    		& \includegraphics[#1]{Overlay\arabic{overlay}.png} & \\
+    		& \includegraphics[width=#1, height=#2]{Overlay\arabic{overlay}.png} & \\
 	}{
-    		& \includegraphics[#1, draft]{Overlay\arabic{overlay}.png} & \\
+    		& \includegraphics[width=#1, height=#2]{dummy.png} & \\
 	}
 	& & \zsavepos{Overlay\arabic{overlay}2}\\
 	\end{tabular}
-	
+	%
 	% Write part of config.json
 	\ifnum \value{overlay} > 1 
 		\immediate\write\tempfile{,\@charlb}
@@ -65,42 +71,42 @@
 	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\@charrb}
 	\immediate\write\tempfile{\space\space\space\space\@charrb}
 	\immediate\write\tempfile{\@charrb}
+	}
 }
 
-\newcommand\sql[1]{
-	% Increment overlay counter
-	\stepcounter{overlay}
-	
-	% Place Image
-	\begin{tabular}{c c c}
-	\zlabel{Overlay\arabic{overlay}} \zsavepos{Overlay\arabic{overlay}1} & & \\
-	& #1 & \\
-	& & \zsavepos{Overlay\arabic{overlay}2}\\
-	\end{tabular}
-	
+\newcommand\sql[1]{%
+	{\fontsize{10sp}{10sp}\selectfont%
+	\zlabel{Overlay\arabic{overlay}}%
+	\setlength\tabcolsep{1sp}%
+	\begin{tabular}{lll}%
+	\zsavepos{Overlay\arabic{overlay}1}&&\\%
+	&{\vspace{2.2pt} \color{blue}\normalsize{#1}}&\\%
+	&&\zsavepos{Overlay\arabic{overlay}2}\\%
+	\end{tabular}%
 	% Write part of config.json
-	\ifnum \value{overlay} > 1 
-		\immediate\write\tempfile{,\@charlb}
-	\else 
-		\immediate\write\tempfile{\@charlb}
-	\fi
-	\FPdiv\r@xa{\zposx{Overlay\arabic{overlay}1}}{\number\paperwidth}
-	\FPdiv\r@xb{\zposx{Overlay\arabic{overlay}2}}{\number\paperwidth}
-	\FPdiv\r@ya{\zposy{Overlay\arabic{overlay}1}}{\number\paperheight}
-	\FPdiv\r@yb{\zposy{Overlay\arabic{overlay}2}}{\number\paperheight}
-	\immediate\write\tempfile{\space\space\space\space"name": "Overlay\arabic{overlay}",}
-	\immediate\write\tempfile{\space\space\space\space"type": \@charlb}
-	\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.common.Text",}
-	\immediate\write\tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}
-	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"query": "SELECT * FROM data1",}
-	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x1": \r@xa,}
-	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x2": \r@xb,}
-	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y1": \r@ya,}
-	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y2": \r@yb,}
-	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"page": \zref@extract{Overlay\arabic{overlay}}{abspage}}
-	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\@charrb}
-	\immediate\write\tempfile{\space\space\space\space\@charrb}
-	\immediate\write\tempfile{\@charrb}
-}
+	\ifnum \value{overlay} > 1%
+		\immediate\write\tempfile{,\@charlb}%
+	\else%
+		\immediate\write\tempfile{\@charlb}%
+	\fi%
+	\FPdiv\r@xa{\zposx{Overlay\arabic{overlay}1}}{\number\paperwidth}%
+	\FPdiv\r@xb{\zposx{Overlay\arabic{overlay}2}}{\number\paperwidth}%
+	\FPdiv\r@ya{\zposy{Overlay\arabic{overlay}1}}{\number\paperheight}%
+	\FPdiv\r@yb{\zposy{Overlay\arabic{overlay}2}}{\number\paperheight}%
+	\immediate\write\tempfile{\space\space\space\space"name": "Overlay\arabic{overlay}",}%
+	\immediate\write\tempfile{\space\space\space\space"type": \@charlb}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.common.Text",}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"query": "SELECT * FROM data1",}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x1": \r@xa,}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x2": \r@xb,}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y1": \r@ya,}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y2": \r@yb,}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"page": \zref@extract{Overlay\arabic{overlay}}{abspage}}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\@charrb}%
+	\immediate\write\tempfile{\space\space\space\space\@charrb}%
+	\immediate\write\tempfile{\@charrb}%
+	}%
+}%
 
 \endinput

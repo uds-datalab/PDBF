@@ -1,0 +1,291 @@
+﻿<!DOCTYPE html>
+<html style="width:100%; height:100%;">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	
+	<script>
+	/* Array of bytes to base64 string decoding */
+
+function b64ToUint6 (nChr) {
+
+  return nChr > 64 && nChr < 91 ?
+      nChr - 65
+    : nChr > 96 && nChr < 123 ?
+      nChr - 71
+    : nChr > 47 && nChr < 58 ?
+      nChr + 4
+    : nChr === 43 ?
+      62
+    : nChr === 47 ?
+      63
+    :
+      0;
+
+}
+
+function base64DecToArr (sBase64, nBlocksSize) {
+
+  var
+    sB64Enc = sBase64.replace(/[^A-Za-z0-9\+\/]/g, ""), nInLen = sB64Enc.length,
+    nOutLen = nBlocksSize ? Math.ceil((nInLen * 3 + 1 >> 2) / nBlocksSize) * nBlocksSize : nInLen * 3 + 1 >> 2, taBytes = new Uint8Array(nOutLen);
+
+  for (var nMod3, nMod4, nUint24 = 0, nOutIdx = 0, nInIdx = 0; nInIdx < nInLen; nInIdx++) {
+    nMod4 = nInIdx & 3;
+    nUint24 |= b64ToUint6(sB64Enc.charCodeAt(nInIdx)) << 18 - 6 * nMod4;
+    if (nMod4 === 3 || nInLen - nInIdx === 1) {
+      for (nMod3 = 0; nMod3 < 3 && nOutIdx < nOutLen; nMod3++, nOutIdx++) {
+        taBytes[nOutIdx] = nUint24 >>> (16 >>> nMod3 & 24) & 255;
+      }
+      nUint24 = 0;
+
+    }
+  }
+
+  return taBytes;
+}
+
+/* Base64 string to array encoding */
+
+function uint6ToB64 (nUint6) {
+
+  return nUint6 < 26 ?
+      nUint6 + 65
+    : nUint6 < 52 ?
+      nUint6 + 71
+    : nUint6 < 62 ?
+      nUint6 - 4
+    : nUint6 === 62 ?
+      43
+    : nUint6 === 63 ?
+      47
+    :
+      65;
+
+}
+
+function base64EncArr (aBytes) {
+
+  var nMod3 = 2, sB64Enc = "";
+
+  for (var nLen = aBytes.length, nUint24 = 0, nIdx = 0; nIdx < nLen; nIdx++) {
+    nMod3 = nIdx % 3;
+    if (nIdx > 0 && (nIdx * 4 / 3) % 76 === 0) { sB64Enc += "\r\n"; }
+    nUint24 |= aBytes[nIdx] << (16 >>> nMod3 & 24);
+    if (nMod3 === 2 || aBytes.length - nIdx === 1) {
+      sB64Enc += String.fromCharCode(uint6ToB64(nUint24 >>> 18 & 63), uint6ToB64(nUint24 >>> 12 & 63), uint6ToB64(nUint24 >>> 6 & 63), uint6ToB64(nUint24 & 63));
+      nUint24 = 0;
+    }
+  }
+
+  return sB64Enc.substr(0, sB64Enc.length - 2 + nMod3) + (nMod3 === 2 ? '' : nMod3 === 1 ? '=' : '==');
+
+}
+
+/* UTF-8 array to DOMString and vice versa */
+
+function UTF8ArrToStr (aBytes) {
+
+  var sView = "";
+
+  for (var nPart, nLen = aBytes.length, nIdx = 0; nIdx < nLen; nIdx++) {
+    nPart = aBytes[nIdx];
+    sView += String.fromCharCode(
+      nPart > 251 && nPart < 254 && nIdx + 5 < nLen ? /* six bytes */
+        /* (nPart - 252 << 30) may be not so safe in ECMAScript! So...: */
+        (nPart - 252) * 1073741824 + (aBytes[++nIdx] - 128 << 24) + (aBytes[++nIdx] - 128 << 18) + (aBytes[++nIdx] - 128 << 12) + (aBytes[++nIdx] - 128 << 6) + aBytes[++nIdx] - 128
+      : nPart > 247 && nPart < 252 && nIdx + 4 < nLen ? /* five bytes */
+        (nPart - 248 << 24) + (aBytes[++nIdx] - 128 << 18) + (aBytes[++nIdx] - 128 << 12) + (aBytes[++nIdx] - 128 << 6) + aBytes[++nIdx] - 128
+      : nPart > 239 && nPart < 248 && nIdx + 3 < nLen ? /* four bytes */
+        (nPart - 240 << 18) + (aBytes[++nIdx] - 128 << 12) + (aBytes[++nIdx] - 128 << 6) + aBytes[++nIdx] - 128
+      : nPart > 223 && nPart < 240 && nIdx + 2 < nLen ? /* three bytes */
+        (nPart - 224 << 12) + (aBytes[++nIdx] - 128 << 6) + aBytes[++nIdx] - 128
+      : nPart > 191 && nPart < 224 && nIdx + 1 < nLen ? /* two bytes */
+        (nPart - 192 << 6) + aBytes[++nIdx] - 128
+      : /* nPart < 127 ? */ /* one byte */
+        nPart
+    );
+  }
+
+  return sView;
+
+}
+
+function strToUTF8Arr (sDOMStr) {
+
+  var aBytes, nChr, nStrLen = sDOMStr.length, nArrLen = 0;
+
+  /* mapping... */
+
+  for (var nMapIdx = 0; nMapIdx < nStrLen; nMapIdx++) {
+    nChr = sDOMStr.charCodeAt(nMapIdx);
+    nArrLen += nChr < 0x80 ? 1 : nChr < 0x800 ? 2 : nChr < 0x10000 ? 3 : nChr < 0x200000 ? 4 : nChr < 0x4000000 ? 5 : 6;
+  }
+
+  aBytes = new Uint8Array(nArrLen);
+
+  /* transcription... */
+
+  for (var nIdx = 0, nChrIdx = 0; nIdx < nArrLen; nChrIdx++) {
+    nChr = sDOMStr.charCodeAt(nChrIdx);
+    if (nChr < 128) {
+      /* one byte */
+      aBytes[nIdx++] = nChr;
+    } else if (nChr < 0x800) {
+      /* two bytes */
+      aBytes[nIdx++] = 192 + (nChr >>> 6);
+      aBytes[nIdx++] = 128 + (nChr & 63);
+    } else if (nChr < 0x10000) {
+      /* three bytes */
+      aBytes[nIdx++] = 224 + (nChr >>> 12);
+      aBytes[nIdx++] = 128 + (nChr >>> 6 & 63);
+      aBytes[nIdx++] = 128 + (nChr & 63);
+    } else if (nChr < 0x200000) {
+      /* four bytes */
+      aBytes[nIdx++] = 240 + (nChr >>> 18);
+      aBytes[nIdx++] = 128 + (nChr >>> 12 & 63);
+      aBytes[nIdx++] = 128 + (nChr >>> 6 & 63);
+      aBytes[nIdx++] = 128 + (nChr & 63);
+    } else if (nChr < 0x4000000) {
+      /* five bytes */
+      aBytes[nIdx++] = 248 + (nChr >>> 24);
+      aBytes[nIdx++] = 128 + (nChr >>> 18 & 63);
+      aBytes[nIdx++] = 128 + (nChr >>> 12 & 63);
+      aBytes[nIdx++] = 128 + (nChr >>> 6 & 63);
+      aBytes[nIdx++] = 128 + (nChr & 63);
+    } else /* if (nChr <= 0x7fffffff) */ {
+      /* six bytes */
+      aBytes[nIdx++] = 252 + (nChr >>> 30);
+      aBytes[nIdx++] = 128 + (nChr >>> 24 & 63);
+      aBytes[nIdx++] = 128 + (nChr >>> 18 & 63);
+      aBytes[nIdx++] = 128 + (nChr >>> 12 & 63);
+      aBytes[nIdx++] = 128 + (nChr >>> 6 & 63);
+      aBytes[nIdx++] = 128 + (nChr & 63);
+    }
+  }
+
+  return aBytes;
+}
+
+dim_base64 = "eyJ3aWR0aCI6ICIzOTE1ODI3NiIsDQoiaGVpZ2h0IjogIjU1MzgwOTkwIiB9DQo=";
+json_base64 = "eyJuYW1lIjoiT3ZlcmxheTIiLCJ0eXBlIjp7IkMiOiJwZGJmLmNvbW1vbi5MaW5lQ2hhcnQiLCJJIjp7ImxvZ1NjYWxlIjpmYWxzZSwieFVuaXROYW1lIjoiRGF0dW0iLCJ5VW5pdE5hbWUiOiJUZW1wZXJhdHVyIiwicXVlcnkiOiJTRUxFQ1QgKiBGUk9NIGRhdGExIiwieDEiOjAuNjIwOTk3ODQ0NzQ2NzkxMiwieDIiOjAuODQxMDA1ODE5NTYxNjE3LCJ5MSI6MC4zODg0OTYxNjA4NjY3NTIzLCJ5MiI6MC4xODEwODk3MjA0OTc5NTQyNywicGFnZSI6MX19fQ==";
+db_base64 = "Q1JFQVRFIFRBQkxFIGRhdGExIChEYXR1bSBEQVRFLCBUZW1wZXJhdHVyIElOVEVHRVIpOyBDUkVBVEUgVEFCTEUgZGF0YTIgKFphaGwxIElOVEVHRVIsIFphaGwyIElOVEVHRVIpOyBJTlNFUlQgSU5UTyBkYXRhMSBWQUxVRVMgKCcyMDA4LzA1LzA3JywgNzUpLCAoJzIwMDgvMDUvMDgnLCA3MCksICgnMjAwOC8wNS8wOScsIDgwKTsgQ1JFQVRFIFRBQkxFIHRlc3QgKGNvbDEgSU5URUdFUiwgY29sMiBGTE9BVCk7IElOU0VSVCBJTlRPIHRlc3QgVkFMVUVTICgxLDExMS4xKSwgKDIsMjIyLjEpOw==";
+﻿	</script>
+
+	<script src="dygraphs.js"></script>
+	<script src="diff_match_patch.js"></script>
+	<script src="alasql.min.js"></script>
+
+<!-- This snippet is used in production (included from viewer.html) -->
+<link rel="resource" type="application/l10n" href="locale/locale.properties"/>
+<script src="l10n.js"></script>
+<script src="../build/pdf.js"></script>
+
+    <script src="debugger.js"></script>
+    <script src="viewer.js"></script>
+
+  </head>
+
+  <body onLoad="overlay()" style="width:100%; height:100%;">
+
+<script>
+//Load dim.json
+var json;
+json = JSON.parse(UTF8ArrToStr(base64DecToArr(dim_base64)));
+tmpw = json.width / 655 / 30;
+tmph = json.height / 655 / 30;
+	
+//Load db.sql
+//Create the database
+alasql(UTF8ArrToStr(base64DecToArr(db_base64)));
+
+//Load config.json
+json = JSON.parse(UTF8ArrToStr(base64DecToArr(json_base64)));
+var width = (json.type.I.x2 - json.type.I.x1);
+var height = (json.type.I.y1 - json.type.I.y2);
+outw = tmpw*width;
+outh = tmph*height;
+var pageOverlays = [];
+parse(json);
+function isValidDate(d) {
+  if ( Object.prototype.toString.call(d) !== "[object Date]" )
+    return false;
+  return !isNaN(d.getTime());
+}
+function parse(json) {
+	page = 0;
+	pageOverlay = pageOverlays[page];
+	if (typeof pageOverlay == 'undefined') {
+		pageOverlay = [];
+		pageOverlays[page] = pageOverlay;
+	}
+	pageOverlay[pageOverlay.length] = json;
+}
+function display(json, page) {
+	var container = document.createElement('div');
+	container.id = json.name;
+	var style = "width:100%; height:100%;";
+	switch(json.type.C) {
+		case "pdbf.common.LineChart":
+		case "pdbf.common.BarChart":
+			try {
+			var results = alasql(json.type.I.query);
+			if (results.length == 0) {
+				alert("Query \"" + json.type.I.query + "\" returns empty result!");
+				return;
+			}
+			if (results[0] instanceof Array) {
+				alert("Query \"" + json.type.I.query + "\" contains multiple statements!");
+				return;
+			}
+			var values = [];
+			var columns = [];
+			for (key in results[0]) {
+				columns[columns.length] = key;
+			}
+			for (var i=0; i<results.length; i++) {
+				var cur = results[i];
+				var val = [];
+				for(key in cur) {
+					if (typeof(cur[key]) == "string") {
+						var tmp = cur[key];
+						val[val.length] = new Date(cur[key]);
+						if (!isValidDate(val[val.length-1])) {
+							alert("Found illegal value: \"" + tmp + "\"!\nStrings in the DB can only be valid dates");
+							return;
+						}
+					} else {
+						val[val.length] = cur[key];
+					}
+				}
+				values[values.length] = val;
+			}
+			var g = new Dygraph(container, values, { labels: columns, animatedZooms: true, legend: "always", logscale: json.type.I.logScale, xlabel: json.type.I.xUnitName, ylabel: json.type.I.yUnitName } );
+			style = "background: white;" + style;
+			container.setAttribute('style', style);
+			page.appendChild(container);
+			g.resize();
+			} catch(e) {
+				alert(e);
+			}
+			break;
+		case "pdbf.common.Text":
+			container.setAttribute('style', style);
+			page.appendChild(container);
+			break;
+		default:
+			alert("Unknown: " + json.type.C);
+			break;
+	}
+}
+function overlay() {
+  	var pageNr = 0;
+	for (var i = 0; i < pageOverlays[pageNr].length; ++i) {
+		display(pageOverlays[pageNr][i], document.body)
+	}
+}
+
+</script>
+
+  </body>
+</html>
