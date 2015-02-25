@@ -28,7 +28,7 @@ public class LaTeX_Compiler {
 	} else if (OS.contains("mac")) {
 	    suffix = "mac";
 	} else if (OS.contains("nix") || OS.contains("nux") || OS.contains("aix")) {
-	    suffix = "";
+	    suffix = "unix";
 	} else {
 	    System.err.println("Sorry, your operating system is not supported!");
 	    System.exit(-1);
