@@ -75,14 +75,14 @@
 	}%
 }
 
-\newcommand\sql[1]{%
+\newcommand\sql[2]{%
+	\edef\pdbf@fontsave{\f@size}%
 	{\fontsize{5pt}{1sp}\selectfont%
 		% Increment overlay counter
 		\stepcounter{overlay}%
 		\setlength\tabcolsep{1sp}%
-		\begin{tabular}{lll}%
-		\pdbf@save{Overlay\arabic{overlay}1}&&\\%
-		&{\color{blue}\normalsize{#1}}&\\%
+		\begin{tabular}[t]{lll}%
+		\pdbf@save{Overlay\arabic{overlay}1}&{\color{blue} \fontsize{\pdbf@fontsave}{1sp}\selectfont #1}&\\%
 		&&\zsavepos{Overlay\arabic{overlay}2}\\%
 		\end{tabular}%
 		% Write part of config.json
@@ -93,13 +93,15 @@
 		\fi%
 		\FPdiv\r@xa{\zposx{Overlay\arabic{overlay}1}}{\number\paperwidth}%
 		\FPdiv\r@xb{\zposx{Overlay\arabic{overlay}2}}{\number\paperwidth}%
-		\FPdiv\r@ya{\zposy{Overlay\arabic{overlay}1}}{\number\paperheight}%
+		\FPmul\r@tmp{65536}{\pdbf@fontsave}%
+		\FPadd\r@tmpa{\zposy{Overlay\arabic{overlay}1}}{\r@tmp}%
+		\FPdiv\r@ya{\r@tmpa}{\number\paperheight}%
 		\FPdiv\r@yb{\zposy{Overlay\arabic{overlay}2}}{\number\paperheight}%
 		\immediate\write\tempfile{\space\space\space\space"name": "Overlay\arabic{overlay}",}%
 		\immediate\write\tempfile{\space\space\space\space"type": \@charlb}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.common.Text",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}%
-		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"query": "SELECT * FROM data1",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"query": "#2",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x1": \r@xa,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x2": \r@xb,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y1": \r@ya,}%
