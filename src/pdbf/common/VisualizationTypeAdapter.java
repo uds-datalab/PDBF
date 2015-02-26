@@ -11,14 +11,12 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-public class VisualizationTypeAdapter implements JsonSerializer<Visualization>,
-	JsonDeserializer<Visualization> {
+public class VisualizationTypeAdapter implements JsonSerializer<Visualization>, JsonDeserializer<Visualization> {
     private static final String CLASSNAME = "C";
     private static final String INSTANCE = "I";
 
     @Override
-    public JsonElement serialize(Visualization src, Type typeOfSrc,
-	    JsonSerializationContext context) {
+    public JsonElement serialize(Visualization src, Type typeOfSrc, JsonSerializationContext context) {
 	JsonObject retValue = new JsonObject();
 	String className = src.getClass().getCanonicalName();
 	retValue.addProperty(CLASSNAME, className);
@@ -28,8 +26,7 @@ public class VisualizationTypeAdapter implements JsonSerializer<Visualization>,
     }
 
     @Override
-    public Visualization deserialize(JsonElement json, Type typeOfT,
-	    JsonDeserializationContext context) throws JsonParseException {
+    public Visualization deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 	JsonObject jsonObject = json.getAsJsonObject();
 	JsonPrimitive prim = (JsonPrimitive) jsonObject.get(CLASSNAME);
 	String className = prim.getAsString();

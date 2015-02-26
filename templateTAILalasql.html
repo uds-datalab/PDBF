@@ -583,18 +583,7 @@ span.CodeMirror-selectedtext { background: none; }
 
         <div id="viewerContainer" tabindex="0">
           <div id="viewer" class="pdfViewer"></div>
-		  <div id="SQLQuery" onmousedown='mydragg.startMoving(this,"container",event);' onmouseup='mydragg.stopMoving("container");' style="position:absolute; left:10px; top:40px; width:300px; z-index:9; visibility:hidden; border:1px solid black; padding:10px; background:#DDDDDD;">
-    <label style="">SQL Query:</label>
-	<label style="position:absolute; right:15px;" onClick="document.getElementById('SQLQuery').style.visibility='hidden';">Close</label>
-    <br>
-    <textarea id="commands"></textarea>
-<button id="execute" class="button" onClick="execEditorContents();">Execute</button> 
-<label style="position:absolute; right:15px; margin-top:4px; font-size:12px;">Hint: Press Ctrl-Space for autocompletion.</label>
-
-<div id="error" class="error"></div>
-
-<pre id="output" style="margin-top:5px;">Results will be displayed here</pre>
-</div>
+		  
         </div>
 
         <div id="errorWrapper" hidden='true'>
@@ -753,6 +742,19 @@ span.CodeMirror-selectedtext { background: none; }
   </div>
 </div>
 
+<div id="SQLQuery" onmousedown='mydragg.startMoving(this,"container",event);' onmouseup='mydragg.stopMoving("container");' style="position:absolute; left:10px; top:40px; width:300px; z-index:9; visibility:hidden; border:1px solid black; padding:10px; background:#DDDDDD;">
+    <label style="">SQL Query:</label>
+	<label style="position:absolute; right:15px;" onClick="document.getElementById('SQLQuery').style.visibility='hidden';">Close</label>
+    <br>
+    <textarea id="commands"></textarea>
+<button id="execute" class="button" onClick="execEditorContents();">Execute</button> 
+<label style="position:absolute; right:15px; margin-top:4px; font-size:12px;">Hint: Press Ctrl-Space for autocompletion.</label>
+
+<div id="error" class="error"></div>
+
+<pre id="output" style="margin-top:5px;">Results will be displayed here</pre>
+</div>
+
 <script>
 //Load db.sql
 //Create the database
@@ -801,7 +803,7 @@ function display(json, page) {
 			var values = [];
 			var columns = [];
 			for (key in results[0]) {
-				columns[columns.length] = key;
+				columns[columns.length] = key.replace('_', ' ');
 			}
 			for (var i=0; i<results.length; i++) {
 				var cur = results[i];
@@ -861,13 +863,13 @@ function print(text) {
 
 function error(e) {
   console.log(e);
-	errorElm.style = "margin-top:5px;"
+	errorElm.setAttribute('style', "margin-top:5px;overflow: auto;");
 	errorElm.innerHTML = "<pre>" + e.message + "</pre>";
 }
 
 function noerror() {
 	errorElm.innerHTML = "";
-	errorElm.style = "height:0px;";
+	errorElm.setAttribute('style', "height:0px;");
 }
 
 // Run a command in the database
@@ -998,6 +1000,41 @@ editor = CodeMirror.fromTextArea(commandsElm, {
                     },
                 }
             }();
+			
+debugmode = 0;			
+window.addEventListener('keydown', function keydown(evt) {
+	if (evt.key == "q") {
+		list = document.getElementsByClassName("overlay");
+		if (debugmode == 3) {
+			for (var i=list.length-1; i>=0; --i) {
+				list[i].setAttribute('class', 'overlay');
+			}
+			debugmode = 0;
+		} else if (debugmode == 0) {
+			for (var i=list.length-1; i>=0; --i) {
+				list[i].setAttribute('class', 'overlay debug');
+			}
+			debugmode = 1;
+		} else if (debugmode == 1) {
+			for (var i=list.length-1; i>=0; --i) {
+				if (list[i].children.length > 0) {
+					list[i].children[0].setAttribute('class', 'hide');
+					list[i].setAttribute('style', list[i].getAttribute('style').substring(18, list[i].getAttribute('style').length));
+				}
+			}
+			debugmode = 2;
+		} else {
+			for (var i=list.length-1; i>=0; --i) {
+				if (list[i].children.length > 0) {
+					list[i].children[0].setAttribute('class', '');
+					list[i].setAttribute('style', 'background: white;' + list[i].getAttribute('style'));
+				}
+				list[i].setAttribute('class', 'overlay hide');
+			}
+			debugmode = 3;
+		}
+	}
+});
         </script>
 
   </body>

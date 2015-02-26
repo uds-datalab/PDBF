@@ -10,6 +10,7 @@
 \RequirePackage{xcolor}
 \RequirePackage{graphicx}
 \RequirePackage{fp}
+\RequirePackage{xstring}
 \newcounter{overlay}
 \AtBeginDocument{
 	\newwrite\temp
@@ -31,7 +32,7 @@
       \zsavepos{#1}%
     \endgroup
 }
-\newcommand\lineChart[2]{%
+\newcommand\lineChart[7]{%
 	{\fontsize{5pt}{1sp}\selectfont%
 		% Increment overlay counter
 		\stepcounter{overlay}%
@@ -56,14 +57,17 @@
 		\FPdiv\r@xb{\zposx{Overlay\arabic{overlay}2}}{\number\paperwidth}%
 		\FPdiv\r@ya{\zposy{Overlay\arabic{overlay}1}}{\number\paperheight}%
 		\FPdiv\r@yb{\zposy{Overlay\arabic{overlay}2}}{\number\paperheight}%
+		\StrSubstitute{#7}{"}{'}[\pdbf@options]%
+		\StrSubstitute{#3}{"}{'}[\pdbf@query]%
 		\immediate\write\tempfile{\space\space\space\space"name": "Overlay\arabic{overlay}",}%
 		\immediate\write\tempfile{\space\space\space\space"type": \@charlb}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.common.LineChart",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}%
-		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"logScale": false,}%
-		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xUnitName": "Datum",}%
-		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yUnitName": "Temperatur",}%
-		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"query": "SELECT * FROM data1",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"logScale": #6,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xUnitName": "#5",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yUnitName": "#4",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"query": "\pdbf@query",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"options": "{\pdbf@options}",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x1": \r@xa,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x2": \r@xb,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y1": \r@ya,}%

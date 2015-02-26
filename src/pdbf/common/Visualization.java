@@ -8,8 +8,7 @@ public abstract class Visualization {
     public double y2;
     public long page;
 
-    public Visualization(String query, double x1,
-	    double x2, double y1, double y2, long page) {
+    public Visualization(String query, double x1, double x2, double y1, double y2, long page) {
 	super();
 	this.query = query;
 	this.x1 = x1;
