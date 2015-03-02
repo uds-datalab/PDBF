@@ -780,7 +780,7 @@ tic();
 var tmp = UTF8ArrToStr(base64DecToArr(db_base64));
 toc("Base64 decode time for DB");
 tic();
-alasql(tmp);
+alasql.databases = JSON.parse(tmp);
 toc("DB load time");
 
 //Load config.json

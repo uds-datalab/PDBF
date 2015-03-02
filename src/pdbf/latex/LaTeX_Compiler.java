@@ -153,7 +153,7 @@ public class LaTeX_Compiler {
     private static void processDatabase(Overlay overlay) {
 	try {
 	    Database db = (Database) overlay.type;
-	    File f = new File("db.sql");
+	    File f = new File("db.json");
 	    switch (db.type) {
 	    case 1:
 		FileUtils.writeStringToFile(f, db.value1 + System.lineSeparator(), Tools.utf8, true);
@@ -170,6 +170,8 @@ public class LaTeX_Compiler {
 		    Connection conn = DriverManager.getConnection(db.value1, db.value2, db.value3);
 		    // Insert Create Table Statement
 		    StringTokenizer stok = new StringTokenizer(db.value4, ",");
+		    StringBuffer sb = new StringBuffer();
+		    sb.append("{ \"alasql\": { \"databaseid\": \"alasql\", \"tables\": {");
 		    while (stok.hasMoreTokens()) {
 			String curTable = stok.nextToken();
 			Statement stmt = conn.createStatement();
@@ -187,7 +189,6 @@ public class LaTeX_Compiler {
 			}
 			FileUtils.writeStringToFile(f, out + System.lineSeparator(), Tools.utf8, true);
 			if (cols > 0) {
-			    StringBuffer sb = new StringBuffer();
 			    String pre = "INSERT INTO " + curTable + " VALUES ";
 			    sb.append(pre);
 			    while (rs.next()) {
