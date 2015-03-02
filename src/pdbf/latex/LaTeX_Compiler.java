@@ -6,9 +6,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.StringTokenizer;
 
 import org.apache.commons.io.FileUtils;
 
@@ -143,30 +145,45 @@ public class LaTeX_Compiler {
 		FileUtils.writeStringToFile(f, in + System.lineSeparator(), Tools.utf8, true);
 		break;
 	    case 3:
-		Connection conn = null;
-		Statement stmt = null;
 		try {
 		    // Load supported Drivers
 		    Class.forName("org.mariadb.jdbc.Driver");
 		    Class.forName("org.postgresql.Driver");
-		    conn = DriverManager.getConnection(db.value1, db.value2, db.value3);
-		    stmt = conn.createStatement();
-		    String sql = "SELECT * FROM " + db.value4;
-		    ResultSet rs = stmt.executeQuery(sql);
-		    while (rs.next()) {
-			ResultSetMetaData rsmd = rs.getMetaData();
-			for (int i = 1; i <= rsmd.getColumnCount(); ++i) {
-			    System.out.println("Name: " + rsmd.getColumnLabel(i) + ", Type: " + rsmd.getColumnTypeName(i));
-			    // TODO: continue here
+		    Connection conn = DriverManager.getConnection(db.value1, db.value2, db.value3);
+		    // Insert Create Table Statement
+		    StringTokenizer stok = new StringTokenizer(db.value4, ",");
+		    while (stok.hasMoreTokens()) {
+			String curTable = stok.nextToken();
+			String out = "CREATE TABLE " + curTable + "(";
+			ResultSet rs = conn.getMetaData().getColumns(null, null, curTable, null);
+			int cols = 0;
+			while (rs.next()) {
+			    out += rs.getString(4) + " " + rs.getString(6) + ", ";
+			    ++cols;
 			}
+			rs.close();
+			out = out.substring(0, out.length() - 2) + ");";
+			FileUtils.writeStringToFile(f, out + System.lineSeparator(), Tools.utf8, true);
+			Statement stmt = conn.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM " + curTable);
+			if (cols != 0) {
+			    while (rs.next()) {
+				out = "INSERT INTO " + curTable + " VALUES (";
+				for (int i = 1; i < cols; ++i) {
+				    out += "\"" + rs.getString(i) + "\", ";
+				}
+				out += rs.getString(cols) + ");";
+				FileUtils.writeStringToFile(f, out + System.lineSeparator(), Tools.utf8, true);
+				System.out.println(out);
+			    }
+			}
+			rs.close();
 		    }
-		    rs.close();
-		    stmt.close();
 		    conn.close();
 		} catch (Exception e) {
 		    e.printStackTrace();
 		    System.exit(-1);
-		} 
+		}
 		break;
 	    }
 	} catch (Exception e) {
