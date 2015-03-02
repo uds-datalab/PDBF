@@ -6,7 +6,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,10 +69,10 @@ public class LaTeX_Compiler {
 	    e.printStackTrace();
 	}
 
-	System.out.println("Generating Images...");
 	// Read JSON
 	GsonBuilder builder = new GsonBuilder();
 	builder.registerTypeAdapter(Visualization.class, new VisualizationTypeAdapter());
+	builder.setPrettyPrinting();
 	gson = builder.create();
 	Overlay[] overlays = null;
 	try {
@@ -99,13 +98,17 @@ public class LaTeX_Compiler {
 	} catch (IOException e1) {
 	    e1.printStackTrace();
 	}
+	System.out.println("Generating database...");
+	for (int i = 0; i < overlays.length; ++i) {
+	    if (overlays[i].type instanceof Database) {
+		processDatabase(overlays[i]);
+	    }
+	}
+	System.out.println("Generating images...");
 	for (int i = 0; i < overlays.length; ++i) {
 	    if (overlays[i].type instanceof Chart) {
 		processChart(overlays[i], i);
-	    } else if (overlays[i].type instanceof Database) {
-		processDatabase(overlays[i]);
 	    }
-	    // TODO: add more
 	}
 
 	for (Process p : processes) {
@@ -124,6 +127,21 @@ public class LaTeX_Compiler {
 	    p.waitFor();
 	} catch (Exception e) {
 	    e.printStackTrace();
+	}
+	
+	// Remove database entries from config
+	ArrayList<Overlay> olist = new ArrayList<Overlay>(Arrays.asList(overlays));
+	for (int i = olist.size()-1; i >= 0; --i) {
+	    if (olist.get(i).type instanceof Database) {
+		olist.remove(i);
+	    }
+	}
+	overlays = new Overlay[olist.size()];
+	overlays = olist.toArray(overlays);
+	try {
+	    FileUtils.writeStringToFile(new File("config.json"), gson.toJson(overlays), Tools.utf8);
+	} catch (IOException e1) {
+	    e1.printStackTrace();
 	}
 
 	// Cleanup
@@ -154,28 +172,34 @@ public class LaTeX_Compiler {
 		    StringTokenizer stok = new StringTokenizer(db.value4, ",");
 		    while (stok.hasMoreTokens()) {
 			String curTable = stok.nextToken();
-			String out = "CREATE TABLE " + curTable + "(";
-			ResultSet rs = conn.getMetaData().getColumns(null, null, curTable, null);
-			int cols = 0;
-			while (rs.next()) {
-			    out += rs.getString(4) + " " + rs.getString(6) + ", ";
-			    ++cols;
-			}
-			rs.close();
-			out = out.substring(0, out.length() - 2) + ");";
-			FileUtils.writeStringToFile(f, out + System.lineSeparator(), Tools.utf8, true);
 			Statement stmt = conn.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM " + curTable);
+			ResultSet rs = stmt.executeQuery("SELECT * FROM " + curTable);
+			String out = "CREATE TABLE " + curTable + "(";
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int cols = rsmd.getColumnCount();
+			for (int i = 1; i <= cols; ++i) {
+			    out += rsmd.getColumnName(i) + " " + rsmd.getColumnTypeName(i) + ", ";
+			}
 			if (cols != 0) {
+			    out = out.substring(0, out.length() - 2) + ");";
+			} else {
+			    out = out.substring(0, out.length() - 1) + ";";
+			}
+			FileUtils.writeStringToFile(f, out + System.lineSeparator(), Tools.utf8, true);
+			if (cols > 0) {
+			    StringBuffer sb = new StringBuffer();
+			    String pre = "INSERT INTO " + curTable + " VALUES ";
+			    sb.append(pre);
 			    while (rs.next()) {
-				out = "INSERT INTO " + curTable + " VALUES (";
+				sb.append("(");
 				for (int i = 1; i < cols; ++i) {
-				    out += "\"" + rs.getString(i) + "\", ";
+				    sb.append("'").append(rs.getString(i)).append("', ");
 				}
-				out += rs.getString(cols) + ");";
-				FileUtils.writeStringToFile(f, out + System.lineSeparator(), Tools.utf8, true);
-				System.out.println(out);
+				sb.append("'").append(rs.getString(cols)).append("'), ");
 			    }
+			    sb.setCharAt(sb.length()-2, ';');
+			    sb.append(System.lineSeparator());
+			    FileUtils.writeStringToFile(f, sb.toString() , Tools.utf8, true);
 			}
 			rs.close();
 		    }

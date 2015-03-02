@@ -761,9 +761,27 @@ function consumeEvent(evt) {
 	nomove = true;
 }
 
+// Performance measurement functions
+var tictime;
+if (!window.performance || !performance.now) {window.performance = {now:Date.now}}
+function tic () {tictime = performance.now()}
+function toc(msg) {
+	var dt = performance.now()-tictime;
+	console.log((msg||'toc') + ": " + dt + "ms");
+}
+
+function replaceAll(str, s, r) {
+	return str.split(s).join(r);
+}
+
 //Load db.sql
 //Create the database
-alasql(UTF8ArrToStr(base64DecToArr(db_base64)));
+tic();
+var tmp = UTF8ArrToStr(base64DecToArr(db_base64));
+toc("Base64 decode time for DB");
+tic();
+alasql(tmp);
+toc("DB load time");
 
 //Load config.json
 var json;
@@ -787,6 +805,7 @@ function parse(json) {
 	pageOverlay[pageOverlay.length] = json;
 }
 function display(json, page) {
+	tic();
 	var container = document.createElement('div');
 	container.id = json.name;
 	container.className = "overlay";
@@ -808,17 +827,35 @@ function display(json, page) {
 			var values = [];
 			var columns = [];
 			for (key in results[0]) {
-				columns[columns.length] = key.replace('_', ' ');
+				columns[columns.length] = replaceAll(key, '_', ' ');
 			}
 			for (var i=0; i<results.length; i++) {
 				var cur = results[i];
 				var val = [];
 				for(key in cur) {
 					if (typeof(cur[key]) == "string") {
-						var tmp = cur[key];
-						val[val.length] = new Date(cur[key]);
-						if (!isValidDate(val[val.length-1])) {
-							alert("Found illegal value: \"" + tmp + "\"!\nStrings in the DB can only be valid dates");
+						var fail = true;
+						var tmp;
+						try {
+							tmp = new Date(replaceAll(cur[key], "-", "/"));
+							if (isValidDate(tmp)) {
+								val[val.length] = tmp;
+								fail = false;
+							}
+						} catch (e) {
+						}
+						if (fail) {
+							try {
+								tmp = Number(cur[key]);
+								if (!isNaN(tmp)) {
+									val[val.length] = tmp;
+									fail = false;
+								}
+							} catch (e) {
+							}
+						}
+						if (fail) {
+							alert("Parsing of " + tmp + " failed!");
 							return;
 						}
 					} else {
@@ -850,6 +887,7 @@ function display(json, page) {
 			alert("Unknown: " + json.type.C);
 			break;
 	}
+	toc("Display time for " + json.name);
 }
 function overlay(pageNr) {
   	var page = document.getElementById("pageContainer" + pageNr);
@@ -882,7 +920,6 @@ function noerror() {
 	errorElm.setAttribute('style', "height:0px;");
 }
 
-// Run a command in the database
 function execute(commands) {
 	try {
 		tic();
@@ -914,7 +951,6 @@ function execute(commands) {
 	}
 }
 
-// Create an HTML table
 function tableCreate(res) {
    var s = '';
     s += '<table border="1" style="border-collapse: collapse; margin-top:1px; margin-bottom:2px;">';
@@ -933,23 +969,12 @@ function tableCreate(res) {
 	return s;
 }
 
-// Execute the commands when the button is clicked
 function execEditorContents () {
 	noerror();
 	document.getElementById("SQLQuery").style.visibility='visible';
 	execute (editor.getValue() + ';');
 }
 
-// Performance measurement functions
-var tictime;
-if (!window.performance || !performance.now) {window.performance = {now:Date.now}}
-function tic () {tictime = performance.now()}
-function toc(msg) {
-	var dt = performance.now()-tictime;
-	console.log((msg||'toc') + ": " + dt + "ms");
-}
-
-// Add syntax highlihjting to the textarea
 var editor = CodeMirror.fromTextArea(commandsElm, {
 	mode: "text/x-sql",
     indentWithTabs: true,

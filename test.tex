@@ -35,7 +35,7 @@
 
 \DBSQLText{CREATE TABLE table1 (column1 INTEGER, column2 DATE, column3 FLOAT);}
 \DBSQLFile{somedb.sql}
-\DBSQLJDBC{jdbc:postgresql://localhost:5432/postgres}{postgres}{test}{dim_compiler}
+\DBSQLJDBC{jdbc:postgresql://localhost:5432/postgres}{postgres}{test}{testtest, dim_time} %dim_compiler, dim_dataset, dim_implementation, dim_layout, dim_query, dim_machine, fact_experiment
 
 \begin{document}
 \maketitle
@@ -71,6 +71,11 @@ Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming 
     \centering
     \lineChart{0.4\textwidth}{0.4\textwidth}{SELECT date, runtimeA AS engine_A, runtimeB AS engine_B FROM data2;}{Runtime (in seconds)}{Date}{false}{} \\
     \caption{Graph3}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \lineChart{0.4\textwidth}{0.4\textwidth}{SELECT * FROM dim_time;}{Runtime}{Row ID}{false}{} \\
+    \caption{Graph4}
 \end{figure}
 
 \end{document}

@@ -24,6 +24,10 @@ var json;
 json = JSON.parse(UTF8ArrToStr(base64DecToArr(dim_base64)));
 tmpw = json.width / 655 / 30;
 tmph = json.height / 655 / 30;
+
+function replaceAll(str, s, r) {
+	return str.split(s).join(r);
+}
 	
 //Load db.sql
 //Create the database
@@ -71,17 +75,35 @@ function display(json, page) {
 			var values = [];
 			var columns = [];
 			for (key in results[0]) {
-				columns[columns.length] = key;
+				columns[columns.length] = replaceAll(key, '_', ' ');
 			}
 			for (var i=0; i<results.length; i++) {
 				var cur = results[i];
 				var val = [];
 				for(key in cur) {
 					if (typeof(cur[key]) == "string") {
-						var tmp = cur[key];
-						val[val.length] = new Date(cur[key]);
-						if (!isValidDate(val[val.length-1])) {
-							alert("Found illegal value: \"" + tmp + "\"!\nStrings in the DB can only be valid dates");
+						var fail = true;
+						var tmp;
+						try {
+							tmp = new Date(replaceAll(cur[key], "-", "/"));
+							if (isValidDate(tmp)) {
+								val[val.length] = tmp;
+								fail = false;
+							}
+						} catch (e) {
+						}
+						if (fail) {
+							try {
+								tmp = Number(cur[key]);
+								if (!isNaN(tmp)) {
+									val[val.length] = tmp;
+									fail = false;
+								}
+							} catch (e) {
+							}
+						}
+						if (fail) {
+							alert("Parsing of " + tmp + " failed!");
 							return;
 						}
 					} else {
@@ -105,6 +127,7 @@ function display(json, page) {
 			}
 			break;
 		case "pdbf.common.Text":
+			container.addEventListener("click", function(){editor.setValue(json.type.I.query); execEditorContents();});
 			container.setAttribute('style', style);
 			page.appendChild(container);
 			break;

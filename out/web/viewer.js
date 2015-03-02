@@ -6383,7 +6383,7 @@ function webViewerInitialized() {
     SecondaryToolbar.downloadClick.bind(SecondaryToolbar));
 
 
-PDFViewerApplication.open(new Uint8Array(base64DecToArr(pdf_base64)), 0);
+PDFViewerApplication.open(base64DecToArr(pdf_base64), 0);
 
   /*if (file && file.lastIndexOf('file:', 0) === 0) {
     // file:-scheme. Load the contents in the main thread because QtWebKit
