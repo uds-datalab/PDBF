@@ -33,12 +33,15 @@
 }
 \makeatother
 
+\DBSQLText{CREATE TABLE table1 (column1 INTEGER, column2 DATE, column3 FLOAT);}
+\DBSQLFile{somedb.sql}
+\DBSQLJDBC{jdbc:postgresql://localhost:5432/postgres}{postgres}{test}{dim_compiler}
 
 \begin{document}
 \maketitle
 \begin{wrapfigure}{r}{0.47\textwidth}
 { \centering %
-\lineChart{0.4\textwidth}{0.3\textwidth}{SELECT * FROM data1;}{Money (in €)}{Date}{false}{title: "Title"} %
+\lineChart{0.4\textwidth}{0.3\textwidth}{SELECT * FROM data1;}{Money (in €)}{Date}{false}{"title": "Title", "titleHeight": 25} %
 \\ }
 \vspace{-5pt}
 \caption{Graph1}
@@ -54,7 +57,7 @@ Lorem ipsum \sql{SELECT * FROM test;}{SELECT * FROM test;} dolor sit amet, conse
 \noindent \begin{wrapfigure}{r!}{0.37\textwidth}
      \vspace{-12pt}
      { \centering %
-     \lineChart{0.3\textwidth}{0.4\textwidth}{SELECT * FROM data1 WHERE date >= '2008/05/08';}{Money (in €)}{Date}{true}{}%
+     \lineChart{0.3\textwidth}{0.4\textwidth}{SELECT * FROM data1 WHERE date >= '2008/05/11';}{Money (in €)}{Date}{true}{}%
      \\ }
      \vspace{-5pt}
      \caption{Graph2}

@@ -4,14 +4,6 @@
 	<script src="diff_match_patch.js"></script>
 	<script src="alasql.min.js"></script>
 
-<!-- This snippet is used in production (included from viewer.html) -->
-<link rel="resource" type="application/l10n" href="locale/locale.properties"/>
-<script src="l10n.js"></script>
-<script src="../build/pdf.js"></script>
-
-    <script src="debugger.js"></script>
-    <script src="viewer.js"></script>
-
 	<style>
 	.dygraph-label {
 		font-family: sans-serif;
@@ -98,7 +90,12 @@ function display(json, page) {
 				}
 				values[values.length] = val;
 			}
-			var g = new Dygraph(container, values, { labels: columns, animatedZooms: true, legend: "always", logscale: json.type.I.logScale, xlabel: json.type.I.xUnitName, ylabel: json.type.I.yUnitName, labelsDivStyles: { 'text-align': 'right', 'background': 'none' } } );
+			var options = { labels: columns, animatedZooms: true, legend: "always", logscale: json.type.I.logScale, xlabel: json.type.I.xUnitName, ylabel: json.type.I.yUnitName, labelsDivStyles: { 'text-align': 'right', 'background': 'none' } };
+			var addOpt = JSON.parse(json.type.I.options);
+			for(var key in addOpt){
+				options[key] = addOpt[key];
+			}
+			var g = new Dygraph(container, values, options );
 			style = "background: white;" + style;
 			container.setAttribute('style', style);
 			page.appendChild(container);

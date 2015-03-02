@@ -1,7 +1,5 @@
 package pdbf.common;
 
-import pdbf.common.Visualization;
-
 public class Overlay {
     public String name;
     public Visualization type;

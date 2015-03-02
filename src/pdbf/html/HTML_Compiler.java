@@ -11,8 +11,8 @@ public class HTML_Compiler {
 	System.out.println("Compiling HTML...");
 	try {
 	    String viewer;
-	    String viewerHEAD = FileUtils.readFileToString(new File("templateHEADsqlite.html"), Tools.utf8);
-	    String viewerTAIL = FileUtils.readFileToString(new File("templateTAILsqlite.html"), Tools.utf8);
+	    String viewerHEAD = FileUtils.readFileToString(new File("out/web/templateHEADsqlite.html"), Tools.utf8);
+	    String viewerTAIL = FileUtils.readFileToString(new File("out/web/templateTAILsqlite.html"), Tools.utf8);
 	    viewer = viewerHEAD + 
 		    "pdf_base64 = \"" + Tools.encodeFileToBase64Binary(new File("test.pdf")) + "\";\r\n" + 
 		    "db_base64 = \"" + Tools.encodeFileToBase64Binary(new File("db.sql")) + "\";\r\n" + 
@@ -25,8 +25,8 @@ public class HTML_Compiler {
 	
 	try {
 	    String viewer;
-	    String viewerHEAD = FileUtils.readFileToString(new File("templateHEADalasql.html"), Tools.utf8);
-	    String viewerTAIL = FileUtils.readFileToString(new File("templateTAILalasql.html"), Tools.utf8);
+	    String viewerHEAD = FileUtils.readFileToString(new File("out/web/templateHEADalasql.html"), Tools.utf8);
+	    String viewerTAIL = FileUtils.readFileToString(new File("out/web/templateTAILalasql.html"), Tools.utf8);
 	    viewer = viewerHEAD + 
 		    "pdf_base64 = \"" + Tools.encodeFileToBase64Binary(new File("test.pdf")) + "\";\r\n" + 
 		    "db_base64 = \"" + Tools.encodeFileToBase64Binary(new File("db.sql")) + "\";\r\n" + 

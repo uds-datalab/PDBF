@@ -2,7 +2,7 @@
 
     <script src="compatibility.js"></script>
 	<script src="dygraphs.js"></script>
-	<script src="alasql.min.js"></script>
+	<script src="sql.js"></script>
 	<script src="codemirror-compressed.js"></script>
 	<script src="excanvas.compiled.js"></script>
 	<script src="diff_match_patch.js"></script>
@@ -57,8 +57,8 @@ li.CodeMirror-hint-active {
 .CodeMirror {
   /* Set height, width, borders, and global font properties here */
   font-family: monospace;
-  height: 250px;
-  width: 300px;
+  height: 100px;
+  width: 100%;
   margin-top: 3px;
   margin-bottom: 3px;
   border: 1px solid black;
@@ -742,7 +742,7 @@ span.CodeMirror-selectedtext { background: none; }
   </div>
 </div>
 
-<div id="SQLQuery" onmousedown='mydragg.startMoving(this,"container",event);' onmouseup='mydragg.stopMoving("container");' style="position:absolute; left:10px; top:40px; width:300px; z-index:9; visibility:hidden; border:1px solid black; padding:10px; background:#DDDDDD;">
+<div id="SQLQuery" onmousedown='mydragg.startMoving(this,"container",event);' onmouseup='mydragg.stopMoving("container");' style="position:absolute; left:10px; top:40px; z-index:9; visibility:hidden; border:1px solid black; padding:10px; background:#DDDDDD; max-height:480px; max-width:400px;">
     <label style="">SQL Query:</label>
 	<label style="position:absolute; right:15px;" onClick="document.getElementById('SQLQuery').style.visibility='hidden';">Close</label>
     <br>
@@ -752,13 +752,19 @@ span.CodeMirror-selectedtext { background: none; }
 
 <div id="error" class="error"></div>
 
-<pre id="output" style="margin-top:5px;">Results will be displayed here</pre>
+<div onmousedown="consumeEvent(event)"><pre id="output" style="margin-top:5px; overflow:auto; min-width:300px; min-height:100px; max-height:305px;">Results will be displayed here</pre></div>
 </div>
 
 <script>
+nomove = false;
+function consumeEvent(evt) {
+	nomove = true;
+}
+
 //Load db.sql
 //Create the database
-alasql(UTF8ArrToStr(base64DecToArr(db_base64)));
+var db = new SQL.Database();
+db.run(UTF8ArrToStr(base64DecToArr(db_base64)));
 
 //Load config.json
 var json;
@@ -790,46 +796,37 @@ function display(json, page) {
 	switch(json.type.C) {
 		case "pdbf.common.LineChart":
 		case "pdbf.common.BarChart":
-			try {
-			var results = alasql(json.type.I.query);
-			if (results.length == 0) {
-				alert("Query \"" + json.type.I.query + "\" returns empty result!");
+			var results = db.exec(json.type.I.query);
+			if (results.length != 1) {
+				alert("Query \"" + json.type.I.query + "\" is not a valid Query for a Chart");
 				return;
 			}
-			if (results[0] instanceof Array) {
-				alert("Query \"" + json.type.I.query + "\" contains multiple statements!");
-				return;
-			}
-			var values = [];
-			var columns = [];
-			for (key in results[0]) {
-				columns[columns.length] = key.replace('_', ' ');
-			}
-			for (var i=0; i<results.length; i++) {
-				var cur = results[i];
-				var val = [];
-				for(key in cur) {
-					if (typeof(cur[key]) == "string") {
-						var tmp = cur[key];
-						val[val.length] = new Date(cur[key]);
-						if (!isValidDate(val[val.length-1])) {
+			for (var i=0; i<results[0].values.length; i++) {
+				var cur = results[0].values[i];
+				for (var j=0; j<cur.length; ++j) {
+					if (typeof(cur[j]) == "string") {
+						var tmp = cur[j];
+						cur[j] = new Date(cur[j]);
+						if (!isValidDate(cur[j])) {
 							alert("Found illegal value: \"" + tmp + "\"!\nStrings in the DB can only be valid dates");
 							return;
 						}
-					} else {
-						val[val.length] = cur[key];
-					}
+					} 
 				}
-				values[values.length] = val;
 			}
-			var g = new Dygraph(container, values, { labels: columns, animatedZooms: true, legend: "always", logscale: json.type.I.logScale, xlabel: json.type.I.xUnitName, ylabel: json.type.I.yUnitName, labelsDivStyles: { 'text-align': 'right', 'background': 'none' } } );
+			for (var i=0; i<results[0].columns.length; ++i) {
+				results[0].columns[i] = results[0].columns[i].replace('_', ' ');
+			}
+			var options = { labels: results[0].columns, animatedZooms: true, legend: "always", logscale: json.type.I.logScale, xlabel: json.type.I.xUnitName, ylabel: json.type.I.yUnitName, labelsDivStyles: { 'text-align': 'right', 'background': 'none' } };
+			var addOpt = JSON.parse(json.type.I.options);
+			for(var key in addOpt){
+				options[key] = addOpt[key];
+			}
+			var g = new Dygraph(container, results[0].values, options );
 			style = "background: white;" + style;
 			container.setAttribute('style', style);
 			page.appendChild(container);
 			g.resize();
-			} catch(e) {
-				alert(e);
-			}
 			break;
 		case "pdbf.common.Text":
 			container.addEventListener("click", function(){editor.setValue(json.type.I.query); execEditorContents();});
@@ -863,40 +860,31 @@ function print(text) {
 
 function error(e) {
   console.log(e);
-	errorElm.setAttribute('style', "margin-top:5px;overflow: auto;");
-	errorElm.innerHTML = "<pre>" + e.message + "</pre>";
+	errorElm.setAttribute('style', "margin-top:5px; overflow: auto;");
+	errorElm.textContent = e.message;
 }
 
 function noerror() {
-	errorElm.innerHTML = "";
-	errorElm.setAttribute('style', "height:0px;");
+	errorElm.textContent = "";
+	errorElm.setAttribute('style', "");
 }
 
 // Run a command in the database
 function execute(commands) {
 	try {
 		tic();
-		var results = alasql(commands);
+		var results = db.exec(commands);
 		toc("Executing SQL");
 		
 		tic();
-		var tmp = "Result:<br/>";
-		if (typeof(results) == 'number') {
-			tmp += "Query executed successfully." + "<br/>";
-		} else {
-		for (var i=0; i<results.length; ++i) {
-			if (typeof(results[i]) == 'number') {
-				tmp += "Query executed successfully." + "<br/>";
-			} else if (typeof(results[i][0]) != 'undefined') {
-				tmp += tableCreate(results[i]);
-			} else {
-				tmp += tableCreate(results);
-				break;
-			}
+		outputElm.innerHTML = "Result:<br/>";
+		for (var i=0; i<results.length; i++) {
+			outputElm.appendChild(tableCreate(results[i].columns, results[i].values));
 		}
-		}
-		outputElm.innerHTML = tmp;
 		toc("Displaying results");
+		if (results.length == 0) {
+			outputElm.innerHTML = "Query executed successfully.";
+		}
 	}
 	catch(e) {
 		error(e);
@@ -905,23 +893,23 @@ function execute(commands) {
 }
 
 // Create an HTML table
-function tableCreate(res) {
-   var s = '';
-    s += '<table border="1" style="border-collapse: collapse; margin-top:1px; margin-bottom:2px;">';
-	s += '<tr>';
-	for(key in res[0]) {
-	s += '<th>'+key;
-	};
-	
-	res.forEach(function(row){
-	s += '<tr>';
-	for(key in row) {
-	s += '<td>'+(typeof row[key] == 'undefined'?'':row[key]);
-	};
-	});
-	s += '</table>';
-	return s;
-}
+var tableCreate = function () {
+  function valconcat(vals, tagName) {
+    if (vals.length === 0) return '';
+    var open = '<'+tagName+'>';
+    return open + vals.join(open);
+  }
+  return function (columns, values){
+    var tbl  = document.createElement('table');
+	tbl.border = 1;
+	tbl.setAttribute('style', "border-collapse: collapse; margin-top:1px; margin-bottom:1px;");
+    var html = '<thead>' + valconcat(columns, 'th') + '</thead>';
+    var rows = values.map(function(v){ return valconcat(v, 'td'); });
+    html += '<tbody>' + valconcat(rows, 'tr') + '</tbody>';
+	  tbl.innerHTML = html;
+    return tbl;
+  }
+}();
 
 // Execute the commands when the button is clicked
 function execEditorContents () {
@@ -940,7 +928,7 @@ function toc(msg) {
 }
 
 // Add syntax highlihjting to the textarea
-editor = CodeMirror.fromTextArea(commandsElm, {
+var editor = CodeMirror.fromTextArea(commandsElm, {
 	mode: "text/x-sql",
     indentWithTabs: true,
     smartIndent: true,
@@ -950,25 +938,25 @@ editor = CodeMirror.fromTextArea(commandsElm, {
 	viewportMargin: Infinity,
 	extraKeys: {"Ctrl-Space": "autocomplete"}
 });
+var cm = document.getElementsByClassName("CodeMirror")[0];
+cm.addEventListener('mousedown', consumeEvent);
+cm.addEventListener('mouseup', consumeEvent);
 </script>
 <script>
             var mydragg = function(){
                 return {
                     move : function(divid,xpos,ypos,container){
-						if (editor.hasFocus()) {
-							mydragg.stopMoving(container);
-							return;
-						}
 						divid.style.left = xpos + 'px';
 						divid.style.top = ypos + 'px';
                     },
                     startMoving : function(divid,container,evt){
-						if (editor.hasFocus()) {
+						if (nomove) {
+							nomove = false;
 							return;
 						}
 						evt = evt || window.event;
                         var posX = evt.clientX,
-                            posY = evt.clientY,
+                        posY = evt.clientY,
                         divTop = divid.style.top,
                         divLeft = divid.style.left,
                         eWi = parseInt(divid.style.width),
@@ -1035,7 +1023,9 @@ window.addEventListener('keydown', function keydown(evt) {
 		}
 	}
 });
+
         </script>
 
   </body>
 </html>
+

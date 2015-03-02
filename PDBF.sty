@@ -11,110 +11,183 @@
 \RequirePackage{graphicx}
 \RequirePackage{fp}
 \RequirePackage{xstring}
+
+\newcounter{visual}
 \newcounter{overlay}
+
+\newwrite\tempfile
+\immediate\openout\tempfile=config.json
+\immediate\write\tempfile{[}
+
 \AtBeginDocument{
 	\newwrite\temp
 	\immediate\openout\temp=dim.json
 	\immediate\write\temp{\@charlb "width": "\number\paperwidth",}
 	\immediate\write\temp{"height": "\number\paperheight" \@charrb}
 	\immediate\closeout\temp
-	\newwrite\tempfile
-	\immediate\openout\tempfile=config.json
-	\immediate\write\tempfile{[}
 }
+
 \AtEndDocument{
 	\immediate\write\tempfile{]}
 	\immediate\closeout\tempfile
 }
-\newcommand\pdbf@save[1]{%
+
+\DeclareRobustCommand\pdbf@save[1]{%
     \begingroup
       \zref@localaddprops{savepos}{abspage}%
       \zsavepos{#1}%
     \endgroup
 }
-\newcommand\lineChart[7]{%
+
+\DeclareRobustCommand\lineChart[7]{%
 	{\fontsize{5pt}{1sp}\selectfont%
-		% Increment overlay counter
+		\stepcounter{visual}%
 		\stepcounter{overlay}%
 		\setlength\tabcolsep{1sp}%
 		% Place Image
 		\begin{tabular}{lll}%
-		\pdbf@save{Overlay\arabic{overlay}1}&&\\%
-		\IfFileExists{Overlay\arabic{overlay}.png}{%
-	    		&\includegraphics[width=#1, height=#2]{Overlay\arabic{overlay}.png}&\\%
+		\pdbf@save{Overlay\arabic{visual}1}&&\\%
+		\IfFileExists{Overlay\arabic{visual}.png}{%
+	    		&\includegraphics[width=#1, height=#2]{Overlay\arabic{visual}.png}&\\%
 		}{%
-	    		&\includegraphics[width=#1, height=#2]{dummy.png}&\\%
+	    		&\includegraphics[width=#1, height=#2]{out/web/dummy.png}&\\%
 		}%
-		&&\zsavepos{Overlay\arabic{overlay}2}\\%
+		&&\zsavepos{Overlay\arabic{visual}2}\\%
 		\end{tabular}%
 		% Write part of config.json
+		\FPdiv\r@xa{\zposx{Overlay\arabic{visual}1}}{\number\paperwidth}%
+		\FPdiv\r@xb{\zposx{Overlay\arabic{visual}2}}{\number\paperwidth}%
+		\FPdiv\r@ya{\zposy{Overlay\arabic{visual}1}}{\number\paperheight}%
+		\FPdiv\r@yb{\zposy{Overlay\arabic{visual}2}}{\number\paperheight}%
+		\StrSubstitute{#7}{"}{\@backslashchar"}[\pdbf@options]%
+		\StrSubstitute{#4}{"}{\@backslashchar"}[\pdbf@yunitname]%
+		\StrSubstitute{#5}{"}{\@backslashchar"}[\pdbf@xunitname]%
+		\StrSubstitute{#3}{"}{'}[\pdbf@query]%
 		\ifnum \value{overlay} > 1%
 			\immediate\write\tempfile{,\@charlb}%
 		\else%
 			\immediate\write\tempfile{\@charlb}%
 		\fi%
-		\FPdiv\r@xa{\zposx{Overlay\arabic{overlay}1}}{\number\paperwidth}%
-		\FPdiv\r@xb{\zposx{Overlay\arabic{overlay}2}}{\number\paperwidth}%
-		\FPdiv\r@ya{\zposy{Overlay\arabic{overlay}1}}{\number\paperheight}%
-		\FPdiv\r@yb{\zposy{Overlay\arabic{overlay}2}}{\number\paperheight}%
-		\StrSubstitute{#7}{"}{'}[\pdbf@options]%
-		\StrSubstitute{#3}{"}{'}[\pdbf@query]%
-		\immediate\write\tempfile{\space\space\space\space"name": "Overlay\arabic{overlay}",}%
+		\immediate\write\tempfile{\space\space\space\space"name": "Overlay\arabic{visual}",}%
 		\immediate\write\tempfile{\space\space\space\space"type": \@charlb}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.common.LineChart",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"logScale": #6,}%
-		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xUnitName": "#5",}%
-		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yUnitName": "#4",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xUnitName": "\pdbf@xunitname",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yUnitName": "\pdbf@yunitname",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"query": "\pdbf@query",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"options": "{\pdbf@options}",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x1": \r@xa,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x2": \r@xb,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y1": \r@ya,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y2": \r@yb,}%
-		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"page": \zref@extract{Overlay\arabic{overlay}1}{abspage}}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"page": \zref@extract{Overlay\arabic{visual}1}{abspage}}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\@charrb}%
 		\immediate\write\tempfile{\space\space\space\space\@charrb}%
 		\immediate\write\tempfile{\@charrb}%
 	}%
 }
 
-\newcommand\sql[2]{%
+\DeclareRobustCommand\sql[2]{%
 	\edef\pdbf@fontsave{\f@size}%
 	{\fontsize{5pt}{1sp}\selectfont%
-		% Increment overlay counter
+		\stepcounter{visual}%
 		\stepcounter{overlay}%
 		\setlength\tabcolsep{1sp}%
 		\begin{tabular}[t]{lll}%
-		\pdbf@save{Overlay\arabic{overlay}1}&{\color{blue} \fontsize{\pdbf@fontsave}{1sp}\selectfont #1}&\\%
-		&&\zsavepos{Overlay\arabic{overlay}2}\\%
+		\pdbf@save{Overlay\arabic{visual}1}&{\color{blue} \fontsize{\pdbf@fontsave}{1sp}\selectfont #1}&\\%
+		&&\zsavepos{Overlay\arabic{visual}2}\\%
 		\end{tabular}%
 		% Write part of config.json
+		\StrSubstitute{#2}{"}{\@backslashchar"}[\pdbf@query]%
+		\FPdiv\r@xa{\zposx{Overlay\arabic{visual}1}}{\number\paperwidth}%
+		\FPdiv\r@xb{\zposx{Overlay\arabic{visual}2}}{\number\paperwidth}%
+		\FPmul\r@tmp{65536}{\pdbf@fontsave}%
+		\FPadd\r@tmpa{\zposy{Overlay\arabic{visual}1}}{\r@tmp}%
+		\FPdiv\r@ya{\r@tmpa}{\number\paperheight}%
+		\FPdiv\r@yb{\zposy{Overlay\arabic{visual}2}}{\number\paperheight}%
 		\ifnum \value{overlay} > 1%
 			\immediate\write\tempfile{,\@charlb}%
 		\else%
 			\immediate\write\tempfile{\@charlb}%
 		\fi%
-		\FPdiv\r@xa{\zposx{Overlay\arabic{overlay}1}}{\number\paperwidth}%
-		\FPdiv\r@xb{\zposx{Overlay\arabic{overlay}2}}{\number\paperwidth}%
-		\FPmul\r@tmp{65536}{\pdbf@fontsave}%
-		\FPadd\r@tmpa{\zposy{Overlay\arabic{overlay}1}}{\r@tmp}%
-		\FPdiv\r@ya{\r@tmpa}{\number\paperheight}%
-		\FPdiv\r@yb{\zposy{Overlay\arabic{overlay}2}}{\number\paperheight}%
-		\immediate\write\tempfile{\space\space\space\space"name": "Overlay\arabic{overlay}",}%
+		\immediate\write\tempfile{\space\space\space\space"name": "Overlay\arabic{visual}",}%
 		\immediate\write\tempfile{\space\space\space\space"type": \@charlb}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.common.Text",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}%
-		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"query": "#2",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"query": "\pdbf@query",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x1": \r@xa,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x2": \r@xb,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y1": \r@ya,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y2": \r@yb,}%
-		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"page": \zref@extract{Overlay\arabic{overlay}1}{abspage}}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"page": \zref@extract{Overlay\arabic{visual}1}{abspage}}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\@charrb}%
 		\immediate\write\tempfile{\space\space\space\space\@charrb}%
 		\immediate\write\tempfile{\@charrb}%
 	}%
+}
+	
+\DeclareRobustCommand\DBSQLText[1]{%
+	\stepcounter{overlay}%
+	\StrSubstitute{#1}{"}{\@backslashchar"}[\pdbf@value]%
+	\ifnum \value{overlay} > 1%
+		\immediate\write\tempfile{,\@charlb}%
+	\else%
+		\immediate\write\tempfile{\@charlb}%
+	\fi%
+	\immediate\write\tempfile{\space\space\space\space"name": "Database",}%
+	\immediate\write\tempfile{\space\space\space\space"type": \@charlb}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.common.Database",}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"type": 1,}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"value1": "\pdbf@value"}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\@charrb}%
+	\immediate\write\tempfile{\space\space\space\space\@charrb}%
+	\immediate\write\tempfile{\@charrb}%
+}
+
+\DeclareRobustCommand\DBSQLFile[1]{%
+	\stepcounter{overlay}%
+	\StrSubstitute{#1}{"}{\@backslashchar"}[\pdbf@value]%
+	\ifnum \value{overlay} > 1%
+		\immediate\write\tempfile{,\@charlb}%
+	\else%
+		\immediate\write\tempfile{\@charlb}%
+	\fi%
+	\immediate\write\tempfile{\space\space\space\space"name": "Database",}%
+	\immediate\write\tempfile{\space\space\space\space"type": \@charlb}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.common.Database",}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"type": 2,}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"value1": "\pdbf@value"}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\@charrb}%
+	\immediate\write\tempfile{\space\space\space\space\@charrb}%
+	\immediate\write\tempfile{\@charrb}%
+}
+
+\DeclareRobustCommand\DBSQLJDBC[4]{%
+	\stepcounter{overlay}%
+	\StrSubstitute{#1}{"}{\@backslashchar"}[\pdbf@valueA]%
+	\StrSubstitute{#2}{"}{\@backslashchar"}[\pdbf@valueB]%
+	\StrSubstitute{#3}{"}{\@backslashchar"}[\pdbf@valueC]%
+	\StrSubstitute{#4}{"}{\@backslashchar"}[\pdbf@valueD]%
+	\ifnum \value{overlay} > 1%
+		\immediate\write\tempfile{,\@charlb}%
+	\else%
+		\immediate\write\tempfile{\@charlb}%
+	\fi%
+	\immediate\write\tempfile{\space\space\space\space"name": "Database",}%
+	\immediate\write\tempfile{\space\space\space\space"type": \@charlb}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.common.Database",}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"type": 3,}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"value1": "\pdbf@valueA",}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"value2": "\pdbf@valueB",}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"value3": "\pdbf@valueC",}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"value4": "\pdbf@valueD"}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\@charrb}%
+	\immediate\write\tempfile{\space\space\space\space\@charrb}%
+	\immediate\write\tempfile{\@charrb}%
 }
 
 \endinput
