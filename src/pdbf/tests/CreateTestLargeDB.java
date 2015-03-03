@@ -1,4 +1,4 @@
-package pdbf.latex;
+package pdbf.tests;
 
 
 import java.io.File;
