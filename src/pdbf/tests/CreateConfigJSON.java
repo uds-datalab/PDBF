@@ -1,10 +1,7 @@
 package pdbf.tests;
 
-
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Random;
-
 import org.apache.commons.io.FileUtils;
 
 import pdbf.common.LineChart;
@@ -17,7 +14,7 @@ import pdbf.common.VisualizationTypeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public class CreateTestLargeDB {
+public class CreateConfigJSON {
 
     public static void main(String[] args) {
 	GsonBuilder builder = new GsonBuilder();
@@ -59,17 +56,6 @@ public class CreateTestLargeDB {
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
-	
-	try {
-	    StringBuffer sb = new StringBuffer();
-	    Random r = new Random(System.currentTimeMillis());
-	    sb.append("CREATE TABLE data1 (Datum DATE, Temperatur INTEGER); CREATE TABLE data2 (Zahl1 INTEGER, Zahl2 INTEGER, strA VARCHAR, strB VARCHAR, strC VARCHAR); INSERT INTO data1 VALUES ('2008/05/07', 75), ('2008/05/08', 70), ('2008/05/09', 80); CREATE TABLE test (col1 INTEGER, col2 FLOAT); INSERT INTO test VALUES (1,111.1), (2,222.1);");
-	    for (int i = 0; i < 5000; ++i) {
-		sb.append("INSERT INTO data2 VALUES ("+i+","+r.nextInt()+",\""+r.nextInt()+"\",\""+r.nextInt()+"\",\""+r.nextInt()+"\");");
-	    }
-	    FileUtils.writeStringToFile(new File("db.sql"), sb.toString(), Tools.utf8);
-	} catch (Exception e) {
-	    e.printStackTrace();
-	}
     }
+    
 }

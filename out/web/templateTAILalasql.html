@@ -830,6 +830,7 @@ function display(json, page) {
 			for (key in results[0]) {
 				columns[columns.length] = replaceAll(key, '_', ' ');
 			}
+			var nodate = false;
 			for (var i=0; i<results.length; i++) {
 				var cur = results[i];
 				var val = [];
@@ -837,13 +838,18 @@ function display(json, page) {
 					if (typeof(cur[key]) == "string") {
 						var fail = true;
 						var tmp;
-						try {
-							tmp = new Date(replaceAll(cur[key], "-", "/"));
-							if (isValidDate(tmp)) {
-								val[val.length] = tmp;
-								fail = false;
+						if (!nodate) {
+							try {
+								tmp = new Date(replaceAll(cur[key], "-", "/"));
+								if (isValidDate(tmp)) {
+									val[val.length] = tmp;
+									fail = false;
+								} else {
+									nodate = true;
+								}
+							} catch (e) {
+								nodate = true;
 							}
-						} catch (e) {
 						}
 						if (fail) {
 							try {
