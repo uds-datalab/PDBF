@@ -2,44 +2,48 @@ package pdbf.latex;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.google.gson.reflect.TypeToken;
 
 public class Table implements JsonSerializer<Table> {
-    ArrayList<Column> columns;
-
-    // "xcolumns":{ },
-    // "data":[ ],
-    // "inddefs":{ },
-    // "indices":{ },
-    // "uniqs":{ },
-    // "uniqdefs":{ },
-    // "defaultfns":""
+    public ArrayList<Column> columns = new ArrayList<Column>();
+    public ArrayList<Data> data = new ArrayList<Data>();
+    Emptyclass inddefs = new Emptyclass();
+    Emptyclass indices = new Emptyclass();
+    Emptyclass uniqs = new Emptyclass();
+    Emptyclass uniqdefs = new Emptyclass();
+    String defaultfns = "";
 
     @Override
     public JsonElement serialize(Table src, Type typeOfSrc, JsonSerializationContext context) {
-	Column[] columns = new Column[this.columns.size()];
-	columns = this.columns.toArray(columns);
 	JsonObject retValue = new JsonObject();
-	retValue.add("columns", context.serialize(columns));
-	JsonObject xolumns = new JsonObject();
-	for (Column c : columns) {
-	    JsonObject col = conte
-		    //TODO: check db.sql mit vielen daten (100.000)
+	Type columnListType = new TypeToken<Collection<Column>>() {}.getType();
+	retValue.add("columns", context.serialize(src.columns, columnListType));
+	JsonObject xcolumns = new JsonObject();
+	for (Column c : src.columns) {
+	    xcolumns.add(c.columnid, context.serialize(c));
 	}
-	retValue.add("xcolumns", cols);
-	retValue.addProperty("databaseid", databaseid);
-	for (int i = 0; i < tables.size(); ++i) {
-	    retValue.add(tableNames.get(i), context.serialize(tables.get(i)));
+	retValue.add("xcolumns", xcolumns);
+	JsonObject[] data = new JsonObject[src.data.size()];
+	for (int i = 0; i < src.data.size(); ++i) {
+	    JsonObject cur = new JsonObject();
+	    Data dcur = src.data.get(i);
+	    for (int j = 0; j < dcur.values.size(); ++j) {
+		cur.addProperty(src.columns.get(j).columnid, dcur.values.get(j));
+	    }
+	    data[i] = cur;
 	}
-	
-	retValue.add("indices", context.serialize(indices));
-	retValue.add("sqlCache", context.serialize(sqlCache));
-	retValue.addProperty("sqlCacheSize", sqlCacheSize);
-	retValue.addProperty("dbversion", dbversion);
+	retValue.add("data", context.serialize(data));
+	retValue.add("inddefs", context.serialize(src.inddefs));
+	retValue.add("indices", context.serialize(src.indices));
+	retValue.add("uniqs", context.serialize(src.uniqs));
+	retValue.add("uniqdefs", context.serialize(src.uniqdefs));
+	retValue.add("defaultfns", context.serialize(src.defaultfns));
 	return retValue;
     }
 }

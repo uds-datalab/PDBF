@@ -44,4 +44,4 @@ Overlay15.png
 .project
 .classpath
 .settings/
-.git/
+.git//db.json

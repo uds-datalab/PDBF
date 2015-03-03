@@ -774,13 +774,14 @@ function replaceAll(str, s, r) {
 	return str.split(s).join(r);
 }
 
-//Load db.sql
-//Create the database
+//Load the database
 tic();
 var tmp = UTF8ArrToStr(base64DecToArr(db_base64));
+var tmp2 = UTF8ArrToStr(base64DecToArr(dbjson_base64));
 toc("Base64 decode time for DB");
 tic();
-alasql.databases = JSON.parse(tmp);
+alasql.databases = JSON.parse(tmp2);
+alasql(tmp);
 toc("DB load time");
 
 //Load config.json

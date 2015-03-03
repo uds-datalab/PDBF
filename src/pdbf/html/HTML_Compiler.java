@@ -15,7 +15,8 @@ public class HTML_Compiler {
 	    String viewerTAIL = FileUtils.readFileToString(new File("out/web/templateTAILalasql.html"), Tools.utf8);
 	    viewer = viewerHEAD + 
 		    "pdf_base64 = \"" + Tools.encodeFileToBase64Binary(new File("test.pdf")) + "\";\r\n" + 
-		    "db_base64 = \"" + Tools.encodeFileToBase64Binary(new File("db.json")) + "\";\r\n" + 
+		    "db_base64 = \"" + Tools.encodeFileToBase64Binary(new File("db.sql")) + "\";\r\n" + 
+		    "dbjson_base64 = \"" + Tools.encodeFileToBase64Binary(new File("db.json")) + "\";\r\n" +
 		    "json_base64 = \"" + Tools.encodeFileToBase64Binary(new File("config.json")) + "\";\r\n" + 
 		    viewerTAIL;
 	    FileUtils.writeStringToFile(new File("out/web/viewerAlasql.html"), viewer, Tools.utf8);

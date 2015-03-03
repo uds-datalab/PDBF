@@ -10,8 +10,8 @@ import com.google.gson.JsonSerializer;
 
 public class Alasql implements JsonSerializer<Alasql> {
     String databaseid = "alasql";
-    ArrayList<Table> tables = new ArrayList<Table>();
-    ArrayList<String> tableNames = new ArrayList<String>();
+    private ArrayList<Table> tables = new ArrayList<Table>();
+    private ArrayList<String> tableNames = new ArrayList<String>();
     Emptyclass views = new Emptyclass();
     Emptyclass indices = new Emptyclass();
     Emptyclass sqlCache = new Emptyclass();
@@ -21,16 +21,23 @@ public class Alasql implements JsonSerializer<Alasql> {
     @Override
     public JsonElement serialize(Alasql src, Type typeOfSrc, JsonSerializationContext context) {
 	JsonObject retValue = new JsonObject();
-	retValue.addProperty("databaseid", databaseid);
-	for (int i = 0; i < tables.size(); ++i) {
-	    retValue.add(tableNames.get(i), context.serialize(tables.get(i)));
+	retValue.addProperty("databaseid", src.databaseid);
+	JsonObject tables = new JsonObject();
+	for (int i = 0; i < src.tables.size(); ++i) {
+	    tables.add(src.tableNames.get(i), context.serialize(src.tables.get(i)));
 	}
-	retValue.add("views", context.serialize(views));
-	retValue.add("indices", context.serialize(indices));
-	retValue.add("sqlCache", context.serialize(sqlCache));
-	retValue.addProperty("sqlCacheSize", sqlCacheSize);
-	retValue.addProperty("dbversion", dbversion);
+	retValue.add("tables", tables);
+	retValue.add("views", context.serialize(src.views));
+	retValue.add("indices", context.serialize(src.indices));
+	retValue.add("sqlCache", context.serialize(src.sqlCache));
+	retValue.addProperty("sqlCacheSize", src.sqlCacheSize);
+	retValue.addProperty("dbversion", src.dbversion);
 	return retValue;
+    }
+    
+    public void addTable(Table table, String tableName) {
+	tables.add(table);
+	tableNames.add(tableName);
     }
 
 }
