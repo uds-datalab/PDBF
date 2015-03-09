@@ -45,14 +45,14 @@ public class LaTeX_Compiler {
 	    System.exit(-1);
 	}
 
-	if (args.length != 1) {
-	    System.out.println("Usage: Java_Compiler.jar pathToPDF " + System.lineSeparator() + "Assuming that the config.json file is in the same folder");
+	if (args.length != 2) {
+	    System.out.println("Usage: Java_Compiler.jar pathToLaTeX outFile");
 	    System.exit(-1);
 	}
 	String latexPath = args[0];
 	File latex = new File(latexPath);
 	if (!latex.exists()) {
-	    System.err.println("Error: Source PDF file does not exist!");
+	    System.err.println("Error: LaTeX file does not exist!");
 	    System.exit(-1);
 	}
 
@@ -223,7 +223,7 @@ public class LaTeX_Compiler {
 		    "dim_base64 = \"" + Tools.encodeFileToBase64Binary(new File("dim.json")) + "\";\r\n" + 
 		    "json_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(o)) + "\";\r\n" + 
 		    "db_base64 = \"" + Tools.encodeFileToBase64Binary(new File("db.sql")) + "\";\r\n" +
-		    "dbjson_base64 = \"" + Tools.encodeFileToBase64Binary(new File("db.json")) + "\";\r\n" +
+		    "dbjson_base64 = \"" + Tools.escapeQuotes(new File("db.json")) + "\";\r\n" +
 		    viewerTAIL;
 	    FileUtils.writeStringToFile(new File("out/web/" + i + ".html"), viewer, Tools.utf8);
 	} catch (Exception e) {

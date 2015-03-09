@@ -1,4 +1,4 @@
-﻿	</script>
+    </script>
 
     <script src="compatibility.js"></script>
 	<script src="dygraphs.js"></script>
@@ -379,7 +379,7 @@ span.CodeMirror-selectedtext { background: none; }
   </head>
 
   <body id="container" tabindex="1">
-    <div id="outerContainer" class="loadingInProgress">
+    <div id="outerContainer" class="loadingInProgress" style="position: absolute; left:0px; top:0px;">
 
       <div id="sidebarContainer">
         <div id="toolbarSidebar">
@@ -777,7 +777,7 @@ function replaceAll(str, s, r) {
 //Load the database
 tic();
 var tmp = UTF8ArrToStr(base64DecToArr(db_base64));
-var tmp2 = UTF8ArrToStr(base64DecToArr(dbjson_base64));
+var tmp2 = dbjson_base64;
 toc("Base64 decode time for DB");
 tic();
 alasql.databases = JSON.parse(tmp2);
@@ -816,71 +816,104 @@ function display(json, page) {
 		case "pdbf.common.LineChart":
 		case "pdbf.common.BarChart":
 			try {
-			var results = alasql(json.type.I.query);
-			if (results.length == 0) {
-				alert("Query \"" + json.type.I.query + "\" returns empty result!");
-				return;
-			}
-			if (results[0] instanceof Array) {
-				alert("Query \"" + json.type.I.query + "\" contains multiple statements!");
-				return;
-			}
-			var values = [];
-			var columns = [];
-			for (key in results[0]) {
-				columns[columns.length] = replaceAll(key, '_', ' ');
-			}
-			var nodate = false;
-			for (var i=0; i<results.length; i++) {
-				var cur = results[i];
-				var val = [];
-				for(key in cur) {
-					if (typeof(cur[key]) == "string") {
-						var fail = true;
+				var results = alasql(json.type.I.query);
+				if (results.length == 0) {
+					alert("Query \"" + json.type.I.query + "\" returns empty result!");
+					return;
+				}
+				if (results[0] instanceof Array) {
+					alert("Query \"" + json.type.I.query + "\" returns multiple statements!");
+					return;
+				}
+				var values = [];
+				var columns = [];
+				for (key in results[0]) {
+					columns[columns.length] = replaceAll(key, '_', ' ');
+				}
+				
+				var curmain = results[0];
+				var count = 0;
+				for (key in curmain) {
+					++count;
+				
+					//Try to parse as Date
+					var next = false;
+					for (var i=0; i<results.length; i++) {
+						if (next) break;
+						var cur = results[i];
+						var val;
+						if (count == 1) {
+							val = [];
+						} else {
+							val = values[i];
+						}
 						var tmp;
-						if (!nodate) {
+						if (typeof(cur[key]) == "string") {
 							try {
 								tmp = new Date(replaceAll(cur[key], "-", "/"));
-								if (isValidDate(tmp)) {
-									val[val.length] = tmp;
-									fail = false;
-								} else {
-									nodate = true;
-								}
 							} catch (e) {
-								nodate = true;
+								next = true;
 							}
+						} else {
+							tmp = cur[key];
 						}
-						if (fail) {
-							try {
-								tmp = Number(cur[key]);
-								if (!isNaN(tmp)) {
-									val[val.length] = tmp;
-									fail = false;
-								}
-							} catch (e) {
-							}
+						if (isValidDate(tmp)) {
+							val[val.length] = tmp;
+						} else {
+							next = true;
 						}
-						if (fail) {
-							alert("Parsing of " + tmp + " failed!");
-							return;
-						}
-					} else {
-						val[val.length] = cur[key];
+						values[i] = val;
 					}
+					
+					//Try to parse as Number
+					if (next) {
+						next = false;
+						for (var i=0; i<results.length; i++) {
+							if (next) break;
+							var cur = results[i];
+							var val;
+							if (count == 1) {
+								val = [];
+							} else {
+								val = values[i];
+							}
+							var tmp;
+							if (typeof(cur[key]) == "string") {
+								try {
+									tmp = Number(cur[key]);
+								} catch (e) {
+									next = true;
+								}
+							} else {
+								tmp = cur[key];
+							}
+							if (!isNaN(tmp)) {
+								val[val.length] = tmp;
+							} else {
+								next = true;
+							}
+							values[i] = val;
+						}
+					}
+						
+					if (next) {
+						// No parsing method found
+						alert("Parsing of " + json.name + " failed!");
+						return;
+					}
+				
 				}
-				values[values.length] = val;
-			}
-			var options = { labels: columns, animatedZooms: true, legend: "always", logscale: json.type.I.logScale, xlabel: json.type.I.xUnitName, ylabel: json.type.I.yUnitName, labelsDivStyles: { 'text-align': 'right', 'background': 'none' } };
-			var addOpt = JSON.parse(json.type.I.options);
-			for(var key in addOpt){
-				options[key] = addOpt[key];
-			}
-			var g = new Dygraph(container, values, options );
-			style = "background: white;" + style;
-			container.setAttribute('style', style);
-			page.appendChild(container);
-			g.resize();
+				
+				var options = { labels: columns, animatedZooms: true, legend: "always", logscale: json.type.I.logScale, xlabel: json.type.I.xUnitName, ylabel: json.type.I.yUnitName, labelsDivStyles: { 'text-align': 'right', 'background': 'none' } };
+				var addOpt = JSON.parse(json.type.I.options);
+				for(var key in addOpt){
+					options[key] = addOpt[key];
+				}
+				var g = new Dygraph(container, values, options );
+				style = "background: white;" + style;
+				container.setAttribute('style', style);
+				page.appendChild(container);
+				g.resize();
 			} catch(e) {
 				alert(e);
 			}
@@ -1045,7 +1078,7 @@ cm.addEventListener('mouseup', consumeEvent);
 			
 debugmode = 0;			
 window.addEventListener('keydown', function keydown(evt) {
-	if (evt.key == "q") {
+	if (evt.keyCode == 81) { //81 == 0x51 == 'Q'
 		list = document.getElementsByClassName("overlay");
 		if (debugmode == 3) {
 			for (var i=list.length-1; i>=0; --i) {

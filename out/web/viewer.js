@@ -27,7 +27,7 @@
 
 'use strict';
 
-var DEFAULT_URL = 'test.pdf';
+var DEFAULT_URL = '';
 var DEFAULT_SCALE_DELTA = 1.1;
 var MIN_SCALE = 0.25;
 var MAX_SCALE = 10.0;
@@ -6381,9 +6381,8 @@ function webViewerInitialized() {
 
   document.getElementById('download').addEventListener('click',
     SecondaryToolbar.downloadClick.bind(SecondaryToolbar));
-
-
-PDFViewerApplication.open(base64DecToArr(pdf_base64), 0);
+	
+	PDFViewerApplication.open(base64DecToArr(pdf_base64), 0);
 
   /*if (file && file.lastIndexOf('file:', 0) === 0) {
     // file:-scheme. Load the contents in the main thread because QtWebKit

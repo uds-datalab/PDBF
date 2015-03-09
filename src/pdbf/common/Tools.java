@@ -1,6 +1,7 @@
 package pdbf.common;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
@@ -24,6 +25,12 @@ public class Tools {
 
     public static String encodeStringToBase64Binary(String string) throws UnsupportedEncodingException {
 	return Base64.encodeBase64String(string.getBytes(utf8));
+    }
+    
+    public static String escapeQuotes(File file) throws IOException {
+	String tmp = FileUtils.readFileToString(file);
+	tmp = tmp.replace("\"", "\\\"");
+	return tmp;
     }
 
 }
