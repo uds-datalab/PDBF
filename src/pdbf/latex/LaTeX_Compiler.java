@@ -71,6 +71,7 @@ public class LaTeX_Compiler {
 
 	// Read JSON
 	GsonBuilder builder = new GsonBuilder();
+	builder.disableHtmlEscaping();
 	builder.registerTypeAdapter(Visualization.class, new VisualizationTypeAdapter());
 	builder.registerTypeAdapter(Alasql.class, new Alasql());
 	builder.registerTypeAdapter(Table.class, new Table());
@@ -148,7 +149,8 @@ public class LaTeX_Compiler {
 	overlays = new Overlay[olist.size()];
 	overlays = olist.toArray(overlays);
 	try {
-	    FileUtils.writeStringToFile(new File("config.json"), gson.toJson(overlays), Tools.utf8);
+	    String json = gson.toJson(overlays);
+	    FileUtils.writeStringToFile(new File("config.json"), json, Tools.utf8);
 	} catch (IOException e1) {
 	    e1.printStackTrace();
 	}

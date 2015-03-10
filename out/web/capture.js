@@ -6,12 +6,16 @@ phantom.exit();
 
 //try {
 	var page = require('webpage').create();
+
 	page.open(system.args[1], function() {
 		var w = page.evaluate(function() {
 			return outw;
 		});
 		var h = page.evaluate(function() {
 			return outh;
+		});
+		page.evaluate(function() {
+			document.body.bgColor = 'white';
 		});
 		page.zoomFactor = 2.2;
 		page.viewportSize = {

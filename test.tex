@@ -35,13 +35,13 @@
 
 \DBSQLText{CREATE TABLE table1 (column1 INTEGER, column2 DATE, column3 FLOAT);}
 \DBSQLFile{somedb.sql}
-\DBSQLJDBC{jdbc:postgresql://localhost:5432/postgres}{postgres}{test}{testtest, pgtest}% dim_time, dim_compiler, dim_dataset, dim_implementation, dim_layout, dim_query, dim_machine, fact_experiment,
+\DBSQLJDBC{jdbc:postgresql://localhost:5432/postgres}{postgres}{test}{testtest, pgtest}% , dim_time, dim_compiler, dim_dataset, dim_implementation, dim_layout, dim_query, dim_machine, fact_experiment
 
 \begin{document}
 \maketitle
 \begin{wrapfigure}{r}{0.47\textwidth}
 { \centering %
-\lineChart{0.4\textwidth}{0.3\textwidth}{SELECT * FROM data1;}{Money (in €)}{Date}{false}{"title": "Title", "titleHeight": 25} %
+\lineChart[width=0.4\textwidth, height=0.3\textwidth, xunit=Money (in €), yunit=Date, options={"title": "Title", "titleHeight": 25}]{SELECT * FROM data1;}%
 \\ }
 \vspace{-5pt}
 \caption{Graph1}
@@ -57,7 +57,7 @@ Lorem ipsum \sql{SELECT * FROM test;}{SELECT * FROM test;} dolor sit amet, conse
 \noindent \begin{wrapfigure}{r!}{0.37\textwidth}
      \vspace{-12pt}
      { \centering %
-     \lineChart{0.3\textwidth}{0.4\textwidth}{SELECT * FROM data1 WHERE date >= '2008/05/11';}{Money (in €)}{Date}{true}{}%
+     \lineChart[width=0.3\textwidth, height=0.4\textwidth, xunit=Money (in €), yunit=Date, logscale=true]{SELECT * FROM data1 WHERE date >= '2008/05/11';}%
      \\ }
      \vspace{-5pt}
      \caption{Graph2}
@@ -69,12 +69,12 @@ Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lo
 Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.  \\[8pt]
 \begin{figure}[h]
     \centering
-    \lineChart{0.4\textwidth}{0.4\textwidth}{SELECT date, runtimeA AS engine_A, runtimeB AS engine_B FROM data2;}{Runtime (in seconds)}{Date}{false}{} \\
+    \lineChart[width=0.4\textwidth, height=0.4\textwidth, xunit=Runtime (in seconds), yunit=Date]{SELECT date, runtimeA AS engine_A, runtimeB AS engine_B FROM data2;}\\%
     \caption{Graph3}
 \end{figure}
 \begin{figure}[h]
     \centering
-    \lineChart{0.4\textwidth}{0.4\textwidth}{SELECT Zahl1, Zahl2 as some_number FROM pgtest WHERE Zahl1 > 45000;}{Number}{Row ID}{false}{} \\
+    \lineChart[width=0.4\textwidth, height=0.4\textwidth, xunit=Number, yunit=Row ID]{SELECT Zahl1, Zahl2 as some_number FROM pgtest WHERE Zahl1 > 45000;}\\%
     \caption{Graph4}
 \end{figure}
 

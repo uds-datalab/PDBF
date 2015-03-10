@@ -11,6 +11,7 @@
 \RequirePackage{graphicx}
 \RequirePackage{fp}
 \RequirePackage{xstring}
+\RequirePackage{kvsetkeys}
 
 \newcounter{visual}
 \newcounter{overlay}
@@ -32,14 +33,32 @@
 	\immediate\closeout\tempfile
 }
 
+\define@key{pdbf}{width}{\def\pdbf@width{#1}}
+\define@key{pdbf}{height}{\def\pdbf@height{#1}}
+\def\pdbf@xunitname{undefined}
+\define@key{pdbf}{xunit}[undefined]{\StrSubstitute{#1}{"}{\@backslashchar"}[\pdbf@xunitname]}
+\def\pdbf@yunitname{undefined}
+\define@key{pdbf}{yunit}[undefined]{\StrSubstitute{#1}{"}{\@backslashchar"}[\pdbf@yunitname]}
+\def\pdbf@options{{}}
+\define@key{pdbf}{options}{\StrSubstitute{#1}{"}{\@backslashchar"}[\pdbf@opt]\def\pdbf@options{{\pdbf@opt}}}
+\def\pdbf@logscale{false}
+\define@key{pdbf}{logscale}[true]{\def\pdbf@logscale{#1}}
+
 \DeclareRobustCommand\pdbf@save[1]{%
     \begingroup
       \zref@localaddprops{savepos}{abspage}%
       \zsavepos{#1}%
     \endgroup
 }
-
-\DeclareRobustCommand\lineChart[7]{%
+\def\lineChart[#1]#2{%
+	\setkeys{pdbf}{#1}%
+	\ifdefined \pdbf@width \else
+  		\errmessage{^^J ^^J Error: width value missing! ^^J}
+	\fi
+	\ifdefined \pdbf@height \else
+  		\errmessage{^^J ^^J Error: height value missing! ^^J}
+	\fi
+	\StrSubstitute{#2}{"}{'}[\pdbf@query]%
 	{\fontsize{5pt}{1sp}\selectfont%
 		\stepcounter{visual}%
 		\stepcounter{overlay}%
@@ -48,9 +67,9 @@
 		\begin{tabular}{lll}%
 		\pdbf@save{Overlay\arabic{visual}1}&&\\%
 		\IfFileExists{Overlay\arabic{visual}.png}{%
-	    		&\includegraphics[width=#1, height=#2]{Overlay\arabic{visual}.png}&\\%
+	    		&\includegraphics[width=\pdbf@width, height=\pdbf@height]{Overlay\arabic{visual}.png}&\\%
 		}{%
-	    		&\includegraphics[width=#1, height=#2]{out/web/dummy.png}&\\%
+	    		&\includegraphics[width=\pdbf@width, height=\pdbf@height]{out/web/dummy.png}&\\%
 		}%
 		&&\zsavepos{Overlay\arabic{visual}2}\\%
 		\end{tabular}%
@@ -59,10 +78,6 @@
 		\FPdiv\r@xb{\zposx{Overlay\arabic{visual}2}}{\number\paperwidth}%
 		\FPdiv\r@ya{\zposy{Overlay\arabic{visual}1}}{\number\paperheight}%
 		\FPdiv\r@yb{\zposy{Overlay\arabic{visual}2}}{\number\paperheight}%
-		\StrSubstitute{#7}{"}{\@backslashchar"}[\pdbf@options]%
-		\StrSubstitute{#4}{"}{\@backslashchar"}[\pdbf@yunitname]%
-		\StrSubstitute{#5}{"}{\@backslashchar"}[\pdbf@xunitname]%
-		\StrSubstitute{#3}{"}{'}[\pdbf@query]%
 		\ifnum \value{overlay} > 1%
 			\immediate\write\tempfile{,\@charlb}%
 		\else%
@@ -72,11 +87,11 @@
 		\immediate\write\tempfile{\space\space\space\space"type": \@charlb}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.common.LineChart",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}%
-		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"logScale": #6,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"logScale": \pdbf@logscale,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xUnitName": "\pdbf@xunitname",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yUnitName": "\pdbf@yunitname",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"query": "\pdbf@query",}%
-		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"options": "{\pdbf@options}",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"options": "\pdbf@options",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x1": \r@xa,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x2": \r@xb,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y1": \r@ya,}%
