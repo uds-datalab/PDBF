@@ -16,6 +16,15 @@
 \newcounter{visual}
 \newcounter{overlay}
 
+%JSON need double quotes. this is only needed if the package german or ngerman is included
+\def\pdbf@codesbegin{%
+	\edef\pdbf@codesend{%
+	 	\catcode`\noexpand\"\the\catcode`\"\relax
+	}
+	\catcode`\"=12
+}
+\pdbf@codesbegin
+
 \newwrite\tempfile
 \immediate\openout\tempfile=config.json
 \immediate\write\tempfile{[}
@@ -43,6 +52,10 @@
 \define@key{pdbf}{options}{\StrSubstitute{#1}{"}{\@backslashchar"}[\pdbf@opt]\def\pdbf@options{{\pdbf@opt}}}
 \def\pdbf@logscale{false}
 \define@key{pdbf}{logscale}[true]{\def\pdbf@logscale{#1}}
+\def\pdbf@quality{1.0}
+\define@key{pdbf}{quality}{\def\pdbf@quality{#1}}
+\def\pdbf@zoom{1.0}
+\define@key{pdbf}{zoom}{\def\pdbf@zoom{#1}}
 
 \DeclareRobustCommand\pdbf@save[1]{%
     \begingroup
@@ -50,15 +63,19 @@
       \zsavepos{#1}%
     \endgroup
 }
+
 \def\lineChart[#1]#2{%
+	\pdbf@codesbegin
+	\saveexpandmode
+	\noexpandarg
 	\setkeys{pdbf}{#1}%
-	\ifdefined \pdbf@width \else
-  		\errmessage{^^J ^^J Error: width value missing! ^^J}
-	\fi
-	\ifdefined \pdbf@height \else
-  		\errmessage{^^J ^^J Error: height value missing! ^^J}
-	\fi
-	\StrSubstitute{#2}{"}{'}[\pdbf@query]%
+	\ifdefined \pdbf@width \else%
+  		\errmessage{^^J ^^J Error: width value missing! ^^J}%
+	\fi%
+	\ifdefined \pdbf@height \else%
+		\errmessage{^^J ^^J Error: height value missing! ^^J}%
+	\fi%
+	\StrSubstitute{#2}{"}{\@backslashchar"}[\pdbf@query]%
 	{\fontsize{5pt}{1sp}\selectfont%
 		\stepcounter{visual}%
 		\stepcounter{overlay}%
@@ -88,10 +105,12 @@
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.common.LineChart",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"logScale": \pdbf@logscale,}%
-		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xUnitName": "\pdbf@xunitname",}%
-		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yUnitName": "\pdbf@yunitname",}%
+		\protectediwrite\tempfile{}{\space\space\space\space\space\space\space\space\space\space\space\space"xUnitName": "\pdbf@xunitname",}%
+		\protectediwrite\tempfile{}{\space\space\space\space\space\space\space\space\space\space\space\space"yUnitName": "\pdbf@yunitname",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"query": "\pdbf@query",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"options": "\pdbf@options",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"quality": \pdbf@quality,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"zoom": \pdbf@zoom,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x1": \r@xa,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x2": \r@xb,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y1": \r@ya,}%
@@ -101,6 +120,8 @@
 		\immediate\write\tempfile{\space\space\space\space\@charrb}%
 		\immediate\write\tempfile{\@charrb}%
 	}%
+	\restoreexpandmode
+	\pdbf@codesend
 }
 
 \DeclareRobustCommand\sql[2]{%
@@ -205,4 +226,5 @@
 	\immediate\write\tempfile{\@charrb}%
 }
 
+\pdbf@codesend
 \endinput

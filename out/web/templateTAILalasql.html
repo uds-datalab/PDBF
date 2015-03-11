@@ -431,10 +431,6 @@ span.CodeMirror-selectedtext { background: none; }
               <span data-l10n-id="presentation_mode_label">Presentation Mode</span>
             </button>
 
-            <button id="secondaryOpenFile" class="secondaryToolbarButton openFile visibleLargeView" title="Open File" tabindex="52" data-l10n-id="open_file">
-              <span data-l10n-id="open_file_label">Open</span>
-            </button>
-
             <button id="secondaryPrint" class="secondaryToolbarButton print visibleMediumView" title="Print" tabindex="53" data-l10n-id="print">
               <span data-l10n-id="print_label">Print</span>
             </button>
@@ -780,7 +776,9 @@ var tmp = UTF8ArrToStr(base64DecToArr(db_base64));
 var tmp2 = dbjson_base64;
 toc("Base64 decode time for DB");
 tic();
-alasql.databases = JSON.parse(tmp2);
+if (tmp2 != "") {
+	alasql.databases = JSON.parse(tmp2);
+}
 alasql(tmp);
 toc("DB load time");
 
@@ -930,9 +928,11 @@ function display(json, page) {
 	toc("Display time for " + json.name);
 }
 function overlay(pageNr) {
-  	var page = document.getElementById("pageContainer" + pageNr);
-	for (var i = 0; i < pageOverlays[pageNr].length; ++i) {
-		display(pageOverlays[pageNr][i], page)
+	if (typeof pageOverlays[pageNr] != 'undefined') {
+		var page = document.getElementById("pageContainer" + pageNr);
+		for (var i = 0; i < pageOverlays[pageNr].length; ++i) {
+			display(pageOverlays[pageNr][i], page)
+		}
 	}
 }
 
@@ -969,21 +969,55 @@ function execute(commands) {
 		tic();
 		var tmp = "Result:<br/>";
 		if (typeof(results) == 'number') {
-			tmp += "Query executed successfully." + "<br/>";
+			tmp += "Query executed successfully.<br/>";
 		} else {
-		for (var i=0; i<results.length; ++i) {
-			if (typeof(results[i]) == 'number') {
-				tmp += "Query executed successfully." + "<br/>";
-			} else if (typeof(results[i][0]) != 'undefined') {
-				tmp += tableCreate(results[i]);
-			} else {
-				tmp += tableCreate(results);
-				break;
+			for (var i=0; i<results.length; ++i) {
+				if (typeof(results[i]) == 'number') {
+					tmp += "Query executed successfully.<br/>";
+				} else if (typeof(results[i][0]) != 'undefined') {
+					tmp += '<table border="1" id="res' +i+ '" style="border-collapse: collapse; margin-top:1px; margin-bottom:2px;">'
+					tmp += tableCreate(results[i]);
+					tmp += '</table>';
+				} else {
+					tmp += '<table border="1" id="res' +i+ '" style="border-collapse: collapse; margin-top:1px; margin-bottom:2px;">'
+					tmp += tableCreate(results);
+					tmp += '</table>';
+					break;
+				}
 			}
+			if (results.length == 0) {
+				tmp += 'No rows returned';
+			}
+			outputElm.innerHTML = tmp;
 		}
-		}
-		outputElm.innerHTML = tmp;
 		toc("Displaying results");
+/*
+		TODO:
+ 		tic();
+		if (typeof(results) == 'number') {
+			outputElm.innerHTML = "Result:<br/>Query executed successfully.<br/>";
+		} else {
+			outputElm.innerHTML = 'Result:<br/>';
+			for (var i=0; i<results.length; ++i) {
+				if (typeof(results[i]) == 'number') {
+					outputElm.appendChild() = "Query executed successfully.<br/>";
+				} else if (typeof(results[i][0]) != 'undefined') {
+					outputElm.appendChild()'<table border="1" id="res' +i+ '" style="border-collapse: collapse; margin-top:1px; margin-bottom:2px;"></table>'
+					var res = document.getElementById("res" + i);
+					s[++j] = tableCreate(results[i], res);
+				} else {
+					outputElm.appendChild()'<table border="1" id="res' +i+ '" style="border-collapse: collapse; margin-top:1px; margin-bottom:2px;"></table>'
+					var res = document.getElementById("res" + i);
+					s[++j] = tableCreate(results, res);
+					break;
+				}
+			}
+			if (results.length == 0) {
+				outputElm.innerHTML = 'No rows returned';
+			}
+			tmp += s.join('');
+		}
+		toc("Displaying results"); */
 	}
 	catch(e) {
 		error(e);
@@ -992,21 +1026,28 @@ function execute(commands) {
 }
 
 function tableCreate(res) {
-   var s = '';
-    s += '<table border="1" style="border-collapse: collapse; margin-top:1px; margin-bottom:2px;">';
-	s += '<tr>';
-	for(key in res[0]) {
-	s += '<th>'+key;
-	};
-	
-	res.forEach(function(row){
-	s += '<tr>';
-	for(key in row) {
-	s += '<td>'+(typeof row[key] == 'undefined'?'':row[key]);
-	};
-	});
-	s += '</table>';
-	return s;
+	var s = [];
+	var j = -1;
+	if (res.length == 0) {
+		s[++j] = 'No rows returned';
+	} else {
+		s[++j] = '<tr>';
+		keys = [];
+		for(key in res[0]) {
+			s[++j] = '<th>';
+			s[++j] = key;
+			keys[keys.length] = key;
+		};
+		
+		res.forEach(function(row){
+			s[++j] = '<tr>';
+			for(var i=0; i<keys.length; ++i) {
+				s[++j] = '<td>';
+				s[++j] = (typeof row[keys[i]] == 'undefined' ? '' : row[keys[i]]);
+			};
+		});
+	}
+	return s.join('');
 }
 
 function execEditorContents () {
@@ -1113,4 +1154,3 @@ window.addEventListener('keydown', function keydown(evt) {
         </script>
 
   </body>
-</html>

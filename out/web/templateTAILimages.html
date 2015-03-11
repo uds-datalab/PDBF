@@ -33,7 +33,9 @@ function replaceAll(str, s, r) {
 var tmp = UTF8ArrToStr(base64DecToArr(db_base64));
 var tmp2 = dbjson_base64;
 
-alasql.databases = JSON.parse(tmp2);
+if (tmp2 != "") {
+	alasql.databases = JSON.parse(tmp2);
+}
 alasql(tmp);
 
 //Load config.json

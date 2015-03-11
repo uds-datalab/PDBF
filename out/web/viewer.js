@@ -6373,16 +6373,20 @@ function webViewerInitialized() {
   document.getElementById('presentationMode').addEventListener('click',
     SecondaryToolbar.presentationModeClick.bind(SecondaryToolbar));
 
-  document.getElementById('openFile').addEventListener('click',
-    SecondaryToolbar.openFileClick.bind(SecondaryToolbar));
-
   document.getElementById('print').addEventListener('click',
     SecondaryToolbar.printClick.bind(SecondaryToolbar));
 
   document.getElementById('download').addEventListener('click',
     SecondaryToolbar.downloadClick.bind(SecondaryToolbar));
-	
-	PDFViewerApplication.open(base64DecToArr(pdf_base64), 0);
+
+//TODO:	
+//	pageSource = document.documentElement.outerHTML;
+//	begin = pageSource.indexOf("%PDF-");
+//	end = pageSource.lastIndexOf("%%EOF");
+//	pdfstring = pageSource.substring(begin, end+5);
+//	PDFViewerApplication.open(strToUTF8Arr(pdfstring), 0);
+
+PDFViewerApplication.open(base64DecToArr(pdf_base64), 0);
 
   /*if (file && file.lastIndexOf('file:', 0) === 0) {
     // file:-scheme. Load the contents in the main thread because QtWebKit

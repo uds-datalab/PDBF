@@ -4,7 +4,7 @@ console.log('Usage: ' + system.args[0] + ' webpagefile');
 phantom.exit();
 } 
 
-//try {
+try {
 	var page = require('webpage').create();
 
 	page.open(system.args[1], function() {
@@ -17,7 +17,7 @@ phantom.exit();
 		page.evaluate(function() {
 			document.body.bgColor = 'white';
 		});
-		page.zoomFactor = 2.2;
+		page.zoomFactor = 2.0;
 		page.viewportSize = {
 			width: w,
 			height: h
@@ -30,9 +30,9 @@ phantom.exit();
 			phantom.exit();
 		}, 500);
 	});
-//} catch(e) {
-//	console.log(e);
-//	phantom.exit();
-//}
+} catch(e) {
+	console.log(e);
+	phantom.exit();
+}
 
 
