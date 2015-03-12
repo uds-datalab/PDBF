@@ -2092,7 +2092,7 @@ var PresentationMode = {
       if (!isInternalLink) {
         // Unless an internal link was clicked, advance one page.
         evt.preventDefault();
-        PDFViewerApplication.page += (evt.shiftKey ? -1 : 1);
+        //PDFViewerApplication.page += (evt.shiftKey ? -1 : 1);
       }
     }
   },

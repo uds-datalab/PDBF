@@ -9,19 +9,26 @@
 \RequirePackage{zref-user}
 \RequirePackage{xcolor}
 \RequirePackage{graphicx}
-\RequirePackage{fp}
 \RequirePackage{xstring}
 \RequirePackage{kvsetkeys}
+\RequirePackage{xparse}
 
 \newcounter{visual}
 \newcounter{overlay}
 
 %JSON need double quotes. this is only needed if the package german or ngerman is included
+% The following characters could be used in queries: # $ % ^ & _  ~ " \
 \def\pdbf@codesbegin{%
 	\edef\pdbf@codesend{%
 	 	\catcode`\noexpand\"\the\catcode`\"\relax
+	 	\catcode`\noexpand\_\the\catcode`\_\relax
+	 	\catcode`\noexpand\$\the\catcode`\$\relax
+	 	\catcode`\noexpand\~\the\catcode`\~\relax
 	}
 	\catcode`\"=12
+	\catcode`\_=12
+	\catcode`\$=12
+	\catcode`\~=12
 }
 \pdbf@codesbegin
 
@@ -42,6 +49,17 @@
 	\immediate\closeout\tempfile
 }
 
+% # $ ^ & _  ~ " \
+\begingroup\lccode`!=`\%\lowercase{\endgroup\def\pdbfPercentchar{!}}
+\begingroup\lccode`!=`\#\lowercase{\endgroup\def\pdbfHashchar{!}}
+\begingroup\lccode`!=`\$\lowercase{\endgroup\def\pdbfDollarchar{!}}
+\begingroup\lccode`!=`\^\lowercase{\endgroup\def\pdbfCaretchar{!}}
+\begingroup\lccode`!=`\&\lowercase{\endgroup\def\pdbfAndchar{!}}
+\begingroup\lccode`!=`\_\lowercase{\endgroup\def\pdbfUnderscorechar{!}}
+\begingroup\lccode`!=`\~\lowercase{\endgroup\def\pdbfTildechar{!}}
+\begingroup\lccode`!=`\\\lowercase{\endgroup\def\pdbfBackslashchar{!}}
+\def\~{\pdbfTildechar}
+
 \define@key{pdbf}{width}{\def\pdbf@width{#1}}
 \define@key{pdbf}{height}{\def\pdbf@height{#1}}
 \def\pdbf@xunitname{undefined}
@@ -55,7 +73,7 @@
 \def\pdbf@quality{1.0}
 \define@key{pdbf}{quality}{\def\pdbf@quality{#1}}
 \def\pdbf@zoom{1.0}
-\define@key{pdbf}{zoom}{\def\pdbf@zoom{#1}}
+\define@key{pdbf}{scale}{\def\pdbf@scale{#1}}
 
 \DeclareRobustCommand\pdbf@save[1]{%
     \begingroup
@@ -65,7 +83,7 @@
 }
 
 \def\lineChart[#1]#2{%
-	\pdbf@codesbegin
+	\pdbf@codesbegin%
 	\setkeys{pdbf}{#1}%
 	\ifdefined \pdbf@width \else%
   		\errmessage{^^J ^^J Error: width value missing! ^^J}%
@@ -89,10 +107,6 @@
 		&&\zsavepos{Overlay\arabic{visual}2}\\%
 		\end{tabular}%
 		% Write part of config.json
-		\FPdiv\r@xa{\zposx{Overlay\arabic{visual}1}}{\number\paperwidth}%
-		\FPdiv\r@xb{\zposx{Overlay\arabic{visual}2}}{\number\paperwidth}%
-		\FPdiv\r@ya{\zposy{Overlay\arabic{visual}1}}{\number\paperheight}%
-		\FPdiv\r@yb{\zposy{Overlay\arabic{visual}2}}{\number\paperheight}%
 		\ifnum \value{overlay} > 1%
 			\immediate\write\tempfile{,\@charlb}%
 		\else%
@@ -109,36 +123,31 @@
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"options": "\pdbf@options",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"quality": \pdbf@quality,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"zoom": \pdbf@zoom,}%
-		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x1": \r@xa,}%
-		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x2": \r@xb,}%
-		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y1": \r@ya,}%
-		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y2": \r@yb,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x1": \zposx{Overlay\arabic{visual}1},}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x2": \zposx{Overlay\arabic{visual}2},}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y1": \zposy{Overlay\arabic{visual}1},}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y2": \zposy{Overlay\arabic{visual}2},}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"page": \zref@extract{Overlay\arabic{visual}1}{abspage}}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\@charrb}%
 		\immediate\write\tempfile{\space\space\space\space\@charrb}%
 		\immediate\write\tempfile{\@charrb}%
 	}%
-	\pdbf@codesend
+	\pdbf@codesend%
 }
 
-\DeclareRobustCommand\sql[2]{%
+\def\sqlmult#1#2{%
+	\pdbf@codesbegin%
 	\edef\pdbf@fontsave{\f@size}%
 	{\fontsize{5pt}{1sp}\selectfont%
 		\stepcounter{visual}%
 		\stepcounter{overlay}%
 		\setlength\tabcolsep{1sp}%
 		\begin{tabular}[t]{lll}%
-		\pdbf@save{Overlay\arabic{visual}1}&{\color{blue} \fontsize{\pdbf@fontsave}{1sp}\selectfont #1}&\\%
+		\pdbf@save{Overlay\arabic{visual}1}&{\color{blue} \fontsize{\pdbf@fontsave}{1sp}\selectfont #1 }&\\%
 		&&\zsavepos{Overlay\arabic{visual}2}\\%
 		\end{tabular}%
 		% Write part of config.json
 		\StrSubstitute{#2}{"}{\@backslashchar"}[\pdbf@query]%
-		\FPdiv\r@xa{\zposx{Overlay\arabic{visual}1}}{\number\paperwidth}%
-		\FPdiv\r@xb{\zposx{Overlay\arabic{visual}2}}{\number\paperwidth}%
-		\FPmul\r@tmp{65536}{\pdbf@fontsave}%
-		\FPadd\r@tmpa{\zposy{Overlay\arabic{visual}1}}{\r@tmp}%
-		\FPdiv\r@ya{\r@tmpa}{\number\paperheight}%
-		\FPdiv\r@yb{\zposy{Overlay\arabic{visual}2}}{\number\paperheight}%
 		\ifnum \value{overlay} > 1%
 			\immediate\write\tempfile{,\@charlb}%
 		\else%
@@ -149,15 +158,21 @@
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.common.Text",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"query": "\pdbf@query",}%
-		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x1": \r@xa,}%
-		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x2": \r@xb,}%
-		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y1": \r@ya,}%
-		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y2": \r@yb,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x1": \zposx{Overlay\arabic{visual}1},}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x2": \zposx{Overlay\arabic{visual}2},}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y1": \zposy{Overlay\arabic{visual}1},}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y2": \zposy{Overlay\arabic{visual}2},}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"fontsize": \pdbf@fontsave,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"page": \zref@extract{Overlay\arabic{visual}1}{abspage}}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\@charrb}%
 		\immediate\write\tempfile{\space\space\space\space\@charrb}%
 		\immediate\write\tempfile{\@charrb}%
 	}%
+	\pdbf@codesend%
+}
+
+\def\sql#1{
+	\sqlmult{#1}{#1}
 }
 	
 \DeclareRobustCommand\DBSQLText[1]{%
@@ -224,4 +239,5 @@
 }
 
 \pdbf@codesend
+
 \endinput

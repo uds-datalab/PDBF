@@ -80,6 +80,19 @@ public class LaTeX_Compiler {
 	try {
 	    String json = FileUtils.readFileToString(new File("config.json"), Tools.utf8);
 	    overlays = gson.fromJson(json, Overlay[].class);
+	    //TODO: do the calculations to percent from latex
+	    
+//		\FPdiv\r@xa{\zposx{Overlay\arabic{visual}1}}{\number\paperwidth}%
+//		\FPdiv\r@xb{\zposx{Overlay\arabic{visual}2}}{\number\paperwidth}%
+//		\FPmul\r@tmp{65536}{\pdbf@fontsave}%
+//		\FPadd\r@tmpa{\zposy{Overlay\arabic{visual}1}}{\r@tmp}%
+//		\FPdiv\r@ya{\r@tmpa}{\number\paperheight}%
+//		\FPdiv\r@yb{\zposy{Overlay\arabic{visual}2}}{\number\paperheight}%
+	    
+//		\FPdiv\r@xa{\zposx{Overlay\arabic{visual}1}}{\number\paperwidth}%
+//		\FPdiv\r@xb{\zposx{Overlay\arabic{visual}2}}{\number\paperwidth}%
+//		\FPdiv\r@ya{\zposy{Overlay\arabic{visual}1}}{\number\paperheight}%
+//		\FPdiv\r@yb{\zposy{Overlay\arabic{visual}2}}{\number\paperheight}%
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
