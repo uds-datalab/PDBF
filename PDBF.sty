@@ -66,8 +66,6 @@
 
 \def\lineChart[#1]#2{%
 	\pdbf@codesbegin
-	\saveexpandmode
-	\noexpandarg
 	\setkeys{pdbf}{#1}%
 	\ifdefined \pdbf@width \else%
   		\errmessage{^^J ^^J Error: width value missing! ^^J}%
@@ -105,8 +103,8 @@
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.common.LineChart",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"logScale": \pdbf@logscale,}%
-		\protectediwrite\tempfile{}{\space\space\space\space\space\space\space\space\space\space\space\space"xUnitName": "\pdbf@xunitname",}%
-		\protectediwrite\tempfile{}{\space\space\space\space\space\space\space\space\space\space\space\space"yUnitName": "\pdbf@yunitname",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xUnitName": "\pdbf@xunitname",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yUnitName": "\pdbf@yunitname",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"query": "\pdbf@query",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"options": "\pdbf@options",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"quality": \pdbf@quality,}%
@@ -120,7 +118,6 @@
 		\immediate\write\tempfile{\space\space\space\space\@charrb}%
 		\immediate\write\tempfile{\@charrb}%
 	}%
-	\restoreexpandmode
 	\pdbf@codesend
 }
 

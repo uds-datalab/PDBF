@@ -1,0 +1,93 @@
+\documentclass{beamer}
+\usetheme{Frankfurt}
+\usepackage[ngerman]{babel}
+\usepackage{PDBF}
+%\setbeameroption{show only notes}
+
+\mdqoff
+
+\addtobeamertemplate{note page}{\setlength{\parskip}{12pt}}
+\makeatletter
+\beamertemplatenavigationsymbolsempty
+\setbeamerfont{footline}{size=\normalsize}
+\setbeamertemplate{footline}{{\par\hspace*{\fill}\vspace*{0.25cm}\insertframenumber~~~}}
+\setbeamertemplate{items}[default]
+\setbeamertemplate{sections/subsections in toc}[sections numbered]
+\setbeamertemplate{subsection in toc}{}
+\setbeamercolor{title}{fg=white,bg=red!50!green!70}
+\setbeamercolor{frametitle}{fg=white,bg=red!50!green!70}
+\setbeamercolor{subsection in toc}{fg=black}
+\setbeamercolor{section in toc}{fg=black}
+\setbeamercolor{item}{fg=black}
+\makeatother
+
+\title{Beamer and PDBF}   
+\author{
+ Patrick Bender\\
+  \texttt{s9pabend@stud.uni-saarland.de}
+  \\[5pt]
+ Christian Goldstein\\
+  \texttt{c.goldstein@goldstein-systemberatung.de}
+}
+\date{}
+
+\DBSQLText{CREATE TABLE table1 (column1 INTEGER, column2 DATE, column3 FLOAT);}
+\DBSQLFile{somedb.sql}
+\DBSQLJDBC{jdbc:postgresql://localhost:5432/postgres}{postgres}{test}{testtest, pgtest}% , dim_time, dim_compiler, dim_dataset, dim_implementation, dim_layout, dim_query, dim_machine, fact_experiment
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\vspace{-2.3cm}
+\begin{center}
+\includegraphics[scale=0.25]{C:/Users/User/Downloads/UdS-Logo.jpg}
+\end{center}
+Presenter: Patrick Bender
+\end{frame}
+\note{bla}
+
+\section{SQL Queries} 
+\subsection*{}
+\begin{frame}\frametitle{Simple Query} 
+
+\end{frame}
+\note{bla}
+
+\subsection*{}
+\begin{frame}\frametitle{Advanced Query}
+
+\end{frame}
+\note{bla}
+
+\section{Charts} 
+\subsection*{}
+\begin{frame}\frametitle{Line Chart with little data}
+\def\test{testtest}
+	{\centering
+	\lineChart[width=0.4\textwidth, height=0.3\textwidth, xunit=\test Money (in €), yunit=Date, options={"title": "Title", "titleHeight": 25}]{SELECT * FROM data1;}%
+	\\}
+\end{frame}
+\note{bla}
+
+\subsection*{}
+\begin{frame}\frametitle{Line Chart with much data}
+	{\centering
+	\lineChart[width=0.4\textwidth, height=0.4\textwidth, xunit=Number, yunit=Row ID]{SELECT Zahl1, Zahl2 as some_number FROM pgtest WHERE Zahl1 > 45000;}%
+	\\}
+\end{frame}
+\note{bla}
+
+\section*{}
+\begin{frame}
+	Thank you for your attention!
+\end{frame}
+\note{bla}
+
+\begin{frame}
+	Questions?
+\end{frame}
+\note{bla}
+
+\end{document}
+
