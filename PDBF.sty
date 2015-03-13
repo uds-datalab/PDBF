@@ -16,22 +16,6 @@
 \newcounter{visual}
 \newcounter{overlay}
 
-%JSON need double quotes. this is only needed if the package german or ngerman is included
-% The following characters could be used in queries: # $ % ^ & _  ~ " \
-\def\pdbf@codesbegin{%
-	\edef\pdbf@codesend{%
-	 	\catcode`\noexpand\"\the\catcode`\"\relax
-	 	\catcode`\noexpand\_\the\catcode`\_\relax
-	 	\catcode`\noexpand\$\the\catcode`\$\relax
-	 	\catcode`\noexpand\~\the\catcode`\~\relax
-	}
-	\catcode`\"=12
-	\catcode`\_=12
-	\catcode`\$=12
-	\catcode`\~=12
-}
-\pdbf@codesbegin
-
 \newwrite\tempfile
 \immediate\openout\tempfile=config.json
 \immediate\write\tempfile{[}
@@ -49,17 +33,6 @@
 	\immediate\closeout\tempfile
 }
 
-% # $ ^ & _  ~ " \
-\begingroup\lccode`!=`\%\lowercase{\endgroup\def\pdbfPercentchar{!}}
-\begingroup\lccode`!=`\#\lowercase{\endgroup\def\pdbfHashchar{!}}
-\begingroup\lccode`!=`\$\lowercase{\endgroup\def\pdbfDollarchar{!}}
-\begingroup\lccode`!=`\^\lowercase{\endgroup\def\pdbfCaretchar{!}}
-\begingroup\lccode`!=`\&\lowercase{\endgroup\def\pdbfAndchar{!}}
-\begingroup\lccode`!=`\_\lowercase{\endgroup\def\pdbfUnderscorechar{!}}
-\begingroup\lccode`!=`\~\lowercase{\endgroup\def\pdbfTildechar{!}}
-\begingroup\lccode`!=`\\\lowercase{\endgroup\def\pdbfBackslashchar{!}}
-\def\~{\pdbfTildechar}
-
 \define@key{pdbf}{width}{\def\pdbf@width{#1}}
 \define@key{pdbf}{height}{\def\pdbf@height{#1}}
 \def\pdbf@xunitname{undefined}
@@ -67,7 +40,8 @@
 \def\pdbf@yunitname{undefined}
 \define@key{pdbf}{yunit}[undefined]{\StrSubstitute{#1}{"}{\@backslashchar"}[\pdbf@yunitname]}
 \def\pdbf@options{{}}
-\define@key{pdbf}{options}{\StrSubstitute{#1}{"}{\@backslashchar"}[\pdbf@opt]\def\pdbf@options{{\pdbf@opt}}}
+\define@key{pdbf}{options}{\edef\pdbf@options{{#1}}}
+\define@key{pdbf}{options}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@opt]\def\pdbf@options{{\pdbf@opt}}}
 \def\pdbf@logscale{false}
 \define@key{pdbf}{logscale}[true]{\def\pdbf@logscale{#1}}
 \def\pdbf@quality{1.0}
@@ -83,7 +57,6 @@
 }
 
 \def\lineChart[#1]#2{%
-	\pdbf@codesbegin%
 	\setkeys{pdbf}{#1}%
 	\ifdefined \pdbf@width \else%
   		\errmessage{^^J ^^J Error: width value missing! ^^J}%
@@ -132,11 +105,10 @@
 		\immediate\write\tempfile{\space\space\space\space\@charrb}%
 		\immediate\write\tempfile{\@charrb}%
 	}%
-	\pdbf@codesend%
+	\relax
 }
 
 \def\sqlmult#1#2{%
-	\pdbf@codesbegin%
 	\edef\pdbf@fontsave{\f@size}%
 	{\fontsize{5pt}{1sp}\selectfont%
 		\stepcounter{visual}%
@@ -168,14 +140,13 @@
 		\immediate\write\tempfile{\space\space\space\space\@charrb}%
 		\immediate\write\tempfile{\@charrb}%
 	}%
-	\pdbf@codesend%
 }
 
 \def\sql#1{
 	\sqlmult{#1}{#1}
 }
 	
-\DeclareRobustCommand\DBSQLText[1]{%
+\def\DBSQLText#1{%
 	\stepcounter{overlay}%
 	\StrSubstitute{#1}{"}{\@backslashchar"}[\pdbf@value]%
 	\ifnum \value{overlay} > 1%
@@ -194,7 +165,7 @@
 	\immediate\write\tempfile{\@charrb}%
 }
 
-\DeclareRobustCommand\DBSQLFile[1]{%
+\def\DBSQLFile#1{%
 	\stepcounter{overlay}%
 	\StrSubstitute{#1}{"}{\@backslashchar"}[\pdbf@value]%
 	\ifnum \value{overlay} > 1%
@@ -213,7 +184,7 @@
 	\immediate\write\tempfile{\@charrb}%
 }
 
-\DeclareRobustCommand\DBSQLJDBC[4]{%
+\def\DBSQLJDBC#1#2#3#4{%
 	\stepcounter{overlay}%
 	\StrSubstitute{#1}{"}{\@backslashchar"}[\pdbf@valueA]%
 	\StrSubstitute{#2}{"}{\@backslashchar"}[\pdbf@valueB]%
@@ -237,7 +208,5 @@
 	\immediate\write\tempfile{\space\space\space\space\@charrb}%
 	\immediate\write\tempfile{\@charrb}%
 }
-
-\pdbf@codesend
 
 \endinput

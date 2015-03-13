@@ -575,7 +575,18 @@ span.CodeMirror-selectedtext { background: none; }
 
         <div id="viewerContainer" tabindex="0">
           <div id="viewer" class="pdfViewer"></div>
-		  
+		  <div id="SQLQuery" onmousedown='mydragg.startMoving(this,"container",event);' onmouseup='mydragg.stopMoving("container");' style="position:fixed; left:10px; top:40px; z-index:9; visibility:hidden; border:1px solid black; padding:10px; background:#DDDDDD; max-height:480px; max-width:600px;">
+    <label style="">SQL Query:</label>
+	<label style="position:absolute; right:15px;" onClick="document.getElementById('SQLQuery').style.visibility='hidden';">Close</label>
+    <br>
+    <textarea id="commands"></textarea>
+<button id="execute" class="button" onClick="execEditorContents();">Execute</button> 
+<label style="position:absolute; right:15px; margin-top:4px; font-size:12px;">Hint: Press Ctrl-Space for autocompletion.</label>
+
+<div id="error" class="error"></div>
+
+<div onmousedown="consumeEvent(event)"><pre id="output" style="margin-top:5px; overflow:auto; min-width:300px; min-height:100px; max-height:305px;">Results will be displayed here</pre></div>
+</div>
         </div>
 
         <div id="errorWrapper" hidden='true'>
@@ -734,19 +745,6 @@ span.CodeMirror-selectedtext { background: none; }
   </div>
 </div>
 
-<div id="SQLQuery" onmousedown='mydragg.startMoving(this,"container",event);' onmouseup='mydragg.stopMoving("container");' style="position:absolute; left:10px; top:40px; z-index:9; visibility:hidden; border:1px solid black; padding:10px; background:#DDDDDD; max-height:480px; max-width:600px;">
-    <label style="">SQL Query:</label>
-	<label style="position:absolute; right:15px;" onClick="document.getElementById('SQLQuery').style.visibility='hidden';">Close</label>
-    <br>
-    <textarea id="commands"></textarea>
-<button id="execute" class="button" onClick="execEditorContents();">Execute</button> 
-<label style="position:absolute; right:15px; margin-top:4px; font-size:12px;">Hint: Press Ctrl-Space for autocompletion.</label>
-
-<div id="error" class="error"></div>
-
-<div onmousedown="consumeEvent(event)"><pre id="output" style="margin-top:5px; overflow:auto; min-width:300px; min-height:100px; max-height:305px;">Results will be displayed here</pre></div>
-</div>
-
 <script>
 nomove = false;
 function consumeEvent(evt) {
@@ -800,7 +798,7 @@ function parse(json) {
 	pageOverlay[pageOverlay.length] = json;
 }
 function display(json, page) {
-	var zoomFactor = PDFViewerApplication.pdfViewer.location.scale / 100;
+	var zoomFactor = PDFViewerApplication.pdfViewer._currentScale;
 	tic();
 	var container = document.createElement('div');
 	container.id = json.name;
@@ -899,11 +897,20 @@ function display(json, page) {
 				
 				}
 				
-				var options = { labels: columns, animatedZooms: true, legend: "always", axisLabelFontSize:(14*zoomFactor), logscale: json.type.I.logScale, xlabel: json.type.I.xUnitName, ylabel: json.type.I.yUnitName, labelsDivStyles: { 'text-align': 'right', 'background': 'none' } };
+				var options = { labels: columns, animatedZooms: true, labelsSeparateLines: true, legend: "always", axisLabelFontSize: 14, xAxisHeight: 14, axisLabelWidth: 52, titleHeight: 18, xLabelHeight: 18, yLabelWidth: 18, logscale: json.type.I.logScale, xlabel: json.type.I.xUnitName, ylabel: json.type.I.yUnitName, labelsDivStyles: { 'text-align': 'right', 'background': 'none', 'font-size': '100%' }, axes: { x: { pixelsPerLabel: 50 }, y: { pixelsPerLabel: 30 } }, labelsSeparateLines: true };
 				var addOpt = JSON.parse(json.type.I.options);
 				for(var key in addOpt){
 					options[key] = addOpt[key];
 				}
+				options.titleHeight = options.titleHeight * zoomFactor;
+				options.axisLabelFontSize = options.axisLabelFontSize * zoomFactor;
+				options.xAxisHeight = options.xAxisHeight * zoomFactor + 12;
+				options.axisLabelWidth = options.axisLabelWidth * zoomFactor;
+				options.xLabelHeight = options.xLabelHeight * zoomFactor;
+				options.yLabelWidth = options.yLabelWidth * zoomFactor;
+				options.axes.x.pixelsPerLabel = options.axes.x.pixelsPerLabel * zoomFactor;
+				options.axes.y.pixelsPerLabel = options.axes.y.pixelsPerLabel * zoomFactor;
+				options.labelsDivStyles['font-size'] = zoomFactor*100+'%';
 				var g = new Dygraph(container, values, options );
 				style = "background: white;" + style;
 				container.setAttribute('style', style);
@@ -985,8 +992,8 @@ function execute(commands) {
 			if (results.length == 0) {
 				tmp += 'No rows returned';
 			}
-			outputElm.innerHTML = tmp;
 		}
+		outputElm.innerHTML = tmp;
 		toc("Displaying results");
 /*
 		TODO:

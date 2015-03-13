@@ -4,7 +4,7 @@ console.log('Usage: ' + system.args[0] + ' webpagefile');
 phantom.exit();
 } 
 
-try {
+//try {
 	var page = require('webpage').create();
 
 	page.open(system.args[1], function() {
@@ -30,9 +30,9 @@ try {
 			phantom.exit();
 		}, 500);
 	});
-} catch(e) {
-	console.log(e);
-	phantom.exit();
-}
+//} catch(e) {
+//	console.log(e);
+//	phantom.exit();
+//}
 
 

@@ -1,4 +1,5 @@
 \documentclass{scrartcl}
+\usepackage[ngerman]{babel}
 \usepackage{PDBF}
 \usepackage{wrapfig}
 \usepackage[a4paper,vmargin={30mm,40mm},hmargin={28mm,28mm}]{geometry}
@@ -41,7 +42,7 @@
 \maketitle
 \begin{wrapfigure}{r}{0.47\textwidth}
 { \centering %
-\lineChart[width=0.4\textwidth, height=0.3\textwidth, xunit=Money (in €), yunit=Date, options={"title": "Title", "titleHeight": 25}]{SELECT * FROM data1;}%
+\lineChart[width=0.4\textwidth, height=0.3\textwidth, xunit=Money (in €), yunit=Date, options={"title": "Title"}]{SELECT * FROM data1;}%
 \\ }
 \vspace{-5pt}
 \caption{Graph1}

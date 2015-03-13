@@ -156,11 +156,21 @@ function display(json, page) {
 				
 				}
 					
-				var options = { labels: columns, animatedZooms: true, legend: "always", logscale: json.type.I.logScale, xlabel: json.type.I.xUnitName, ylabel: json.type.I.yUnitName, labelsDivStyles: { 'text-align': 'right', 'background': 'none' } };
+				var zoomFactor = 1.25;
+				var options = { labels: columns, animatedZooms: true, labelsSeparateLines: true, legend: "always", axisLabelFontSize: 14, xAxisHeight: 14, axisLabelWidth: 52, titleHeight: 18, xLabelHeight: 18, yLabelWidth: 18, logscale: json.type.I.logScale, xlabel: json.type.I.xUnitName, ylabel: json.type.I.yUnitName, labelsDivStyles: { 'text-align': 'right', 'background': 'none', 'font-size': '100%' }, axes: { x: { pixelsPerLabel: 50 }, y: { pixelsPerLabel: 30 } }, labelsSeparateLines: true };
 				var addOpt = JSON.parse(json.type.I.options);
 				for(var key in addOpt){
 					options[key] = addOpt[key];
 				}
+				options.titleHeight = options.titleHeight * zoomFactor;
+				options.axisLabelFontSize = options.axisLabelFontSize * zoomFactor;
+				options.xAxisHeight = options.xAxisHeight * zoomFactor + 12;
+				options.axisLabelWidth = options.axisLabelWidth * zoomFactor;
+				options.xLabelHeight = options.xLabelHeight * zoomFactor;
+				options.yLabelWidth = options.yLabelWidth * zoomFactor;
+				options.axes.x.pixelsPerLabel = options.axes.x.pixelsPerLabel * zoomFactor;
+				options.axes.y.pixelsPerLabel = options.axes.y.pixelsPerLabel * zoomFactor;
+				options.labelsDivStyles['font-size'] = zoomFactor*100+'%';
 				var g = new Dygraph(container, values, options );
 				style = "background: white;" + style;
 				container.setAttribute('style', style);
