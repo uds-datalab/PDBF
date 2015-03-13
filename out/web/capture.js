@@ -17,7 +17,7 @@ try {
 		page.evaluate(function() {
 			document.body.bgColor = 'white';
 		});
-		page.zoomFactor = 2.0;
+		page.zoomFactor = 3.9;
 		page.viewportSize = {
 			width: w,
 			height: h

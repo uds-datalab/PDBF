@@ -2,7 +2,7 @@
 
 	<script src="dygraphs.js"></script>
 	<script src="diff_match_patch.js"></script>
-	<script src="alasql.min.js"></script>
+	<script src="alasql.js"></script>
 
 	<style>
 	.dygraph-label {
@@ -22,8 +22,8 @@
 //Load dim.json
 var json;
 json = JSON.parse(UTF8ArrToStr(base64DecToArr(dim_base64)));
-tmpw = json.width / 655 / 30;
-tmph = json.height / 655 / 30;
+tmpw = json.width / 655 / 15;
+tmph = json.height / 655 / 15;
 
 function replaceAll(str, s, r) {
 	return str.split(s).join(r);
