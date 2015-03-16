@@ -34,6 +34,7 @@ public class LaTeX_Compiler {
     private static ArrayList<String> cleanupfiles = new ArrayList<String>();
     private static Gson gson;
     private static String suffix;
+    private static Dimension dimOrg;
 
     public static void main(String[] args) {
 	if (OS.contains("win")) {
@@ -83,28 +84,23 @@ public class LaTeX_Compiler {
 	    String json = FileUtils.readFileToString(new File("config.json"), Tools.utf8);
 	    overlays = gson.fromJson(json, Overlay[].class);
 	    String json2 = FileUtils.readFileToString(new File("dim.json"), Tools.utf8);
-	    Dimension dim = gson.fromJson(json2, Dimension.class);
-	    //TODO: do the calculations to percent from latex
-	    //TODO: chrome not working? why?
-		for (int i = 0; i < overlays.length; ++i) {
-		    if (overlays[i].type instanceof Chart) {
-			Chart c = (Chart)overlays[i].type;
-			c.x1 = c.x1 / dim.width;
-			c.x2 = c.x2 / dim.width;
-			c.y1 = c.y1 / dim.height;
-			c.y2 = c.y2 / dim.height;
-		    }
-		    if (overlays[i].type instanceof Text) {
-			Text t = (Text)overlays[i].type;
-			t.x1 = t.x1 / dim.width;
-			t.x2 = t.x2 / dim.width;
-			t.y1 = (t.y1 + 65536 * t.fontsize) / dim.height;
-			t.y2 = t.y2 / dim.height;
-		    }
+	    dimOrg = gson.fromJson(json2, Dimension.class);
+	    for (int i = 0; i < overlays.length; ++i) {
+		if (overlays[i].type instanceof Chart) {
+		    Chart c = (Chart) overlays[i].type;
+		    c.x1 = c.x1 / dimOrg.width;
+		    c.x2 = c.x2 / dimOrg.width;
+		    c.y1 = c.y1 / dimOrg.height;
+		    c.y2 = c.y2 / dimOrg.height;
 		}
-
-	    
-
+		if (overlays[i].type instanceof Text) {
+		    Text t = (Text) overlays[i].type;
+		    t.x1 = t.x1 / dimOrg.width;
+		    t.x2 = t.x2 / dimOrg.width;
+		    t.y1 = (t.y1 + 65536 * t.fontsize) / dimOrg.height;
+		    t.y2 = t.y2 / dimOrg.height;
+		}
+	    }
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
@@ -222,7 +218,7 @@ public class LaTeX_Compiler {
 			while (rs.next()) {
 			    String[] data = new String[cols];
 			    for (int i = 1; i <= cols; ++i) {
-				data[i-1] = rs.getString(i);
+				data[i - 1] = rs.getString(i);
 			    }
 			    table.data.add(new Data(data));
 			}
@@ -240,17 +236,19 @@ public class LaTeX_Compiler {
     }
 
     private static void processChart(Overlay o, int i) {
+	Chart c = (Chart)o.type;
 	cleanupfiles.add("out/web/" + i + ".html");
 	cleanupfiles.add("" + o.name + ".png");
 	try {
+	    Dimension dim = new Dimension(dimOrg.width * c.quality, dimOrg.height * c.quality);
 	    String viewer;
 	    String viewerHEAD = FileUtils.readFileToString(new File("out/web/templateHEADimages.html"), Tools.utf8);
 	    String viewerTAIL = FileUtils.readFileToString(new File("out/web/templateTAILimages.html"), Tools.utf8);
 	    viewer = viewerHEAD + 
-		    "dim_base64 = \"" + Tools.encodeFileToBase64Binary(new File("dim.json")) + "\";\r\n" + 
+		    "dim_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(dim)) + "\";\r\n" + 
 		    "json_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(o)) + "\";\r\n" + 
-		    "db_base64 = \"" + Tools.encodeFileToBase64Binary(new File("db.sql")) + "\";\r\n" +
-		    "dbjson_base64 = \"" + Tools.escapeQuotes(new File("db.json")) + "\";\r\n" +
+		    "db_base64 = \"" + Tools.encodeFileToBase64Binary(new File("db.sql")) + "\";\r\n" + 
+		    "dbjson_base64 = \"" + Tools.escapeQuotes(new File("db.json")) + "\";\r\n" + 
 		    viewerTAIL;
 	    FileUtils.writeStringToFile(new File("out/web/" + i + ".html"), viewer, Tools.utf8);
 	} catch (Exception e) {

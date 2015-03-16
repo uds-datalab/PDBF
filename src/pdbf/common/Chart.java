@@ -5,20 +5,19 @@ public abstract class Chart extends Visualization {
     public String xUnitName;
     public String yUnitName;
     public String options;
+    public String legendpos;
+    public double zoom;
+    public double quality;
 
-    public Chart(String query, double x1, double x2, double y1, double y2, long page, boolean logScale, String xUnitName, String yUnitName, String options) {
+    public Chart(String query, double x1, double x2, double y1, double y2, long page, boolean logScale, String xUnitName, String yUnitName, double zoom, double quality, String legendpos, String options) {
 	super(query, x1, x2, y1, y2, page);
 	this.logScale = logScale;
 	this.xUnitName = xUnitName;
 	this.yUnitName = yUnitName;
 	this.options = options;
-    }
-
-    public Chart(String query, double x1, double x2, double y1, double y2, long page, boolean logScale, String xUnitName, String yUnitName) {
-	super(query, x1, x2, y1, y2, page);
-	this.logScale = logScale;
-	this.xUnitName = xUnitName;
-	this.yUnitName = yUnitName;
+	this.zoom = zoom;
+	this.quality = quality;
+	this.legendpos = legendpos;
     }
 
     /*

@@ -28,7 +28,7 @@ public class CreateConfigJSON {
 
 	LineChart chart = new LineChart("SELECT * FROM data2 WHERE Zahl2 > 0;",
 		0.5150353982300885, 0.8407079646017699, 0.2496875, 0.3601875,
-		1, false, "Zahl1", "Zahl2");
+		1, false, "Zahl1", "Zahl2", 1.0, 1.0, "topright", "{}");
 	Overlay cur = new Overlay("Tabelle1", chart);
 	overlays.add(cur);
 

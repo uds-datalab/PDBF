@@ -10,7 +10,6 @@
 \RequirePackage{xcolor}
 \RequirePackage{graphicx}
 \RequirePackage{xstring}
-\RequirePackage{kvsetkeys}
 \RequirePackage{xparse}
 
 \newcounter{visual}
@@ -35,19 +34,21 @@
 
 \define@key{pdbf}{width}{\def\pdbf@width{#1}}
 \define@key{pdbf}{height}{\def\pdbf@height{#1}}
-\def\pdbf@xunitname{undefined}
-\define@key{pdbf}{xunit}[undefined]{\StrSubstitute{#1}{"}{\@backslashchar"}[\pdbf@xunitname]}
-\def\pdbf@yunitname{undefined}
-\define@key{pdbf}{yunit}[undefined]{\StrSubstitute{#1}{"}{\@backslashchar"}[\pdbf@yunitname]}
+\def\pdbf@xunitname{}
+\define@key{pdbf}{xunit}{\StrSubstitute{#1}{"}{\@backslashchar"}[\pdbf@xunitname]}
+\def\pdbf@yunitname{}
+\define@key{pdbf}{yunit}{\StrSubstitute{#1}{"}{\@backslashchar"}[\pdbf@yunitname]}
 \def\pdbf@options{{}}
 \define@key{pdbf}{options}{\edef\pdbf@options{{#1}}}
 \define@key{pdbf}{options}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@opt]\def\pdbf@options{{\pdbf@opt}}}
-\def\pdbf@logscale{false}
-\define@key{pdbf}{logscale}[true]{\def\pdbf@logscale{#1}}
-\def\pdbf@quality{1.0}
-\define@key{pdbf}{quality}{\def\pdbf@quality{#1}}
-\def\pdbf@zoom{1.0}
-\define@key{pdbf}{scale}{\def\pdbf@scale{#1}}
+\def\pdbfLogscale{false}
+\define@key{pdbf}{logscale}[true]{\def\pdbfLogscale{#1}}
+\def\pdbfQuality{1.0}
+\define@key{pdbf}{quality}{\def\pdbfQuality{#1}}
+\def\pdbfScale{1.0}
+\define@key{pdbf}{scale}{\def\pdbfScale{#1}}
+\def\pdbfLegendpos{topright}
+\define@key{pdbf}{legendpos}{\def\pdbfLegendpos{#1}}
 
 \DeclareRobustCommand\pdbf@save[1]{%
     \begingroup
@@ -89,13 +90,14 @@
 		\immediate\write\tempfile{\space\space\space\space"type": \@charlb}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.common.LineChart",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}%
-		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"logScale": \pdbf@logscale,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"logScale": \pdbfLogscale,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xUnitName": "\pdbf@xunitname",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yUnitName": "\pdbf@yunitname",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"query": "\pdbf@query",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"options": "\pdbf@options",}%
-		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"quality": \pdbf@quality,}%
-		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"zoom": \pdbf@zoom,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"quality": \pdbfQuality,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"zoom": \pdbfScale,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"legendpos": "\pdbfLegendpos",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x1": \zposx{Overlay\arabic{visual}1},}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x2": \zposx{Overlay\arabic{visual}2},}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y1": \zposy{Overlay\arabic{visual}1},}%

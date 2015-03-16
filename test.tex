@@ -1,5 +1,4 @@
-\documentclass{scrartcl}
-\usepackage[ngerman]{babel}
+\documentclass[10pt]{scrartcl}
 \usepackage{PDBF}
 \usepackage{wrapfig}
 \usepackage[a4paper,vmargin={30mm,40mm},hmargin={28mm,28mm}]{geometry}
@@ -36,13 +35,15 @@
 
 \DBSQLText{CREATE TABLE table1 (column1 INTEGER, column2 DATE, column3 FLOAT);}
 \DBSQLFile{somedb.sql}
-%\DBSQLJDBC{jdbc:postgresql://localhost:5432/postgres}{postgres}{test}{testtest, pgtest}% , dim_time, dim_compiler, dim_dataset, dim_implementation, dim_layout, dim_query, dim_machine, fact_experiment
+\DBSQLJDBC{jdbc:postgresql://localhost:5432/postgres}{postgres}{test}{testtest, pgtest, dim_time, dim_compiler, dim_dataset, dim_implementation, dim_layout, dim_query, dim_machine, fact_experiment}%
+
+\renewcommand\pdbfScale{0.833}
 
 \begin{document}
 \maketitle
 \begin{wrapfigure}{r}{0.47\textwidth}
 { \centering %
-\lineChart[width=0.4\textwidth, height=0.3\textwidth, xunit=Money (in €), yunit=Date, options={"title": "Title"}]{SELECT * FROM data1;}%
+\lineChart[width=0.4\textwidth, height=0.3\textwidth,  options={"title": "Title"}]{SELECT * FROM data1;}%
 \\ }
 \vspace{-5pt}
 \caption{Graph1}
@@ -58,7 +59,7 @@ Lorem ipsum \sql{SELECT * FROM test;} dolor sit amet, consetetur sadipscing elit
 \noindent \begin{wrapfigure}{r!}{0.37\textwidth}
      \vspace{-12pt}
      { \centering %
-     ~%\lineChart[width=0.3\textwidth, height=0.4\textwidth, xunit=Money (in €), yunit=Date, logscale=true]{SELECT * FROM data1 WHERE date >= '2008/05/11';}%
+     \lineChart[width=0.3\textwidth, height=0.4\textwidth, xunit=Date, yunit=Money (in €), logscale=true]{SELECT * FROM data1 WHERE date >= '2008/05/11';}%
      \\ }
      \vspace{-5pt}
      \caption{Graph2}
@@ -70,12 +71,12 @@ Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lo
 Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.  \\[8pt]
 \begin{figure}[h]
     \centering
-    ~%\lineChart[width=0.4\textwidth, height=0.4\textwidth, xunit=Runtime (in seconds), yunit=Date]{SELECT date, runtimeA AS engine_A, runtimeB AS engine_B FROM data2;}\\%
+    \lineChart[width=0.4\textwidth, height=0.4\textwidth, xunit=Date, yunit={Runtime [in sec]}]{SELECT date, runtimeA AS engine_A, runtimeB AS engine_B FROM data2;}\\%
     \caption{Graph3}
 \end{figure}
 \begin{figure}[h]
     \centering
-    ~%\lineChart[width=0.4\textwidth, height=0.4\textwidth, xunit=Number, yunit=Row ID]{SELECT Zahl1, Zahl2 as some_number FROM pgtest WHERE Zahl1 > 45000;}\\%
+    \lineChart[width=1.0\textwidth, height=0.5\textwidth, xunit=Row ID, yunit=Number]{SELECT Zahl1, Zahl2 as some_number FROM pgtest;}\\%
     \caption{Graph4}
 \end{figure}
 

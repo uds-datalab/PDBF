@@ -17,7 +17,6 @@ phantom.exit();
 		page.evaluate(function() {
 			document.body.bgColor = 'white';
 		});
-		page.zoomFactor = 3.9;
 		page.viewportSize = {
 			width: w,
 			height: h
@@ -26,7 +25,7 @@ phantom.exit();
 			var name = page.evaluate(function() {
 				return json.name;
 			});
-			page.render(name +'.png');
+			page.render(name +'.png', {format: 'png', quality: '100'});
 			phantom.exit();
 		}, 500);
 	});
