@@ -1,0 +1,14 @@
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdftex 2015.2.23)  17 MAR 2015 11:50
+entering extended mode
+**C:/workspaceAndroid/PDBF/PDBF.sty
+(C:/workspaceAndroid/PDBF/PDBF.sty
+! Undefined control sequence.
+l.4 \NeedsTeXFormat
+                   {LaTeX2e}
+? 
+! Emergency stop.
+l.4 \NeedsTeXFormat
+                   {LaTeX2e}
+End of file on the terminal!
+
+!  ==> Fatal error occurred, no output PDF file produced!

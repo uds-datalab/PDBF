@@ -2,6 +2,7 @@ package pdbf.common;
 
 public abstract class Visualization {
     public String query;
+    public String queryB;
     public double x1;
     public double x2;
     public double y1;

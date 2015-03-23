@@ -15,8 +15,9 @@ public class HTML_Compiler {
     public static void main(String[] args) {
 	System.out.println("Compiling HTML...");
 	
-	String pdfname = args[0].substring(0, args[0].length()-4) + ".pdf";
-	String outfile = args[1];
+	String basename = args[0].substring(0, args[0].length()-4);
+	String pdfname = basename + ".pdf";
+	String outfile = "out/web/" + basename + ".html";
 		
 	try {
 	    String viewer;

@@ -32,6 +32,7 @@
 	\immediate\closeout\tempfile
 }
 
+%Common
 \define@key{pdbf}{width}{\def\pdbf@width{#1}}
 \define@key{pdbf}{height}{\def\pdbf@height{#1}}
 \def\pdbf@xunitname{}
@@ -39,16 +40,27 @@
 \def\pdbf@yunitname{}
 \define@key{pdbf}{yunit}{\StrSubstitute{#1}{"}{\@backslashchar"}[\pdbf@yunitname]}
 \def\pdbf@options{{}}
-\define@key{pdbf}{options}{\edef\pdbf@options{{#1}}}
 \define@key{pdbf}{options}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@opt]\def\pdbf@options{{\pdbf@opt}}}
-\def\pdbfLogscale{false}
-\define@key{pdbf}{logscale}[true]{\def\pdbfLogscale{#1}}
 \def\pdbfQuality{1.0}
 \define@key{pdbf}{quality}{\def\pdbfQuality{#1}}
 \def\pdbfScale{1.0}
 \define@key{pdbf}{scale}{\def\pdbfScale{#1}}
+
+%LineChart und BarChart
+\def\pdbfLogscale{false}
+\define@key{pdbf}{logscale}[true]{\def\pdbfLogscale{#1}}
 \def\pdbfLegendpos{topright}
 \define@key{pdbf}{legendpos}{\def\pdbfLegendpos{#1}}
+
+%BarChart
+\def\pdbf@overlap{-1}
+\define@key{pdbf}{overlap}[2]{\def\pdbf@overlap{#1}}
+
+%Pivot
+\def\pdbf@rows{}
+\define@key{pdbf}{rows}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@rows]}
+\def\pdbf@cols{}
+\define@key{pdbf}{cols}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@cols]}
 
 \DeclareRobustCommand\pdbf@save[1]{%
     \begingroup
@@ -57,7 +69,7 @@
     \endgroup
 }
 
-\def\lineChart[#1]#2{%
+\def\pdbf@chart[#1]#2#3#4{%
 	\setkeys{pdbf}{#1}%
 	\ifdefined \pdbf@width \else%
   		\errmessage{^^J ^^J Error: width value missing! ^^J}%
@@ -66,6 +78,7 @@
 		\errmessage{^^J ^^J Error: height value missing! ^^J}%
 	\fi%
 	\StrSubstitute{#2}{"}{\@backslashchar"}[\pdbf@query]%
+	\StrSubstitute{#3}{"}{\@backslashchar"}[\pdbf@queryB]%
 	{\fontsize{5pt}{1sp}\selectfont%
 		\stepcounter{visual}%
 		\stepcounter{overlay}%
@@ -88,16 +101,20 @@
 		\fi%
 		\immediate\write\tempfile{\space\space\space\space"name": "Overlay\arabic{visual}",}%
 		\immediate\write\tempfile{\space\space\space\space"type": \@charlb}%
-		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.common.LineChart",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.common.#4",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"logScale": \pdbfLogscale,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xUnitName": "\pdbf@xunitname",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yUnitName": "\pdbf@yunitname",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"query": "\pdbf@query",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"queryB": "\pdbf@queryB",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"options": "\pdbf@options",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"quality": \pdbfQuality,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"zoom": \pdbfScale,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"overlap": \pdbf@overlap,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"legendpos": "\pdbfLegendpos",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"cols": "\pdbf@cols",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"rows": "\pdbf@rows",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x1": \zposx{Overlay\arabic{visual}1},}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x2": \zposx{Overlay\arabic{visual}2},}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y1": \zposy{Overlay\arabic{visual}1},}%
@@ -108,6 +125,18 @@
 		\immediate\write\tempfile{\@charrb}%
 	}%
 	\relax
+}
+
+\def\lineChart[#1]#2{
+	\pdbf@chart[#1]{#2}{}{LineChart}
+}
+
+\def\barChart[#1]#2{
+	\pdbf@chart[#1]{#2}{}{BarChart}
+}
+
+\def\pivotTable[#1]#2#3{
+	\pdbf@chart[#1]{#2}{#3}{Pivot}
 }
 
 \def\sqlmult#1#2{%

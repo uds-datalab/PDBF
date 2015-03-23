@@ -48,8 +48,8 @@ public class LaTeX_Compiler {
 	    System.exit(-1);
 	}
 
-	if (args.length != 2) {
-	    System.out.println("Usage: Java_Compiler.jar pathToLaTeX outFile");
+	if (args.length != 1) {
+	    System.out.println("Usage: Java_Compiler.jar pathToLaTeX");
 	    System.exit(-1);
 	}
 	String latexPath = args[0];
@@ -138,7 +138,8 @@ public class LaTeX_Compiler {
 	System.out.println("Generating images...");
 	for (int i = 0; i < overlays.length; ++i) {
 	    if (overlays[i].type instanceof Chart) {
-		processChart(overlays[i], i);
+		//TODO: reenable this 
+		//processChart(overlays[i], i);
 	    }
 	}
 
