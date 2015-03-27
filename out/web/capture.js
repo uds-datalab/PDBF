@@ -6,6 +6,7 @@ phantom.exit();
 
 //try {
 	var page = require('webpage').create();
+
 	page.open(system.args[1], function() {
 		var w = page.evaluate(function() {
 			return outw;
@@ -13,7 +14,9 @@ phantom.exit();
 		var h = page.evaluate(function() {
 			return outh;
 		});
-		page.zoomFactor = 2.2;
+		page.evaluate(function() {
+			document.body.bgColor = 'white';
+		});
 		page.viewportSize = {
 			width: w,
 			height: h
@@ -22,7 +25,7 @@ phantom.exit();
 			var name = page.evaluate(function() {
 				return json.name;
 			});
-			page.render(name +'.png');
+			page.render(name +'.png', {format: 'png', quality: '100'});
 			phantom.exit();
 		}, 500);
 	});

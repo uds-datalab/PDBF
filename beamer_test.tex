@@ -1,0 +1,180 @@
+\documentclass[10pt]{beamer}
+\usetheme{Frankfurt}
+\usepackage{PDBF}
+\setbeameroption{hide notes}
+
+\addtobeamertemplate{note page}{\setlength{\parskip}{12pt}}
+\makeatletter
+\beamertemplatenavigationsymbolsempty
+\setbeamerfont{footline}{size=\normalsize}
+\setbeamertemplate{footline}{{\par\vspace*{-2cm}\hspace*{\fill}\vspace*{0.25cm}\insertframenumber~~~}}
+\setbeamertemplate{items}[default]
+\setbeamertemplate{sections/subsections in toc}[sections numbered]
+\setbeamertemplate{subsection in toc}{}
+\setbeamercolor{title}{fg=white,bg=red!50!green!70}
+\setbeamercolor{frametitle}{fg=white,bg=red!50!green!70}
+\setbeamercolor{subsection in toc}{fg=black}
+\setbeamercolor{section in toc}{fg=black}
+\setbeamercolor{item}{fg=black}
+\setbeamertemplate{caption}[numbered]
+\setbeamercolor{caption name}{fg=black}
+\def\beamer@framenotesbegin{% at beginning of slide
+  \gdef\beamer@noteitems{}%
+  \gdef\beamer@notes{{}}% used to be totally empty.
+}
+\addtobeamertemplate{frametitle}{}{\vspace{0.4cm}}
+\makeatother
+
+\title{PDBF}   
+\author{
+ Patrick Bender\\
+  \texttt{s9pabend@stud.uni-saarland.de}
+  \\[5pt]
+ Christian Goldstein\\
+  \texttt{c.goldstein@goldstein-systemberatung.de}
+}
+\date{}
+
+\renewcommand\pdbfScale{0.833}
+
+\DBSQLText{CREATE TABLE table1 (column1 INTEGER, column2 DATE, column3 FLOAT);}
+\DBSQLFile{somedb.sql}
+\DBSQLJDBC{jdbc:postgresql://localhost:5432/postgres}{postgres}{test}{testtest, dim_time, dim_compiler, dim_dataset, dim_implementation, dim_layout, dim_query, dim_machine, fact_experiment}%
+
+\begin{document}
+
+\begin{frame}
+\vspace{-1.0cm}
+\titlepage
+\vspace{-2.5cm}
+\begin{center}
+\includegraphics[scale=0.25]{C:/Users/User/Downloads/UdS-Logo.jpg}
+\end{center}
+Presenter: Patrick Bender
+\end{frame}
+
+\section{Goals} 
+\subsection*{}
+\vspace{1.0cm}
+\begin{frame}
+	\begin{Large}\begin{center}What are the goals?\end{center}\end{Large}
+\end{frame}
+
+\section{SQL Queries} 
+\subsection*{}
+\begin{frame}\frametitle{Simple Queries} 
+	\sql{SELECT * FROM test;}\\[12pt]
+	\sql{SELECT col2 FROM test WHERE col1=1;}\\[12pt]
+	\sqlmult{INSERT INTO test}{INSERT INTO test VALUES (1, 123);}\\
+	\sqlmult{VALUES (1, 123);}{INSERT INTO test VALUES (1, 123);}
+\end{frame}
+
+\subsection*{}
+\begin{frame}\frametitle{Advanced Queries}
+\vspace{-0.4cm}
+	\def\longquery{SELECT
+m.cpu + ' (' +  m.cpuarchitecture + ')' AS Machine,
+d.tableschema   AS [Table schema],
+c.compiler      AS Compiler,
+c.optlevel      AS [Opt. level],
+COALESCE(cast(l.chunksize AS VARCHAR), 'n/a') AS [Chunk size (tuples)],
+IIF(i.templateparam, 'Compile time', 'Runtime') AS [Chunk size provided at],
+IIF(i.logscaleparam, 'Powers of 2', 'Multiples of 2') AS [Chunk sizes considered],
+t.timestamp 	AS [Time of experiment],
+ROUND(v.runtime, 3) 		AS [Query time (in Sec)]
+FROM fact_experiment AS v
+    JOIN dim_machine m ON m.id = v.machineid
+    JOIN dim_dataset d ON d.id = v.datasetid
+    JOIN dim_compiler c ON c.id = v.compilerid
+    JOIN dim_layout l ON l.id = v.layoutid
+    JOIN dim_implementation i ON i.id = v.implementationid
+    JOIN dim_query q ON q.id = v.queryid
+    JOIN dim_time t ON t.id = v.timeid
+ORDER BY m.id DESC, d.tableschema, q.querytext,
+    c.compiler, c.optlevel, i.templateparam, i.logscaleparam, l.chunksize
+LIMIT 100;}
+	\begin{scriptsize}
+	\sqlmult{SELECT}{\longquery}\\
+	\sqlmult{m.cpu + ' (' +  m.cpuarchitecture + ')' AS Machine,}{\longquery}\\
+	\sqlmult{d.tableschema   AS [Table schema],}{\longquery}\\
+	\sqlmult{c.compiler      AS Compiler,}{\longquery}\\
+	\sqlmult{c.optlevel      AS [Opt. level],}{\longquery}\\
+	\sqlmult{COALESCE(cast(l.chunksize AS VARCHAR), 'n/a') AS [Chunk size (tuples)],}{\longquery}\\
+	\sqlmult{IIF(i.templateparam, 'Compile time', 'Runtime') AS [Chunk size provided at],}{\longquery}\\
+	\sqlmult{IIF(i.logscaleparam, 'Powers of 2', 'Multiples of 2') AS [Chunk sizes considered],}{\longquery}\\
+	\sqlmult{t.timestamp 	AS [Time of experiment],}{\longquery}\\
+	\sqlmult{ROUND(v.runtime, 3) 		AS [Query time (in Sec)]}{\longquery}\\
+	\sqlmult{FROM fact\_experiment AS v}{\longquery}\\
+	\sqlmult{    JOIN dim\_machine m ON m.id = v.machineid}{\longquery}\\
+	\sqlmult{    JOIN dim\_dataset d ON d.id = v.datasetid}{\longquery}\\
+	\sqlmult{    JOIN dim\_compiler c ON c.id = v.compilerid}{\longquery}\\
+	\sqlmult{    JOIN dim\_layout l ON l.id = v.layoutid}{\longquery}\\
+	\sqlmult{    JOIN dim\_implementation i ON i.id = v.implementationid}{\longquery}\\
+	\sqlmult{    JOIN dim\_query q ON q.id = v.queryid}{\longquery}\\
+	\sqlmult{    JOIN dim\_time t ON t.id = v.timeid}{\longquery}\\
+	\sqlmult{ORDER BY m.id DESC, d.tableschema, q.querytext,}{\longquery}\\
+	\sqlmult{    c.compiler, c.optlevel, i.templateparam, i.logscaleparam, l.chunksize}{\longquery}\\
+	\sqlmult{LIMIT 100;}{\longquery}\\
+	\end{scriptsize}
+\end{frame}
+
+\section{Charts} 
+\subsection*{}
+\begin{frame}\frametitle{Line Chart with little data}
+	{ \centering 
+	\lineChart[width=0.8\textwidth, height=0.6\textwidth, xunit=Money (in €), yunit=Date, options={"title": "Title"}]{SELECT * FROM data1;}%
+	\\}
+\end{frame}
+
+\subsection*{}
+\begin{frame}\frametitle{Line Chart with much data}
+	{\centering
+	    \lineChart[width=1.0\textwidth, height=0.5\textwidth, xunit=Row Number, yunit={Runtime [in sec]}]{SELECT ROWNUM(), runtime FROM fact_experiment;}%
+	\\}
+\end{frame}
+
+\subsection*{}
+\begin{frame}\frametitle{Other Chart types}
+	\begin{figure}[h]
+    \centering
+    \begin{minipage}{.48\textwidth}
+    \lineChart[width=\textwidth, height=0.8\textwidth, xunit=Date, yunit={Runtime [in sec]}]{SELECT date, runtimeA AS engine_A, runtimeB AS engine_B FROM data2;}%
+    \caption{Multi-column Line Chart}
+    \end{minipage}
+    \hspace{5pt}
+    \begin{minipage}{.48\textwidth}
+    \barChart[width=\textwidth, height=0.8\textwidth, xunit=Date, yunit={Runtime [in sec]}]{SELECT date, runtimeA AS [engine A], runtimeB AS [engine B] FROM data2;}%
+    \caption{Multi-column Bar Chart}
+    \end{minipage}\\[8pt]
+    \end{figure}
+\end{frame}
+
+\subsection*{}
+\begin{frame}\frametitle{Other Chart types}
+	\begin{figure}[h]
+    \centering
+    \begin{minipage}{.48\textwidth}
+    \barChart[width=\textwidth, height=0.8\textwidth, xunit=Date, yunit={Runtime [in sec]}, overlap=2]{SELECT date, runtimeA AS [engine A], runtimeB AS [engine B] FROM data2;}
+    \caption{Multi-column overlapping Bar Chart}
+    \end{minipage}
+    \hspace{5pt}
+    \begin{minipage}{.48\textwidth}
+    \lineChart[width=\textwidth, height=0.8\textwidth, xunit=Date, yunit={Runtime [in sec]}, options={"strokeWidth": 0, "drawPoints": true, "pointSize": 3, "highlightCircleSize": 4, "xRangePad": 10}]{SELECT date, runtimeA AS [engine A], runtimeB AS [engine B] FROM data2;}
+    \caption{Multi-column Dot Chart}
+    \end{minipage}
+    \end{figure}
+\end{frame}
+
+\section*{}
+\begin{frame}
+\vspace{1.0cm}
+	\begin{Large}\begin{center}Thank you for your attention!\end{center}\end{Large}
+\end{frame}
+
+\begin{frame}
+\vspace{1.0cm}
+	\begin{Large}\begin{center}Questions?\end{center}\end{Large}
+\end{frame}
+
+\end{document}
+

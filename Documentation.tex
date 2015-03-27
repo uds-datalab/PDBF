@@ -1,0 +1,108 @@
+\documentclass[11pt]{scrartcl}
+\usepackage{PDBF}
+\usepackage{wrapfig}
+\usepackage{hyperref}
+\usepackage[a4paper,vmargin={28mm,28mm},hmargin={28mm,28mm}]{geometry}
+
+\title{PDBF Documentation}
+\author{
+ Patrick Bender\\
+  \texttt{s9pabend@stud.uni-saarland.de}
+  \and
+ Christian Goldstein\\
+  \texttt{c.goldstein@goldstein-systemberatung.de}
+}
+\date{\today{}, Saarbrücken}
+
+\makeatletter
+\def\@maketitle{%
+  \vspace*{-\topskip}%
+  \begingroup\centering%
+  \let \footnote \thanks
+  \hrule height \z@%
+    {\LARGE \@title \par}%
+    \vskip 1.5em 
+    {\large
+      \lineskip .5em 
+      \begin{tabular}[t]{c}%
+        \@author
+      \end{tabular}\par}%
+    \vskip 1em 
+    {\large \@date}%
+  \par\endgroup%
+  \vskip 1.5em%
+}
+\makeatother
+
+\urlstyle{rm}
+
+\begin{document}
+\maketitle
+
+TODO: Write small abstract \newpage
+
+\section{Chart options}
+Macros: \\[3pt]
+\verb|\lineChart[options]{query}| \\
+\verb|\barChart[options]{query}| \\[8pt]
+\noindent Options: \\[3pt]
+\begin{tabular}{ll}
+\textbf{width} & \\
+Desc.:	&	Sets the width of the chart. \\
+Argument:	&LaTeX length \\
+Default:&	no default value. value must always be set! \\[4pt]
+
+\textbf{height} \\
+Desc.:	&	Sets the height of the chart. \\
+Argument: &	LaTeX length \\
+Default:&	no default value. value must always be set! \\[4pt]
+
+\textbf{xunit} \\
+Desc.:	&	Sets the a label for the x axis. \\
+Argument: &	String \\
+Default:& 	\verb|""| (which means hide) \\[4pt]
+
+\textbf{yunit} \\
+Desc.:	&	Sets the a label for the y axis. \\
+Argument: 	&String \\
+Default:& 	\verb|""| (which means hide) \\[4pt]
+
+\textbf{options} \\
+Desc.:	&	Sets options that are directly passed to the dygraphs library (\href{http://dygraphs.com/options.html}{$\rightarrow$ Documentation}). \\
+& You need to wrap the JSON-String with \verb|{}| if you want to use \verb|[| or \verb|]| or \verb|,|. \\
+Argument: 	&JSON-String \\
+Default:&	\verb|{}| (which means empty object) \\[4pt]
+
+\textbf{logscale} \\
+Desc.:	&	If set, the y axis uses log scale. \\
+& Can also be redefined globally (\verb|\pdbfLogscale|) \\
+Argument:&	\verb|{true, false}| \\
+Default:&	\verb|false| \\[4pt]
+
+\textbf{quality} \\
+Desc.:	&	Sets the quality for the image version of the chart. \\
+& Can also be redefined globally (\verb|\pdbfQuality|). \\
+Argument:	&Number $>$ 0 \\
+Default:&	\verb|1.0| \\[4pt]
+
+\textbf{scale} \\
+Desc.:	&	Sets the scale for the chart. 1.0 corresponds roughly to 12pt in \LaTeX. \\
+& Can also be redefined globally (\verb|\pdbfScale|). \\
+Argument:	&Number $>$ 0 \\
+Default:&	\verb|1.0| \\[4pt]
+
+\textbf{legendpos} \\
+Desc.: 	&	Sets the position of the legend of the chart. \\
+& Can also be redefined globally (\verb|\pdbfLegendpos|).\\
+Argument:&	\verb|{topright, topcenter, topleft, belowleft, belowcenter, belowright}| \\
+Default:&	\verb|topright| \\[4pt]
+\end{tabular} \\
+
+\newpage
+\section{F.A.Q.}
+\begin{itemize}
+\item F.: The chart is horribly slow when i try to zoom! \\
+A.: Add the following to options: animatedZooms: false 
+\end{itemize}
+
+\end{document}

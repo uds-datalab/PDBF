@@ -20,10 +20,6 @@ pre {
     word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 
-html {
-	min-height: 500px;
-}
-
 .dygraph-label {
 	font-family: sans-serif;
 }

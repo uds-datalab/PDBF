@@ -27,7 +27,7 @@
 
 'use strict';
 
-var DEFAULT_URL = 'test.pdf';
+var DEFAULT_URL = '';
 var DEFAULT_SCALE_DELTA = 1.1;
 var MIN_SCALE = 0.25;
 var MAX_SCALE = 10.0;
@@ -2092,7 +2092,7 @@ var PresentationMode = {
       if (!isInternalLink) {
         // Unless an internal link was clicked, advance one page.
         evt.preventDefault();
-        PDFViewerApplication.page += (evt.shiftKey ? -1 : 1);
+        //PDFViewerApplication.page += (evt.shiftKey ? -1 : 1);
       }
     }
   },
@@ -5652,6 +5652,9 @@ var PDFViewerApplication = {
     this.updateScaleControls = !!resetAutoSettings;
     this.pdfViewer.currentScaleValue = value;
     this.updateScaleControls = true;
+	var rawZoomFactor = PDFViewerApplication.pdfViewer._currentScale;
+	var query = document.getElementById('SQLQuery'); 
+	query.style['font-size'] = 12 * rawZoomFactor;
   },
 
   rotatePages: function pdfViewRotatePages(delta) {
@@ -6373,15 +6376,18 @@ function webViewerInitialized() {
   document.getElementById('presentationMode').addEventListener('click',
     SecondaryToolbar.presentationModeClick.bind(SecondaryToolbar));
 
-  document.getElementById('openFile').addEventListener('click',
-    SecondaryToolbar.openFileClick.bind(SecondaryToolbar));
-
   document.getElementById('print').addEventListener('click',
     SecondaryToolbar.printClick.bind(SecondaryToolbar));
 
   document.getElementById('download').addEventListener('click',
     SecondaryToolbar.downloadClick.bind(SecondaryToolbar));
 
+//TODO:	
+//	pageSource = document.documentElement.outerHTML;
+//	begin = pageSource.indexOf("%PDF-");
+//	end = pageSource.lastIndexOf("%%EOF");
+//	pdfstring = pageSource.substring(begin, end+5);
+//	PDFViewerApplication.open(strToUTF8Arr(pdfstring), 0);
 
 PDFViewerApplication.open(base64DecToArr(pdf_base64), 0);
 
@@ -6469,7 +6475,6 @@ window.addEventListener('updateviewarea', function () {
   });
   var href = PDFViewerApplication.getAnchorUrl(location.pdfOpenParams);
   document.getElementById('viewBookmark').href = href;
-  document.getElementById('secondaryViewBookmark').href = href;
 
   // Update the current bookmark in the browsing history.
   PDFHistory.updateCurrentBookmark(location.pdfOpenParams, location.pageNumber);

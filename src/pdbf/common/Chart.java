@@ -1,30 +1,33 @@
 package pdbf.common;
 
 public abstract class Chart extends Visualization {
+    /*Keep all options here. 
+     * This is beneficial because then you can also set options 
+     * on how other representations of this chart look like*/
+    
+    //General Chart Options
+    public String options;
+    public double zoom;
+    public double quality;
+    
+    //LineChart and BarChart
     public boolean logScale;
+    public String legendpos;
     public String xUnitName;
     public String yUnitName;
-    public String options;
-
-    public Chart(String query, double x1, double x2, double y1, double y2, long page, boolean logScale, String xUnitName, String yUnitName, String options) {
-	super(query, x1, x2, y1, y2, page);
-	this.logScale = logScale;
-	this.xUnitName = xUnitName;
-	this.yUnitName = yUnitName;
-	this.options = options;
-    }
-
-    public Chart(String query, double x1, double x2, double y1, double y2, long page, boolean logScale, String xUnitName, String yUnitName) {
-	super(query, x1, x2, y1, y2, page);
-	this.logScale = logScale;
-	this.xUnitName = xUnitName;
-	this.yUnitName = yUnitName;
-    }
-
-    /*
-     * Needed for GSON
-     */
-    public Chart() {
-    }
-
+    public boolean includeZero;
+    public boolean drawPoints;
+    public boolean fillGraph;
+    public boolean showRangeSelector;
+    
+    //BarChart
+    public int overlap;
+    
+    //Pivot
+    public String rows;
+    public String cols;
+    public String aggregation;
+    public String aggregationattribute;
+    public String aggregationBig;
+    public String aggregationattributeBig;
 }
