@@ -13,8 +13,13 @@
 	-moz-transition:opacity 200ms linear; 
 	-o-transition:opacity 200ms linear; 
 	transition:opacity 200ms linear;
-	margin-top: 1em;
+	margin-top: 1.5em;
+	z-index: 99999;
 }
+
+fieldset { border: 0px solid white;}
+form{text-align: left;}
+select, input, td, th, table, button{font-size:inherit}
 
 table {
     font-family:sans-serif;

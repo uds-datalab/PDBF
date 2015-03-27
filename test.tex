@@ -98,7 +98,7 @@ Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lo
 \newpage
 \begin{wrapfigure}{r}{0.52\textwidth}
 { \centering %
-\pivotTable[width=0.5\textwidth, height=0.8\textwidth, scale=0.5, rows={"Machine", "Table schema", "Query"}]
+\pivotTable[width=0.5\textwidth, height=0.8\textwidth, scale=0.5, rows={"Machine", "Table schema", "Query"}, aggregation=Minimum, aggregationattribute=Query time, aggregationBig=Minimum, aggregationattributeBig=Query time (in Sec)]
 {SELECT
 m.cpuarchitecture AS Machine,
 IIF(d.tableschema = '(long a, long b)', 'long', IIF(d.tableschema = '(char a, char b)', 'char', IIF(d.tableschema = '(int a, int b)', 'int', 'n/a')))   AS [Table schema],
@@ -123,6 +123,7 @@ d.tableschema   AS [Table schema],
 q.querytext     AS [Query],
 c.compiler      AS Compiler,
 c.optlevel      AS [Opt. level],
+l.name          AS [Layout name],
 CAST(COALESCE(l.chunksize, 'n/a') AS VARCHAR) AS [Chunk size (tuples)],
 IIF(i.templateparam, 'Compile time', 'Runtime') AS [Chunk size provided at],
 IIF(i.logscaleparam, 'Powers of 2', 'Multiples of 2') AS [Chunk sizes considered],

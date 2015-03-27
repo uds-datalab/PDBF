@@ -5652,6 +5652,9 @@ var PDFViewerApplication = {
     this.updateScaleControls = !!resetAutoSettings;
     this.pdfViewer.currentScaleValue = value;
     this.updateScaleControls = true;
+	var rawZoomFactor = PDFViewerApplication.pdfViewer._currentScale;
+	var query = document.getElementById('SQLQuery'); 
+	query.style['font-size'] = 12 * rawZoomFactor;
   },
 
   rotatePages: function pdfViewRotatePages(delta) {
@@ -6472,7 +6475,6 @@ window.addEventListener('updateviewarea', function () {
   });
   var href = PDFViewerApplication.getAnchorUrl(location.pdfOpenParams);
   document.getElementById('viewBookmark').href = href;
-  document.getElementById('secondaryViewBookmark').href = href;
 
   // Update the current bookmark in the browsing history.
   PDFHistory.updateCurrentBookmark(location.pdfOpenParams, location.pageNumber);

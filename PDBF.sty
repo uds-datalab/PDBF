@@ -61,6 +61,14 @@
 \define@key{pdbf}{rows}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@rows]}
 \def\pdbf@cols{}
 \define@key{pdbf}{cols}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@cols]}
+\def\pdbf@aggregation{Minimum}
+\define@key{pdbf}{aggregation}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@aggregation]}
+\def\pdbf@aggregationattribute{}
+\define@key{pdbf}{aggregationattribute}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@aggregationattribute]}
+\def\pdbf@aggregationBig{}
+\define@key{pdbf}{aggregationBig}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@aggregationBig]}
+\def\pdbf@aggregationattributeBig{}
+\define@key{pdbf}{aggregationattributeBig}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@aggregationattributeBig]}
 
 \DeclareRobustCommand\pdbf@save[1]{%
     \begingroup
@@ -113,6 +121,14 @@
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"zoom": \pdbfScale,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"overlap": \pdbf@overlap,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"legendpos": "\pdbfLegendpos",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"includeZero": false,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"drawPoints": false,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"fillGraph": fillGraph,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"showRangeSelector": false,}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregation": "\pdbf@aggregation",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationattribute": "\pdbf@aggregationattribute",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationBig": "\pdbf@aggregationBig",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationattributeBig": "\pdbf@aggregationattributeBig",}% 
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"cols": "\pdbf@cols",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"rows": "\pdbf@rows",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x1": \zposx{Overlay\arabic{visual}1},}%

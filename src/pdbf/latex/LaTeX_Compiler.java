@@ -138,8 +138,7 @@ public class LaTeX_Compiler {
 	System.out.println("Generating images...");
 	for (int i = 0; i < overlays.length; ++i) {
 	    if (overlays[i].type instanceof Chart) {
-		//TODO: reenable this 
-		//processChart(overlays[i], i);
+		processChart(overlays[i], i);
 	    }
 	}
 
@@ -150,7 +149,11 @@ public class LaTeX_Compiler {
 		e.printStackTrace();
 	    }
 	}
+	
+	//TODO: javascript. maybe implement chart legend via dygraphs plugin apis
 
+	//TODO: logscale bei zweiter chart broken
+	
 	System.out.println("Compiling LaTeX (2/2)...");
 	try {
 	    ProcessBuilder pb = new ProcessBuilder(commands);

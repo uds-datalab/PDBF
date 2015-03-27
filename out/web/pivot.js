@@ -204,6 +204,9 @@
 					  return ret;
 				  }
 			  },
+			  formatPlain: function(x){
+				  return formatter(x[attr]);
+			  },
               numInputs: attr != null ? 0 : 1
             };
           };
@@ -234,7 +237,7 @@
               value: function() {
                 return this.val != null ? this.val : '';
               },
-                            format: function(x){
+              format: function(x){
 				  if (data.intable) {
 					  return formatter(x[attr]);
 				  } else {
@@ -249,6 +252,9 @@
 					  ret += "</tr></table></span>";
 					  return ret;
 				  }
+			  },
+			  formatPlain: function(x){
+				  return formatter(x[attr]);
 			  },
               numInputs: attr != null ? 0 : 1
             };
@@ -399,12 +405,6 @@
       };
     })(aggregatorTemplates);
     renderers = {
-      "Table": function(pvtData, opts) {
-        return pivotTableRenderer(pvtData, opts);
-      },
-      "Table Barchart": function(pvtData, opts) {
-        return $(pivotTableRenderer(pvtData, opts)).barchart();
-      },
       "Heatmap": function(pvtData, opts) {
         return $(pivotTableRenderer(pvtData, opts)).heatmap();
       },
@@ -413,7 +413,10 @@
       },
       "Col Heatmap": function(pvtData, opts) {
         return $(pivotTableRenderer(pvtData, opts)).heatmap("colheatmap");
-      }
+      },
+	  "Table": function(pvtData, opts) {
+        return pivotTableRenderer(pvtData, opts);
+      },
     };
     locales = {
       en: {
@@ -927,7 +930,11 @@
           td = document.createElement("td");
           td.className = "pvtVal row" + i + " col" + j;
           td.innerHTML = aggregator.format(val);
-          td.setAttribute("data-value", val);
+		  if (aggregator.special) {
+			td.setAttribute("data-value", aggregator.formatPlain(val));
+		  } else {
+			td.setAttribute("data-value", val);
+		  }
           tr.appendChild(td);
         }
 		////////////////////////////////////////////////////////////////////////////////////////////
@@ -938,7 +945,11 @@
 				td = document.createElement("td");
 				td.className = "pvtTotal rowTotal";
 				td.innerHTML = val[pivotData.unused[i]];
-				td.setAttribute("data-value", val);
+			    if (totalAggregator.special) {
+			   	  td.setAttribute("data-value", totalAggregator.formatPlain(val));
+			    } else {
+				  td.setAttribute("data-value", val);
+			    }
 				td.setAttribute("data-for", "row" + i);
 				tr.appendChild(td);
 				result.appendChild(tr);
@@ -947,7 +958,11 @@
 			td = document.createElement("td");
 			td.className = "pvtTotal rowTotal";
 			td.innerHTML = totalAggregator.format(val);
-			td.setAttribute("data-value", val);
+			if (totalAggregator.special) {
+			  td.setAttribute("data-value", totalAggregator.formatPlain(val));
+		    } else {
+			  td.setAttribute("data-value", val);
+		    }
 			td.setAttribute("data-for", "row" + i);
 			tr.appendChild(td);
 			result.appendChild(tr);
@@ -956,7 +971,11 @@
 			td = document.createElement("td");
 			td.className = "pvtTotal rowTotal";
 			td.innerHTML = totalAggregator.format(val);
-			td.setAttribute("data-value", val);
+			if (totalAggregator.special) {
+			  td.setAttribute("data-value", totalAggregator.formatPlain(val));
+		    } else {
+			  td.setAttribute("data-value", val);
+		    }
 			td.setAttribute("data-for", "row" + i);
 			tr.appendChild(td);
 			result.appendChild(tr);
@@ -977,7 +996,11 @@
         td = document.createElement("td");
         td.className = "pvtTotal colTotal";
         td.innerHTML = totalAggregator.format(val);
-        td.setAttribute("data-value", val);
+        if (totalAggregator.special) {
+			td.setAttribute("data-value", totalAggregator.formatPlain(val));
+		} else {
+			td.setAttribute("data-value", val);
+		}
         td.setAttribute("data-for", "col" + j);
         tr.appendChild(td);
       }
@@ -988,7 +1011,11 @@
 		  td = document.createElement("td");
 		  td.className = "pvtGrandTotal";
 		  td.innerHTML = totalAggregator.format(val);
-		  td.setAttribute("data-value", val);
+		  if (totalAggregator.special) {
+			td.setAttribute("data-value", totalAggregator.formatPlain(val));
+		  } else {
+			td.setAttribute("data-value", val);
+		  }
 		  tr.appendChild(td);
 		  result.appendChild(tr);
 		  result.setAttribute("data-numrows", rowKeys.length);
