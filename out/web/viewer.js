@@ -5652,9 +5652,9 @@ var PDFViewerApplication = {
     this.updateScaleControls = !!resetAutoSettings;
     this.pdfViewer.currentScaleValue = value;
     this.updateScaleControls = true;
-	var rawZoomFactor = PDFViewerApplication.pdfViewer._currentScale;
-	var query = document.getElementById('SQLQuery'); 
-	query.style['font-size'] = 12 * rawZoomFactor;
+	//TODO: var rawZoomFactor = PDFViewerApplication.pdfViewer._currentScale;
+	//var query = document.getElementById('SQLQuery'); 
+	//query.style['font-size'] = 12 * rawZoomFactor;
   },
 
   rotatePages: function pdfViewRotatePages(delta) {

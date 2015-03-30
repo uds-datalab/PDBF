@@ -7309,7 +7309,6 @@ Dygraph.Interaction.moveZoom = function(event, g, context) {
 
   var xDelta = Math.abs(context.dragStartX - context.dragEndX);
   var yDelta = Math.abs(context.dragStartY - context.dragEndY);
-  console.log('x: ' + xDelta + ', y: ' + yDelta);
 
   // drag direction threshold for y axis is twice as large as x axis
   context.dragDirection = (xDelta < yDelta / 2) ? Dygraph.VERTICAL : Dygraph.HORIZONTAL;

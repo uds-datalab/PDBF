@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.4.16)  30 MAR 2015 16:38
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.4.16)  30 MAR 2015 17:39
 entering extended mode
 **C:/workspaceAndroid/PDBF_Paper/main.tex
 (C:/workspaceAndroid/PDBF_Paper/main.tex
@@ -1072,21 +1072,21 @@ Underfull \hbox (badness 10000) in paragraph at lines 173--176
 
  []
 
-[2] <Overlay1.png, id=93, 310.15875pt x 249.93375pt>
+[2] <Overlay1.png, id=93, 309.40594pt x 249.93375pt>
 File: Overlay1.png Graphic file (type png)
 <use Overlay1.png>
 Package pdftex.def Info: Overlay1.png used on input line 185.
-(pdftex.def)             Requested size: 241.9181pt x 193.54028pt.
+(pdftex.def)             Requested size: 241.9258pt x 193.54028pt.
 
 Underfull \hbox (badness 10000) in paragraph at lines 185--186
 
  []
 
-<Overlay2.png, id=95, 310.15875pt x 249.93375pt>
+<Overlay2.png, id=95, 309.40594pt x 249.93375pt>
 File: Overlay2.png Graphic file (type png)
 <use Overlay2.png>
 Package pdftex.def Info: Overlay2.png used on input line 190.
-(pdftex.def)             Requested size: 241.9181pt x 193.54028pt.
+(pdftex.def)             Requested size: 241.9258pt x 193.54028pt.
 
 Underfull \hbox (badness 10000) in paragraph at lines 190--191
 
@@ -1102,11 +1102,11 @@ Overfull \hbox (1.91785pt too wide) in paragraph at lines 184--192
  []$ 
  []
 
-<Overlay3.png, id=96, 310.15875pt x 249.93375pt>
+<Overlay3.png, id=96, 309.40594pt x 249.93375pt>
 File: Overlay3.png Graphic file (type png)
 <use Overlay3.png>
 Package pdftex.def Info: Overlay3.png used on input line 194.
-(pdftex.def)             Requested size: 241.9181pt x 193.54028pt.
+(pdftex.def)             Requested size: 241.9258pt x 193.54028pt.
 
 Underfull \hbox (badness 10000) in paragraph at lines 194--195
 
@@ -1120,21 +1120,21 @@ Overfull \hbox (1.91785pt too wide) in paragraph at lines 193--197
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<Overlay4.png, id=97, 310.15875pt x 249.93375pt>
+<Overlay4.png, id=97, 309.40594pt x 249.93375pt>
 File: Overlay4.png Graphic file (type png)
 <use Overlay4.png>
 Package pdftex.def Info: Overlay4.png used on input line 201.
-(pdftex.def)             Requested size: 241.9181pt x 193.54028pt.
+(pdftex.def)             Requested size: 241.9258pt x 193.54028pt.
 
 Underfull \hbox (badness 10000) in paragraph at lines 201--202
 
  []
 
-<Overlay5.png, id=98, 310.15875pt x 532.23843pt>
+<Overlay5.png, id=98, 309.40594pt x 531.48563pt>
 File: Overlay5.png Graphic file (type png)
 <use Overlay5.png>
 Package pdftex.def Info: Overlay5.png used on input line 246.
-(pdftex.def)             Requested size: 241.9181pt x 418.53088pt.
+(pdftex.def)             Requested size: 241.9258pt x 418.52281pt.
 
 Underfull \hbox (badness 10000) in paragraph at lines 246--247
 
@@ -1188,7 +1188,7 @@ iles (x86)/MiKTeX 2.9/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Program Files (x8
 X 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts
 /type1/urw/times/utmr8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/
 times/utmri8a.pfb>
-Output written on main.pdf (4 pages, 149424 bytes).
+Output written on main.pdf (4 pages, 148987 bytes).
 PDF statistics:
  157 PDF objects out of 1000 (max. 8388607)
  35 named destinations out of 1000 (max. 500000)

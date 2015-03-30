@@ -185,10 +185,10 @@ function buildContainerChartBig(json, containerOver, initial) {
 	var basetextsize = 8;
 
 	var updateData = function() {
-		jsonCpy.type.I.xUnitName = '';
-		jsonCpy.type.I.yUnitName = '';
-		jsonCpy.type.I.query = ref.editor.getValue();
-		json.chartdataBig = getChartData(jsonCpy);
+		json.jsonBig.type.I.xUnitName = '';
+		json.jsonBig.type.I.yUnitName = '';
+		json.jsonBig.type.I.query = ref.editor.getValue();
+		json.chartdataBig = getChartData(json.jsonBig);
 		json.resultBig = json.chartdataBig.res;
 		if (json.chartdataBig.error != undefined) {
 			error.innerHTML = 'Query status: ' + json.chartdataBig.error;
@@ -203,12 +203,12 @@ function buildContainerChartBig(json, containerOver, initial) {
 				json.chartdataBig.values, optionsBig);
 	};
 	var update = function() {
-		var tmp = jsonCpy.type.I.showRangeSelector;
-		jsonCpy.type.I.logScale = logScale.checked;
-		jsonCpy.type.I.includeZero = includeZero.checked;
-		jsonCpy.type.I.drawPoints = drawPoints.checked;
-		jsonCpy.type.I.fillGraph = fillGraph.checked;
-		jsonCpy.type.I.showRangeSelector = showRangeSelector.checked;
+		var tmp = json.jsonBig.type.I.showRangeSelector;
+		json.jsonBig.type.I.logScale = logScale.checked;
+		json.jsonBig.type.I.includeZero = includeZero.checked;
+		json.jsonBig.type.I.drawPoints = drawPoints.checked;
+		json.jsonBig.type.I.fillGraph = fillGraph.checked;
+		json.jsonBig.type.I.showRangeSelector = showRangeSelector.checked;
 		if (tmp != showRangeSelector.checked) {
 			// Bug in dygraph. Force complete redraw
 			var optionsBig = getDygraphsOptions(json.jsonBig, rawZoomFactor,
@@ -226,7 +226,7 @@ function buildContainerChartBig(json, containerOver, initial) {
 		}
 	};
 
-	var jsonCpy = jQuery.extend(true, {}, json);
+	json.jsonBig = jQuery.extend(true, {}, json);
 	var chartdataCpy = getChartData(json);
 	json.resultBig = chartdataCpy.res;
 	var tip = "Tip: Click-and drag to zoom the graph. Shift + click-and drag to pan the graph.<br/>";
@@ -253,28 +253,27 @@ function buildContainerChartBig(json, containerOver, initial) {
 
 	var logScale = getCheckbox('LogScale', containerOptions);
 	logScale.addEventListener('change', update);
-	logScale.checked = jsonCpy.type.I.logScale;
+	logScale.checked = json.jsonBig.type.I.logScale;
 
 	var includeZero = getCheckbox('IncludeZero', containerOptions);
 	includeZero.addEventListener('change', update);
-	includeZero.checked = jsonCpy.type.I.includeZero;
+	includeZero.checked = json.jsonBig.type.I.includeZero;
 
 	var drawPoints = getCheckbox('DrawPoints', containerOptions);
 	drawPoints.addEventListener('change', update);
-	drawPoints.checked = jsonCpy.type.I.drawPoints;
+	drawPoints.checked = json.jsonBig.type.I.drawPoints;
 
 	var fillGraph = getCheckbox('FillGraph', containerOptions);
 	fillGraph.addEventListener('change', update);
-	fillGraph.checked = jsonCpy.type.I.fillGraph;
+	fillGraph.checked = json.jsonBig.type.I.fillGraph;
 
 	var showRangeSelector = getCheckbox('ShowRangeSelector', containerOptions);
 	showRangeSelector.addEventListener('change', update);
-	showRangeSelector.checked = jsonCpy.type.I.showRangeSelector;
+	showRangeSelector.checked = json.jsonBig.type.I.showRangeSelector;
 
-	var optionsBig = getDygraphsOptions(jsonCpy, rawZoomFactor,
+	var optionsBig = getDygraphsOptions(json.jsonBig, rawZoomFactor,
 			chartdataCpy.columns);
 	var dygraph = new Dygraph(containerContent, chartdataCpy.values, optionsBig);
-	json.jsonBig = jsonCpy;
 	json.dygraphBig = dygraph;
 	json.chartdataBig = chartdataCpy;
 
@@ -448,10 +447,10 @@ function buildContainerTableBig(json, containerOver) {
 	var basetextsize = 8;
 
 	var update = function() {
-		jsonCpy.type.I.query = ref.editor.getValue();
+		json.jsonBig.type.I.query = ref.editor.getValue();
 		var err;
 		try {
-			var results = alasqlQuery(jsonCpy.type.I.query);
+			var results = alasqlQuery(json.jsonBig.type.I.query);
 			json.resultBig = results;
 		} catch (e) {
 			err = e.message;
@@ -468,12 +467,11 @@ function buildContainerTableBig(json, containerOver) {
 		}
 	};
 
-	var jsonCpy = jQuery.extend(true, {}, json);
-	json.jsonBig = jsonCpy;
+	json.jsonBig = jQuery.extend(true, {}, json);
 
 	var err;
 	try {
-		var results = alasqlQuery(jsonCpy.type.I.query);
+		var results = alasqlQuery(json.jsonBig.type.I.query);
 		json.resultBig = results;
 	} catch (e) {
 		err = e.message;
@@ -941,15 +939,38 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr,
 
 	var textarea = document.createElement('textarea');
 	containerControl.appendChild(textarea);
+	
+	var def = document.createElement('input');
+	def.type = 'button';
+	def.value = 'Restore Default';
+	def.setAttribute('style', 'font-size:inherit;');
+	def.addEventListener('click', function() {
+		delete json.jsonBig;
+		json.jsonBig = jQuery.extend(true, {}, json);
 
+		while (containerOver.firstChild) {
+			containerOver.removeChild(containerOver.firstChild);
+		}
+		switch (json.type.C) {
+		case "pdbf.common.LineChart":
+		case "pdbf.common.BarChart":
+			buildContainerChartBig(json, containerOver, true);
+			break;
+		case "pdbf.common.Pivot":
+			buildContainerPivotBig(json, containerOver, true);
+			break;
+		}
+	});
+	containerControl.appendChild(def);
+	
+	containerControl.appendChild(getSpacer());
+	
 	var error = document.createElement('span');
 	containerControl.appendChild(error);
 	error.innerHTML = 'Query status: OK';
 
-	var spacer = document.createElement('span');
-	spacer.innerHTML = '<br /><br />';
-	containerControl.appendChild(spacer);
-
+	containerControl.appendChild(getSpacer());
+	
 	var options = document.createElement('div');
 	containerControl.appendChild(options);
 
@@ -969,7 +990,8 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr,
 		}, json.resultBig, cols);
 	});
 	options.appendChild(download);
-	options.appendChild(spacer);
+	options.appendChild(getSpacer());
+	options.appendChild(getSpacer());
 
 	var containerChartSub = document.createElement('div');
 	containerChartSub.setAttribute('style',
@@ -1069,6 +1091,12 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr,
 		options : options
 	};
 	return ref;
+}
+
+function getSpacer() {
+	var spacer = document.createElement('span');
+	spacer.innerHTML = '<br />';
+	return spacer;
 }
 
 function getChartData(json) {
