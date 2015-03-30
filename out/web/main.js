@@ -189,6 +189,7 @@ function buildContainerChartBig(json, containerOver, initial) {
 		jsonCpy.type.I.yUnitName = '';
 		jsonCpy.type.I.query = ref.editor.getValue();
 		json.chartdataBig = getChartData(jsonCpy);
+		json.resultBig = json.chartdataBig.res;
 		if (json.chartdataBig.error != undefined) {
 			error.innerHTML = 'Query status: ' + json.chartdataBig.error;
 			containerOptions.style.visibility = 'hidden';
@@ -227,9 +228,10 @@ function buildContainerChartBig(json, containerOver, initial) {
 
 	var jsonCpy = jQuery.extend(true, {}, json);
 	var chartdataCpy = getChartData(json);
+	json.resultBig = chartdataCpy.res;
 	var tip = "Tip: Click-and drag to zoom the graph. Shift + click-and drag to pan the graph.<br/>";
 	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip,
-			jsonCpy, updateData, 'graph');
+			[json], updateData, 'graph');
 	var containerContent = ref.containerContent;
 	var containerControl = ref.containerControl;
 	var containerOptions = ref.options;
@@ -320,6 +322,7 @@ function buildContainerPivotBig(json, containerOver, initial) {
 		json.type.I.queryB = ref.editor.getValue();
 		// save pivot table settings (aggr, aggrAtt, renderer)
 		var r = getPivotTableData(json, true);
+		json.resultBig = r.res;
 		if (r.error != undefined) {
 			error.innerHTML = 'Query status: ' + r.error;
 			containerOptions.style.visibility = 'hidden';
@@ -331,8 +334,6 @@ function buildContainerPivotBig(json, containerOver, initial) {
 		var aggr = r.aggr;
 		var aggrName = r.aggrName;
 		var aggrAtt = r.aggrAttribute;
-
-		json.resultBig = r.res;
 
 		$(containerContent).pivotUI(r.res, {
 			aggregator : aggr
@@ -350,7 +351,7 @@ function buildContainerPivotBig(json, containerOver, initial) {
 
 	var tip = "Tip: Move the cursor over the result cells to see more detailed results for min and max aggregator.<br/>";
 	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip,
-			json, updateData, 'pivot table');
+			[json], updateData, 'pivot table');
 	var containerContent = ref.containerContent;
 	var containerControl = ref.containerControl;
 	var containerOptions = ref.options;
@@ -359,7 +360,7 @@ function buildContainerPivotBig(json, containerOver, initial) {
 	editor.setValue(json.type.I.queryB);
 
 	var r = getPivotTableData(json, true);
-
+	json.resultBig = r.res;
 	if (initial) {
 		if (r.error != undefined) {
 			alert(r.error);
@@ -483,7 +484,7 @@ function buildContainerTableBig(json, containerOver) {
 
 	var tip = '';
 	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip,
-			json, update, 'table');
+			[json], update, 'table');
 	var containerContent = ref.containerContent;
 	var containerOptions = ref.options;
 	var error = ref.error;
@@ -501,7 +502,7 @@ function buildContainerTableBig(json, containerOver) {
 
 function overlay(pageNr) {
 	if (init) {
-		rawZoomFactor = PDFViewerApplication.pdfViewer._currentScale;
+		rawZoomFactor = 1.25;//PDFViewerApplication.pdfViewer._currentScale;
 		init = false;
 	}
 
@@ -735,7 +736,7 @@ function multiColumnBarPlotterTmp(overlap, overlapnumber) {
 		var g = e.dygraph;
 		var ctx = e.drawingContext;
 		var sets = e.allSeriesPoints;
-		var y_bottom = e.dygraph.toDomYCoord(0);
+		var y_bottom = e.dygraph.toDomYCoord(1);
 
 		// Find the minimum separation between x-values.
 		// This determines the bar width.
@@ -918,8 +919,9 @@ function getDygraphsOptions(json, zoomFactor, columns) {
 	return options;
 }
 
-function prepopulateContainerOver(containerOver, viewerContainer, tip, json,
+function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr,
 		update, f) {
+	var json = jsonArr[0]; //pass by reference 
 	var containerChart = document.createElement('div');
 	containerChart
 			.setAttribute(
@@ -1068,9 +1070,9 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, json,
 }
 
 function getChartData(json) {
+	var results;
 	try {
-		var results = alasqlQuery(json.type.I.query);
-		json.resultBig = results;
+		results = alasqlQuery(json.type.I.query);
 	} catch (e) {
 		return {
 			error : e.message
@@ -1174,14 +1176,16 @@ function getChartData(json) {
 	return {
 		values : values,
 		columns : columns,
-		error : error
+		error : error,
+		res: results
 	};
 }
 
 function getPivotTableData(json, isBig) {
 	var error;
+	var results;
 	try {
-		var results = alasqlQuery(isBig ? json.type.I.queryB
+		results = alasqlQuery(isBig ? json.type.I.queryB
 				: json.type.I.query);
 	} catch (e) {
 		return {
