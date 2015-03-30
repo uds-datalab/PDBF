@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.4.16)  30 MAR 2015 11:18
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.4.16)  30 MAR 2015 16:38
 entering extended mode
 **C:/workspaceAndroid/PDBF_Paper/main.tex
 (C:/workspaceAndroid/PDBF_Paper/main.tex
@@ -893,40 +893,40 @@ File: pgflibraryarrows.code.tex 2013/09/23 v3.0.0 (rcs-revision 1.16)
 Package hyperref Info: Option `colorlinks' set `true' on input line 48.
 Package hyperref Info: Option `breaklinks' set `true' on input line 48.
 (C:\workspaceAndroid\PDBF\main.aux)
-LaTeX Font Info:    Checking defaults for OML/txmi/m/it on input line 53.
-LaTeX Font Info:    Try loading font information for OML+txmi on input line 53.
+LaTeX Font Info:    Checking defaults for OML/txmi/m/it on input line 54.
+LaTeX Font Info:    Try loading font information for OML+txmi on input line 54.
 
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\txfonts\omltxmi.fd
 File: omltxmi.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    ... okay on input line 53.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 53.
-LaTeX Font Info:    ... okay on input line 53.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 53.
-LaTeX Font Info:    ... okay on input line 53.
-LaTeX Font Info:    Checking defaults for OMS/txsy/m/n on input line 53.
-LaTeX Font Info:    Try loading font information for OMS+txsy on input line 53.
+LaTeX Font Info:    ... okay on input line 54.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 54.
+LaTeX Font Info:    ... okay on input line 54.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 54.
+LaTeX Font Info:    ... okay on input line 54.
+LaTeX Font Info:    Checking defaults for OMS/txsy/m/n on input line 54.
+LaTeX Font Info:    Try loading font information for OMS+txsy on input line 54.
 
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\txfonts\omstxsy.fd
 File: omstxsy.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    ... okay on input line 53.
-LaTeX Font Info:    Checking defaults for OMX/txex/m/n on input line 53.
-LaTeX Font Info:    Try loading font information for OMX+txex on input line 53.
+LaTeX Font Info:    ... okay on input line 54.
+LaTeX Font Info:    Checking defaults for OMX/txex/m/n on input line 54.
+LaTeX Font Info:    Try loading font information for OMX+txex on input line 54.
 
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\txfonts\omxtxex.fd
 File: omxtxex.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    ... okay on input line 53.
-LaTeX Font Info:    Checking defaults for U/txexa/m/n on input line 53.
-LaTeX Font Info:    Try loading font information for U+txexa on input line 53.
+LaTeX Font Info:    ... okay on input line 54.
+LaTeX Font Info:    Checking defaults for U/txexa/m/n on input line 54.
+LaTeX Font Info:    Try loading font information for U+txexa on input line 54.
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\txfonts\utxexa.fd
 File: utxexa.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    ... okay on input line 53.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 53.
-LaTeX Font Info:    ... okay on input line 53.
-LaTeX Font Info:    Try loading font information for OT1+txr on input line 53.
+LaTeX Font Info:    ... okay on input line 54.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 54.
+LaTeX Font Info:    ... okay on input line 54.
+LaTeX Font Info:    Try loading font information for OT1+txr on input line 54.
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\txfonts\ot1txr.fd
 File: ot1txr.fd 2000/12/15 v3.1
 )
@@ -979,7 +979,7 @@ File: ot1txr.fd 2000/12/15 v3.1
 )
 \AtBeginShipoutBox=\box57
 \temp=\write6
-Package hyperref Info: Link coloring ON on input line 53.
+Package hyperref Info: Link coloring ON on input line 54.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\hyperref\nameref.sty"
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\gettitlestring.sty"
@@ -987,105 +987,210 @@ Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
 \c@section@level=\count188
 )
-LaTeX Info: Redefining \ref on input line 53.
-LaTeX Info: Redefining \pageref on input line 53.
-LaTeX Info: Redefining \nameref on input line 53.
+LaTeX Info: Redefining \ref on input line 54.
+LaTeX Info: Redefining \pageref on input line 54.
+LaTeX Info: Redefining \nameref on input line 54.
 (C:\workspaceAndroid\PDBF\main.out) (C:\workspaceAndroid\PDBF\main.out)
 \@outlinefile=\write7
 ABD: EveryShipout initializing macros
-LaTeX Font Info:    Try loading font information for U+txsya on input line 57.
+LaTeX Font Info:    Try loading font information for U+txsya on input line 58.
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\txfonts\utxsya.fd
 File: utxsya.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    Try loading font information for U+txsyb on input line 57.
+LaTeX Font Info:    Try loading font information for U+txsyb on input line 58.
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\txfonts\utxsyb.fd
 File: utxsyb.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    Try loading font information for U+lasy on input line 57.
+LaTeX Font Info:    Try loading font information for U+lasy on input line 58.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\ulasy.fd"
 File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
 )
-LaTeX Font Info:    Try loading font information for U+stmry on input line 57.
+LaTeX Font Info:    Try loading font information for U+stmry on input line 58.
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\stmaryrd\ustmry.fd)
-LaTeX Font Info:    Try loading font information for U+txmia on input line 57.
+LaTeX Font Info:    Try loading font information for U+txmia on input line 58.
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\txfonts\utxmia.fd
 File: utxmia.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    Try loading font information for U+txsyc on input line 57.
+LaTeX Font Info:    Try loading font information for U+txsyc on input line 58.
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\txfonts\utxsyc.fd
 File: utxsyc.fd 2000/12/15 v3.1
 )
-Overfull \hbox (10.79999pt too wide) in paragraph at lines 57--57
+Overfull \hbox (10.79999pt too wide) in paragraph at lines 58--58
  [][][] 
  []
 
-<Overlay1.png, id=55, 297.36093pt x 259.7203pt>
-File: Overlay1.png Graphic file (type png)
-<use Overlay1.png>
-Package pdftex.def Info: Overlay1.png used on input line 136.
-(pdftex.def)             Requested size: 231.84076pt x 201.59422pt.
-<Overlay2.png, id=57, 297.36093pt x 259.7203pt>
-File: Overlay2.png Graphic file (type png)
-<use Overlay2.png>
-Package pdftex.def Info: Overlay2.png used on input line 137.
-(pdftex.def)             Requested size: 231.84076pt x 201.59422pt.
-<Overlay3.png, id=58, 297.36093pt x 511.9125pt>
-File: Overlay3.png Graphic file (type png)
-<use Overlay3.png>
-Package pdftex.def Info: Overlay3.png used on input line 138.
-(pdftex.def)             Requested size: 231.84076pt x 403.20354pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 134--139
-[]
- []
+LaTeX Warning: Citation `Mes2010' on page 1 undefined on input line 73.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 134--139
-[]
- []
+LaTeX Warning: Citation `SHJA13' on page 1 undefined on input line 73.
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+LaTeX Warning: Citation `Krishnamurthi:2015:RSC:2739250.2658987' on page 1 unde
+fined on input line 73.
+
+
+LaTeX Warning: Citation `Manolescu:2008:RES:1374780.1374791' on page 1 undefine
+d on input line 73.
+
+
+LaTeX Warning: Citation `Armstrong:2009:IDA:1645953.1646031' on page 1 undefine
+d on input line 73.
+
+
+LaTeX Warning: Citation `SHJA13' on page 1 undefined on input line 76.
+
+
+LaTeX Warning: Citation `Krishnamurthi:2015:RSC:2739250.2658987' on page 1 unde
+fined on input line 76.
+
+
+LaTeX Warning: Citation `SHJA13' on page 1 undefined on input line 76.
+
+
+LaTeX Warning: Citation `Mes2010' on page 1 undefined on input line 76.
+
+
+LaTeX Warning: Citation `cidr2015' on page 1 undefined on input line 77.
+
+
+LaTeX Warning: Citation `btw2015' on page 1 undefined on input line 77.
+
+
+LaTeX Warning: Citation `dagstuhl2015' on page 1 undefined on input line 77.
 
 [1{C:/Users/User/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}
 
 
- <C:/workspaceAndroid/PDBF/Overlay1.png>]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 146--149
+]
+Underfull \hbox (badness 10000) in paragraph at lines 164--166
 
  []
 
-(C:/workspaceAndroid/PDBF_Paper\main.bbl) [2 <C:/workspaceAndroid/PDBF/Overlay2
-.png> <C:/workspaceAndroid/PDBF/Overlay3.png>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 168.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 168.
+
+Underfull \hbox (badness 10000) in paragraph at lines 173--176
+
+ []
+
+[2] <Overlay1.png, id=93, 310.15875pt x 249.93375pt>
+File: Overlay1.png Graphic file (type png)
+<use Overlay1.png>
+Package pdftex.def Info: Overlay1.png used on input line 185.
+(pdftex.def)             Requested size: 241.9181pt x 193.54028pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 185--186
+
+ []
+
+<Overlay2.png, id=95, 310.15875pt x 249.93375pt>
+File: Overlay2.png Graphic file (type png)
+<use Overlay2.png>
+Package pdftex.def Info: Overlay2.png used on input line 190.
+(pdftex.def)             Requested size: 241.9181pt x 193.54028pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 190--191
+
+ []
+
+
+Overfull \hbox (1.91785pt too wide) in paragraph at lines 184--192
+ []$[]$ 
+ []
+
+
+Overfull \hbox (1.91785pt too wide) in paragraph at lines 184--192
+ []$ 
+ []
+
+<Overlay3.png, id=96, 310.15875pt x 249.93375pt>
+File: Overlay3.png Graphic file (type png)
+<use Overlay3.png>
+Package pdftex.def Info: Overlay3.png used on input line 194.
+(pdftex.def)             Requested size: 241.9181pt x 193.54028pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 194--195
+
+ []
+
+
+Overfull \hbox (1.91785pt too wide) in paragraph at lines 193--197
+ []$[]$ 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<Overlay4.png, id=97, 310.15875pt x 249.93375pt>
+File: Overlay4.png Graphic file (type png)
+<use Overlay4.png>
+Package pdftex.def Info: Overlay4.png used on input line 201.
+(pdftex.def)             Requested size: 241.9181pt x 193.54028pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 201--202
+
+ []
+
+<Overlay5.png, id=98, 310.15875pt x 532.23843pt>
+File: Overlay5.png Graphic file (type png)
+<use Overlay5.png>
+Package pdftex.def Info: Overlay5.png used on input line 246.
+(pdftex.def)             Requested size: 241.9181pt x 418.53088pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 246--247
+
+ []
+
+
+Overfull \hbox (1.91785pt too wide) in paragraph at lines 200--249
+ []$[]$ 
+ []
+
+
+Overfull \hbox (1.91785pt too wide) in paragraph at lines 200--249
+ []$ 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[3 <C:/workspaceAndroid/PDBF/Overlay1.png> <C:/workspaceAndroid/PDBF/Overlay2.p
+ng> <C:/workspaceAndroid/PDBF/Overlay3.png> <C:/workspaceAndroid/PDBF/Overlay4.
+png> <C:/workspaceAndroid/PDBF/Overlay5.png>] (C:\workspaceAndroid\PDBF\main.bb
+l)
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 285.
+[4
+
+
+]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 285.
 (C:\workspaceAndroid\PDBF\main.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 168.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 168.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 285.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 285.
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 6A3819CCA6600C844C6B151E19FAB818;667.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 168.
+(rerunfilecheck)             Checksum: 3460A1BEE6F3733868136CF4DE06EE3C;738.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 285.
  ) 
 Here is how much of TeX's memory you used:
- 23982 strings out of 493921
- 459680 string characters out of 3144879
- 489012 words of memory out of 3000000
- 26855 multiletter control sequences out of 15000+200000
- 32731 words of font info for 76 fonts, out of 3000000 for 9000
+ 24034 strings out of 493921
+ 460286 string characters out of 3144879
+ 493734 words of memory out of 3000000
+ 26881 multiletter control sequences out of 15000+200000
+ 38974 words of font info for 86 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 55i,11n,54p,10421b,484s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 55i,14n,54p,10421b,587s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}<C:/Users/
-User/AppData/Roaming/MiKTeX/2.9/fonts/type1/public/txfonts/rtxr.pfb><C:/Program
- Files (x86)/MiKTeX 2.9/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Program Files (
-x86)/MiKTeX 2.9/fonts/type1/urw/helvetic/uhvr8a.pfb><C:/Program Files (x86)/MiK
-TeX 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fon
-ts/type1/urw/times/utmr8a.pfb>
-Output written on main.pdf (2 pages, 82301 bytes).
+User/AppData/Roaming/MiKTeX/2.9/fonts/type1/public/txfonts/rtxb.pfb><C:/Users/U
+ser/AppData/Roaming/MiKTeX/2.9/fonts/type1/public/txfonts/rtxmi.pfb><C:/Users/U
+ser/AppData/Roaming/MiKTeX/2.9/fonts/type1/public/txfonts/rtxr.pfb><C:/Users/Us
+er/AppData/Roaming/MiKTeX/2.9/fonts/type1/public/txfonts/txsy.pfb><C:/Program F
+iles (x86)/MiKTeX 2.9/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Program Files (x8
+6)/MiKTeX 2.9/fonts/type1/urw/helvetic/uhvr8a.pfb><C:/Program Files (x86)/MiKTe
+X 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts
+/type1/urw/times/utmr8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/
+times/utmri8a.pfb>
+Output written on main.pdf (4 pages, 149424 bytes).
 PDF statistics:
- 107 PDF objects out of 1000 (max. 8388607)
- 20 named destinations out of 1000 (max. 500000)
- 124 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 157 PDF objects out of 1000 (max. 8388607)
+ 35 named destinations out of 1000 (max. 500000)
+ 142 words of extra memory for PDF output out of 10000 (max. 10000000)
 

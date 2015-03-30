@@ -349,7 +349,7 @@ function buildContainerPivotBig(json, containerOver, initial) {
 		}, 500);
 	};
 
-	var tip = "Tip: Move the cursor over the result cells to see more detailed results for min and max aggregator.<br/>";
+	var tip = "Tip: Drag and drop attributes to the row/column area. <br/>Move the cursor over the result cells to see more detailed results for min and max aggregator.<br/>";
 	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip,
 			[ json ], updateData, 'pivot table');
 	var containerContent = ref.containerContent;
