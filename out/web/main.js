@@ -231,7 +231,7 @@ function buildContainerChartBig(json, containerOver, initial) {
 	json.resultBig = chartdataCpy.res;
 	var tip = "Tip: Click-and drag to zoom the graph. Shift + click-and drag to pan the graph.<br/>";
 	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip,
-			[json], updateData, 'graph');
+			[ json ], updateData, 'graph');
 	var containerContent = ref.containerContent;
 	var containerControl = ref.containerControl;
 	var containerOptions = ref.options;
@@ -351,7 +351,7 @@ function buildContainerPivotBig(json, containerOver, initial) {
 
 	var tip = "Tip: Move the cursor over the result cells to see more detailed results for min and max aggregator.<br/>";
 	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip,
-			[json], updateData, 'pivot table');
+			[ json ], updateData, 'pivot table');
 	var containerContent = ref.containerContent;
 	var containerControl = ref.containerControl;
 	var containerOptions = ref.options;
@@ -484,7 +484,7 @@ function buildContainerTableBig(json, containerOver) {
 
 	var tip = '';
 	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip,
-			[json], update, 'table');
+			[ json ], update, 'table');
 	var containerContent = ref.containerContent;
 	var containerOptions = ref.options;
 	var error = ref.error;
@@ -502,7 +502,7 @@ function buildContainerTableBig(json, containerOver) {
 
 function overlay(pageNr) {
 	if (init) {
-		rawZoomFactor = 1.25;//PDFViewerApplication.pdfViewer._currentScale;
+		rawZoomFactor = 1.25;// PDFViewerApplication.pdfViewer._currentScale;
 		init = false;
 	}
 
@@ -921,7 +921,7 @@ function getDygraphsOptions(json, zoomFactor, columns) {
 
 function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr,
 		update, f) {
-	var json = jsonArr[0]; //pass by reference 
+	var json = jsonArr[0]; // pass by reference
 	var containerChart = document.createElement('div');
 	containerChart
 			.setAttribute(
@@ -1000,17 +1000,19 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr,
 	containerLabel.innerHTML = 'Switch representation:<br />';
 	containerSwitch.appendChild(containerLabel);
 
-	var buttonChart = document.createElement('input');
-	buttonChart.type = 'button';
-	buttonChart.value = 'Chart';
-	buttonChart.setAttribute('style', 'font-size:inherit;');
-	buttonChart.addEventListener('click', function() {
-		while (containerOver.firstChild) {
-			containerOver.removeChild(containerOver.firstChild);
-		}
-		buildContainerChartBig(json, containerOver, false);
-	});
-	containerSwitch.appendChild(buttonChart);
+	if (json.type.C != 'pdbf.common.Pivot') {
+		var buttonChart = document.createElement('input');
+		buttonChart.type = 'button';
+		buttonChart.value = 'Chart';
+		buttonChart.setAttribute('style', 'font-size:inherit;');
+		buttonChart.addEventListener('click', function() {
+			while (containerOver.firstChild) {
+				containerOver.removeChild(containerOver.firstChild);
+			}
+			buildContainerChartBig(json, containerOver, false);
+		});
+		containerSwitch.appendChild(buttonChart);
+	}
 
 	var buttonPivot = document.createElement('input');
 	buttonPivot.type = 'button';
@@ -1177,7 +1179,7 @@ function getChartData(json) {
 		values : values,
 		columns : columns,
 		error : error,
-		res: results
+		res : results
 	};
 }
 
@@ -1185,8 +1187,7 @@ function getPivotTableData(json, isBig) {
 	var error;
 	var results;
 	try {
-		results = alasqlQuery(isBig ? json.type.I.queryB
-				: json.type.I.query);
+		results = alasqlQuery(isBig ? json.type.I.queryB : json.type.I.query);
 	} catch (e) {
 		return {
 			error : e.message
