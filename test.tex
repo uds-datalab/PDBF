@@ -1,6 +1,7 @@
 \documentclass[10pt]{scrartcl}
 \usepackage{PDBF}
 \usepackage{wrapfig}
+\usepackage{ngerman}
 \usepackage[a4paper,vmargin={30mm,40mm},hmargin={28mm,28mm}]{geometry}
 
 \title{PDBF Testdokument}
@@ -8,7 +9,7 @@
  Patrick Bender\\
   \texttt{s9pabend@stud.uni-saarland.de}
 }
-\date{\today{}, Saarbrücken}
+\date{\today{}, Saarbr"ucken}
 
 \makeatletter
 \def\@maketitle{%
@@ -95,7 +96,7 @@ Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lo
     \end{minipage}
 \end{figure}
 
-\newpage
+\clearpage
 \begin{wrapfigure}{r}{0.52\textwidth}
 { \centering %
 \pivotTable[width=0.5\textwidth, height=0.8\textwidth, scale=0.5, rows={"Machine", "Table schema", "Query"}, aggregation=Minimum, aggregationattribute=Query time, aggregationBig=Minimum, aggregationattributeBig=Query time (in Sec)]

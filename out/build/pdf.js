@@ -1654,8 +1654,7 @@ PDFJS.imageResourcesPath = (PDFJS.imageResourcesPath === undefined ?
  * to workers.
  * @var {boolean}
  */
-PDFJS.disableWorker = (PDFJS.disableWorker === undefined ?
-                       false : PDFJS.disableWorker);
+PDFJS.disableWorker = true;
 
 /**
  * Path and filename of the worker file. Required when the worker is enabled in
@@ -2399,9 +2398,7 @@ var WorkerTransport = (function WorkerTransportClosure() {
         // In the developer build load worker_loader which in turn loads all the
         // other files and resolves the promise. In production only the
         // pdf.worker.js file is needed.
-        Util.loadScript(PDFJS.workerSrc, function() {
-          PDFJS.fakeWorkerFilesLoadedCapability.resolve();
-        });
+        PDFJS.fakeWorkerFilesLoadedCapability.resolve();
       }
       PDFJS.fakeWorkerFilesLoadedCapability.promise.then(function () {
         warn('Setting up fake worker.');

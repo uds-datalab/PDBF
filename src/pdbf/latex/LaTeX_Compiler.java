@@ -32,6 +32,7 @@ public class LaTeX_Compiler {
 
     private static ArrayList<Process> processes = new ArrayList<Process>();
     private static ArrayList<String> cleanupfiles = new ArrayList<String>();
+    private static ArrayList<String> copyfiles = new ArrayList<String>();
     private static Gson gson;
     private static String suffix;
     private static Dimension dimOrg;
@@ -49,7 +50,7 @@ public class LaTeX_Compiler {
 	}
 
 	if (args.length != 1) {
-	    System.out.println("Usage: Java_Compiler.jar pathToLaTeX");
+	    System.out.println("Usage: Java_Compiler.jar LaTeX_file");
 	    System.exit(-1);
 	}
 	String latexPath = args[0];
@@ -59,6 +60,8 @@ public class LaTeX_Compiler {
 	    System.exit(-1);
 	}
 
+	String latexFolder = latex.getParent();
+	
 	ArrayList<String> commands = new ArrayList<String>(Arrays.asList(pathToLaTeXScript));
 	commands.add(latex.getAbsolutePath());
 
@@ -150,9 +153,18 @@ public class LaTeX_Compiler {
 	    }
 	}
 	
+	//copy images to latex file
+	for (String s : copyfiles) {
+	    File source = new File(s);
+	    String target = latexFolder + File.separator + source.getName();
+	    try {
+		FileUtils.copyFile(source, new File(target));
+	    } catch (IOException e) {
+		e.printStackTrace();
+	    }
+	}
+	
 	//TODO: javascript. maybe implement chart legend via dygraphs plugin apis
-
-	//TODO: logscale bei zweiter chart broken
 	
 	System.out.println("Compiling LaTeX (2/2)...");
 	try {
@@ -243,7 +255,14 @@ public class LaTeX_Compiler {
 	Chart c = (Chart)o.type;
 	cleanupfiles.add("out/web/" + i + ".html");
 	cleanupfiles.add("" + o.name + ".png");
+	copyfiles.add("" + o.name + ".png");
 	try {
+	    if (c.aggregationattributeBig.equals("")) {
+		c.aggregationattributeBig = c.aggregationattribute;
+	    }
+	    if (c.aggregationBig.equals("")) {
+		c.aggregationBig = c.aggregation;
+	    }
 	    Dimension dim = new Dimension(dimOrg.width * c.quality, dimOrg.height * c.quality);
 	    String viewer;
 	    String viewerHEAD = FileUtils.readFileToString(new File("out/web/templateHEADimages.html"), Tools.utf8);
@@ -259,7 +278,7 @@ public class LaTeX_Compiler {
 	    e.printStackTrace();
 	}
 	try {
-	    ProcessBuilder pb = new ProcessBuilder("external-tools/phantomjs-" + suffix, "out/web/capture.js", "out/web/" + i + ".html");
+	    ProcessBuilder pb = new ProcessBuilder("external-tools/phantomjs-" + suffix, "external-tools/capture.js", "out/web/" + i + ".html");
 	    pb.inheritIO();
 	    Process p = pb.start();
 	    processes.add(p);

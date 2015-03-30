@@ -97,7 +97,7 @@
 		\IfFileExists{Overlay\arabic{visual}.png}{%
 	    		&\includegraphics[width=\pdbf@width, height=\pdbf@height]{Overlay\arabic{visual}.png}&\\%
 		}{%
-	    		&\includegraphics[width=\pdbf@width, height=\pdbf@height]{out/web/dummy.png}&\\%
+	    		&\includegraphics[width=\pdbf@width, height=\pdbf@height, draft]{dummy.png}&\\%
 		}%
 		&&\zsavepos{Overlay\arabic{visual}2}\\%
 		\end{tabular}%
@@ -144,11 +144,11 @@
 }
 
 \def\lineChart[#1]#2{
-	\pdbf@chart[#1]{#2}{}{LineChart}
+	\pdbf@chart[#1]{#2}{#2}{LineChart}
 }
 
 \def\barChart[#1]#2{
-	\pdbf@chart[#1]{#2}{}{BarChart}
+	\pdbf@chart[#1]{#2}{#2}{BarChart}
 }
 
 \def\pivotTable[#1]#2#3{
