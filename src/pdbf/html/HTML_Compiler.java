@@ -10,7 +10,7 @@ import pdbf.common.Tools;
 
 public class HTML_Compiler {
 
-    public static DecimalFormat df = new DecimalFormat( "##########" );
+    public static DecimalFormat df = new DecimalFormat( "0000000000" );
     
     public static void main(String[] args) {
 	System.out.println("Compiling HTML...");
@@ -36,15 +36,8 @@ public class HTML_Compiler {
 		    "\r\n" + all +		    
 		    viewerTAIL;
 	    String insert1 = "%<!DOCTYPE html><html dir=\"ltr\" mozdisallowselectionprint moznomarginboxes>" +
-  		      	     "<head><meta charset=\"utf-8\"><!--\n";
+  		      	     "<head><meta charset=\"utf-8\">\n";
 	    String insert2 = "1337 0 obj\n" +
-		    	     "<<\n" +
-		    	     "/Type /ObjStm\n" +
-		    	     "/N 23\n" +
-		    	     "/First 167\n" +
-		    	     "/Length 1696\n" +
-		    	     "/Filter /FlateDecode\n" +
-		    	     ">>\n" +
 		    	     "stream\n"+
 		    	     "-->\n" +
 		    	     viewer + "<!--\n" +
@@ -58,9 +51,12 @@ public class HTML_Compiler {
 	    
 	    // Fix xref
 	    int offset = (insert1.length()+insert2.length());
-	    int b = sb.indexOf("xref\n") + "xref\n".length();
+	    int b = sb.lastIndexOf("\nxref\n") + "\nxref\n".length();
 	    int e;
 	    int x;
+	    // skip first entry
+	    b = sb.indexOf("\n", b+1) + 1;
+	    e = sb.indexOf(" ", b);
 	    try {
 		while (true) {
 		    b = sb.indexOf("\n", b+1) + 1;

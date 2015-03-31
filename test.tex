@@ -35,7 +35,7 @@
 
 \DBSQLText{CREATE TABLE table1 (column1 INTEGER, column2 DATE, column3 FLOAT);}
 \DBSQLFile{somedb.sql}
-\DBSQLJDBC{jdbc:postgresql://localhost:5432/postgres}{postgres}{test}{testtest, dim_time, dim_compiler, dim_dataset, dim_implementation, dim_layout, dim_query, dim_machine, fact_experiment}%
+%\DBSQLJDBC{jdbc:postgresql://localhost:5432/postgres}{postgres}{test}{testtest, dim_time, dim_compiler, dim_dataset, dim_implementation, dim_layout, dim_query, dim_machine, fact_experiment}%
 
 \begin{document}
 \maketitle
@@ -91,7 +91,7 @@ Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lo
     \end{minipage} \\[8pt]
     
     \begin{minipage}{\textwidth}
-    \lineChart[width=1.0\textwidth, height=0.45\textwidth, xunit=Row Number, yunit={Runtime [in sec]}]{SELECT ROWNUM(), runtime FROM fact_experiment;}\\%
+    ~%\lineChart[width=1.0\textwidth, height=0.45\textwidth, xunit=Row Number, yunit={Runtime [in sec]}]{SELECT ROWNUM(), runtime FROM fact_experiment;}\\%
     \caption{Lot of points}
     \end{minipage}
 \end{figure}
@@ -99,47 +99,47 @@ Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lo
 \clearpage
 \begin{wrapfigure}{r}{0.52\textwidth}
 { \centering %
-\pivotTable[width=0.5\textwidth, height=0.8\textwidth, scale=0.5, rows={"Machine", "Table schema", "Query"}, aggregation=Minimum, aggregationattribute=Query time, aggregationBig=Minimum, aggregationattributeBig=Query time (in Sec)]
-{SELECT
-m.cpuarchitecture AS Machine,
-IIF(d.tableschema = '(long a, long b)', 'long', IIF(d.tableschema = '(char a, char b)', 'char', IIF(d.tableschema = '(int a, int b)', 'int', 'n/a')))   AS [Table schema],
-IIF(q.querytext = 'SELECT MIN(a+b) FROM t', 'Q1', 'Q2')     AS [Query],
-c.compiler      AS Compiler,
-c.optlevel      AS [Opt. level],
-l.name          AS [Layout name],
-CAST(COALESCE(IIF(i.templateparam, 'C', 'R'), 'n/a') AS VARCHAR) AS [Chunk size provi- ded at],
-ROUND(v.runtime, 3) 		AS [Query time]
-FROM fact_experiment AS v
-    JOIN dim_machine m ON m.id = v.machineid
-    JOIN dim_dataset d ON d.id = v.datasetid
-    JOIN dim_compiler c ON c.id = v.compilerid
-    JOIN dim_layout l ON l.id = v.layoutid
-    JOIN dim_implementation i ON i.id = v.implementationid
-    JOIN dim_query q ON q.id = v.queryid
-ORDER BY m.id DESC, d.tableschema, q.querytext,
-    c.compiler, c.optlevel, i.templateparam, i.logscaleparam, l.chunksize;}
-{SELECT
-m.cpu + ' (' +  m.cpuarchitecture + ')' AS Machine,
-d.tableschema   AS [Table schema],
-q.querytext     AS [Query],
-c.compiler      AS Compiler,
-c.optlevel      AS [Opt. level],
-l.name          AS [Layout name],
-CAST(COALESCE(l.chunksize, 'n/a') AS VARCHAR) AS [Chunk size (tuples)],
-IIF(i.templateparam, 'Compile time', 'Runtime') AS [Chunk size provided at],
-IIF(i.logscaleparam, 'Powers of 2', 'Multiples of 2') AS [Chunk sizes considered],
-t.timestamp 	AS [Time of experiment],
-ROUND(v.runtime, 3) 		AS [Query time (in Sec)]
-FROM fact_experiment AS v
-    JOIN dim_machine m ON m.id = v.machineid
-    JOIN dim_dataset d ON d.id = v.datasetid
-    JOIN dim_compiler c ON c.id = v.compilerid
-    JOIN dim_layout l ON l.id = v.layoutid
-    JOIN dim_implementation i ON i.id = v.implementationid
-    JOIN dim_query q ON q.id = v.queryid
-    JOIN dim_time t ON t.id = v.timeid
-ORDER BY m.id DESC, d.tableschema, q.querytext,
-    c.compiler, c.optlevel, i.templateparam, i.logscaleparam, l.chunksize;}
+~%\pivotTable[width=0.5\textwidth, height=0.8\textwidth, scale=0.5, rows={"Machine", "Table schema", "Query"}, aggregation=Minimum, aggregationattribute=Query time, aggregationBig=Minimum, aggregationattributeBig=Query time (in Sec)]
+%{SELECT
+%m.cpuarchitecture AS Machine,
+%IIF(d.tableschema = '(long a, long b)', 'long', IIF(d.tableschema = '(char a, char b)', 'char', IIF(d.tableschema = '(int a, int b)', 'int', 'n/a')))   AS [Table schema],
+%IIF(q.querytext = 'SELECT MIN(a+b) FROM t', 'Q1', 'Q2')     AS [Query],
+%c.compiler      AS Compiler,
+%c.optlevel      AS [Opt. level],
+%l.name          AS [Layout name],
+%CAST(COALESCE(IIF(i.templateparam, 'C', 'R'), 'n/a') AS VARCHAR) AS [Chunk size provi- ded at],
+%ROUND(v.runtime, 3) 		AS [Query time]
+%FROM fact_experiment AS v
+%    JOIN dim_machine m ON m.id = v.machineid
+%    JOIN dim_dataset d ON d.id = v.datasetid
+%    JOIN dim_compiler c ON c.id = v.compilerid
+%    JOIN dim_layout l ON l.id = v.layoutid
+%    JOIN dim_implementation i ON i.id = v.implementationid
+%    JOIN dim_query q ON q.id = v.queryid
+%ORDER BY m.id DESC, d.tableschema, q.querytext,
+%    c.compiler, c.optlevel, i.templateparam, i.logscaleparam, l.chunksize;}
+%{SELECT
+%m.cpu + ' (' +  m.cpuarchitecture + ')' AS Machine,
+%d.tableschema   AS [Table schema],
+%q.querytext     AS [Query],
+%c.compiler      AS Compiler,
+%c.optlevel      AS [Opt. level],
+%l.name          AS [Layout name],
+%CAST(COALESCE(l.chunksize, 'n/a') AS VARCHAR) AS [Chunk size (tuples)],
+%IIF(i.templateparam, 'Compile time', 'Runtime') AS [Chunk size provided at],
+%IIF(i.logscaleparam, 'Powers of 2', 'Multiples of 2') AS [Chunk sizes considered],
+%t.timestamp 	AS [Time of experiment],
+%ROUND(v.runtime, 3) 		AS [Query time (in Sec)]
+%FROM fact_experiment AS v
+%    JOIN dim_machine m ON m.id = v.machineid
+%    JOIN dim_dataset d ON d.id = v.datasetid
+%    JOIN dim_compiler c ON c.id = v.compilerid
+%    JOIN dim_layout l ON l.id = v.layoutid
+%    JOIN dim_implementation i ON i.id = v.implementationid
+%    JOIN dim_query q ON q.id = v.queryid
+%    JOIN dim_time t ON t.id = v.timeid
+%ORDER BY m.id DESC, d.tableschema, q.querytext,
+%    c.compiler, c.optlevel, i.templateparam, i.logscaleparam, l.chunksize;}
 \\ }
 \vspace{-5pt}
 \caption{Pivot table}

@@ -7,6 +7,8 @@ import pdbf.latex.LaTeX_Compiler;
 public class CompleteRun_HTML {
 
     public static void main(String[] args) {
+	long begin = System.currentTimeMillis();
+	
 	LaTeX_Compiler.main(args);
 	HTML_Compiler.main(args);
 
@@ -29,6 +31,7 @@ public class CompleteRun_HTML {
 	new File("beamer_test.synctex.gz").delete();
 
 	System.out.println("Finished!");
+	System.out.println("Took " + (System.currentTimeMillis() - begin) + "ms");
     }
 
 }
