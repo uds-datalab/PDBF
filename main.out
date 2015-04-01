@@ -3,15 +3,16 @@
 \BOOKMARK [1][-]{section.3}{The PDbF Framework}{}% 3
 \BOOKMARK [2][-]{subsection.3.1}{Janiform File Format}{section.3}% 4
 \BOOKMARK [2][-]{subsection.3.2}{Compiler Architecture}{section.3}% 5
-\BOOKMARK [1][-]{section.4}{PDbF Features}{}% 6
-\BOOKMARK [2][-]{subsection.4.1}{support for DESKTOP browsers and pdf viewers}{section.4}% 7
-\BOOKMARK [2][-]{subsection.4.2}{pivot tables}{section.4}% 8
-\BOOKMARK [2][-]{subsection.4.3}{bar plots}{section.4}% 9
-\BOOKMARK [2][-]{subsection.4.4}{Raw Data Access}{section.4}% 10
-\BOOKMARK [1][-]{section.5}{The Demo}{}% 11
-\BOOKMARK [2][-]{subsection.5.1}{The PDbF File Format}{section.5}% 12
-\BOOKMARK [2][-]{subsection.5.2}{The PDbF Compiler}{section.5}% 13
-\BOOKMARK [2][-]{subsection.5.3}{The LaTeX Compiler}{section.5}% 14
-\BOOKMARK [1][-]{section.6}{Related Work}{}% 15
-\BOOKMARK [1][-]{section.7}{Conclusions}{}% 16
-\BOOKMARK [1][-]{section.8}{References}{}% 17
+\BOOKMARK [2][-]{subsection.3.3}{PDbF Interpreter}{section.3}% 6
+\BOOKMARK [1][-]{section.4}{PDbF Features}{}% 7
+\BOOKMARK [2][-]{subsection.4.1}{Support for DESKTOP Browsers and PDF Viewers}{section.4}% 8
+\BOOKMARK [2][-]{subsection.4.2}{Dynamic Graphs}{section.4}% 9
+\BOOKMARK [2][-]{subsection.4.3}{Dynamic Pivot Tables}{section.4}% 10
+\BOOKMARK [2][-]{subsection.4.4}{Raw Data Access}{section.4}% 11
+\BOOKMARK [2][-]{subsection.4.5}{Future Work}{section.4}% 12
+\BOOKMARK [1][-]{section.5}{The Demo}{}% 13
+\BOOKMARK [2][-]{subsection.5.1}{The PDbF File Format}{section.5}% 14
+\BOOKMARK [2][-]{subsection.5.2}{The PDbF Compiler}{section.5}% 15
+\BOOKMARK [2][-]{subsection.5.3}{LaTeX Integration}{section.5}% 16
+\BOOKMARK [1][-]{section.6}{Conclusions}{}% 17
+\BOOKMARK [1][-]{section.7}{References}{}% 18

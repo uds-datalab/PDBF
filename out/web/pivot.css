@@ -76,6 +76,18 @@ table.pvtTable tr td {
     border-radius: 5px;
 }
 
+.pvtAxisContainer.pvtRows::before {
+	content: "Row Attributes:";
+}
+
+.pvtAxisContainer.pvtCols::before {
+	content: "Column Attributes:";
+}
+
+.pvtAxisContainer.pvtUnused::before {
+	content: "Available Attributes:"
+}
+
 .pvtTriangle {
     cursor:pointer;
     color: grey;

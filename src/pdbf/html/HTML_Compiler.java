@@ -21,8 +21,6 @@ public class HTML_Compiler {
 	String pdfname = filename + ".pdf";
 	String outfile = basename + ".html";
 	
-	
-	
 	try {
 	    String viewer;
 	    String viewerHEAD = FileUtils.readFileToString(new File("out/web/templateHEADalasql.html"), Tools.utf8);
@@ -33,10 +31,10 @@ public class HTML_Compiler {
 		    "db_base64 = \"" + Tools.encodeFileToBase64Binary(new File("db.sql")) + "\";\r\n" + 
 		    "json_base64 = \"" + Tools.encodeFileToBase64Binary(new File("config.json")) + "\";\r\n" + 
 		    "dbjson_base64 = \"" + Tools.escapeQuotes(new File("db.json")) + "\";\r\n" +
-		    "\r\n" + all +		    
+		    //"\r\n" + all +		    
 		    viewerTAIL;
 	    String insert1 = "%<!DOCTYPE html><html dir=\"ltr\" mozdisallowselectionprint moznomarginboxes>" +
-  		      	     "<head><meta charset=\"utf-8\">\n";
+  		      	     "<head><meta charset=\"utf-8\"><!--\n";
 	    String insert2 = "1337 0 obj\n" +
 		    	     "stream\n"+
 		    	     "-->\n" +

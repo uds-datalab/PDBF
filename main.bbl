@@ -1,3 +1,72 @@
-\begin{thebibliography}{}
+\begin{thebibliography}{10}
+
+\bibitem{alasql}
+\url{https://github.com/agershun/alasql}.
+
+\bibitem{funkyfiles}
+A.~Albertini.
+\newblock
+  \href{https://media.ccc.de/browse/congress/2014/31c3_-_5930_-_en_-_saal_6_-_201412291400_-_funky_file_formats_-_ange_albertini.html#video}{Funky
+  File Formats}.
+\newblock In {\em CCC}. 2014.
+
+\bibitem{Armstrong:2009:IDA:1645953.1646031}
+T.~G. Armstrong, A.~Moffat, W.~Webber, and J.~Zobel.
+\newblock {Improvements That Don't Add Up: Ad-hoc Retrieval Results Since
+  1998}.
+\newblock CIKM '09, pages 601--610, New York, NY, USA, 2009. ACM.
+
+\bibitem{dagstuhl2015}
+{Dagstuhl Perspectives Workshop 15452: Artifact Evaluation for Publications}.
+\newblock 11/2015.
+\newblock \url{http://www.dagstuhl.de/de/programm/kalender/semhp/?semnr=15452}.
+
+\bibitem{cidr2015}
+J.~Dittrich.
+\newblock {The Case for Small Data Management}.
+\newblock In {\em CIDR}, 2015.
+
+\bibitem{btw2015}
+J.~Dittrich.
+\newblock {The Case for Small Data Management}.
+\newblock In {\em keynote at BTW}, 3/2015.
+\newblock extended version of~\cite{cidr2015}
+  (\href{https://youtu.be/O7Qgo6RSzmE}{youtube}).
+
+\bibitem{dygraph}
+\url{http://dygraphs.com}.
+
+\bibitem{jQuery}
+\url{https://jquery.com}.
+
+\bibitem{Krishnamurthi:2015:RSC:2739250.2658987}
+S.~Krishnamurthi and J.~Vitek.
+\newblock {The Real Software Crisis: Repeatability As a Core Value}.
+\newblock {\em Commun. ACM}, 58(3):34--36, Feb. 2015.
+
+\bibitem{Manolescu:2008:RES:1374780.1374791}
+I.~Manolescu, L.~Afanasiev, A.~Arion, J.~Dittrich, S.~Manegold, N.~Polyzotis,
+  K.~Schnaitter, P.~Senellart, S.~Zoupanos, and D.~Shasha.
+\newblock {The Repeatability Experiment of SIGMOD 2008}.
+\newblock {\em SIGMOD Rec.}, 37(1):39--45, Mar. 2008.
+
+\bibitem{Mes2010}
+J.~P. Mesirov.
+\newblock {COMPUTER SCIENCE. Accessible Reproducible Research}.
+\newblock {\em Science (New York, N.Y.)}, 327(5964):10.1126/science.1179653, 01
+  2010.
+
+\bibitem{pdfjs}
+\url{https://mozilla.github.io/pdf.js}.
+
+\bibitem{pivot}
+\url{https://github.com/nicolaskruchten/pivottable}.
+
+\bibitem{SHJA13}
+G.~K. Sandve, A.~Nekrutenko, J.~Taylor, and E.~Hovig.
+\newblock {Ten Simple Rules for Reproducible Computational Research}.
+\newblock {\em PLoS Comput Biol}, 9(10):e1003285, 10 2013.
+\newblock
+  \url{http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003285}.
 
 \end{thebibliography}

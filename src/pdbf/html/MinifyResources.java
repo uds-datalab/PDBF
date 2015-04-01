@@ -14,7 +14,7 @@ public class MinifyResources {
 	String command[] = {"java", "-jar", "lib/compiler.jar", "out/web/base64.js", "out/web/compatibility.js", "out/web/dygraphs.js", "out/web/alasql.js", 
 		"out/web/excanvas.compiled.js", "out/web/diff_match_patch.js",
 		"out/web/jquery-1.11.2.min.js", "out/web/pivot.js", "out/web/jquery-ui-1.9.2.custom.min.js",
-		"out/web/l10n.js", "out/web/viewer.js", "out/web/main.js",
+		"out/web/l10n.js", "out/web/viewer.js", "out/web/preMain.js", "out/web/main.js",
 		"--js_output_file", "out/web/all", "--language_in", "ECMASCRIPT5", "--compilation_level", 
 		"WHITESPACE_ONLY", "--charset", "UTF-8"}; 
 	

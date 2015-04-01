@@ -1,186 +1,5 @@
 'use strict';
 
-var nomove = false;
-function consumeEvent(evt) {
-	nomove = true;
-}
-
-// Performance measurement functions
-var tictime;
-if (!window.performance || !performance.now) {
-	window.performance = {
-		now : Date.now
-	}
-}
-function tic() {/* tictime = performance.now() */
-}
-function toc(msg) {
-	// var dt = performance.now()-tictime;
-	// console.log((msg||'toc') + ": " + dt + "ms");
-}
-
-function replaceAll(str, s, r) {
-	return str.split(s).join(r);
-}
-
-// Load the database
-tic();
-var tmp = UTF8ArrToStr(base64DecToArr(db_base64));
-var tmp2 = dbjson_base64;
-toc("Base64 decode time for DB");
-tic();
-if (tmp2 != "") {
-	alasql.databases = JSON.parse(tmp2);
-}
-alasqlQuery(tmp);
-toc("DB load time");
-
-var rawZoomFactor;
-var init = true;
-
-var viewerContainer;
-var execBtn;
-var outputElm;
-var errorElm;
-var commandsElm;
-var editorMain;
-var cm;
-
-$(function() {
-	viewerContainer = document.getElementById("viewerContainer");
-	// GUI.js
-	execBtn = document.getElementById('execute');
-	outputElm = document.getElementById('output');
-	errorElm = document.getElementById('error');
-	commandsElm = document.getElementById('commands');
-
-	editorMain = CodeMirror.fromTextArea(commandsElm, {
-		mode : "text/x-sql",
-		indentWithTabs : true,
-		smartIndent : true,
-		lineNumbers : true,
-		lineWrapping : true,
-		matchBrackets : true,
-		viewportMargin : Infinity,
-		extraKeys : {
-			"Ctrl-Space" : "autocomplete"
-		}
-	});
-	cm = document.getElementsByClassName("CodeMirror")[0];
-	cm.addEventListener('mousedown', consumeEvent);
-	cm.addEventListener('mouseup', consumeEvent);
-});
-
-$(window)
-		.resize(
-				function() {
-					var tmp = document.getElementsByClassName("centerhv");
-					for (var i = 0; i < tmp.length; ++i) {
-						tmp[i].style.left = ($(window).width() - $(tmp[i])
-								.outerWidth()) / 2;
-						tmp[i].style.top = ($(window).height() - 32 - $(tmp[i])
-								.outerHeight()) / 2 + 32;
-					}
-				});
-
-// Load config.json
-var json = JSON.parse(UTF8ArrToStr(base64DecToArr(json_base64)));
-var pageOverlays = [];
-for (var i = 0; i < json.length; ++i) {
-	parse(json[i]);
-}
-
-function isValidDate(d) {
-	if (Object.prototype.toString.call(d) !== "[object Date]")
-		return false;
-	return !isNaN(d.getTime());
-}
-
-function parse(json) {
-	var page = json.type.I.page;
-	var pageOverlay = pageOverlays[page];
-	if (typeof pageOverlay == 'undefined') {
-		pageOverlay = [];
-		pageOverlays[page] = pageOverlay;
-	}
-	pageOverlay[pageOverlay.length] = json;
-}
-
-function getCheckbox(labelname, containerControl) {
-	var label = document.createElement('label');
-	var span = document.createElement('span');
-	span.innerHTML = ' ' + labelname + '<br />';
-	var checkbox = document.createElement('input');
-	checkbox.setAttribute('style', 'position:relative; top:2px;');
-	label.appendChild(checkbox);
-	label.appendChild(span);
-	checkbox.type = 'checkbox';
-	containerControl.appendChild(label);
-	return checkbox;
-}
-
-function display(json, page) {
-	var zoomFactor = PDFViewerApplication.pdfViewer._currentScale
-			* json.type.I.zoom;
-	tic();
-	var container = document.createElement('div');
-	container.id = json.name;
-	container.className = "overlay";
-	var style = "z-index: 8; position: absolute; width:"
-			+ (json.type.I.x2 - json.type.I.x1) * 100 + "%; height:"
-			+ (json.type.I.y1 - json.type.I.y2) * 100 + "%; left:"
-			+ json.type.I.x1 * 100 + "%; bottom:" + json.type.I.y2 * 100 + "%;";
-	page.appendChild(container);
-
-	switch (json.type.C) {
-	case "pdbf.common.LineChart":
-	case "pdbf.common.BarChart":
-		var containerOver = document.getElementById(json.name + "Big");
-		if (containerOver == null) {
-			var containerOver = document.createElement('div');
-			containerOver
-					.setAttribute(
-							'style',
-							'position:fixed; z-index:9; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto;');
-			containerOver.id = json.name + "Big";
-			containerOver.className = "centerhv";
-			buildContainerChartBig(json, containerOver, true);
-		} else {
-			containerOver.update();
-		}
-		buildContainerChart(container, json, zoomFactor, style, containerOver);
-		break;
-	case "pdbf.common.Text":
-		container.addEventListener("click", function() {
-			editorMain.setValue(json.type.I.query);
-			execEditorContents();
-		});
-		style += 'cursor: pointer;';
-		container.setAttribute('style', style);
-		break;
-	case "pdbf.common.Pivot":
-		var containerOver = document.getElementById(json.name + "Big");
-		if (containerOver == null) {
-			var containerOver = document.createElement('div');
-			containerOver
-					.setAttribute(
-							'style',
-							'position:fixed; z-index:9; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto;');
-			containerOver.id = json.name + "Big";
-			containerOver.className = "centerhv";
-			buildContainerPivotBig(json, containerOver, true);
-		} else {
-			containerOver.update();
-		}
-		buildContainerPivot(container, json, zoomFactor, style, containerOver);
-		break;
-	default:
-		alert("Unknown: " + json.type.C);
-		break;
-	}
-	toc("Display time for " + json.name);
-}
-
 function buildContainerChartBig(json, containerOver, initial) {
 	var basetextsize = 8;
 
@@ -231,7 +50,7 @@ function buildContainerChartBig(json, containerOver, initial) {
 	json.resultBig = chartdataCpy.res;
 	var tip = "Tip: Click-and drag to zoom the graph. Shift + click-and drag to pan the graph.<br/>";
 	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip,
-			[ json ], updateData, 'graph');
+			[ json ], updateData, 'graph', true);
 	var containerContent = ref.containerContent;
 	var containerControl = ref.containerControl;
 	var containerOptions = ref.options;
@@ -289,9 +108,17 @@ function buildContainerChartBig(json, containerOver, initial) {
 	}
 }
 
-function buildContainerChart(container, json, zoomFactor, style, containerOver) {
-	var fullscreen = getFullscreenDiv();
-	container.appendChild(fullscreen);
+function buildContainerChart(container, json, zoomFactor, style, containerOver,
+		enableFullscreenButton) {
+	if (enableFullscreenButton) {
+		var fullscreen = getFullscreenDiv();
+		container.appendChild(fullscreen);
+		fullscreen.addEventListener("click", function() {
+			containerOver.style.visibility = 'visible';
+			containerOver.style.opacity = 1;
+		});
+	}
+
 	var chart = document.createElement('div');
 	chart.setAttribute('style', 'width:100%; height:100%;');
 	container.appendChild(chart);
@@ -305,12 +132,9 @@ function buildContainerChart(container, json, zoomFactor, style, containerOver) 
 
 	var options = getDygraphsOptions(json, zoomFactor, chartdata.columns);
 
-	style = "background: white;" + style;
+	style = "background: white; font-size: " + (zoomFactor * 10) + "pt; "
+			+ style;
 	container.setAttribute('style', style);
-	fullscreen.addEventListener("click", function() {
-		containerOver.style.visibility = 'visible';
-		containerOver.style.opacity = 1;
-	});
 	new Dygraph(chart, chartdata.values, options);
 }
 
@@ -350,7 +174,7 @@ function buildContainerPivotBig(json, containerOver, initial) {
 
 	var tip = "Tip: Drag and drop attributes to the row/column area. <br/>Move the cursor over the result cells to see more detailed results for min and max aggregator.<br/>";
 	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip,
-			[ json ], updateData, 'pivot table');
+			[ json ], updateData, 'pivot table', false);
 	var containerContent = ref.containerContent;
 	var containerControl = ref.containerControl;
 	var containerOptions = ref.options;
@@ -379,8 +203,6 @@ function buildContainerPivotBig(json, containerOver, initial) {
 	var aggrName = r.aggrName;
 	var aggrAtt = r.aggrAttribute;
 
-	containerOver.children[2].children[1].style.background = '#DDDDDD';
-	containerOver.children[2].children[1].style.padding = '0px';
 	$(containerContent).pivotUI(r.res, {
 		rows : r.rows,
 		cols : r.cols,
@@ -405,9 +227,16 @@ function buildContainerPivotBig(json, containerOver, initial) {
 	}
 }
 
-function buildContainerPivot(container, json, zoomFactor, style, containerOver) {
-	var fullscreen = getFullscreenDiv();
-	container.appendChild(fullscreen);
+function buildContainerPivot(container, json, zoomFactor, style, containerOver,
+		enableFullscreenButton) {
+	if (enableFullscreenButton) {
+		var fullscreen = getFullscreenDiv();
+		container.appendChild(fullscreen);
+		fullscreen.addEventListener("click", function() {
+			containerOver.style.visibility = 'visible';
+			containerOver.style.opacity = 1;
+		});
+	}
 	var chart = document.createElement('div');
 	chart.setAttribute('style', 'width:100%; height:100%;');
 	container.appendChild(chart);
@@ -437,20 +266,16 @@ function buildContainerPivot(container, json, zoomFactor, style, containerOver) 
 	});
 	container.getElementsByClassName("pvtTable")[0].setAttribute('style',
 			'width: 100%; height: 100%; font-size: ' + zoomFactor * 12 + 'pt;');
-	fullscreen.addEventListener("click", function() {
-		containerOver.style.visibility = 'visible';
-		containerOver.style.opacity = 1;
-	});
 }
 
 function buildContainerTableBig(json, containerOver) {
 	var basetextsize = 8;
 
 	var update = function() {
-		json.jsonBig.type.I.query = ref.editor.getValue();
+		json.jsonBig.type.I.queryB = ref.editor.getValue();
 		var err;
 		try {
-			var results = alasqlQuery(json.jsonBig.type.I.query);
+			var results = alasqlQuery(json.jsonBig.type.I.queryB);
 			json.resultBig = results;
 		} catch (e) {
 			err = e.message;
@@ -459,11 +284,11 @@ function buildContainerTableBig(json, containerOver) {
 		if (err != undefined) {
 			error.innerHTML = 'Query status: ' + err;
 			containerOptions.style.visibility = 'hidden';
-			containerContent.innerHTML = getTableFromResults(results);
+			containerContent.innerHTML = '';
 		} else {
 			error.innerHTML = 'Query status: OK';
 			containerOptions.style.visibility = 'visible';
-			containerContent.innerHTML = '';
+			getTableFromResults(results, containerContent);
 		}
 	};
 
@@ -471,7 +296,7 @@ function buildContainerTableBig(json, containerOver) {
 
 	var err;
 	try {
-		var results = alasqlQuery(json.jsonBig.type.I.query);
+		var results = alasqlQuery(json.jsonBig.type.I.queryB);
 		json.resultBig = results;
 	} catch (e) {
 		err = e.message;
@@ -482,36 +307,17 @@ function buildContainerTableBig(json, containerOver) {
 
 	var tip = '';
 	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip,
-			[ json ], update, 'table');
+			[ json ], update, 'table', false);
 	var containerContent = ref.containerContent;
 	var containerOptions = ref.options;
 	var error = ref.error;
+	ref.editor.setValue(json.type.I.queryB);
 
-	containerContent.innerHTML = getTableFromResults(results);
-
-	containerOver.children[2].children[1].style.background = '#DDDDDD';
-	containerOver.children[2].children[1].style.padding = '0px';
+	getTableFromResults(results, containerContent);
 
 	containerOver.update = function() {
 		containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize
 				+ 'pt';
-	}
-}
-
-function overlay(pageNr) {
-	if (init) {
-		rawZoomFactor = 1.25;// PDFViewerApplication.pdfViewer._currentScale;
-		init = false;
-	}
-
-	var query = document.getElementById('SQLQuery');
-	query.style['font-size'] = 12 * rawZoomFactor;
-
-	if (typeof pageOverlays[pageNr] != 'undefined') {
-		var page = document.getElementById("pageContainer" + pageNr);
-		for (var i = 0; i < pageOverlays[pageNr].length; ++i) {
-			display(pageOverlays[pageNr][i], page)
-		}
 	}
 }
 
@@ -537,7 +343,7 @@ function execute(commands) {
 		toc("Executing SQL");
 
 		tic();
-		outputElm.innerHTML = getTableFromResults(results);
+		getTableFromResults(results, outputElm);
 		toc("Displaying results");
 	} catch (e) {
 		error(e);
@@ -545,59 +351,75 @@ function execute(commands) {
 	}
 }
 
-function tableCreate(res) {
-	var s = [];
-	var j = -1;
-	if (res.length == 0) {
-		s[++j] = 'No rows returned';
-	} else {
-		s[++j] = '<tr>';
-		var keys = [];
-		for (key in res[0]) {
-			s[++j] = '<th>';
-			s[++j] = key;
-			keys[keys.length] = key;
-		}
-		;
-
-		res.forEach(function(row) {
-			s[++j] = '<tr>';
-			for (var i = 0; i < keys.length; ++i) {
-				s[++j] = '<td>';
-				s[++j] = (typeof row[keys[i]] == 'undefined' ? ''
-						: row[keys[i]]);
-			}
-			;
-		});
+function tableCreate(res, table) {
+	var columns = [];
+	for (key in res[0]) {
+		columns[columns.length] = {
+			data : key,
+			title : key
+		};
 	}
-	return s.join('');
+
+	$(table).dataTable({
+		data : res,
+		columns : columns,
+		dom: '<"wrapper"flipt>'
+	});
 }
 
-function getTableFromResults(results) {
-	var tmp = "Result:<br/>";
+function getTableFromResults(results, container) {
+	while (container.firstChild) {
+		container.removeChild(container.firstChild);
+	}
+
+	var span = document.createElement('span');
+	span.innerHTML = '<u><b>Result</b></u>:';
+	container.appendChild(span);
+	container.appendChild(getSpacer());
+
 	if (typeof (results) == 'number') {
-		tmp += "Query executed successfully.<br/>";
+		var span = document.createElement('span');
+		span.innerHTML = 'Query executed successfully.';
+		container.appendChild(span);
+		container.appendChild(getSpacer());
 	} else {
 		for (var i = 0; i < results.length; ++i) {
 			if (typeof (results[i]) == 'number') {
-				tmp += "Query executed successfully.<br/>";
+				var span = document.createElement('span');
+				span.innerHTML = 'Query executed successfully.';
+				container.appendChild(span);
+				container.appendChild(getSpacer());
 			} else if (typeof (results[i][0]) != 'undefined') {
-				tmp += '<table border="1" id="res'
-						+ i
-						+ '" style="border-collapse: collapse; margin-top:1px; margin-bottom:2px; margin-right:8px;">'
-				tmp += tableCreate(results[i]);
-				tmp += '</table>';
+				var table = document.createElement('table');
+				table.cellpadding = 0;
+				table.cellspacing = 0;
+				table.border = 0;
+				table.className = 'display';
+				table.setAttribute('style',
+						'border: 1px solid black; margin-top: 5px;');
+				container.appendChild(table);
+				tableCreate(results[i], table);
 			} else {
-				tmp += '<table border="1" id="res'
-						+ i
-						+ '" style="border-collapse: collapse; margin-top:1px; margin-bottom:2px; margin-right:8px;">'
-				tmp += tableCreate(results);
-				tmp += '</table>';
+				var table = document.createElement('table');
+				table.cellpadding = 0;
+				table.cellspacing = 0;
+				table.border = 0;
+				table.className = 'display';
+				table.setAttribute('style',
+						'border: 1px solid black; margin-top: 5px;');
+				container.appendChild(table);
+				tableCreate(results, table);
 				break;
 			}
 		}
 		if (results.length == 0) {
-			tmp += 'No rows returned';
+			while (container.firstChild) {
+				container.removeChild(container.firstChild);
+			}
+			var span = document.createElement('span');
+			span.innerHTML = 'No rows returned.';
+			container.appendChild(span);
+			return;
 		}
 	}
 	return tmp;
@@ -670,7 +492,7 @@ var mydragg = function() {
 	}
 }();
 
-var debugmode = 0;
+// var debugmode = 0;
 window.addEventListener('keydown', function keydown(evt) {
 	switch (evt.keyCode) {
 	case 27: // 27 == 'ESC'
@@ -843,7 +665,7 @@ function getDygraphsOptions(json, zoomFactor, columns) {
 		labelsDivStyles : {
 			'text-align' : 'right',
 			'background' : 'none',
-			'font-size' : 14
+			'font-size' : 'inherit'
 		},
 		axes : {
 			x : {
@@ -891,8 +713,6 @@ function getDygraphsOptions(json, zoomFactor, columns) {
 	options.yLabelWidth = options.yLabelWidth * zoomFactor;
 	options.axes.x.pixelsPerLabel = options.axes.x.pixelsPerLabel * zoomFactor;
 	options.axes.y.pixelsPerLabel = options.axes.y.pixelsPerLabel * zoomFactor;
-	options.labelsDivStyles['font-size'] = options.labelsDivStyles['font-size']
-			* zoomFactor;
 	options.gridLineWidth = options.gridLineWidth * zoomFactor;
 	options.pointSize = options.pointSize * zoomFactor;
 	options.highlightCircleSize = options.highlightCircleSize * zoomFactor;
@@ -918,19 +738,25 @@ function getDygraphsOptions(json, zoomFactor, columns) {
 }
 
 function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr,
-		update, f) {
+		update, f, fixed) {
 	var json = jsonArr[0]; // pass by reference
 	var containerChart = document.createElement('div');
-	containerChart
-			.setAttribute(
-					'style',
-					'width:65%; height:80%; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; padding:2%; background:white; margin:1%; display: inline-block; vertical-align:top');
-
+	if (fixed) {
+		containerChart
+				.setAttribute(
+						'style',
+						'width:65%; height:80%; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; padding:2%; background:white; margin:1%; display: inline-block; vertical-align:top; white-space: normal;');
+	} else {
+		containerChart
+				.setAttribute(
+						'style',
+						'-moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; padding:2%; background:white; margin:1%; display: inline-block; vertical-align:top; white-space: normal;');
+	}
 	var containerControl = document.createElement('div');
 	containerControl
 			.setAttribute(
 					'style',
-					'width:20%; height:80%; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; padding:2%; background:white; margin:1%; display: inline-block; text-align: left;');
+					'width:20%; height:80%; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; padding:2%; background:white; margin:1%; display: inline-block; text-align: left; white-space: normal;');
 
 	var header = document.createElement('span');
 	header.innerHTML = 'SQL Query for ' + f
@@ -939,7 +765,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr,
 
 	var textarea = document.createElement('textarea');
 	containerControl.appendChild(textarea);
-	
+
 	var def = document.createElement('input');
 	def.type = 'button';
 	def.value = 'Restore Default';
@@ -962,15 +788,15 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr,
 		}
 	});
 	containerControl.appendChild(def);
-	
+
 	containerControl.appendChild(getSpacer());
-	
+
 	var error = document.createElement('span');
 	containerControl.appendChild(error);
 	error.innerHTML = 'Query status: OK';
 
 	containerControl.appendChild(getSpacer());
-	
+
 	var options = document.createElement('div');
 	containerControl.appendChild(options);
 
@@ -993,10 +819,12 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr,
 	options.appendChild(getSpacer());
 	options.appendChild(getSpacer());
 
-	var containerChartSub = document.createElement('div');
-	containerChartSub.setAttribute('style',
-			'width:100%; height:100%; z-index:9999');
-	containerChart.appendChild(containerChartSub);
+	if (fixed) {
+		var containerChartSub = document.createElement('div');
+		containerChartSub.setAttribute('style',
+				'width:100%; height:100%; z-index:9999');
+		containerChart.appendChild(containerChartSub);
+	}
 
 	var containerCloseAndTip = document.createElement('div');
 	containerCloseAndTip.setAttribute('style',
@@ -1083,9 +911,10 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr,
 
 	$(window).resize();
 	var ref = {
-		containerContent : containerChartSub,
+		containerContent : fixed ? containerChartSub : containerChart,
 		containerOver : containerOver,
 		containerControl : containerControl,
+		containerChart : containerChart,
 		editor : editor,
 		error : error,
 		options : options
@@ -1094,9 +923,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr,
 }
 
 function getSpacer() {
-	var spacer = document.createElement('span');
-	spacer.innerHTML = '<br />';
-	return spacer;
+	return document.createElement('br');
 }
 
 function getChartData(json) {
@@ -1118,7 +945,7 @@ function getChartData(json) {
 	if (results[0] instanceof Array) {
 		return {
 			error : "Query \"" + json.type.I.query
-					+ "\" returns multiple statements!"
+					+ "\" contains multiple statements!"
 		};
 	}
 	var values = [];

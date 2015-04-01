@@ -1,25 +1,16 @@
 ﻿	</script>
 
+	<link rel="stylesheet" href="viewer.css"/>
+	<link rel="stylesheet" href="pivot.css"/>
+	<link rel="stylesheet" href="codemirror.css"/>
+	
 	<script src="base64.js"></script>
 	<script src="jquery-1.11.2.min.js"></script>
 	<script src="dygraphs.js"></script>
 	<script src="diff_match_patch.js"></script>
 	<script src="alasql.js"></script>
-
-	<style>
-	.dygraph-label {
-		font-family: sans-serif;
-	}
-	
-	html {
-		font-family: sans-serif;
-		font-size:10px;
-	}
-	
-	td, th {
-		padding: 0.1em;
-	}
-	</style>
+	<script src="main.js"></script>
+	<script src="pivot.js"></script>
 	
   </head>
 
@@ -67,242 +58,40 @@ function parse(json) {
 	}
 	pageOverlay[pageOverlay.length] = json;
 }
+
+var zoomFactor = json.type.I.zoom * 1.30 * json.type.I.quality;
+var rawZoomFactor = json.type.I.zoom * 1.30 * json.type.I.quality;
+
 function display(json, page) {
+	var containerOver = document.getElementById(json.name + "Big");
 	var container = document.createElement('div');
 	container.id = json.name;
 	var style = "width:100%; height:100%;";
+	page.appendChild(container);
 	switch(json.type.C) {
 		case "pdbf.common.LineChart":
 		case "pdbf.common.BarChart":
-			try {
-				var results = alasql(json.type.I.query);
-				if (results.length == 0) {
-					alert("Query \"" + json.type.I.query + "\" returns empty result!");
-					return;
-				}
-				if (results[0] instanceof Array) {
-					alert("Query \"" + json.type.I.query + "\" returns multiple statements!");
-					return;
-				}
-				var values = [];
-				var columns = [];
-				for (key in results[0]) {
-					columns[columns.length] = key;
-				}
-				
-				var curmain = results[0];
-				var count = -1;
-				for (key in curmain) {
-					++count;
-				
-					//Try to parse as Number
-					var next = false;
-					for (var i=0; i<results.length; i++) {
-						if (next) break;
-						var cur = results[i];
-						var val;
-						if (count == 0) {
-							val = [];
-						} else {
-							val = values[i];
-						}
-						var tmp;
-						if (typeof(cur[key]) == "string") {
-							try {
-								tmp = Number(cur[key]);
-							} catch (e) {
-								next = true;
-							}
-						} else {
-							tmp = cur[key];
-						}
-						if (!isNaN(tmp)) {
-							val[val.length] = tmp;
-						} else {
-							next = true;
-						}
-						values[i] = val;
-					}
-				
-					//Try to parse as Date
-					if (next) {
-						next = false;
-						for (var i=0; i<results.length; i++) {
-							if (next) break;
-							var cur = results[i];
-							var val;
-							if (count == 0) {
-								val = [];
-							} else {
-								val = values[i];
-							}
-							var tmp;
-							if (typeof(cur[key]) == "string") {
-								try {
-									tmp = new Date(replaceAll(cur[key], "-", "/"));
-								} catch (e) {
-									next = true;
-								}
-							} else {
-								tmp = cur[key];
-							}
-							if (isValidDate(tmp)) {
-								val[val.length] = tmp;
-							} else {
-								next = true;
-							}
-							values[i] = val;
-						}
-					}
-						
-					if (next) {
-						// No parsing method found
-						alert("Parsing of " + json.name + " failed!");
-						return;
-					}
-				
-				}
-					
-				var zoomFactor = json.type.I.zoom * 1.30 * json.type.I.quality;
-				var options = { labels: columns, logscale: json.type.I.ylogScale , animatedZooms: true, labelsSeparateLines: true, legend: "always", axisLabelFontSize: 14, xAxisHeight: 14, axisLabelWidth: 52, titleHeight: 18, xLabelHeight: 18, yLabelWidth: 18, xlabel: json.type.I.xUnitName, ylabel: json.type.I.yUnitName, labelsDivStyles: { 'text-align': 'right', 'background': 'none', 'font-size': 14 }, axes: { x: { pixelsPerLabel: 50 }, y: { pixelsPerLabel: 30 } }, labelsSeparateLines: true, gridLineWidth: 0.3, axisLineWidth: 0.3, highlightCircleSize: 2, strokeWidth: 1 };
-				var addOpt = JSON.parse(json.type.I.options);
-				function mergeAintoB(a, b) {
-					for(var key in a){
-						if (typeof a[key] === 'object' && typeof b[key] === 'object') {
-							mergeAinB(a[key], b[key]);
-						} else {
-							b[key] = a[key];
-						}
-					}
-				}
-				mergeAintoB(addOpt, options);
-
-				options.titleHeight = options.titleHeight * zoomFactor + 8;
-				options.axisLabelFontSize = options.axisLabelFontSize * zoomFactor;
-				options.xAxisHeight = options.xAxisHeight * zoomFactor + 12;
-				options.axisLabelWidth = options.axisLabelWidth * zoomFactor;
-				options.xLabelHeight = options.xLabelHeight * zoomFactor;
-				options.yLabelWidth = options.yLabelWidth * zoomFactor;
-				options.axes.x.pixelsPerLabel = options.axes.x.pixelsPerLabel * zoomFactor;
-				options.axes.y.pixelsPerLabel = options.axes.y.pixelsPerLabel * zoomFactor;
-				options.labelsDivStyles['font-size'] = options.labelsDivStyles['font-size'] * zoomFactor;
-				options.gridLineWidth = options.gridLineWidth * zoomFactor;
-				options.highlightCircleSize = options.highlightCircleSize * zoomFactor;
-				options.strokeWidth = options.strokeWidth * zoomFactor;
-				options.axisLineWidth = options.axisLineWidth * zoomFactor;
-				if (options.xlabel == '') options.xlabel = undefined;
-				if (options.ylabel == '') options.ylabel = undefined;
-				if (json.type.C == 'pdbf.common.BarChart') {
-					if (json.type.I.overlap != -1) {
-						options['plotter'] = multiColumnBarPlotterOverlapCreate(json.type.I.overlap)
-					} else {
-						options['plotter'] = multiColumnBarPlotter;
-					}
-					options['xRangePad'] = 20;
-				}
-				style = "background: white;" + style;
-				container.setAttribute('style', style);
-				page.appendChild(container);
-				var g = new Dygraph(container, values, options );
-			} catch(e) {
-				alert(e);
-			}
+			buildContainerChart(container, json, zoomFactor, style, containerOver, false);
 			break;
 		case "pdbf.common.Text":
-			container.addEventListener("click", function(){editor.setValue(json.type.I.query); execEditorContents();});
-			container.setAttribute('style', style);
-			page.appendChild(container);
+			//DO NOTHING
 			break;
-		case "pdbf.common.Pivor":
-			//TODO: ...
+		case "pdbf.common.Pivot":
+			
+			buildContainerPivot(container, json, zoomFactor, style, containerOver, false);
 			break;
 		default:
 			alert("Unknown: " + json.type.C);
 			break;
 	}
 }
+
 function overlay() {
   	var pageNr = 0;
 	for (var i = 0; i < pageOverlays[pageNr].length; ++i) {
 		display(pageOverlays[pageNr][i], document.body)
 	}
 }
-
-    // Multiple column bar chart
-    function multiColumnBarPlotterTmp(e, overlap, overlapnumber) {
-      // We need to handle all the series simultaneously.
-      if (e.seriesIndex !== 0) return;
-
-      var g = e.dygraph;
-      var ctx = e.drawingContext;
-      var sets = e.allSeriesPoints;
-      var y_bottom = e.dygraph.toDomYCoord(0);
-
-      // Find the minimum separation between x-values.
-      // This determines the bar width.
-      var min_sep = Infinity;
-      for (var j = 0; j < sets.length; j++) {
-        var points = sets[j];
-        for (var i = 1; i < points.length; i++) {
-          var sep = points[i].canvasx - points[i - 1].canvasx;
-          if (sep < min_sep) min_sep = sep;
-        }
-      }
-      var bar_width = Math.floor(2.0 / 3.5 * min_sep) * overlapnumber;
-
-      var fillColors = [];
-      var strokeColors = g.getColors();
-      for (var i = 0; i < strokeColors.length; i++) {
-        fillColors.push(darkenColor(strokeColors[i]));
-      }
-
-      for (var j = 0; j < sets.length; j++) {
-        ctx.fillStyle = fillColors[j];
-        ctx.strokeStyle = strokeColors[j];
-        for (var i = 0; i < sets[j].length; i++) {
-          var p = sets[j][i];
-          var center_x = p.canvasx;
-          var x_left;
-		  if (overlap) {
-			  x_left = center_x;
-		  } else {
-			  x_left = center_x - (bar_width / 2) * (1 - j/(sets.length-1));
-		  }
-
-          ctx.fillRect(x_left, p.canvasy,
-              bar_width/sets.length, y_bottom - p.canvasy);
-
-          ctx.strokeRect(x_left, p.canvasy,
-              bar_width/sets.length, y_bottom - p.canvasy);
-        }
-      }
-    }
-	
-	function multiColumnBarPlotter(e) {
-		multiColumnBarPlotterTmp(e, false, 1);
-	}
-	
-	function multiColumnBarPlotterOverlapCreate(overlapnumber) {
-		return function(e) {
-			multiColumnBarPlotterTmp(e, true, overlapnumber);
-		}
-	}
-	
-	   // Darken a color
-      function darkenColor(colorStr) {
-        // Defined in dygraph-utils.js
-        var color = Dygraph.toRGB_(colorStr);
-        color.r = Math.floor((255 + color.r) / 2);
-        color.g = Math.floor((255 + color.g) / 2);
-        color.b = Math.floor((255 + color.b) / 2);
-        return 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')';
-      }
-	
-	var rownumcount = 0;
-	alasql.fn.ROWNUM = function() {
-		return ++rownumcount;
-	}
-
 </script>
 
   </body>

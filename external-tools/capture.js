@@ -25,7 +25,7 @@ phantom.exit();
 			var name = page.evaluate(function() {
 				return json.name;
 			});
-			page.render(name +'.png', {format: 'png', quality: '100'});
+			page.render(name +'.png');
 			phantom.exit();
 		}, 500);
 	});

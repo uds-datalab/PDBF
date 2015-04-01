@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.4.16)  31 MAR 2015 12:13
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.4.16)  1 APR 2015 15:45
 entering extended mode
 **C:/workspaceAndroid/PDBF_Paper/main.tex
 (C:/workspaceAndroid/PDBF_Paper/main.tex
@@ -899,40 +899,40 @@ File: pgflibraryarrows.code.tex 2013/09/23 v3.0.0 (rcs-revision 1.16)
 Package hyperref Info: Option `colorlinks' set `true' on input line 60.
 Package hyperref Info: Option `breaklinks' set `true' on input line 60.
 (C:\workspaceAndroid\PDBF\main.aux)
-LaTeX Font Info:    Checking defaults for OML/txmi/m/it on input line 66.
-LaTeX Font Info:    Try loading font information for OML+txmi on input line 66.
+LaTeX Font Info:    Checking defaults for OML/txmi/m/it on input line 67.
+LaTeX Font Info:    Try loading font information for OML+txmi on input line 67.
 
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\txfonts\omltxmi.fd
 File: omltxmi.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for OMS/txsy/m/n on input line 66.
-LaTeX Font Info:    Try loading font information for OMS+txsy on input line 66.
+LaTeX Font Info:    ... okay on input line 67.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 67.
+LaTeX Font Info:    ... okay on input line 67.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 67.
+LaTeX Font Info:    ... okay on input line 67.
+LaTeX Font Info:    Checking defaults for OMS/txsy/m/n on input line 67.
+LaTeX Font Info:    Try loading font information for OMS+txsy on input line 67.
 
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\txfonts\omstxsy.fd
 File: omstxsy.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for OMX/txex/m/n on input line 66.
-LaTeX Font Info:    Try loading font information for OMX+txex on input line 66.
+LaTeX Font Info:    ... okay on input line 67.
+LaTeX Font Info:    Checking defaults for OMX/txex/m/n on input line 67.
+LaTeX Font Info:    Try loading font information for OMX+txex on input line 67.
 
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\txfonts\omxtxex.fd
 File: omxtxex.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for U/txexa/m/n on input line 66.
-LaTeX Font Info:    Try loading font information for U+txexa on input line 66.
+LaTeX Font Info:    ... okay on input line 67.
+LaTeX Font Info:    Checking defaults for U/txexa/m/n on input line 67.
+LaTeX Font Info:    Try loading font information for U+txexa on input line 67.
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\txfonts\utxexa.fd
 File: utxexa.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Try loading font information for OT1+txr on input line 66.
+LaTeX Font Info:    ... okay on input line 67.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 67.
+LaTeX Font Info:    ... okay on input line 67.
+LaTeX Font Info:    Try loading font information for OT1+txr on input line 67.
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\txfonts\ot1txr.fd
 File: ot1txr.fd 2000/12/15 v3.1
 )
@@ -985,7 +985,7 @@ File: ot1txr.fd 2000/12/15 v3.1
 )
 \AtBeginShipoutBox=\box57
 \temp=\write6
-Package hyperref Info: Link coloring ON on input line 66.
+Package hyperref Info: Link coloring ON on input line 67.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\hyperref\nameref.sty"
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\gettitlestring.sty"
@@ -993,267 +993,161 @@ Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
 \c@section@level=\count189
 )
-LaTeX Info: Redefining \ref on input line 66.
-LaTeX Info: Redefining \pageref on input line 66.
-LaTeX Info: Redefining \nameref on input line 66.
+LaTeX Info: Redefining \ref on input line 67.
+LaTeX Info: Redefining \pageref on input line 67.
+LaTeX Info: Redefining \nameref on input line 67.
 (C:\workspaceAndroid\PDBF\main.out) (C:\workspaceAndroid\PDBF\main.out)
 \@outlinefile=\write7
 ABD: EveryShipout initializing macros
-LaTeX Font Info:    Try loading font information for U+txsya on input line 70.
+LaTeX Font Info:    Try loading font information for U+txsya on input line 71.
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\txfonts\utxsya.fd
 File: utxsya.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    Try loading font information for U+txsyb on input line 70.
+LaTeX Font Info:    Try loading font information for U+txsyb on input line 71.
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\txfonts\utxsyb.fd
 File: utxsyb.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    Try loading font information for U+lasy on input line 70.
+LaTeX Font Info:    Try loading font information for U+lasy on input line 71.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\ulasy.fd"
 File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
 )
-LaTeX Font Info:    Try loading font information for U+stmry on input line 70.
+LaTeX Font Info:    Try loading font information for U+stmry on input line 71.
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\stmaryrd\ustmry.fd)
-LaTeX Font Info:    Try loading font information for U+txmia on input line 70.
+LaTeX Font Info:    Try loading font information for U+txmia on input line 71.
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\txfonts\utxmia.fd
 File: utxmia.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    Try loading font information for U+txsyc on input line 70.
+LaTeX Font Info:    Try loading font information for U+txsyc on input line 71.
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\txfonts\utxsyc.fd
 File: utxsyc.fd 2000/12/15 v3.1
 )
-Overfull \hbox (10.79999pt too wide) in paragraph at lines 70--70
+Overfull \hbox (10.79999pt too wide) in paragraph at lines 71--71
  [][][] 
  []
-
-
-LaTeX Warning: Citation `Mes2010' on page 1 undefined on input line 85.
-
-
-LaTeX Warning: Citation `SHJA13' on page 1 undefined on input line 85.
-
-
-LaTeX Warning: Citation `Krishnamurthi:2015:RSC:2739250.2658987' on page 1 unde
-fined on input line 85.
-
-
-LaTeX Warning: Citation `Manolescu:2008:RES:1374780.1374791' on page 1 undefine
-d on input line 85.
-
-
-LaTeX Warning: Citation `Armstrong:2009:IDA:1645953.1646031' on page 1 undefine
-d on input line 85.
-
-
-LaTeX Warning: Citation `SHJA13' on page 1 undefined on input line 88.
-
-
-LaTeX Warning: Citation `Krishnamurthi:2015:RSC:2739250.2658987' on page 1 unde
-fined on input line 88.
-
-
-LaTeX Warning: Citation `SHJA13' on page 1 undefined on input line 88.
-
-
-LaTeX Warning: Citation `Mes2010' on page 1 undefined on input line 88.
-
-
-LaTeX Warning: Citation `cidr2015' on page 1 undefined on input line 89.
-
-
-LaTeX Warning: Citation `btw2015' on page 1 undefined on input line 89.
-
-
-LaTeX Warning: Citation `dagstuhl2015' on page 1 undefined on input line 89.
 
 [1{C:/Users/User/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}
 
 
-] <PDF.png, id=98, 122.3772pt x 157.0668pt>
+] <PDF.png, id=121, 122.3772pt x 157.0668pt>
 File: PDF.png Graphic file (type png)
 <use PDF.png>
-Package pdftex.def Info: PDF.png used on input line 151.
+Package pdftex.def Info: PDF.png used on input line 154.
 (pdftex.def)             Requested size: 90.71631pt x 116.43132pt.
 
-Underfull \hbox (badness 5924) in paragraph at lines 151--151
+Underfull \hbox (badness 5924) in paragraph at lines 154--154
 \OT1/txr/m/n/9 green part, ev-ery-thing
  []
 
-<HTML.png, id=100, 122.3772pt x 157.0668pt>
+<HTML.png, id=123, 122.3772pt x 157.0668pt>
 File: HTML.png Graphic file (type png)
 <use HTML.png>
-Package pdftex.def Info: HTML.png used on input line 153.
+Package pdftex.def Info: HTML.png used on input line 156.
 (pdftex.def)             Requested size: 90.71631pt x 116.43132pt.
 
-Underfull \hbox (badness 3128) in paragraph at lines 153--153
+Underfull \hbox (badness 3128) in paragraph at lines 156--156
 []\OT1/txr/m/n/9 (b) HTML per-spec-tive:
  []
-
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 Missing character: There is no â in font txr!
 Missing character: There is no € in font txr!
 Missing character: There is no š in font txr!
-<Compiler.png, id=102, 1320.69882pt x 728.36824pt>
+<Compiler.png, id=125, 1320.69882pt x 728.36824pt>
 File: Compiler.png Graphic file (type png)
 <use Compiler.png>
-Package pdftex.def Info: Compiler.png used on input line 171.
+Package pdftex.def Info: Compiler.png used on input line 175.
 (pdftex.def)             Requested size: 231.84338pt x 127.85533pt.
 [2 <C:/workspaceAndroid/PDBF_Paper/PDF.png> <C:/workspaceAndroid/PDBF_Paper/HTM
-L.png> <C:/workspaceAndroid/PDBF_Paper/Compiler.png>]
-LaTeX Font Info:    Try loading font information for OT1+txtt on input line 190
+L.png> <C:/workspaceAndroid/PDBF_Paper/Compiler.png>] <enlarge.jpg, id=151, 23.
+08624pt x 23.58812pt>
+File: enlarge.jpg Graphic file (type jpg)
+<use enlarge.jpg>
+Package pdftex.def Info: enlarge.jpg used on input line 210.
+(pdftex.def)             Requested size: 7.5597pt x 7.72398pt.
+LaTeX Font Info:    Try loading font information for OT1+txtt on input line 216
 .
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\txfonts\ot1txtt.fd
 File: ot1txtt.fd 2000/12/15 v3.1
-)
-Underfull \hbox (badness 10000) in paragraph at lines 190--191
-[]\OT1/txr/m/n/9 cite dy-graph [][]$\OT1/txtt/m/n/9 http : / / dygraphs . com/$
-[][]\OT1/txr/m/n/9 , alasql [][]$\OT1/txtt/m/n/9 https :
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 190--191
-\OT1/txtt/m/n/9 / / github . com / agershun / alasql$[][]\OT1/txr/m/n/9 , pivot
- ta-bles [][]$\OT1/txtt/m/n/9 https :
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 190--191
-\OT1/txtt/m/n/9 / / github . com / nicolaskruchten / pivottable$[][]\OT1/txr/m/
-n/9 , codemir-ror
- []
-
-
-Underfull \hbox (badness 1533) in paragraph at lines 190--191
-[][]$\OT1/txtt/m/n/9 https : / / codemirror . net/$[][]\OT1/txr/m/n/9 , jQuery 
-[][]$\OT1/txtt/m/n/9 https : / / jquery . com/$[][]\OT1/txr/m/n/9 ,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 213--216
-
- []
-
-
-Overfull \hbox (19.8745pt too wide) in paragraph at lines 240--240
-[]\OT1/txtt/m/n/9 runtimeA AS engine_A, runtimeB AS engine_B FROM data2;}[] 
- []
-
-
-LaTeX Warning: Reference `' on page 3 undefined on input line 255.
-
-
-LaTeX Warning: Reference `' on page 3 undefined on input line 261.
-
-[3] <Overlay1.png, id=150, 309.40594pt x 249.93375pt>
-File: Overlay1.png Graphic file (type png)
-<use Overlay1.png>
-Package pdftex.def Info: Overlay1.png used on input line 269.
-(pdftex.def)             Requested size: 241.9258pt x 193.54028pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 269--270
-
- []
-
-<Overlay2.png, id=151, 309.40594pt x 249.93375pt>
+) <Overlay2.png, id=169, 1518.4228pt x 1223.32031pt>
 File: Overlay2.png Graphic file (type png)
 <use Overlay2.png>
-Package pdftex.def Info: Overlay2.png used on input line 274.
-(pdftex.def)             Requested size: 241.9258pt x 193.54028pt.
+Package pdftex.def Info: Overlay2.png used on input line 292.
+(pdftex.def)             Requested size: 241.90999pt x 193.53262pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 274--275
+Underfull \hbox (badness 10000) in paragraph at lines 292--293
+[][]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 292--293
 
  []
 
 
-Overfull \hbox (1.91785pt too wide) in paragraph at lines 268--276
+Overfull \hbox (1.91785pt too wide) in paragraph at lines 291--295
  []$[]$ 
  []
 
-
-Overfull \hbox (1.91785pt too wide) in paragraph at lines 268--276
- []$ 
- []
-
-<Overlay3.png, id=152, 309.40594pt x 249.93375pt>
+<Overlay3.png, id=170, 1518.4228pt x 1222.5675pt>
 File: Overlay3.png Graphic file (type png)
 <use Overlay3.png>
-Package pdftex.def Info: Overlay3.png used on input line 278.
-(pdftex.def)             Requested size: 241.9258pt x 193.54028pt.
+Package pdftex.def Info: Overlay3.png used on input line 297.
+(pdftex.def)             Requested size: 241.90999pt x 193.52545pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 278--279
+Underfull \hbox (badness 10000) in paragraph at lines 297--298
 
  []
 
 
-Overfull \hbox (1.91785pt too wide) in paragraph at lines 277--281
+Overfull \hbox (1.91785pt too wide) in paragraph at lines 296--307
  []$[]$ 
  []
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<Overlay4.png, id=153, 309.40594pt x 249.93375pt>
+<Overlay4.png, id=171, 1519.17563pt x 2630.32687pt>
 File: Overlay4.png Graphic file (type png)
 <use Overlay4.png>
-Package pdftex.def Info: Overlay4.png used on input line 285.
-(pdftex.def)             Requested size: 241.9258pt x 193.54028pt.
+Package pdftex.def Info: Overlay4.png used on input line 351.
+(pdftex.def)             Requested size: 241.91403pt x 418.4929pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 285--286
-
+Underfull \hbox (badness 10000) in paragraph at lines 351--352
+[][]
  []
 
-<Overlay5.png, id=154, 309.40594pt x 531.48563pt>
-File: Overlay5.png Graphic file (type png)
-<use Overlay5.png>
-Package pdftex.def Info: Overlay5.png used on input line 330.
-(pdftex.def)             Requested size: 241.9258pt x 418.52281pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 330--331
+Underfull \hbox (badness 10000) in paragraph at lines 351--352
 
  []
 
 
-Overfull \hbox (1.91785pt too wide) in paragraph at lines 284--333
+Overfull \hbox (1.91785pt too wide) in paragraph at lines 310--355
  []$[]$ 
- []
-
-
-Overfull \hbox (1.91785pt too wide) in paragraph at lines 284--333
- []$ 
  []
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[4 <C:/workspaceAndroid/PDBF/Overlay1.png> <C:/workspaceAndroid/PDBF/Overlay2.p
-ng> <C:/workspaceAndroid/PDBF/Overlay3.png> <C:/workspaceAndroid/PDBF/Overlay4.
-png> <C:/workspaceAndroid/PDBF/Overlay5.png>] (C:\workspaceAndroid\PDBF\main.bb
-l)
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 367.
-[5
-
-
-]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 367.
+[3 <C:/workspaceAndroid/PDBF_Paper/enlarge.jpg>] (C:\workspaceAndroid\PDBF\main
+.bbl) [4 <C:/workspaceAndroid/PDBF/Overlay2.png> <C:/workspaceAndroid/PDBF/Over
+lay3.png> <C:/workspaceAndroid/PDBF/Overlay4.png>]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 393.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 393.
 (C:\workspaceAndroid\PDBF\main.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 367.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 367.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 393.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 393.
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 90E4F4518EFAE8100AEA5B6AEE60D25B;1038.
-
-LaTeX Warning: There were undefined references.
-
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 367.
+(rerunfilecheck)             Checksum: 1E2C3B2F658055186D644361AD0B150D;1130.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 393.
  ) 
 Here is how much of TeX's memory you used:
- 24145 strings out of 493921
- 461991 string characters out of 3144879
- 494960 words of memory out of 3000000
- 26965 multiletter control sequences out of 15000+200000
- 39250 words of font info for 87 fonts, out of 3000000 for 9000
+ 24179 strings out of 493921
+ 462503 string characters out of 3144879
+ 504312 words of memory out of 3000000
+ 26985 multiletter control sequences out of 15000+200000
+ 42246 words of font info for 98 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 55i,14n,54p,10408b,593s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 55i,14n,54p,10408b,577s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}<C:/Users/
 User/AppData/Roaming/MiKTeX/2.9/fonts/type1/public/txfonts/rtxb.pfb><C:/Users/U
 ser/AppData/Roaming/MiKTeX/2.9/fonts/type1/public/txfonts/rtxmi.pfb><C:/Users/U
@@ -1265,9 +1159,9 @@ les (x86)/MiKTeX 2.9/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Program Files (x86
  2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/
 type1/urw/times/utmr8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/t
 imes/utmri8a.pfb>
-Output written on main.pdf (5 pages, 266722 bytes).
+Output written on main.pdf (4 pages, 756249 bytes).
 PDF statistics:
- 221 PDF objects out of 1000 (max. 8388607)
- 52 named destinations out of 1000 (max. 500000)
- 189 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 262 PDF objects out of 1000 (max. 8388607)
+ 64 named destinations out of 1000 (max. 500000)
+ 192 words of extra memory for PDF output out of 10000 (max. 10000000)
 
