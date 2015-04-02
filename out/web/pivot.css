@@ -17,9 +17,13 @@
 	z-index: 99999;
 }
 
+html, body {
+font-family:sans-serif;
+}
+
 fieldset { border: 0px solid white;}
 form{text-align: left;}
-select, input, td, th, table, button{font-size:inherit}
+select, input, td, th, table, button, pre{font-size:inherit; font-family:sans-serif;}
 
 table {
     font-family:sans-serif;
@@ -40,8 +44,6 @@ table.pvtTable tr td {
     border: 1px solid #CDCDCD;
     text-align: right;
 }
-
-.pvtTotal, .pvtGrandTotal { font-weight: bold; }
 
 .pvtVals { text-align: center;}
 .pvtAggregator { margin-bottom: 5px ;}

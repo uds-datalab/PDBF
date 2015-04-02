@@ -305,7 +305,7 @@ function buildContainerTableBig(json, containerOver) {
 		alert(err);
 	}
 
-	var tip = '';
+	var tip = 'Tip: Click on the attributes to change the sorting.';
 	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip,
 			[ json ], update, 'table', false);
 	var containerContent = ref.containerContent;
@@ -363,7 +363,6 @@ function tableCreate(res, table) {
 	$(table).dataTable({
 		data : res,
 		columns : columns,
-		dom: '<"wrapper"flipt>'
 	});
 }
 
@@ -373,7 +372,7 @@ function getTableFromResults(results, container) {
 	}
 
 	var span = document.createElement('span');
-	span.innerHTML = '<u><b>Result</b></u>:';
+	span.innerHTML = '<u><b>Result(s)</b></u>:';
 	container.appendChild(span);
 	container.appendChild(getSpacer());
 
@@ -389,16 +388,22 @@ function getTableFromResults(results, container) {
 				span.innerHTML = 'Query executed successfully.';
 				container.appendChild(span);
 				container.appendChild(getSpacer());
-			} else if (typeof (results[i][0]) != 'undefined') {
-				var table = document.createElement('table');
-				table.cellpadding = 0;
-				table.cellspacing = 0;
-				table.border = 0;
-				table.className = 'display';
-				table.setAttribute('style',
-						'border: 1px solid black; margin-top: 5px;');
-				container.appendChild(table);
-				tableCreate(results[i], table);
+			} else if (results[i] instanceof Array) {
+				if (results[i].length > 0) {
+					var table = document.createElement('table');
+					table.cellpadding = 0;
+					table.cellspacing = 0;
+					table.border = 0;
+					table.className = 'display';
+					table.setAttribute('style',
+							'border: 1px solid black; margin-top: 5px;');
+					container.appendChild(table);
+					tableCreate(results[i], table);
+				} else {
+					var span = document.createElement('span');
+					span.innerHTML = 'No rows returned.';
+					container.appendChild(span);
+				}
 			} else {
 				var table = document.createElement('table');
 				table.cellpadding = 0;
@@ -450,48 +455,6 @@ function execEditorContents() {
 	execute(editorMain.getValue() + ';');
 }
 
-var mydragg = function() {
-	return {
-		move : function(divid, xpos, ypos, container) {
-			divid.style.left = xpos + 'px';
-			divid.style.top = ypos + 'px';
-		},
-		startMoving : function(divid, container, evt) {
-			if (nomove) {
-				nomove = false;
-				return;
-			}
-			evt = evt || window.event;
-			var posX = evt.clientX, posY = evt.clientY, divTop = divid.style.top, divLeft = divid.style.left, eWi = parseInt(divid.style.width), eHe = parseInt(divid.style.height), cWi = parseInt(document
-					.getElementById(container).style.width), cHe = parseInt(document
-					.getElementById(container).style.height);
-			document.getElementById(container).style.cursor = 'move';
-			divTop = divTop.replace('px', '');
-			divLeft = divLeft.replace('px', '');
-			var diffX = posX - divLeft, diffY = posY - divTop;
-			document.onmousemove = function(evt) {
-				evt = evt || window.event;
-				var posX = evt.clientX, posY = evt.clientY, aX = posX - diffX, aY = posY
-						- diffY;
-				if (aX < 0)
-					aX = 0;
-				if (aY < 0)
-					aY = 0;
-				if (aX + eWi > cWi)
-					aX = cWi - eWi;
-				if (aY + eHe > cHe)
-					aY = cHe - eHe;
-				mydragg.move(divid, aX, aY, container);
-			}
-		},
-		stopMoving : function(container) {
-			document.getElementById(container).style.cursor = 'default';
-			document.onmousemove = function() {
-			}
-		},
-	}
-}();
-
 // var debugmode = 0;
 window.addEventListener('keydown', function keydown(evt) {
 	switch (evt.keyCode) {
@@ -503,11 +466,6 @@ window.addEventListener('keydown', function keydown(evt) {
 			}, 500, tmp[i]);
 			tmp[i].style.opacity = 0;
 		}
-		var query = document.getElementById('SQLQuery');
-		setTimeout(function(o) {
-			o.style.visibility = 'hidden';
-		}, 500, query);
-		query.style.opacity = 0;
 		break;
 	// case 81: //81 == 'Q'
 	// list = document.getElementsByClassName("overlay");
@@ -781,6 +739,9 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr,
 		case "pdbf.common.LineChart":
 		case "pdbf.common.BarChart":
 			buildContainerChartBig(json, containerOver, true);
+			break;
+		case "pdbf.common.Text":
+			buildContainerTableBig(json, containerOver);
 			break;
 		case "pdbf.common.Pivot":
 			buildContainerPivotBig(json, containerOver, true);

@@ -200,25 +200,10 @@
                     data-l10n-id="first_page"></menuitem>
           <menuitem id="contextLastPage" label="Last Page"
                     data-l10n-id="last_page"></menuitem>
-          <menuitem id="contextPageRotateCw" label="Rotate Clockwise"
-                    data-l10n-id="page_rotate_cw"></menuitem>
-          <menuitem id="contextPageRotateCcw" label="Rotate Counter-Clockwise"
-                    data-l10n-id="page_rotate_ccw"></menuitem>
         </menu>
-
-        <div id="viewerContainer" tabindex="0">
+		
+		<div id="viewerContainer" tabindex="0">
           <div id="viewer" class="pdfViewer"></div>
-		  <div id="SQLQuery" onmousedown='mydragg.startMoving(this,"container",event);' onmouseup='mydragg.stopMoving("container");' style="position:fixed; left:15px; top:40px; z-index:9; visibility:hidden; border:1px solid black; padding:10px; background:#DDDDDD; max-height:480px; max-width:50%; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; opacity:0;">
-    <label style="">SQL Query:<br/><span>Tip: Press CTRL-Space for autocomplete</span></label>
-	<label style="position:absolute; right:15px; top:0px;" onClick="var query = document.getElementById('SQLQuery'); setTimeout(function(o){o.style.visibility = 'hidden';}, 500, query); query.style.opacity=0;">Close</label>
-    <br>
-    <textarea id="commands"></textarea>
-<button id="execute" class="button" onClick="execEditorContents();">Execute</button> 
-
-<div id="error" class="error"></div>
-
-<div onmousedown="consumeEvent(event)"><pre id="output" style="margin-top:5px; overflow-y:auto; overflow-x:hidden; padding-right:10px; width:100%; min-height:100px; max-height:305px;">Results will be displayed here</pre></div>
-</div>
         </div>
 
         <div id="errorWrapper" hidden='true'>

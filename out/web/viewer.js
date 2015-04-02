@@ -1907,15 +1907,6 @@ var PresentationMode = {
       this.contextMenuOpen = false;
       this.secondaryToolbar.lastPageClick();
     }.bind(this));
-
-    this.pageRotateCw.addEventListener('click', function() {
-      this.contextMenuOpen = false;
-      this.secondaryToolbar.pageRotateCwClick();
-    }.bind(this));
-    this.pageRotateCcw.addEventListener('click', function() {
-      this.contextMenuOpen = false;
-      this.secondaryToolbar.pageRotateCcwClick();
-    }.bind(this));
   },
 
   get isFullscreen() {

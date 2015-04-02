@@ -89,13 +89,6 @@ public class LaTeX_Compiler {
 	    String json2 = FileUtils.readFileToString(new File("dim.json"), Tools.utf8);
 	    dimOrg = gson.fromJson(json2, Dimension.class);
 	    for (int i = 0; i < overlays.length; ++i) {
-		if (overlays[i].type instanceof Chart) {
-		    Chart c = (Chart) overlays[i].type;
-		    c.x1 = c.x1 / dimOrg.width;
-		    c.x2 = c.x2 / dimOrg.width;
-		    c.y1 = c.y1 / dimOrg.height;
-		    c.y2 = c.y2 / dimOrg.height;
-		}
 		if (overlays[i].type instanceof Text) {
 		    Text t = (Text) overlays[i].type;
 		    t.x1 = t.x1 / dimOrg.width;
@@ -103,6 +96,14 @@ public class LaTeX_Compiler {
 		    t.y1 = (t.y1 + 65536 * t.fontsize) / dimOrg.height;
 		    t.y2 = t.y2 / dimOrg.height;
 		}
+		else if (overlays[i].type instanceof Chart) {
+		    Chart c = (Chart) overlays[i].type;
+		    c.x1 = c.x1 / dimOrg.width;
+		    c.x2 = c.x2 / dimOrg.width;
+		    c.y1 = c.y1 / dimOrg.height;
+		    c.y2 = c.y2 / dimOrg.height;
+		}
+		overlays[i].type.zoom = overlays[i].type.fontsize / 12.0 * overlays[i].type.zoom;
 	    }
 	} catch (Exception e) {
 	    e.printStackTrace();

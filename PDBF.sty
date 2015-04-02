@@ -78,6 +78,7 @@
 }
 
 \def\pdbf@chart[#1]#2#3#4{%
+	\edef\pdbf@fontsave{\f@size}%
 	\setkeys{pdbf}{#1}%
 	\ifdefined \pdbf@width \else%
   		\errmessage{^^J ^^J Error: width value missing! ^^J}%
@@ -135,6 +136,7 @@
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x2": \zposx{Overlay\arabic{visual}2},}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y1": \zposy{Overlay\arabic{visual}1},}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y2": \zposy{Overlay\arabic{visual}2},}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"fontsize": \pdbf@fontsave,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"page": \zref@extract{Overlay\arabic{visual}1}{abspage}}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\@charrb}%
 		\immediate\write\tempfile{\space\space\space\space\@charrb}%
@@ -167,6 +169,7 @@
 		\end{tabular}%
 		% Write part of config.json
 		\StrSubstitute{#2}{"}{\@backslashchar"}[\pdbf@query]%
+		\StrSubstitute{#2}{"}{\@backslashchar"}[\pdbf@queryB]%
 		\ifnum \value{overlay} > 1%
 			\immediate\write\tempfile{,\@charlb}%
 		\else%
@@ -176,7 +179,26 @@
 		\immediate\write\tempfile{\space\space\space\space"type": \@charlb}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.common.Text",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"logScale": \pdbfLogscale,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xUnitName": "\pdbf@xunitname",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yUnitName": "\pdbf@yunitname",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"query": "\pdbf@query",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"queryB": "\pdbf@queryB",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"options": "\pdbf@options",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"quality": \pdbfQuality,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"zoom": \pdbfScale,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"overlap": \pdbf@overlap,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"legendpos": "\pdbfLegendpos",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"includeZero": false,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"drawPoints": false,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"fillGraph": fillGraph,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"showRangeSelector": false,}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregation": "\pdbf@aggregation",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationattribute": "\pdbf@aggregationattribute",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationBig": "\pdbf@aggregationBig",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationattributeBig": "\pdbf@aggregationattributeBig",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"cols": "\pdbf@cols",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"rows": "\pdbf@rows",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x1": \zposx{Overlay\arabic{visual}1},}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x2": \zposx{Overlay\arabic{visual}2},}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y1": \zposy{Overlay\arabic{visual}1},}%
