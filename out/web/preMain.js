@@ -13,17 +13,17 @@ toc("DB load time");
 var rawZoomFactor;
 var init = true;
 
-$(window)
-		.resize(
-				function() {
-					var tmp = document.getElementsByClassName("centerhv");
-					for (var i = 0; i < tmp.length; ++i) {
-						tmp[i].style.left = ($(window).width() - $(tmp[i])
-								.outerWidth()) / 2;
-						tmp[i].style.top = ($(window).height() - 32 - $(tmp[i])
-								.outerHeight()) / 2 + 32;
-					}
-				});
+function fixOverlaySize() {
+	var tmp = document.getElementsByClassName("centerhv");
+	for (var i = 0; i < tmp.length; ++i) {
+		tmp[i].style.left = ($(window).width() - $(tmp[i])
+				.outerWidth()) / 2;
+		tmp[i].style.top = ($(window).height() - 32 - $(tmp[i])
+				.outerHeight()) / 2 + 32;
+	}
+}
+
+$(window).resize(fixOverlaySize);
 
 // Load config.json
 var json = JSON.parse(UTF8ArrToStr(base64DecToArr(json_base64)));

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.4.16)  1 APR 2015 17:19
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.4.16)  2 APR 2015 17:42
 entering extended mode
 **C:/workspaceAndroid/PDBF_Paper/main.tex
 (C:/workspaceAndroid/PDBF_Paper/main.tex
@@ -1067,16 +1067,11 @@ LaTeX Font Info:    Try loading font information for OT1+txtt on input line 216
 .
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\txfonts\ot1txtt.fd
 File: ot1txtt.fd 2000/12/15 v3.1
-) <Overlay2.png, id=169, 1518.4228pt x 1223.32031pt>
+) <Overlay2.png, id=169, 303.38344pt x 243.15843pt>
 File: Overlay2.png Graphic file (type png)
 <use Overlay2.png>
 Package pdftex.def Info: Overlay2.png used on input line 292.
-(pdftex.def)             Requested size: 241.90999pt x 193.53262pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 292--293
-[][]
- []
-
+(pdftex.def)             Requested size: 241.9201pt x 193.53264pt.
 
 Underfull \hbox (badness 10000) in paragraph at lines 292--293
 
@@ -1087,11 +1082,11 @@ Overfull \hbox (1.91785pt too wide) in paragraph at lines 291--295
  []$[]$ 
  []
 
-<Overlay3.png, id=170, 1518.4228pt x 1223.32031pt>
+<Overlay3.png, id=170, 303.38344pt x 228.10219pt>
 File: Overlay3.png Graphic file (type png)
 <use Overlay3.png>
 Package pdftex.def Info: Overlay3.png used on input line 297.
-(pdftex.def)             Requested size: 241.90999pt x 193.53262pt.
+(pdftex.def)             Requested size: 241.9201pt x 181.44128pt.
 
 Underfull \hbox (badness 10000) in paragraph at lines 297--298
 
@@ -1105,11 +1100,11 @@ Overfull \hbox (1.91785pt too wide) in paragraph at lines 296--307
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<Overlay4.png, id=171, 1536.49031pt x 2626.5628pt>
+<Overlay4.png, id=171, 348.55219pt x 525.46312pt>
 File: Overlay4.png Graphic file (type png)
 <use Overlay4.png>
 Package pdftex.def Info: Overlay4.png used on input line 351.
-(pdftex.def)             Requested size: 241.90472pt x 418.49521pt.
+(pdftex.def)             Requested size: 241.91597pt x 418.53496pt.
 
 Underfull \hbox (badness 10000) in paragraph at lines 351--352
 [][]
@@ -1147,7 +1142,7 @@ Here is how much of TeX's memory you used:
  26985 multiletter control sequences out of 15000+200000
  42246 words of font info for 98 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 55i,14n,54p,10408b,578s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 55i,14n,54p,10408b,580s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}<C:/Users/
 User/AppData/Roaming/MiKTeX/2.9/fonts/type1/public/txfonts/rtxb.pfb><C:/Users/U
 ser/AppData/Roaming/MiKTeX/2.9/fonts/type1/public/txfonts/rtxmi.pfb><C:/Users/U
@@ -1159,7 +1154,7 @@ les (x86)/MiKTeX 2.9/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Program Files (x86
  2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/
 type1/urw/times/utmr8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/t
 imes/utmri8a.pfb>
-Output written on main.pdf (4 pages, 774926 bytes).
+Output written on main.pdf (4 pages, 280474 bytes).
 PDF statistics:
  262 PDF objects out of 1000 (max. 8388607)
  64 named destinations out of 1000 (max. 500000)

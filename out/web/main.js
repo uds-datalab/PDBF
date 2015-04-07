@@ -16,33 +16,20 @@ function buildContainerChartBig(json, containerOver, initial) {
 			error.innerHTML = 'Query status: OK';
 			containerOptions.style.visibility = 'visible';
 		}
-		var optionsBig = getDygraphsOptions(json.jsonBig, rawZoomFactor,
-				json.chartdataBig.columns);
-		json.dygraphBig = new Dygraph(containerContent,
-				json.chartdataBig.values, optionsBig);
+		var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor,
+				json.chartdataBig.values, containerContent);
+		json.chart = c3.generate(optionsBig);
 	};
 	var update = function() {
-		var tmp = json.jsonBig.type.I.showRangeSelector;
 		json.jsonBig.type.I.logScale = logScale.checked;
 		json.jsonBig.type.I.includeZero = includeZero.checked;
 		json.jsonBig.type.I.drawPoints = drawPoints.checked;
 		json.jsonBig.type.I.fillGraph = fillGraph.checked;
 		json.jsonBig.type.I.showRangeSelector = showRangeSelector.checked;
-		if (tmp != showRangeSelector.checked) {
-			// Bug in dygraph. Force complete redraw
-			var optionsBig = getDygraphsOptions(json.jsonBig, rawZoomFactor,
-					json.chartdataBig.columns);
-			json.dygraphBig = new Dygraph(containerContent,
-					json.chartdataBig.values, optionsBig);
-		} else {
-			json.dygraphBig.updateOptions({
-				logscale : logScale.checked,
-				includeZero : includeZero.checked,
-				drawPoints : drawPoints.checked,
-				fillGraph : fillGraph.checked,
-				showRangeSelector : showRangeSelector.checked
-			});
-		}
+
+		var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor,
+				json.chartdataBig.values, containerContent);
+		json.chart = c3.generate(optionsBig);
 	};
 
 	json.jsonBig = jQuery.extend(true, {}, json);
@@ -90,19 +77,18 @@ function buildContainerChartBig(json, containerOver, initial) {
 	showRangeSelector.addEventListener('change', update);
 	showRangeSelector.checked = json.jsonBig.type.I.showRangeSelector;
 
-	var optionsBig = getDygraphsOptions(json.jsonBig, rawZoomFactor,
-			chartdataCpy.columns);
-	var dygraph = new Dygraph(containerContent, chartdataCpy.values, optionsBig);
-	json.dygraphBig = dygraph;
+	var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor,
+			chartdataCpy.values, containerContent);
+
+	json.chart = c3.generate(optionsBig);
 	json.chartdataBig = chartdataCpy;
 
 	containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
 
 	containerOver.update = function() {
-		var optionsBig = getDygraphsOptions(json.jsonBig, rawZoomFactor,
-				json.chartdataBig.columns);
-		json.dygraphBig = new Dygraph(containerContent,
-				json.chartdataBig.values, optionsBig);
+		var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor,
+				json.chartdataBig.values, containerContent);
+		json.chart = c3.generate(optionsBig);
 		containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize
 				+ 'pt';
 	}
@@ -130,12 +116,13 @@ function buildContainerChart(container, json, zoomFactor, style, containerOver,
 		return;
 	}
 
-	var options = getDygraphsOptions(json, zoomFactor, chartdata.columns);
-
 	style = "background: white; font-size: " + (zoomFactor * 10) + "pt; "
-			+ style;
-	container.setAttribute('style', style);
-	new Dygraph(chart, chartdata.values, options);
+	+ style;
+container.setAttribute('style', style);
+	
+	var options = getChartOptions(json, zoomFactor, chartdata.values, chart);
+
+	c3.generate(options);
 }
 
 function buildContainerPivotBig(json, containerOver, initial) {
@@ -371,24 +358,32 @@ function getTableFromResults(results, container) {
 		container.removeChild(container.firstChild);
 	}
 
-	var span = document.createElement('span');
-	span.innerHTML = '<u><b>Result(s)</b></u>:';
-	container.appendChild(span);
-	container.appendChild(getSpacer());
-
 	if (typeof (results) == 'number') {
+		var span = document.createElement('span');
+		span.innerHTML = '<u><b>Result for Query</b></u>:';
+		container.appendChild(span);
+		container.appendChild(getSpacer());
 		var span = document.createElement('span');
 		span.innerHTML = 'Query executed successfully.';
 		container.appendChild(span);
-		container.appendChild(getSpacer());
 	} else {
 		for (var i = 0; i < results.length; ++i) {
 			if (typeof (results[i]) == 'number') {
+				var span = document.createElement('span');
+				span.innerHTML = '<u><b>Result for Query' + (i + 1)
+						+ '</b></u>:';
+				container.appendChild(span);
+				container.appendChild(getSpacer());
 				var span = document.createElement('span');
 				span.innerHTML = 'Query executed successfully.';
 				container.appendChild(span);
 				container.appendChild(getSpacer());
 			} else if (results[i] instanceof Array) {
+				var span = document.createElement('span');
+				span.innerHTML = '<u><b>Result for Query' + (i + 1)
+						+ '</b></u>:';
+				container.appendChild(span);
+				container.appendChild(getSpacer());
 				if (results[i].length > 0) {
 					var table = document.createElement('table');
 					table.cellpadding = 0;
@@ -405,6 +400,10 @@ function getTableFromResults(results, container) {
 					container.appendChild(span);
 				}
 			} else {
+				var span = document.createElement('span');
+				span.innerHTML = '<u><b>Result for Query</b></u>:';
+				container.appendChild(span);
+				container.appendChild(getSpacer());
 				var table = document.createElement('table');
 				table.cellpadding = 0;
 				table.cellspacing = 0;
@@ -503,99 +502,6 @@ window.addEventListener('keydown', function keydown(evt) {
 	}
 });
 
-function multiColumnBarPlotterTmp(overlap, overlapnumber) {
-	var updated = false;
-	// Multiple column bar chart
-	return function(e) {
-		// We need to handle all the series simultaneously.
-		if (e.seriesIndex !== 0)
-			return;
-
-		var g = e.dygraph;
-		var ctx = e.drawingContext;
-		var sets = e.allSeriesPoints;
-		var y_bottom = e.dygraph.toDomYCoord(1);
-
-		// Find the minimum separation between x-values.
-		// This determines the bar width.
-		var min_sep = Infinity;
-		for (var j = 0; j < sets.length; j++) {
-			var points = sets[j];
-			for (var i = 1; i < points.length; i++) {
-				var sep = points[i].canvasx - points[i - 1].canvasx;
-				if (sep < min_sep)
-					min_sep = sep;
-			}
-		}
-		var bar_width = Math.floor(2.0 / 3.5 * min_sep) * overlapnumber;
-
-		if (!updated) {
-			updated = true;
-			e.dygraph.ready(function(d) {
-				d.updateOptions({
-					xRangePad : bar_width * sets.length / overlapnumber / 2
-				});
-			});
-			return;
-		}
-
-		var fillColors = [];
-		var strokeColors = g.getColors();
-		for (var i = 0; i < strokeColors.length; i++) {
-			fillColors.push(darkenColor(strokeColors[i]));
-		}
-
-		/*
-		 * TODO: fix overlapping bars. lower values have to be drawn last. var
-		 * nrofpoints = sets[0].length; for (var j = 0; j < sets.length; j++) {
-		 * if (sets[j].length != nrofpoints) { alert('Barplotter only allows
-		 * same number of points for all series'); return; }
-		 * 
-		 * use own compare function. sort. then draw: function compare(a,b) { if
-		 * (a.last_nom < b.last_nom) return -1; if (a.last_nom > b.last_nom)
-		 * return 1; return 0; } objs.sort(compare); }
-		 */
-		for (var j = 0; j < sets.length; j++) {
-			ctx.fillStyle = fillColors[j];
-			ctx.strokeStyle = strokeColors[j];
-			for (var i = 0; i < sets[j].length; i++) {
-				var p = sets[j][i];
-				var center_x = p.canvasx;
-				var x_left;
-				if (overlap) {
-					x_left = center_x - (bar_width / 4);
-				} else {
-					x_left = center_x - (bar_width / 2)
-							* (1 - j / (sets.length - 1));
-				}
-
-				ctx.fillRect(x_left, p.canvasy, bar_width / sets.length,
-						y_bottom - p.canvasy);
-
-				ctx.strokeRect(x_left, p.canvasy, bar_width / sets.length,
-						y_bottom - p.canvasy);
-			}
-		}
-	}
-}
-
-function multiColumnBarPlotterCreate() {
-	return multiColumnBarPlotterTmp(false, 1);
-}
-
-function multiColumnBarPlotterOverlapCreate(overlapnumber) {
-	return multiColumnBarPlotterTmp(true, overlapnumber);
-}
-
-function darkenColor(colorStr) {
-	// Defined in dygraph-utils.js
-	var color = Dygraph.toRGB_(colorStr);
-	color.r = Math.floor((255 + color.r) / 2);
-	color.g = Math.floor((255 + color.g) / 2);
-	color.b = Math.floor((255 + color.b) / 2);
-	return 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')';
-}
-
 function addClickCloseHandler(elem, o) {
 	elem.addEventListener('click', function(e) {
 		setTimeout(function(o) {
@@ -605,93 +511,101 @@ function addClickCloseHandler(elem, o) {
 	});
 }
 
-function getDygraphsOptions(json, zoomFactor, columns) {
+function getChartOptions(json, zoomFactor, values, chart) {
 	var options = {
-		labels : columns,
-		logscale : json.type.I.logScale,
-		animatedZooms : true,
-		labelsSeparateLines : true,
-		legend : "always",
-		axisLabelFontSize : 14,
-		xAxisHeight : 14,
-		axisLabelWidth : 52,
-		titleHeight : 18,
-		xLabelHeight : 18,
-		yLabelWidth : 18,
-		xlabel : json.type.I.xUnitName,
-		ylabel : json.type.I.yUnitName,
-		labelsDivStyles : {
-			'text-align' : 'right',
-			'background' : 'none',
-			'font-size' : 'inherit'
+		bindto: chart,
+		data: values,
+		size: {
+			width: $(chart).width(),
+			height: $(chart).height() 
 		},
-		axes : {
-			x : {
-				pixelsPerLabel : 50
+		axis: { 
+			x: { 
+				label: json.type.I.xUnitName,
+				tick: { fit: false, outer: false },
+			}, 
+			y: {
+				label: json.type.I.yUnitName, 
+				tick: { fit: false, outer: false }
 			},
-			y : {
-				pixelsPerLabel : 30
+			y2: {
+				tick: { fit: false, outer: false }
 			}
 		},
-		gridLineWidth : 0.3,
-		axisLineWidth : 0.3,
-		highlightCircleSize : 2,
-		strokeWidth : 1,
-		includeZero : json.type.I.includeZero,
-		drawPoints : json.type.I.drawPoints,
-		pointSize : 3,
-		fillGraph : json.type.I.fillGraph,
-		visibility : json.type.I.visibility,
-		showRangeSelector : json.type.I.showRangeSelector,
+		zoom: {
+			enabled: true,
+			rescale: true
+		},
+		point: {
+			show: false
+		},
+		padding: {
+			right: 15,
+			top: 5
+		}
+		/*
+		 * labels : columns, logscale : json.type.I.logScale, animatedZooms :
+		 * true, labelsSeparateLines : true, legend : "always",
+		 * axisLabelFontSize : 14, xAxisHeight : 14, axisLabelWidth : 52,
+		 * titleHeight : 18, xLabelHeight : 18, yLabelWidth : 18, xlabel : ,
+		 * ylabel : labelsDivStyles : { 'text-align' : 'right', 'background' :
+		 * 'none', 'font-size' : 'inherit' }, axes : { x : { pixelsPerLabel : 50 },
+		 * y : { pixelsPerLabel : 30 } }, gridLineWidth : 0.3, axisLineWidth :
+		 * 0.3, highlightCircleSize : 2, strokeWidth : 1, includeZero :
+		 * json.type.I.includeZero, drawPoints : json.type.I.drawPoints,
+		 * pointSize : 3, fillGraph : json.type.I.fillGraph, visibility :
+		 * json.type.I.visibility, showRangeSelector :
+		 * json.type.I.showRangeSelector,
+		 */
 	};
+	
 	try {
-		var addOpt = JSON.parse(json.type.I.options);
+	var addOpt = JSON.parse(json.type.I.options);
 	} catch (e) {
 		alert('Parsing of options for '
 				+ json.name
 				+ ' failed. \nDid you forgot to enclose every field and value by ", or did your TeX program replace " by \'\'?\nRemember that the correct JSON String syntax is: "key": "value"\n JSON String was:\n'
 				+ json.type.I.options);
 	}
-	function mergeAintoB(a, b) {
-		for ( var key in a) {
-			if (typeof a[key] === 'object' && typeof b[key] === 'object') {
-				mergeAinB(a[key], b[key]);
-			} else {
-				b[key] = a[key];
-			}
-		}
+	jQuery.extend(true, options, addOpt);
+	
+	if (options.axis.x.type == "timeseries") {
+		//options.data.xFormat = "%Y/%m/%d";
+        //options.axis.x.tick = { format: '%Y-%m-%d' };
 	}
-	mergeAintoB(addOpt, options);
+	
+	/*
+	 * try { function mergeAintoB(a, b) { for ( var key in a) { if (typeof
+	 * a[key] === 'object' && typeof b[key] === 'object') { mergeAinB(a[key],
+	 * b[key]); } else { b[key] = a[key]; } } } mergeAintoB(addOpt, options);
+	 * 
+	 * options.titleHeight = options.titleHeight * zoomFactor + 8;
+	 * options.axisLabelFontSize = options.axisLabelFontSize * zoomFactor;
+	 * options.xAxisHeight = options.xAxisHeight * zoomFactor + 12;
+	 * options.axisLabelWidth = options.axisLabelWidth * zoomFactor;
+	 * options.xLabelHeight = options.xLabelHeight * zoomFactor;
+	 * options.yLabelWidth = options.yLabelWidth * zoomFactor;
+	 * options.axes.x.pixelsPerLabel = options.axes.x.pixelsPerLabel *
+	 * zoomFactor; options.axes.y.pixelsPerLabel = options.axes.y.pixelsPerLabel *
+	 * zoomFactor; options.gridLineWidth = options.gridLineWidth * zoomFactor;
+	 * options.pointSize = options.pointSize * zoomFactor;
+	 * options.highlightCircleSize = options.highlightCircleSize * zoomFactor;
+	 * options.strokeWidth = options.strokeWidth * zoomFactor;
+	 * options.axisLineWidth = options.axisLineWidth * zoomFactor; if
+	 * (options.xlabel == '') options.xlabel = undefined; if (options.ylabel ==
+	 * '') options.ylabel = undefined; if (options.visibility == undefined) {
+	 * delete options.visibility; }
+	 */
+	switch (json.type.C) {
+		case 'pdbf.common.LineChart':
+			break;
+		case 'pdbf.common.BarChart': 
+			options.data.type = 'bar';
+			break;
+		default:
+			alert('unknown chart type');
+	}
 
-	options.titleHeight = options.titleHeight * zoomFactor + 8;
-	options.axisLabelFontSize = options.axisLabelFontSize * zoomFactor;
-	options.xAxisHeight = options.xAxisHeight * zoomFactor + 12;
-	options.axisLabelWidth = options.axisLabelWidth * zoomFactor;
-	options.xLabelHeight = options.xLabelHeight * zoomFactor;
-	options.yLabelWidth = options.yLabelWidth * zoomFactor;
-	options.axes.x.pixelsPerLabel = options.axes.x.pixelsPerLabel * zoomFactor;
-	options.axes.y.pixelsPerLabel = options.axes.y.pixelsPerLabel * zoomFactor;
-	options.gridLineWidth = options.gridLineWidth * zoomFactor;
-	options.pointSize = options.pointSize * zoomFactor;
-	options.highlightCircleSize = options.highlightCircleSize * zoomFactor;
-	options.strokeWidth = options.strokeWidth * zoomFactor;
-	options.axisLineWidth = options.axisLineWidth * zoomFactor;
-	if (options.xlabel == '')
-		options.xlabel = undefined;
-	if (options.ylabel == '')
-		options.ylabel = undefined;
-	if (options.visibility == undefined) {
-		delete options.visibility;
-	}
-	if (json.type.C == 'pdbf.common.BarChart') {
-		if (json.type.I.overlap != -1) {
-			var func = multiColumnBarPlotterOverlapCreate(json.type.I.overlap);
-			options['plotter'] = func;
-		} else {
-			var func = multiColumnBarPlotterCreate();
-			options['plotter'] = func;
-		}
-	}
 	return options;
 }
 
@@ -870,7 +784,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr,
 	editor.setValue(json.type.I.query);
 	editor.on('blur', update);
 
-	$(window).resize();
+	fixOverlaySize();
 	var ref = {
 		containerContent : fixed ? containerChartSub : containerChart,
 		containerOver : containerOver,
@@ -909,91 +823,37 @@ function getChartData(json) {
 					+ "\" contains multiple statements!"
 		};
 	}
-	var values = [];
 	var columns = [];
 	for (key in results[0]) {
 		columns[columns.length] = key;
 	}
 
-	var curmain = results[0];
-	var count = -1;
-	for (key in curmain) {
-		++count;
-
-		// Try to parse as Number
-		var next = false;
-		for (var i = 0; i < results.length; i++) {
-			if (next)
-				break;
-			var cur = results[i];
-			var val;
-			if (count == 0) {
-				val = [];
-			} else {
-				val = values[i];
-			}
-			var tmp;
-			if (typeof (cur[key]) == "string") {
-				try {
-					tmp = Number(cur[key]);
-				} catch (e) {
-					next = true;
-				}
-			} else {
-				tmp = cur[key];
-			}
-			if (!isNaN(tmp)) {
-				val[val.length] = tmp;
-			} else {
-				next = true;
-			}
-			values[i] = val;
-		}
-
-		// Try to parse as Date
-		if (next) {
-			next = false;
-			for (var i = 0; i < results.length; i++) {
-				if (next)
-					break;
-				var cur = results[i];
-				var val;
-				if (count == 0) {
-					val = [];
-				} else {
-					val = values[i];
-				}
-				var tmp;
-				if (typeof (cur[key]) == "string") {
-					try {
-						tmp = new Date(replaceAll(cur[key], "-", "/"));
-					} catch (e) {
-						next = true;
-					}
-				} else {
-					tmp = cur[key];
-				}
-				if (isValidDate(tmp)) {
-					val[val.length] = tmp;
-				} else {
-					next = true;
-				}
-				values[i] = val;
-			}
-		}
-
-		if (next) {
-			// No parsing method found
-			return {
-				error : 'Attribute '
-						+ key
-						+ ' cannot be used in a chart. Must be of type date or number!'
-			};
-		}
-	}
+	/*
+	 * TODO: check if parsing is necessary var curmain = results[0]; var count =
+	 * -1; for (key in curmain) { ++count;
+	 *  // Try to parse as Number var next = false; for (var i = 0; i <
+	 * results.length; i++) { if (next) break; var cur = results[i]; var val; if
+	 * (count == 0) { val = []; } else { val = values[i]; } var tmp; if (typeof
+	 * (cur[key]) == "string") { try { tmp = Number(cur[key]); } catch (e) {
+	 * next = true; } } else { tmp = cur[key]; } if (!isNaN(tmp)) {
+	 * val[val.length] = tmp; } else { next = true; } values[i] = val; }
+	 *  // Try to parse as Date if (next) { next = false; for (var i = 0; i <
+	 * results.length; i++) { if (next) break; var cur = results[i]; var val; if
+	 * (count == 0) { val = []; } else { val = values[i]; } var tmp; if (typeof
+	 * (cur[key]) == "string") { try { tmp = new Date(replaceAll(cur[key], "-",
+	 * "/")); } catch (e) { next = true; } } else { tmp = cur[key]; } if
+	 * (isValidDate(tmp)) { val[val.length] = tmp; } else { next = true; }
+	 * values[i] = val; } }
+	 * 
+	 * if (next) { // No parsing method found return { error : 'Attribute ' +
+	 * key + ' cannot be used in a chart. Must be of type date or number!' }; } }
+	 */
 	return {
-		values : values,
-		columns : columns,
+		values : {
+			x: columns[0],
+			json: results,
+			keys: { value: columns }
+		},
 		error : error,
 		res : results
 	};
