@@ -539,7 +539,7 @@ function getChartOptions(json, zoomFactor, values, chart) {
 		point: {
 			show: false
 		},
-		completeScale: zoomFactor
+		completeScale: zoomFactor*1.45
 		/*
 		 * labels : columns, logscale : json.type.I.logScale, animatedZooms :
 		 * true, labelsSeparateLines : true, legend : "always",
@@ -565,11 +565,6 @@ function getChartOptions(json, zoomFactor, values, chart) {
 				+ json.type.I.options);
 	}
 	jQuery.extend(true, options, addOpt);
-	
-	if (options.axis.x.type == "timeseries") {
-		//options.data.xFormat = "%Y/%m/%d";
-        //options.axis.x.tick = { format: '%Y-%m-%d' };
-	}
 	
 	/*
 	 * try { function mergeAintoB(a, b) { for ( var key in a) { if (typeof

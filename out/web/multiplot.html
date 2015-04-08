@@ -1,0 +1,69 @@
+<html>
+<head>
+<meta charset="utf-8">
+	<link rel="stylesheet" href="pivot.css"/>
+	<link rel="stylesheet" href="codemirror.css"/>
+	<link rel="stylesheet" href="jquery.dataTables.css"/>
+	<link rel="stylesheet" href="c3.css"/>
+	
+	<script src="base64.js"></script>
+	<script src="d3.js"></script>
+	<script src="alasql.js"></script>
+	<script src="codemirror-compressed.js"></script>
+	<script src="c3.js"></script>
+	<script src="excanvas.compiled.js"></script>
+	<script src="diff_match_patch.js"></script>
+	<script src="jquery-1.11.2.min.js"></script>
+	<script src="pivot.js"></script>
+	<script src="jquery-ui-1.9.2.custom.min.js"></script>
+	<script src="jquery.dataTables.js"></script>
+    <script src="main.js"></script>
+</head>
+<body>
+<center>
+<div id="overlay" style="border: 1px solid black; width: 800px; height: 600px;">
+</div>
+</center>
+<script>
+var completeScale = 1.5;
+var zoomFactor = completeScale;
+var overlay = document.getElementById("overlay");
+alasql("CREATE TABLE data1 (date DATE, money INTEGER); "+
+"CREATE TABLE data2 (date DATE, runtimeA REAL, runtimeB REAL); "+
+"INSERT INTO data1 VALUES ('2008/05/07', 75), ('2008/05/08', 70), ('2008/05/09', 80), ('2008/05/10', 100), ('2008/05/11', 200), ('2008/05/12', 100), ('2008/05/13', 50), ('2008/05/14', 200), ('2008/05/15', 2000); "+
+"INSERT INTO data2 VALUES ('2008/05/07', 75.32, 72.58), ('2008/05/08', 74.16, 71.36), ('2008/05/09', 76.58, 70.24), ('2008/05/10', 70.46, 69.56), ('2008/05/11', 69.27, 69.18), ('2008/05/12', 66.91, 68.45), ('2008/05/13', 60.94, 67.34), ('2008/05/14', 62.16, 66.93), ('2008/05/15', 59.47, 66.34); "+
+"CREATE TABLE test (col1 INTEGER, col2 REAL); "+
+"INSERT INTO test VALUES (1,111.1), (2,222.1);");
+
+var xCount = 2;
+var yCount = 2;
+var json = {"name": "Overlay1", "type": {"C":"pdbf.common.BarChart","I":{"logScale":false,"legendpos":"topright","xUnitName":"Date","yUnitName":"Runtime [in sec]","includeZero":false,"drawPoints":false,"fillGraph":false,"showRangeSelector":false,"overlap":-1,"rows":"","cols":"","aggregation":"Minimum","aggregationattribute":"","aggregationBig":"Minimum","aggregationattributeBig":"","query":"SELECT date, runtimeA AS [engine A], runtimeB AS [engine B] FROM data2;","queryB":"SELECT date, runtimeA AS [engine A], runtimeB AS [engine B] FROM data2;","x1":0.08790569787893156,"x2":0.4817233217474389,"y1":0.9320729072121383,"y2":0.6886264350593185,"page":4,"options":"{\"axis\": { \"x\": { \"type\": \"timeseries\" } }}","zoom":0.75,"quality":1,"fontsize":9}}};
+var zoomFactor = 1.5;
+var chartdata = getChartData(json);
+
+for (var y=0; y < yCount; ++y) {
+	for (var x=0; x < xCount; ++x) {
+		var cell = document.createElement('div');
+		cell.setAttribute('style', 'width: '+(100/xCount)+'%; height: '+(100/yCount)+'%; display: inline-block;');
+		var cellInner = document.createElement('div');
+		cellInner.setAttribute('style', 'width: 100%; height: 100%;');
+		cell.appendChild(cellInner);
+		overlay.appendChild(cell);
+		var options = getChartOptions(json, zoomFactor, chartdata.values, cellInner);
+		if (x % xCount != 0) {
+			//options.axis.y.tick.count = 1;
+			options.noyticks = true;
+		}
+		if (y % yCount != yCount-1) {
+			//options.axis.x.tick.count = 1;
+			options.noxticks = true;
+		} 
+		delete options.axis.y.label;
+		delete options.axis.x.label;
+		options.legend = { position: "inset", show: false };
+		c3.generate(options);
+	}
+}
+</script>
+</body>
+</html>

@@ -1033,6 +1033,8 @@
         var config = {
             bindto: '#chart',
             completeScale: 1.0,
+            noxticks: false,
+            noyticks: false,
             size_width: undefined,
             size_height: undefined,
             padding_left: undefined,
@@ -2685,6 +2687,9 @@
         } else {
         	h += Math.min(20, 20*config.completeScale);
         }
+        if (config.noxticks) {
+        	return 6*config.completeScale;
+        }
         return h + ($$.axis.getLabelPositionById(axisId).isInner ? 0 : 10) + (axisId === 'y2' ? -10 : 0);
     };
 
@@ -4257,6 +4262,7 @@
             d3 = $$.d3,
             config = $$.config,
             axis = c3_axis(d3, axisParams, $$).scale(scale).orient(orient).tickFormat(tickFormat);
+
         if ($$.isTimeSeriesY()) {
             axis.ticks(d3.time[config.axis_y_tick_time_value], config.axis_y_tick_time_interval);
         } else {
@@ -6703,8 +6709,8 @@
     // 3. multiline tick text
     var tickTextCharSize;
     function c3_axis(d3, params, $$) {
-        var scale = d3.scale.linear(), orient = "bottom", innerTickSize = 6*$$.config.completeScale, outerTickSize, tickPadding = 3, tickValues = null, tickFormat, tickArguments;
-
+        var scale = d3.scale.linear(), orient = "bottom", innerTickSize = 6*$$.config.completeScale, outerTickSize, tickPadding = 3*$$.config.completeScale, tickValues = null, tickFormat, tickArguments;
+        
         var tickOffset = 0, tickCulling = true, tickCentered;
 
         params = params || {};
@@ -6875,7 +6881,14 @@
                     });
                 tspan.enter().append('tspan');
                 tspan.exit().remove();
-                tspan.text(function (d) { return d.splitted; });
+                
+                if (!isVertical && params.$$.config.noxticks || isVertical && params.$$.config.noyticks) {
+                	//TODO: maybe put this in an option
+                	//innerTickSize = 0;
+                	//outerTickSize = 0;
+                } else {
+                    tspan.text(function (d) { return d.splitted; });
+                }
 
                 var rotate = params.tickTextRotate;
 
@@ -6906,7 +6919,7 @@
 
                 switch (orient) {
                 case "bottom":
-                    {
+                    {	
                         tickTransform = axisX;
                         lineEnter.attr("y2", innerTickSize);
                         textEnter.attr("y", tickLength);

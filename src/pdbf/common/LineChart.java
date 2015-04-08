@@ -1,5 +1,5 @@
 package pdbf.common;
 
-public class LineChart extends Chart{
+public class LineChart extends Chart {
 
 }
