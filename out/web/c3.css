@@ -1,6 +1,6 @@
 /*-- Chart --*/
 .c3 svg {
-  font: 10px sans-serif; }
+  font-family: sans-serif; }
 
 .c3 path, .c3 line {
   fill: none;
@@ -18,8 +18,7 @@
   stroke: #fff; }
 
 .c3-chart-arc text {
-  fill: #fff;
-  font-size: 13px; }
+  fill: #fff; }
 
 /*-- Axis --*/
 /*-- Grid --*/
@@ -38,8 +37,7 @@
   font-size: 2em; }
 
 /*-- Line --*/
-.c3-line {
-  stroke-width: 1px; }
+.c3-line { }
 
 /*-- Point --*/
 .c3-circle._expanded_ {
@@ -78,11 +76,10 @@
 
 /*-- Select - Drag --*/
 /*-- Legend --*/
-.c3-legend-item {
-  font-size: 12px; }
+.c3-legend-item { }
 
 .c3-legend-item-hidden {
-  opacity: 0.15; }
+  opacity: 0.4; }
 
 .c3-legend-background {
   opacity: 0.75;
@@ -92,7 +89,8 @@
 
 /*-- Tooltip --*/
 .c3-tooltip-container {
-  z-index: 10; }
+  z-index: 10; 
+  font-family: sans-serif; }
 
 .c3-tooltip {
   border-collapse: collapse;
@@ -137,7 +135,7 @@
 /*-- Arc --*/
 .c3-chart-arcs-title {
   dominant-baseline: middle;
-  font-size: 1.3em; }
+  font-size: 1.0em; }
 
 .c3-chart-arcs .c3-chart-arcs-background {
   fill: #e0e0e0;
@@ -154,5 +152,4 @@
   fill: #777; }
 
 .c3-chart-arc .c3-gauge-value {
-  fill: #000;
-  /*  font-size: 28px !important;*/ }
+  fill: #000; }

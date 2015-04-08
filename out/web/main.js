@@ -539,10 +539,7 @@ function getChartOptions(json, zoomFactor, values, chart) {
 		point: {
 			show: false
 		},
-		padding: {
-			right: 15,
-			top: 5
-		}
+		completeScale: zoomFactor
 		/*
 		 * labels : columns, logscale : json.type.I.logScale, animatedZooms :
 		 * true, labelsSeparateLines : true, legend : "always",
@@ -605,6 +602,31 @@ function getChartOptions(json, zoomFactor, values, chart) {
 		default:
 			alert('unknown chart type');
 	}
+	
+	//add scoped css
+	var css = document.createElement('style');
+	css.setAttribute('scoped', 'scoped');
+	$(chart).parent().append(css);
+	css.innerHTML = '																'+
+		'.c3-line {																	'+
+		' stroke-width: '+(zoomFactor)+'px; }										'+
+		'																			'+
+		'.c3-circle._expanded_ {													'+
+		' stroke-width: '+(zoomFactor)+'px;											'+
+		' stroke: white; }															'+
+		'																			'+
+		'.c3-selected-circle {														'+
+		' fill: white;																'+
+		' stroke-width: '+(2*zoomFactor)+'px; }										'+
+		'																			'+
+		'.c3-target.c3-focused path.c3-line, .c3-target.c3-focused path.c3-step {	'+
+		' stroke-width: '+(2*zoomFactor)+'px; }										'+
+		'																			'+
+		'.c3-legend-background {													'+
+		' opacity: 0.75;															'+
+		' fill: white;																'+
+		' stroke: lightgray;														'+
+		' stroke-width: '+(zoomFactor)+'; }											';
 
 	return options;
 }
