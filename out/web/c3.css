@@ -1,3 +1,35 @@
+ .vertical-text {
+	display: inline-block;
+	overflow: hidden;
+}
+.vertical-text__innerL {
+	display: inline-block;
+	white-space: nowrap;
+	line-height: 1.5;
+	transform: rotate(-90deg) ;	
+	transform-origin: 50% 50%;
+}
+
+.vertical-text__innerR {
+	display: inline-block;
+	white-space: nowrap;
+	line-height: 1.5;
+	transform: rotate(90deg) ;	
+	transform-origin: 50% 50%;
+}
+
+.vertical-text__innerL:after {
+	content: "";
+	display: block;
+	margin: -1.5em 0 100%;
+}
+
+.vertical-text__innerR:before {
+	content: "";
+	display: block;
+	margin: -1.5em 0 100%;
+}
+
 /*-- Chart --*/
 .c3 svg {
   font-family: sans-serif; }

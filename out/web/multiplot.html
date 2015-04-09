@@ -18,6 +18,13 @@
 	<script src="jquery-ui-1.9.2.custom.min.js"></script>
 	<script src="jquery.dataTables.js"></script>
     <script src="main.js"></script>
+    
+    <style>
+    div {
+    	border: 0px solid black;
+    	font-family: sans-serif;
+    }
+    </style>
 </head>
 <body>
 <center>
@@ -25,7 +32,7 @@
 </div>
 </center>
 <script>
-var completeScale = 1.5;
+var completeScale = 1.25;
 var zoomFactor = completeScale;
 var overlay = document.getElementById("overlay");
 alasql("CREATE TABLE data1 (date DATE, money INTEGER); "+
@@ -37,33 +44,144 @@ alasql("CREATE TABLE data1 (date DATE, money INTEGER); "+
 
 var xCount = 2;
 var yCount = 2;
+var leftArr = [{text: "Affe", c: 1}, {text: "AffeAffeAffeAffe Right", c: 1}];
+var rightArr = [{text: "Right", c: 2}];
+var topArr = [{text: "Top", c: 2}];
+var bottomArr = [{text: "Bottom", c: 2}];
 var json = {"name": "Overlay1", "type": {"C":"pdbf.common.BarChart","I":{"logScale":false,"legendpos":"topright","xUnitName":"Date","yUnitName":"Runtime [in sec]","includeZero":false,"drawPoints":false,"fillGraph":false,"showRangeSelector":false,"overlap":-1,"rows":"","cols":"","aggregation":"Minimum","aggregationattribute":"","aggregationBig":"Minimum","aggregationattributeBig":"","query":"SELECT date, runtimeA AS [engine A], runtimeB AS [engine B] FROM data2;","queryB":"SELECT date, runtimeA AS [engine A], runtimeB AS [engine B] FROM data2;","x1":0.08790569787893156,"x2":0.4817233217474389,"y1":0.9320729072121383,"y2":0.6886264350593185,"page":4,"options":"{\"axis\": { \"x\": { \"type\": \"timeseries\" } }}","zoom":0.75,"quality":1,"fontsize":9}}};
-var zoomFactor = 1.5;
 var chartdata = getChartData(json);
 
-for (var y=0; y < yCount; ++y) {
-	for (var x=0; x < xCount; ++x) {
-		var cell = document.createElement('div');
-		cell.setAttribute('style', 'width: '+(100/xCount)+'%; height: '+(100/yCount)+'%; display: inline-block;');
-		var cellInner = document.createElement('div');
-		cellInner.setAttribute('style', 'width: 100%; height: 100%;');
-		cell.appendChild(cellInner);
-		overlay.appendChild(cell);
-		var options = getChartOptions(json, zoomFactor, chartdata.values, cellInner);
-		if (x % xCount != 0) {
-			//options.axis.y.tick.count = 1;
-			options.noyticks = true;
-		}
-		if (y % yCount != yCount-1) {
-			//options.axis.x.tick.count = 1;
-			options.noxticks = true;
-		} 
-		delete options.axis.y.label;
-		delete options.axis.x.label;
-		options.legend = { position: "inset", show: false };
-		c3.generate(options);
+$(function() {
+	function getLeft(countRows, text, td) {
+		var div = document.createElement('div');
+		div.className = 'vertical-text';
+		div.setAttribute('style', 'width: '+left+'px;');
+		td.appendChild(div);
+		td.setAttribute('rowspan', countRows);
+		div.innerHTML = "<div class=\"vertical-text__innerL\">"+text+"</div>";
 	}
-}
+
+	function getRight(countRows, text, td) {
+		var div = document.createElement('div');
+		div.className = 'vertical-text';
+		div.setAttribute('style', 'width: '+right+'px;');
+		td.appendChild(div);
+		td.setAttribute('rowspan', countRows);
+		div.innerHTML = "<div class=\"vertical-text__innerR\">"+text+"</div>";
+	}
+
+	function getTop(countCols, text, td) {
+		td.setAttribute('style', 'height: 1.5em; width: '+w+'px;');
+		td.setAttribute('colspan', countCols);
+		td.innerHTML = text;
+	}
+
+	function getBottom(countCols, text, td) {
+		td.setAttribute('style', 'height: 1.5em; width: '+w+'px;');
+		td.setAttribute('colspan', countCols);
+		td.innerHTML = text;
+	}
+	
+	//TODO: right now only one line labels are supported!
+	var fontbasesize = 13;
+	var left = leftArr.length != 0 ? fontbasesize*zoomFactor*1.6 : 0;
+	var right = rightArr.length != 0 ? fontbasesize*zoomFactor*1.6 : 0;
+	var top = topArr.length != 0 ? fontbasesize*zoomFactor*1.6 : 0;
+	var bottom = bottomArr.length != 0 ? fontbasesize*zoomFactor*1.6 : 0;
+	var inner = document.createElement('table');
+	inner.setAttribute('style', 'height: 100%; width: 100%; border-collapse: collapse; text-align:center; font-size: '+fontbasesize*zoomFactor+'px; font-weight: bold;');
+	overlay.appendChild(inner);
+	
+	var css = document.createElement('style');
+	css.setAttribute('scoped', 'scoped');
+	overlay.appendChild(css);
+	css.innerHTML = 'td {padding:0;}';
+	
+	var overlaywidth = $(overlay).width();
+	var overlayheight = $(overlay).height();
+
+	var nextLeft = 0;
+	var nextRight = 0;
+	
+	var h = Math.floor((overlayheight-top-bottom-1)/yCount);
+	var w = Math.floor((overlaywidth-left-right-1)/xCount);
+	var style = 'width: '+w+'px;'+
+	'height: '+h+'px;';
+	
+	if (top != 0) {
+		var tr = document.createElement('tr');
+		inner.appendChild(tr);
+		if (left != 0) {
+			var td = document.createElement('td');
+			tr.appendChild(td);
+		}
+		while (topArr.length != 0) {
+			var cur = topArr.shift();
+			var td = document.createElement('td');
+			tr.appendChild(td);
+			getTop(cur.c, cur.text, td);
+		}
+		if (right != 0) {
+			var td = document.createElement('td');
+			tr.appendChild(td);
+		}
+	}
+	for (var y=0; y < yCount; ++y) {
+		var tr = document.createElement('tr');
+		inner.appendChild(tr);
+		if (y == nextLeft) {
+			var cur = leftArr.shift();
+			var td = document.createElement('td');
+			tr.appendChild(td);
+			getLeft(cur.c, cur.text, td);
+			nextLeft += cur.c;
+		}
+		for (var x=0; x < xCount; ++x) {
+			var td = document.createElement('td');
+			tr.appendChild(td);
+			td.setAttribute('style', style);
+			var cellInner = document.createElement('div');
+			cellInner.setAttribute('style', style);
+			td.appendChild(cellInner);
+			var options = getChartOptions(json, zoomFactor, chartdata.values, cellInner);
+			if (x % xCount != 0) {
+				options.noyticks = true;
+			}
+			if (y % yCount != yCount-1) {
+				options.noxticks = true;
+			} 
+			delete options.axis.y.label;
+			delete options.axis.x.label;
+			options.legend = { show: false };
+			c3.generate(options);
+		}
+		if (y == nextRight) {
+			var cur = rightArr.shift();
+			var td = document.createElement('td');
+			tr.appendChild(td);
+			getRight(cur.c, cur.text, td);
+			nextRight += cur.c;
+		}
+	}
+	if (bottom != 0) {
+		var tr = document.createElement('tr');
+		inner.appendChild(tr);
+		if (left != 0) {
+			var td = document.createElement('td');
+			tr.appendChild(td);
+		}
+		while (bottomArr.length != 0) {
+			var cur = bottomArr.shift();
+			var td = document.createElement('td');
+			tr.appendChild(td);
+			getBottom(cur.c, cur.text, td);
+		}
+		if (right != 0) {
+			var td = document.createElement('td');
+			tr.appendChild(td);
+		}
+	}
+});
 </script>
 </body>
 </html>

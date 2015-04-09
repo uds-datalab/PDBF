@@ -2,20 +2,60 @@
 <head>
 <meta charset="utf-8">
 <link rel="stylesheet" href="c3.css"/>
+<link rel="stylesheet" href="jquery-ui-1.9.2.custom.min.css"/>
 </head>
 <body>
 <script src="jquery-1.11.2.min.js"></script>
+<script src="jquery-ui-1.9.2.custom.min.js"></script>
 <script src="d3.js"></script>
 <script src="c3.js"></script>
-<div id="chart" style="border: 1px solid black; width: 400px; height: 300px;">
-
-</div>
+<div id="wrapper"></div>
+<div id="slider" style="width: 400px; margin-top: 20px;"></div>
+<div id="slider2" style="width: 400px; margin-top: 20px;"></div>
 <script>
-var completeScale = 0.4;
-var zoomFactor = completeScale;
-var c = document.getElementById("chart");
+var wrapper = document.getElementById("wrapper");
 
-//add scoped css
+$( "#slider").slider({
+    value:1.5,
+    min: 0,
+    max: 5,
+    step: 0.1,
+    slide: function( event, ui ) {
+    	ui.handle.innerHTML = ui.value;
+    	$(ui.handle).css('width', '30px');
+    },
+    stop: function( event, ui ) {
+    	createChart(ui.value, $( "#slider2" ).slider( "value" ));
+    }
+});
+var value = $( "#slider" ).slider( "value" );
+$("#slider .ui-slider-handle").css('width', '30px').html(value);
+
+$( "#slider2").slider({
+    value:0,
+    min: 0,
+    max: 90,
+    step: 1,
+    slide: function( event, ui ) {
+    	ui.handle.innerHTML = ui.value;
+    	$(ui.handle).css('width', '30px');
+    },
+    stop: function( event, ui ) {
+    	createChart($( "#slider" ).slider( "value" ), ui.value);
+    }
+});
+var value2 = $( "#slider2" ).slider( "value" );
+$("#slider2 .ui-slider-handle").css('width', '30px').html(value2);
+
+createChart(value, value2);
+
+function createChart(completeScale, rotateX) {
+	var zoomFactor = completeScale;
+	wrapper.innerHTML = '';
+	c = document.createElement('div');
+	c.setAttribute('style', 'border: 1px solid black; width: 400px; height: 300px;');
+	wrapper.appendChild(c);
+	//add scoped css
 	var css = document.createElement('style');
 	css.setAttribute('scoped', 'scoped');
 	$(c).parent().append(css);
@@ -40,32 +80,34 @@ var c = document.getElementById("chart");
 		' stroke: lightgray;														'+
 		' stroke-width: '+(zoomFactor)+'; }											';
 
-var chart = c3.generate({
-    data: {
-        columns: [
-            ['data1', 100, 200, 150, 300, 200],
-            ['data2', 400, 500, 250, 700, 300],
-        ]
-    },
-    	    axis: { 
-			x: { 
-				label: 'xLabel',
-				tick: { fit: false, outer: false, rotate: 00 },
-			}, 
-			y: {
-				label: 'yLabel', 
-				tick: { fit: false, outer: false }
+	var chart = c3.generate({
+		bindto: c,
+	    data: {
+	        columns: [
+	            ['data1', 100, 200, 150, 300, 200],
+	            ['data2', 400, 500, 250, 700, 300],
+	        ]
+	    },
+	    	    axis: { 
+				x: { 
+					label: 'xLabel',
+					tick: { fit: false, outer: false, rotate: rotateX },
+				}, 
+				y: {
+					label: 'yLabel', 
+					tick: { fit: false, outer: false }
+				},
+				y2: {
+					tick: { fit: false, outer: false }
+				},
 			},
-			y2: {
-				tick: { fit: false, outer: false }
+					zoom: {
+				enabled: true,
+				rescale: true
 			},
-		},
-				zoom: {
-			enabled: true,
-			rescale: true
-		},
-	completeScale: completeScale
-});
+		completeScale: completeScale
+	});
+}
 </script>
 </body>
 </html>

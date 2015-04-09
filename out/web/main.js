@@ -539,7 +539,8 @@ function getChartOptions(json, zoomFactor, values, chart) {
 		point: {
 			show: false
 		},
-		completeScale: zoomFactor*1.45
+		completeScale: zoomFactor*1.45,
+		onresize: function() {}
 		/*
 		 * labels : columns, logscale : json.type.I.logScale, animatedZooms :
 		 * true, labelsSeparateLines : true, legend : "always",

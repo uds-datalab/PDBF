@@ -252,8 +252,8 @@
         config.point_r = config.point_r * config.completeScale;
         $($$.svg[0]).css("font-size", config.completeScale*10);
         $($$.svg[0]).css("stroke-width", config.completeScale);
-        config.padding_right = 4*config.completeScale;
-        config.padding_top = 4*config.completeScale;
+        config.padding_right = config.padding_right*config.completeScale;
+        config.padding_top = config.padding_top*config.completeScale;
         //////////////////////////////////////////////////////////////////////
         
         // Define defs
@@ -1038,8 +1038,8 @@
             size_width: undefined,
             size_height: undefined,
             padding_left: undefined,
-            padding_right: undefined,
-            padding_top: undefined,
+            padding_right: 4,
+            padding_top: 4,
             padding_bottom: undefined,
             zoom_enabled: false,
             zoom_extent: undefined,
@@ -2672,7 +2672,7 @@
 
     c3_chart_internal_fn.getAxisWidthByAxisId = function (id, withoutRecompute) {
         var $$ = this, position = $$.axis.getLabelPositionById(id);
-        return $$.axis.getMaxTickWidth(id, withoutRecompute) + (position.isInner ? 20 : 40) + 3*($$.config.completeScale-1)-5;
+        return $$.axis.getMaxTickWidth(id, withoutRecompute) + (position.isInner ? 20 : 40) + 6*($$.config.completeScale-1)-5;
     };
     c3_chart_internal_fn.getHorizontalAxisHeight = function (axisId) {
         var $$ = this, config = $$.config, h = 10*config.completeScale;
@@ -6912,9 +6912,9 @@
                 }
                 function yForText(rotate) {
                     if (!rotate) {
-                        return tickLength;
+                        return tickLength - params.$$.config.completeScale*2;
                     }
-                    return tickLength-3 - params.$$.config.completeScale*10 + params.$$.config.completeScale*10 * Math.cos(Math.PI * (rotate / 180));
+                    return tickLength - params.$$.config.completeScale*12 + params.$$.config.completeScale*10 * Math.cos(Math.PI * (rotate / 180));
                 }
 
                 switch (orient) {
