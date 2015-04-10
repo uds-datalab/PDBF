@@ -511,6 +511,12 @@ function addClickCloseHandler(elem, o) {
 	});
 }
 
+var defaultChartOptions = {
+	noxticks: false,
+	noyticks: false,
+	legend: { show: true }
+};
+
 function getChartOptions(json, zoomFactor, values, chart) {
 	var options = {
 		bindto: chart,
@@ -541,21 +547,9 @@ function getChartOptions(json, zoomFactor, values, chart) {
 		},
 		completeScale: zoomFactor*1.45,
 		onresize: function() {}
-		/*
-		 * labels : columns, logscale : json.type.I.logScale, animatedZooms :
-		 * true, labelsSeparateLines : true, legend : "always",
-		 * axisLabelFontSize : 14, xAxisHeight : 14, axisLabelWidth : 52,
-		 * titleHeight : 18, xLabelHeight : 18, yLabelWidth : 18, xlabel : ,
-		 * ylabel : labelsDivStyles : { 'text-align' : 'right', 'background' :
-		 * 'none', 'font-size' : 'inherit' }, axes : { x : { pixelsPerLabel : 50 },
-		 * y : { pixelsPerLabel : 30 } }, gridLineWidth : 0.3, axisLineWidth :
-		 * 0.3, highlightCircleSize : 2, strokeWidth : 1, includeZero :
-		 * json.type.I.includeZero, drawPoints : json.type.I.drawPoints,
-		 * pointSize : 3, fillGraph : json.type.I.fillGraph, visibility :
-		 * json.type.I.visibility, showRangeSelector :
-		 * json.type.I.showRangeSelector,
-		 */
 	};
+	
+	jQuery.extend(true, options, defaultChartOptions);
 	
 	try {
 	var addOpt = JSON.parse(json.type.I.options);
@@ -567,28 +561,9 @@ function getChartOptions(json, zoomFactor, values, chart) {
 	}
 	jQuery.extend(true, options, addOpt);
 	
-	/*
-	 * try { function mergeAintoB(a, b) { for ( var key in a) { if (typeof
-	 * a[key] === 'object' && typeof b[key] === 'object') { mergeAinB(a[key],
-	 * b[key]); } else { b[key] = a[key]; } } } mergeAintoB(addOpt, options);
-	 * 
-	 * options.titleHeight = options.titleHeight * zoomFactor + 8;
-	 * options.axisLabelFontSize = options.axisLabelFontSize * zoomFactor;
-	 * options.xAxisHeight = options.xAxisHeight * zoomFactor + 12;
-	 * options.axisLabelWidth = options.axisLabelWidth * zoomFactor;
-	 * options.xLabelHeight = options.xLabelHeight * zoomFactor;
-	 * options.yLabelWidth = options.yLabelWidth * zoomFactor;
-	 * options.axes.x.pixelsPerLabel = options.axes.x.pixelsPerLabel *
-	 * zoomFactor; options.axes.y.pixelsPerLabel = options.axes.y.pixelsPerLabel *
-	 * zoomFactor; options.gridLineWidth = options.gridLineWidth * zoomFactor;
-	 * options.pointSize = options.pointSize * zoomFactor;
-	 * options.highlightCircleSize = options.highlightCircleSize * zoomFactor;
-	 * options.strokeWidth = options.strokeWidth * zoomFactor;
-	 * options.axisLineWidth = options.axisLineWidth * zoomFactor; if
-	 * (options.xlabel == '') options.xlabel = undefined; if (options.ylabel ==
-	 * '') options.ylabel = undefined; if (options.visibility == undefined) {
-	 * delete options.visibility; }
-	 */
+	if (options.axis.x.label == '') delete options.axis.x.label; 
+	if (options.axis.y.label == '') delete options.axis.y.label;
+	
 	switch (json.type.C) {
 		case 'pdbf.common.LineChart':
 			break;

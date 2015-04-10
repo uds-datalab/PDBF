@@ -226,8 +226,12 @@
         $$.updateScales();
 
         // Set domains for each scale
-        $$.x.domain(d3.extent($$.getXDomain($$.data.targets)));
-        $$.y.domain($$.getYDomain($$.data.targets, 'y'));
+        var xd = $$.getXDomain($$.data.targets);
+        var yd = $$.getYDomain($$.data.targets, 'y');
+        c3_chart_fn.xd = function() { return xd };
+        c3_chart_fn.yd = function() { return yd };
+        $$.x.domain(d3.extent(xd));
+        $$.y.domain(yd);
         $$.y2.domain($$.getYDomain($$.data.targets, 'y2'));
         $$.subX.domain($$.x.domain());
         $$.subY.domain($$.y.domain());
