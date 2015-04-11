@@ -36,9 +36,9 @@
 \define@key{pdbf}{width}{\def\pdbf@width{#1}}
 \define@key{pdbf}{height}{\def\pdbf@height{#1}}
 \def\pdbf@xunitname{}
-\define@key{pdbf}{xunit}{\StrSubstitute{#1}{"}{\@backslashchar"}[\pdbf@xunitname]}
+\define@key{pdbf}{xunit}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@xunitname]}
 \def\pdbf@yunitname{}
-\define@key{pdbf}{yunit}{\StrSubstitute{#1}{"}{\@backslashchar"}[\pdbf@yunitname]}
+\define@key{pdbf}{yunit}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@yunitname]}
 \def\pdbf@options{{}}
 \define@key{pdbf}{options}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@opt]\def\pdbf@options{{\pdbf@opt}}}
 \def\pdbfQuality{1.0}
@@ -69,6 +69,30 @@
 \define@key{pdbf}{aggregationBig}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@aggregationBig]}
 \def\pdbf@aggregationattributeBig{}
 \define@key{pdbf}{aggregationattributeBig}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@aggregationattributeBig]}
+
+%Multiplot
+\def\pdbf@xCount{0}
+\define@key{pdbf}{xCount}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@xCount]}
+\def\pdbf@yCount{0}
+\define@key{pdbf}{yCount}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@yCount]}
+\def\pdbf@leftArr{[]}
+\define@key{pdbf}{leftArr}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@leftArr]}
+\def\pdbf@rightArr{[]}
+\define@key{pdbf}{rightArr}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@rightArr]}
+\def\pdbf@topArr{[]}
+\define@key{pdbf}{topArr}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@topArr]}
+\def\pdbf@bottomArr{[]}
+\define@key{pdbf}{bottomArr}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@bottomArr]}
+\def\pdbf@xValues{}
+\define@key{pdbf}{xValues}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@xValues]}
+\def\pdbf@yValues{}
+\define@key{pdbf}{yValues}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@yValues]}
+\def\pdbf@yFirst{false}
+\define@key{pdbf}{yFirst}[true]{\def\pdbf@yFirst{#1}}
+\def\pdbf@forceXequal{false}
+\define@key{pdbf}{forceXequal}[true]{\def\pdbf@forceXequal{#1}}
+\def\pdbf@forceYequal{false}
+\define@key{pdbf}{forceYequal}[true]{\def\pdbf@forceYequal{#1}}
 
 \DeclareRobustCommand\pdbf@save[1]{%
     \begingroup
@@ -130,6 +154,17 @@
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationattribute": "\pdbf@aggregationattribute",}% 
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationBig": "\pdbf@aggregationBig",}% 
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationattributeBig": "\pdbf@aggregationattributeBig",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xCount": \pdbf@xCount,}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yCount": \pdbf@yCount,}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"leftArr": "\pdbf@leftArr",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"rightArr": "\pdbf@rightArr",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"topArr": "\pdbf@topArr",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"bottomArr": "\pdbf@bottomArr",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xValues": "\pdbf@xValues",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yValues": "\pdbf@yValues",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yFirst": \pdbf@yFirst,}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"forceXequal": \pdbf@forceXequal,}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"forceYequal": \pdbf@forceYequal,}% 
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"cols": "\pdbf@cols",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"rows": "\pdbf@rows",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x1": \zposx{Overlay\arabic{visual}1},}%
@@ -155,6 +190,10 @@
 
 \def\pivotTable[#1]#2#3{
 	\pdbf@chart[#1]{#2}{#3}{Pivot}
+}
+
+\def\MultiplotChart[#1]#2{
+	\pdbf@chart[#1]{#2}{#2}{MultiplotChart}
 }
 
 \def\sqlmult#1#2{%

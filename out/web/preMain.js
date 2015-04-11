@@ -79,9 +79,9 @@ function getCheckbox(labelname, containerControl) {
 	return checkbox;
 }
 
-function alert(e) {
-	var a;
-}
+//function alert(e) {
+//	var a;
+//}
 
 function display(json, page) {
 	var zoomFactor = PDFViewerApplication.pdfViewer._currentScale
@@ -97,6 +97,22 @@ function display(json, page) {
 	page.appendChild(container);
 
 	switch (json.type.C) {
+	case "pdbf.common.MultiplotChart":
+		var containerOver = document.getElementById(json.name + "Big");
+		if (containerOver == null) {
+			var containerOver = document.createElement('div');
+			containerOver
+					.setAttribute(
+							'style',
+							'position:fixed; z-index:9; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;');
+			containerOver.id = json.name + "Big";
+			containerOver.className = "centerhv";
+			//TODO: buildContainerChartBig(json, containerOver, true);
+		} else {
+			//TODO: containerOver.update();
+		}
+		buildContainerMultiplotChart(container, json, zoomFactor, style, containerOver, true);
+		break;
 	case "pdbf.common.LineChart":
 	case "pdbf.common.BarChart":
 		var containerOver = document.getElementById(json.name + "Big");

@@ -1,4 +1,4 @@
-﻿	</script><link rel="stylesheet" href="viewer.css"/>
+﻿	</script>
 	<link rel="stylesheet" href="pivot.css"/>
 	<link rel="stylesheet" href="codemirror.css"/>
 	<link rel="stylesheet" href="jquery.dataTables.css"/>
@@ -17,10 +17,16 @@
 	<script src="jquery.dataTables.js"></script>
     <script src="main.js"></script>
     <script src="preMain.js"></script>
+    <script>
+    //redirect alerts to console
+    function alert(e) {
+    	throw new Error(e);
+    }
+    </script>
 	
   </head>
 
-  <body onLoad="overlay()" style="width:100%; height:100%;">
+  <body style="width:100%; height:100%; margin:0px; background-color: white;">
 
 <script>
 //Load dim.json
@@ -48,6 +54,10 @@ var width = (json.type.I.x2 - json.type.I.x1);
 var height = (json.type.I.y1 - json.type.I.y2);
 outw = tmpw*width;
 outh = tmph*height;
+
+$(document.body).css('width', outw);
+$(document.body).css('height', outh);
+
 var pageOverlays = [];
 parse(json);
 function isValidDate(d) {
@@ -69,12 +79,15 @@ var zoomFactor = json.type.I.zoom * 1.30 * json.type.I.quality;
 var rawZoomFactor = json.type.I.zoom * 1.30 * json.type.I.quality;
 
 function display(json, page) {
-	var containerOver = document.getElementById(json.name + "Big");
+	var containerOver;
 	var container = document.createElement('div');
 	container.id = json.name;
 	var style = "width:100%; height:100%;";
 	page.appendChild(container);
 	switch(json.type.C) {
+ 		case "pdbf.common.MultiplotChart":
+			buildContainerMultiplotChart(container, json, zoomFactor, style, containerOver, false);
+			break;
 		case "pdbf.common.LineChart":
 		case "pdbf.common.BarChart":
 			buildContainerChart(container, json, zoomFactor, style, containerOver, false);
@@ -83,7 +96,6 @@ function display(json, page) {
 			//DO NOTHING
 			break;
 		case "pdbf.common.Pivot":
-			
 			buildContainerPivot(container, json, zoomFactor, style, containerOver, false);
 			break;
 		default:
@@ -93,6 +105,7 @@ function display(json, page) {
 }
 
 function overlay() {
+	document.body.innerHTML = '';
   	var pageNr = 0;
 	for (var i = 0; i < pageOverlays[pageNr].length; ++i) {
 		display(pageOverlays[pageNr][i], document.body)

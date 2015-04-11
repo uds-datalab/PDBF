@@ -1679,6 +1679,10 @@
         }
         else if ($$.isCustomX() && !$$.isCategorized()) {
             x = isValue(rawX) ? +rawX : $$.getXValue(id, index);
+            if (isNaN(x)) {
+            	alert("Error parsing value for xAxis! Did you forget to specify type: \"timeseries\" in config.\nValue was: " + rawX);
+            	throw new Error();
+            }
         }
         else {
             x = index;

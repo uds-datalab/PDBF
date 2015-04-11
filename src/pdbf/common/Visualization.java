@@ -5,6 +5,19 @@ public abstract class Visualization {
      * This is beneficial because then you can also set options 
      * on how other representations of this visualization should look like*/
     
+    //Multiplot
+    public int xCount;
+    public int yCount;
+    public String leftArr;
+    public String rightArr;
+    public String topArr;
+    public String bottomArr;
+    public String xValues;
+    public String yValues;
+    public boolean yFirst;
+    public boolean forceXequal;
+    public boolean forceYequal;
+    
     //LineChart and BarChart
     public boolean logScale;
     public String legendpos;

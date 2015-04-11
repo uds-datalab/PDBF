@@ -165,8 +165,6 @@ public class LaTeX_Compiler {
 	    }
 	}
 	
-	//TODO: javascript. maybe implement chart legend via dygraphs plugin apis
-	
 	System.out.println("Compiling LaTeX (2/2)...");
 	try {
 	    ProcessBuilder pb = new ProcessBuilder(commands);

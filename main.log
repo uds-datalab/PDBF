@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.4.16)  8 APR 2015 14:48
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.4.16)  11 APR 2015 18:46
 entering extended mode
 **C:/workspaceAndroid/PDBF_Paper/main.tex
 (C:/workspaceAndroid/PDBF_Paper/main.tex
@@ -1067,11 +1067,11 @@ LaTeX Font Info:    Try loading font information for OT1+txtt on input line 216
 .
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\txfonts\ot1txtt.fd
 File: ot1txtt.fd 2000/12/15 v3.1
-) <Overlay2.png, id=169, 303.38344pt x 243.15843pt>
+) <Overlay2.png, id=169, 303.38344pt x 245.41687pt>
 File: Overlay2.png Graphic file (type png)
 <use Overlay2.png>
 Package pdftex.def Info: Overlay2.png used on input line 292.
-(pdftex.def)             Requested size: 241.9201pt x 193.53264pt.
+(pdftex.def)             Requested size: 241.9201pt x 193.54016pt.
 
 Underfull \hbox (badness 10000) in paragraph at lines 292--293
 
@@ -1082,11 +1082,11 @@ Overfull \hbox (1.91785pt too wide) in paragraph at lines 291--295
  []$[]$ 
  []
 
-<Overlay3.png, id=170, 303.38344pt x 228.10219pt>
+<Overlay3.png, id=170, 303.38344pt x 230.36063pt>
 File: Overlay3.png Graphic file (type png)
 <use Overlay3.png>
 Package pdftex.def Info: Overlay3.png used on input line 297.
-(pdftex.def)             Requested size: 241.9201pt x 181.44128pt.
+(pdftex.def)             Requested size: 241.9201pt x 181.43805pt.
 
 Underfull \hbox (badness 10000) in paragraph at lines 297--298
 
@@ -1100,11 +1100,11 @@ Overfull \hbox (1.91785pt too wide) in paragraph at lines 296--307
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<Overlay4.png, id=171, 303.38344pt x 525.46312pt>
+<Overlay4.png, id=171, 303.38344pt x 524.71031pt>
 File: Overlay4.png Graphic file (type png)
 <use Overlay4.png>
 Package pdftex.def Info: Overlay4.png used on input line 351.
-(pdftex.def)             Requested size: 241.9201pt x 418.53496pt.
+(pdftex.def)             Requested size: 241.9201pt x 418.52782pt.
 
 Underfull \hbox (badness 10000) in paragraph at lines 351--352
 
@@ -1120,21 +1120,39 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 [3 <C:/workspaceAndroid/PDBF_Paper/enlarge.jpg>] (C:\workspaceAndroid\PDBF\main
 .bbl) [4 <C:/workspaceAndroid/PDBF/Overlay2.png> <C:/workspaceAndroid/PDBF/Over
-lay3.png> <C:/workspaceAndroid/PDBF/Overlay4.png>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 393.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 393.
+lay3.png> <C:/workspaceAndroid/PDBF/Overlay4.png>] <Overlay5.png, id=213, 632.3
+625pt x 505.89pt>
+File: Overlay5.png Graphic file (type png)
+<use Overlay5.png>
+Package pdftex.def Info: Overlay5.png used on input line 396.
+(pdftex.def)             Requested size: 504.00912pt x 403.20728pt.
+
+Overfull \hbox (273.00926pt too wide) in paragraph at lines 396--397
+[][]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 396--397
+
+ []
+
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 398.
+[5
+
+ <C:/workspaceAndroid/PDBF/Overlay5.png>]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 398.
 (C:\workspaceAndroid\PDBF\main.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 393.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 393.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 398.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 398.
 Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 1E2C3B2F658055186D644361AD0B150D;1130.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 393.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 398.
  ) 
 Here is how much of TeX's memory you used:
- 24179 strings out of 493921
- 462503 string characters out of 3144879
- 505037 words of memory out of 3000000
- 26985 multiletter control sequences out of 15000+200000
+ 24213 strings out of 493921
+ 463015 string characters out of 3144879
+ 505735 words of memory out of 3000000
+ 27017 multiletter control sequences out of 15000+200000
  42246 words of font info for 98 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
  55i,14n,54p,10408b,580s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -1149,9 +1167,9 @@ les (x86)/MiKTeX 2.9/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Program Files (x86
  2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/
 type1/urw/times/utmr8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/t
 imes/utmri8a.pfb>
-Output written on main.pdf (4 pages, 275489 bytes).
+Output written on main.pdf (5 pages, 278625 bytes).
 PDF statistics:
- 262 PDF objects out of 1000 (max. 8388607)
- 64 named destinations out of 1000 (max. 500000)
- 192 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 268 PDF objects out of 1000 (max. 8388607)
+ 65 named destinations out of 1000 (max. 500000)
+ 197 words of extra memory for PDF output out of 10000 (max. 10000000)
 
