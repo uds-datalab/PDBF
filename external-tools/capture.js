@@ -23,18 +23,17 @@ page.open(system.args[1], function() {
 		height: size.h
 	};
 
-	var name = page.evaluate(function() {
-		overlay();
-		return json.name;
-	});
-	
 	page.evaluate(function() {
-		zoomFactor = 1.2;
 		overlay();
 	});
 		
-	page.render(name + '.png');	
-	phantom.exit();
+	window.setTimeout(function () {
+		var name = page.evaluate(function() {
+			return json.name;
+		});
+		page.render(name +'.png');
+		phantom.exit();
+	}, 500);
 });
 
 

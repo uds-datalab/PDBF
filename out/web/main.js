@@ -981,24 +981,24 @@ function getChartOptions(json, zoomFactor, values, chart) {
 	$(chart).parent().append(css);
 	css.innerHTML = '																' + '.c3-line {																	'
 			+ ' stroke-width: '
-			+ Math.ceil(zoomFactor)
+			+ (zoomFactor)
 			+ 'px; }										'
 			+ '																			'
 			+ '.c3-circle._expanded_ {													'
 			+ ' stroke-width: '
-			+ Math.ceil(zoomFactor)
+			+ (zoomFactor)
 			+ 'px;											'
 			+ ' stroke: white; }															'
 			+ '																			'
 			+ '.c3-selected-circle {														'
 			+ ' fill: white;																'
 			+ ' stroke-width: '
-			+ Math.ceil(2 * zoomFactor)
+			+ (2 * zoomFactor)
 			+ 'px; }										'
 			+ '																			'
 			+ '.c3-target.c3-focused path.c3-line, .c3-target.c3-focused path.c3-step {	'
 			+ ' stroke-width: '
-			+ Math.ceil(2 * zoomFactor)
+			+ (2 * zoomFactor)
 			+ 'px; }										'
 			+ '																			'
 			+ '.c3-legend-background {													'
@@ -1006,7 +1006,7 @@ function getChartOptions(json, zoomFactor, values, chart) {
 			+ ' fill: white;																'
 			+ ' stroke: lightgray;														'
 			+ ' stroke-width: '
-			+ Math.ceil(zoomFactor) + '; }											';
+			+ (zoomFactor) + '; }											';
 
 	return options;
 }
