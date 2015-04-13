@@ -319,36 +319,90 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style,
 		});
 	}
 
-	function getLeft(countRows, text, td) {
+	function getLeft(cur, json, td) {
+		var ret;
 		var div = document.createElement('div');
 		div.className = 'vertical-text';
 		div.setAttribute('style', 'width: ' + left + 'px;');
 		td.appendChild(div);
-		td.setAttribute('rowspan', countRows);
-		div.innerHTML = "<div class=\"vertical-text__innerL\">" + text
-				+ "</div>";
+		if (typeof cur == 'string' || cur instanceof String) {
+			td.setAttribute('rowspan', 1);
+			div.innerHTML = "<div class=\"vertical-text__innerL\">" + cur
+					+ "</div>";
+			ret = 1;
+		} else {
+			if (cur.c == undefined || cur.text == undefined) {
+				alert("leftArr of "+json.name+
+						" has wrong format!\nShould be: [{text: \"...\", c:somenumber}, ...]\nBut it was: "+JSON.stringify(topArr));
+			}
+			td.setAttribute('rowspan', cur.c);
+			div.innerHTML = "<div class=\"vertical-text__innerL\">" + cur.text
+					+ "</div>";
+			ret = cur.c;
+		}
+		return ret;
 	}
 
-	function getRight(countRows, text, td) {
+	function getRight(cur, json, td) {
+		var ret;
 		var div = document.createElement('div');
 		div.className = 'vertical-text';
 		div.setAttribute('style', 'width: ' + right + 'px;');
 		td.appendChild(div);
-		td.setAttribute('rowspan', countRows);
-		div.innerHTML = "<div class=\"vertical-text__innerR\">" + text
-				+ "</div>";
+		if (typeof cur == 'string' || cur instanceof String) {
+			td.setAttribute('rowspan', 1);
+			div.innerHTML = "<div class=\"vertical-text__innerR\">" + cur
+					+ "</div>";
+			ret = 1;
+		} else {
+			if (cur.c == undefined || cur.text == undefined) {
+				alert("rightArr of "+json.name+
+						" has wrong format!\nShould be: [{text: \"...\", c:somenumber}, ...]\nBut it was: "+JSON.stringify(topArr));
+			}
+			td.setAttribute('rowspan', cur.c);
+			div.innerHTML = "<div class=\"vertical-text__innerR\">" + cur.text
+					+ "</div>";
+			ret = cur.c;
+		}
+		return ret;
 	}
 
-	function getTop(countCols, text, td) {
+	function getTop(cur, json, td) {
+		var ret;
+		if (typeof cur == 'string' || cur instanceof String) {
+			td.setAttribute('colspan', 1);
+			td.innerHTML = cur;
+			ret = 1;
+		} else {
+			if (cur.c == undefined || cur.text == undefined) {
+				alert("topArr of "+json.name+
+						" has wrong format!\nShould be: [{text: \"...\", c:somenumber}, ...]\nBut it was: "+JSON.stringify(topArr));
+			}
+			td.setAttribute('colspan', cur.c);
+			td.innerHTML = cur.text;
+			ret = cur.c;
+		}
 		td.setAttribute('style', 'height: 1.5em; width: ' + w + 'px;');
-		td.setAttribute('colspan', countCols);
-		td.innerHTML = text;
+		return ret;
 	}
 
-	function getBottom(countCols, text, td) {
+	function getBottom(cur, json, td) {
+		var ret;
+		if (typeof cur == 'string' || cur instanceof String) {
+			td.setAttribute('colspan', 1);
+			td.innerHTML = cur;
+			ret = 1;
+		} else {
+			if (cur.c == undefined || cur.text == undefined) {
+				alert("bottomArr of "+json.name+
+						" has wrong format!\nShould be: [{text: \"...\", c:somenumber}, ...]\nBut it was: "+JSON.stringify(topArr));
+			}
+			td.setAttribute('colspan', cur.c);
+			td.innerHTML = cur.text;
+			ret = cur.c;
+		}
 		td.setAttribute('style', 'height: 1.5em; width: ' + w + 'px;');
-		td.setAttribute('colspan', countCols);
-		td.innerHTML = text;
+		return ret;
 	}
 
 	style = "background: white;" + style;
@@ -456,12 +510,6 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style,
 		} ];
 	}
 
-	if (yFirst) {
-		var tmp = rightArr;
-		rightArr = topArr;
-		topArr = tmp;
-	}
-
 	// TODO: right now only labels of one line height are supported!
 	var fontbasesize = 13;
 	var left = leftArr.length != 0 ? fontbasesize * zoomFactor * 1.6 : 0;
@@ -514,7 +562,7 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style,
 			var cur = topArr.shift();
 			var td = document.createElement('td');
 			tr.appendChild(td);
-			getTop(cur.c, cur.text, td);
+			getTop(cur, json, td);
 		}
 		if (right != 0) {
 			var td = document.createElement('td');
@@ -528,8 +576,7 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style,
 			var cur = leftArr.shift();
 			var td = document.createElement('td');
 			tr.appendChild(td);
-			getLeft(cur.c, cur.text, td);
-			nextLeft += cur.c;
+			nextLeft += getLeft(cur, json, td);
 		}
 		for (var x = 0; x < xCount; ++x) {
 			var td = document.createElement('td');
@@ -541,8 +588,8 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style,
 
 			var cellquery = queryBackup;
 			if (yFirst) {
-				cellquery = cellquery.replace("?", xValues[y]);
-				cellquery = cellquery.replace("?", yValues[x]);
+				cellquery = cellquery.replace("?", yValues[y]);
+				cellquery = cellquery.replace("?", xValues[x]);
 			} else {
 				cellquery = cellquery.replace("?", xValues[x]);
 				cellquery = cellquery.replace("?", yValues[y]);
@@ -561,6 +608,9 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style,
 			}
 
 			var chartdata = getChartData(json);
+			if (chartdata.error != undefined) {
+				alert(json.name + " has error:\n" + chartdata.error);
+			}
 			var options = getChartOptions(json, zoomFactor, chartdata.values,
 					cellInner);
 
@@ -621,8 +671,7 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style,
 			var cur = rightArr.shift();
 			var td = document.createElement('td');
 			tr.appendChild(td);
-			getRight(cur.c, cur.text, td);
-			nextRight += cur.c;
+			nextRight += getRight(cur, json, td);
 		}
 	}
 	if (bottom != 0) {
@@ -636,7 +685,7 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style,
 			var cur = bottomArr.shift();
 			var td = document.createElement('td');
 			tr.appendChild(td);
-			getBottom(cur.c, cur.text, td);
+			getBottom(cur, json, td);
 		}
 		if (right != 0) {
 			var td = document.createElement('td');

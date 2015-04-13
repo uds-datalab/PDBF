@@ -45,6 +45,7 @@
 \def\fileversion{v2.5}          % for ACM's tracking purposes
 \def\filedate{May 23, 2012}    % Gerry Murray's tracking data
 \def\docdate {Wednesday 23rd. May 2012} % Gerry Murray (with deltas to doc}
+\usepackage[pdftex,letterpaper]{geometry}
 \usepackage{epsfig}
 \usepackage{amssymb}
 \usepackage{amsmath}

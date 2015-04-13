@@ -34,6 +34,13 @@
 
 \newcommand{\hide}[1]{}
 \sloppy
+
+\usepackage{PDBF}
+
+\DBSQLFile{somedb.sql}
+\DBSQLJDBC{jdbc:postgresql://localhost:5432/postgres}{postgres}{test}{testtest, dim_time, dim_compiler, dim_dataset, dim_implementation, dim_layout, dim_query, dim_machine, fact_experiment}
+\renewcommand\pdbfScale{1.00}
+\renewcommand\pdbfQuality{1.00}
   
 \begin{document}
 
@@ -221,8 +228,7 @@ Table~\ref{fig:problem_bests_table} displays our recommendations for choosing a 
 
 \begin{figure*}[!ht]
 \centering
-\includegraphics[width=.97\textwidth]{pdf/fragility.pdf}
-\vspace{-10pt}
+\MultiplotChart[width=.97\textwidth, height=.641\textwidth, xunit={Relative size of the set of best solutions}, yunit={Slowdown compared to best solution}, xCount=6, yCount=4, yValues={["runtimeA AS [engine A]", "runtimeB AS [engine B]", "runtimeA AS [engine A]", "runtimeB AS [engine B]"]}, xValues={["date <= '2008/05/10'", "date > '2008/05/10'", "date <= '2008/05/10'", "date > '2008/05/10'", "date <= '2008/05/10'", "date > '2008/05/10'"]}, rightArr={["Nehalem", "Westmere", "Sandy Bridge", "Ivy Bridge"]}, topArr={["Q1, char", "Q2, char", "Q1, int", "Q2, int", "Q1, long", "Q2, long"]}, forceXequal, forceYequal, yFirst, options={"legend": { "show": true }, "axis": { "x": { "tick": { "fit":true } } }}]{SELECT date, ? FROM data2 WHERE ?;}
 \caption{Robustness graphs for 24 different experiments displaying the impact of non--optimal layouts on runtime performance. The horizontal axis displays the k-th-best data layout picked (where $k$ is in 1$,\ldots, N=$252; normalized to 100\%). The vertical axis displays the performance overhead of that method over the best one (displayed till at most 250\% overhead; notice that some curves leave their plot).
 The bigger the area under the curve, the more likely it is that a decision for a non-optimal data layout will trigger a performance loss. }  
 \label{fig:fragility}
