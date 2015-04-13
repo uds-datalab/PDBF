@@ -2621,7 +2621,7 @@
         } else if (!config.axis_y_show || config.axis_y_inner) { // && !config.axis_rotated
             return $$.axis.getYAxisLabelPosition().isOuter ? 30 : 1;
         } else {
-            return ceil10($$.getAxisWidthByAxisId('y', withoutRecompute));
+            return $$.getAxisWidthByAxisId('y', withoutRecompute);
         }
     };
     c3_chart_internal_fn.getCurrentPaddingRight = function () {
@@ -2681,11 +2681,14 @@
 
     c3_chart_internal_fn.getAxisWidthByAxisId = function (id, withoutRecompute) {
         var $$ = this, position = $$.axis.getLabelPositionById(id);
-        return $$.axis.getMaxTickWidth(id, withoutRecompute) + (position.isInner ? 20 : 40) + 8.5*($$.config.completeScale-1)-5;
+        if ($$.config.noyticks) {
+        	return ($$.config.innerTickSize+1.0)*$$.config.completeScale;
+        }
+        return $$.axis.getMaxTickWidth(id, withoutRecompute) + (position.isInner ? 1 : 2)*$$.config.completeScale + ($$.config.innerTickSize+3)*$$.config.completeScale;
     };
     c3_chart_internal_fn.getHorizontalAxisHeight = function (axisId) {
         var $$ = this, config = $$.config, h = (config.innerTickSize+1.5)*config.completeScale;
-        if (axisId === 'x' && !config.axis_x_show) { return 6*config.completeScale; }
+        if (axisId === 'x' && !config.axis_x_show) { return 8; }
         if (axisId === 'x' && config.axis_x_height) { return config.axis_x_height; }
         if (axisId === 'y' && !config.axis_y_show) { return config.legend_show && !$$.isLegendRight && !$$.isLegendInset ? 10 : 1; }
         if (axisId === 'y2' && !config.axis_y2_show) { return $$.rotated_padding_top; }
@@ -2699,7 +2702,7 @@
         	h += config.completeScale*8;
         }
         if (config.noxticks) {
-        	return 6*config.completeScale;
+        	return (config.innerTickSize+1.0)*config.completeScale;
         }
         return h + ($$.axis.getLabelPositionById(axisId).isInner ? 0 : 10) + (axisId === 'y2' ? -10 : 0) + 
         (config.lengend_show ? 2*config.completeScale : 0); //padding legend

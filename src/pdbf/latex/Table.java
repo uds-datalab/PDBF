@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
@@ -34,7 +35,14 @@ public class Table implements JsonSerializer<Table> {
 	    JsonObject cur = new JsonObject();
 	    Data dcur = src.data.get(i);
 	    for (int j = 0; j < dcur.values.size(); ++j) {
-		cur.addProperty(src.columns.get(j).columnid, dcur.values.get(j));
+		Object c = dcur.values.get(j);
+		if (c instanceof Number) {
+		    cur.addProperty(src.columns.get(j).columnid, (Number)c);
+		} else if (c == null){
+		    cur.add(src.columns.get(j).columnid, JsonNull.INSTANCE);
+		} else {
+		    cur.addProperty(src.columns.get(j).columnid, c.toString()); 
+		}
 	    }
 	    data[i] = cur;
 	}

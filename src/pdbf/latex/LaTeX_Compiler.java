@@ -77,7 +77,7 @@ public class LaTeX_Compiler {
 
 	// Read JSON
 	GsonBuilder builder = new GsonBuilder();
-	builder.disableHtmlEscaping();
+	builder.disableHtmlEscaping().serializeNulls();
 	builder.registerTypeAdapter(Visualization.class, new VisualizationTypeAdapter());
 	builder.registerTypeAdapter(Alasql.class, new Alasql());
 	builder.registerTypeAdapter(Table.class, new Table());
@@ -231,9 +231,10 @@ public class LaTeX_Compiler {
 		    }
 		    if (cols > 0) {
 			while (rs.next()) {
-			    String[] data = new String[cols];
+			    Object[] data = new Object[cols];
+			    Object o;
 			    for (int i = 1; i <= cols; ++i) {
-				data[i - 1] = rs.getString(i);
+				data[i - 1] = rs.getObject(i);
 			    }
 			    table.data.add(new Data(data));
 			}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.4.16)  13 APR 2015 16:39
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.4.16)  13 APR 2015 18:16
 entering extended mode
 **C:/workspaceAndroid/PDBF/testdata/chunked_column_layouts/draft.tex
 (C:/workspaceAndroid/PDBF/testdata/chunked_column_layouts/draft.tex
@@ -684,7 +684,7 @@ Package balance Warning: You have called \balance in second column
 Here is how much of TeX's memory you used:
  11912 strings out of 493921
  205372 string characters out of 3144879
- 295786 words of memory out of 3000000
+ 295746 words of memory out of 3000000
  15007 multiletter control sequences out of 15000+200000
  63075 words of font info for 91 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
