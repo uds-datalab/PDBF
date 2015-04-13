@@ -18,7 +18,7 @@ var wrapper = document.getElementById("wrapper");
 $( "#slider").slider({
     value:1.5,
     min: 0,
-    max: 5,
+    max: 10,
     step: 0.1,
     slide: function( event, ui ) {
     	ui.handle.innerHTML = ui.value;
@@ -104,6 +104,9 @@ function createChart(completeScale, rotateX) {
 					zoom: {
 				enabled: true,
 				rescale: true
+			},
+			legend: {
+				show: false
 			},
 		completeScale: completeScale
 	});

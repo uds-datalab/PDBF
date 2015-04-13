@@ -5883,7 +5883,7 @@ yy.Select.prototype.compileGroup = function(query) {
 
 //	console.log(query.sources[0].alias,query.defcols);
 	var allgroup = [[]];
-	if(this.group) {
+	if(this.group || query.selectGroup.length>0) {
 		allgroup = decartes(this.group,query);
 	}
 //	console.log(23,allgroup);

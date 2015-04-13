@@ -1042,9 +1042,10 @@
             size_width: undefined,
             size_height: undefined,
             padding_left: undefined,
-            padding_right: 4,
-            padding_top: 4,
+            padding_right: 0,
+            padding_top: 0,
             padding_bottom: undefined,
+            innerTickSize: 3,
             zoom_enabled: false,
             zoom_extent: undefined,
             zoom_privileged: false,
@@ -2680,25 +2681,28 @@
 
     c3_chart_internal_fn.getAxisWidthByAxisId = function (id, withoutRecompute) {
         var $$ = this, position = $$.axis.getLabelPositionById(id);
-        return $$.axis.getMaxTickWidth(id, withoutRecompute) + (position.isInner ? 20 : 40) + 6*($$.config.completeScale-1)-5;
+        return $$.axis.getMaxTickWidth(id, withoutRecompute) + (position.isInner ? 20 : 40) + 8.5*($$.config.completeScale-1)-5;
     };
     c3_chart_internal_fn.getHorizontalAxisHeight = function (axisId) {
-        var $$ = this, config = $$.config, h = 10*config.completeScale;
-        if (axisId === 'x' && !config.axis_x_show) { return 8; }
+        var $$ = this, config = $$.config, h = (config.innerTickSize+1.5)*config.completeScale;
+        if (axisId === 'x' && !config.axis_x_show) { return 6*config.completeScale; }
         if (axisId === 'x' && config.axis_x_height) { return config.axis_x_height; }
         if (axisId === 'y' && !config.axis_y_show) { return config.legend_show && !$$.isLegendRight && !$$.isLegendInset ? 10 : 1; }
         if (axisId === 'y2' && !config.axis_y2_show) { return $$.rotated_padding_top; }
         // Calculate x axis height when tick rotated
         if (axisId === 'x' && !config.axis_rotated && config.axis_x_tick_rotate) {
-            h += $$.axis.getMaxTickWidth(axisId) * Math.cos(Math.PI * (90 - config.axis_x_tick_rotate) / 180) +
-                 Math.min(20, 20*config.completeScale) * Math.sin(Math.PI * (90 - config.axis_x_tick_rotate) / 180);
-        } else {
-        	h += Math.min(20, 20*config.completeScale);
+        	var tmp = Math.cos(Math.PI * (90 - config.axis_x_tick_rotate) / 180);
+        	h += $$.axis.getMaxTickWidth(axisId) * tmp + config.completeScale*3 * tmp +
+        	     config.completeScale*8 * Math.abs(1-tmp);
+        }
+        if (axisId === 'x' && !config.axis_rotated && !config.axis_x_tick_rotate) {
+        	h += config.completeScale*8;
         }
         if (config.noxticks) {
         	return 6*config.completeScale;
         }
-        return h + ($$.axis.getLabelPositionById(axisId).isInner ? 0 : 10) + (axisId === 'y2' ? -10 : 0);
+        return h + ($$.axis.getLabelPositionById(axisId).isInner ? 0 : 10) + (axisId === 'y2' ? -10 : 0) + 
+        (config.lengend_show ? 2*config.completeScale : 0); //padding legend
     };
 
     c3_chart_internal_fn.getEventRectWidth = function () {
@@ -6717,7 +6721,7 @@
     // 3. multiline tick text
     var tickTextCharSize;
     function c3_axis(d3, params, $$) {
-        var scale = d3.scale.linear(), orient = "bottom", innerTickSize = 6*$$.config.completeScale, outerTickSize, tickPadding = 3*$$.config.completeScale, tickValues = null, tickFormat, tickArguments;
+        var scale = d3.scale.linear(), orient = "bottom", innerTickSize = $$.config.innerTickSize*$$.config.completeScale, outerTickSize, tickPadding = 3*$$.config.completeScale, tickValues = null, tickFormat, tickArguments;
         
         var tickOffset = 0, tickCulling = true, tickCentered;
 

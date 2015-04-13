@@ -725,8 +725,8 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style,
 									+ (11 * zoomFactor)
 									+ "px; background-color: "
 									+ colors[id]
-									+ "; margin-right:5px; margin-left:10px;'></span><span style'padding-right: 10px;'>"
-									+ id + "</span>";
+									+ "; margin-right:"+(5 * zoomFactor)+"px; margin-left:"+(10 * zoomFactor)+"px;'></span>"
+									+ id;
 						}).on('mouseover', function(id) {
 					charts.forEach(function(c, i, a) {
 						c.focus(id);
@@ -1430,6 +1430,11 @@ function getFullscreenDiv() {
 var rownumcount = false;
 alasql.fn.ROWNUM = function() {
 	rownumcount = true;
+}
+
+var rownumcount = false;
+alasql.fn.TEST = function(a) {
+	return a;
 }
 
 function alasqlQuery(q) {
