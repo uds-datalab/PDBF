@@ -61,7 +61,7 @@ public class LaTeX_Compiler {
 	}
 
 	String latexFolder = latex.getParent();
-	
+
 	ArrayList<String> commands = new ArrayList<String>(Arrays.asList(pathToLaTeXScript));
 	commands.add(latex.getAbsolutePath());
 
@@ -89,21 +89,30 @@ public class LaTeX_Compiler {
 	    String json2 = FileUtils.readFileToString(new File("dim.json"), Tools.utf8);
 	    dimOrg = gson.fromJson(json2, Dimension.class);
 	    for (int i = 0; i < overlays.length; ++i) {
-		if (overlays[i].type instanceof Text) {
+		Visualization v = overlays[i].type;
+		if (v instanceof Text) {
 		    Text t = (Text) overlays[i].type;
 		    t.x1 = t.x1 / dimOrg.width;
 		    t.x2 = t.x2 / dimOrg.width;
 		    t.y1 = (t.y1 + 65536 * t.fontsize) / dimOrg.height;
 		    t.y2 = t.y2 / dimOrg.height;
-		}
-		else if (overlays[i].type instanceof Chart) {
+		} else if (v instanceof Chart) {
 		    Chart c = (Chart) overlays[i].type;
 		    c.x1 = c.x1 / dimOrg.width;
 		    c.x2 = c.x2 / dimOrg.width;
 		    c.y1 = c.y1 / dimOrg.height;
 		    c.y2 = c.y2 / dimOrg.height;
 		}
-		overlays[i].type.zoom = overlays[i].type.fontsize / 12.0 * overlays[i].type.zoom;
+
+		if (!(v instanceof Database)) {
+		    v.zoom = v.fontsize / 12.0 * v.zoom;
+		    if (v.aggregationattributeBig.equals("")) {
+			v.aggregationattributeBig = v.aggregationattribute;
+		    }
+		    if (v.aggregationBig.equals("")) {
+			v.aggregationBig = v.aggregation;
+		    }
+		}
 	    }
 	} catch (Exception e) {
 	    e.printStackTrace();
@@ -153,8 +162,8 @@ public class LaTeX_Compiler {
 		e.printStackTrace();
 	    }
 	}
-	
-	//copy images to latex file
+
+	// copy images to latex file
 	for (String s : copyfiles) {
 	    File source = new File(s);
 	    String target = latexFolder + File.separator + source.getName();
@@ -164,7 +173,7 @@ public class LaTeX_Compiler {
 		e.printStackTrace();
 	    }
 	}
-	
+
 	System.out.println("Compiling LaTeX (2/2)...");
 	try {
 	    ProcessBuilder pb = new ProcessBuilder(commands);
@@ -232,7 +241,6 @@ public class LaTeX_Compiler {
 		    if (cols > 0) {
 			while (rs.next()) {
 			    Object[] data = new Object[cols];
-			    Object o;
 			    for (int i = 1; i <= cols; ++i) {
 				data[i - 1] = rs.getObject(i);
 			    }
@@ -252,27 +260,16 @@ public class LaTeX_Compiler {
     }
 
     private static void processChart(Overlay o, int i) {
-	Chart c = (Chart)o.type;
+	Chart c = (Chart) o.type;
 	cleanupfiles.add("out/web/" + i + ".html");
 	cleanupfiles.add("" + o.name + ".png");
 	copyfiles.add("" + o.name + ".png");
 	try {
-	    if (c.aggregationattributeBig.equals("")) {
-		c.aggregationattributeBig = c.aggregationattribute;
-	    }
-	    if (c.aggregationBig.equals("")) {
-		c.aggregationBig = c.aggregation;
-	    }
 	    Dimension dim = new Dimension(dimOrg.width * c.quality, dimOrg.height * c.quality);
 	    String viewer;
 	    String viewerHEAD = FileUtils.readFileToString(new File("out/web/templateHEADimages.html"), Tools.utf8);
 	    String viewerTAIL = FileUtils.readFileToString(new File("out/web/templateTAILimages.html"), Tools.utf8);
-	    viewer = viewerHEAD + 
-		    "dim_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(dim)) + "\";\r\n" + 
-		    "json_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(o)) + "\";\r\n" + 
-		    "db_base64 = \"" + Tools.encodeFileToBase64Binary(new File("db.sql")) + "\";\r\n" + 
-		    "dbjson_base64 = \"" + Tools.escapeQuotes(new File("db.json")) + "\";\r\n" + 
-		    viewerTAIL;
+	    viewer = viewerHEAD + "dim_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(dim)) + "\";\r\n" + "json_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(o)) + "\";\r\n" + "db_base64 = \"" + Tools.encodeFileToBase64Binary(new File("db.sql")) + "\";\r\n" + "dbjson_base64 = \"" + Tools.escapeQuotes(new File("db.json")) + "\";\r\n" + viewerTAIL;
 	    FileUtils.writeStringToFile(new File("out/web/" + i + ".html"), viewer, Tools.utf8);
 	} catch (Exception e) {
 	    e.printStackTrace();

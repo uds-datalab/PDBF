@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.4.16)  13 APR 2015 14:25
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.4.16)  15 APR 2015 17:21
 entering extended mode
 **C:/workspaceAndroid/PDBF_Paper/main.tex
 (C:/workspaceAndroid/PDBF_Paper/main.tex
@@ -1120,14 +1120,14 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 [3 <C:/workspaceAndroid/PDBF_Paper/enlarge.jpg>] (C:\workspaceAndroid\PDBF\main
 .bbl) [4 <C:/workspaceAndroid/PDBF/Overlay2.png> <C:/workspaceAndroid/PDBF/Over
-lay3.png> <C:/workspaceAndroid/PDBF/Overlay4.png>] <Overlay5.png, id=213, 632.3
-625pt x 505.89pt>
+lay3.png> <C:/workspaceAndroid/PDBF/Overlay4.png>] <Overlay5.png, id=213, 633.1
+1531pt x 505.89pt>
 File: Overlay5.png Graphic file (type png)
 <use Overlay5.png>
 Package pdftex.def Info: Overlay5.png used on input line 396.
-(pdftex.def)             Requested size: 504.00912pt x 403.20728pt.
+(pdftex.def)             Requested size: 504.01016pt x 403.20728pt.
 
-Overfull \hbox (273.00926pt too wide) in paragraph at lines 396--397
+Overfull \hbox (273.0103pt too wide) in paragraph at lines 396--397
 [][]
  []
 
@@ -1167,7 +1167,7 @@ les (x86)/MiKTeX 2.9/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Program Files (x86
  2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/
 type1/urw/times/utmr8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/t
 imes/utmri8a.pfb>
-Output written on main.pdf (5 pages, 292261 bytes).
+Output written on main.pdf (5 pages, 294575 bytes).
 PDF statistics:
  268 PDF objects out of 1000 (max. 8388607)
  65 named destinations out of 1000 (max. 500000)

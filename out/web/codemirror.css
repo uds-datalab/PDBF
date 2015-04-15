@@ -48,9 +48,8 @@ li.CodeMirror-hint-active {
   font-family: monospace;
   height: 100px;
   width: 100%;
-  margin-top: 3px;
-  margin-bottom: 3px;
-  border: 1px solid black;
+  margin-top: 0px;
+  margin-bottom: 1px;
 }
 
 /* PADDING */

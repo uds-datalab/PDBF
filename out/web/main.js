@@ -1068,7 +1068,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr,
 		containerChart
 				.setAttribute(
 						'style',
-						'width:65%; height:80%; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; padding:2%; background:white; margin:1%; display: inline-block; vertical-align:top; white-space: normal;');
+						'width:50%; height:80%; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; padding:2%; background:white; margin:1%; display: inline-block; vertical-align:top; white-space: normal;');
 	} else {
 		containerChart
 				.setAttribute(
@@ -1079,15 +1079,19 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr,
 	containerControl
 			.setAttribute(
 					'style',
-					'width:20%; height:80%; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; padding:2%; background:white; margin:1%; display: inline-block; text-align: left; white-space: normal;');
+					'width:40%; height:80%; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; padding:2%; background:white; margin:1%; display: inline-block; text-align: left; white-space: normal;');
 
 	var header = document.createElement('span');
 	header.innerHTML = 'SQL Query for ' + f
 			+ ':<br />Tip: Press CTRL-Space for autocomplete';
 	containerControl.appendChild(header);
 
+	var textareaWrapper = document.createElement('div');
+	containerControl.appendChild(textareaWrapper);
+	textareaWrapper.setAttribute('style', 'border: 1px solid black; margin-top: 3px; margin-bottom: 3px;');
+	
 	var textarea = document.createElement('textarea');
-	containerControl.appendChild(textarea);
+	textareaWrapper.appendChild(textarea);
 
 	var def = document.createElement('input');
 	def.type = 'button';
@@ -1432,9 +1436,58 @@ alasql.fn.ROWNUM = function() {
 	rownumcount = true;
 }
 
-var rownumcount = false;
-alasql.fn.TEST = function(a) {
-	return a;
+alasql.fn.GRUBBS_FILTER = function(arr) {
+//	var arr = alasql("SELECT VALUE ARRAY("+attribString+") FROM " + tableString);
+	var arr = arr.slice();
+	if (!Array.isArray(arr)) {
+		throw new Error("Argument of GRUBBS_FILTER is not an array!");
+	}
+	var confidence = 0.95; //TODO: hardcoded confidence value!
+	var gogo = true;
+	while(gogo) {
+		var N = arr.length;
+		var t = jStat.studentt.inv((1-confidence)/(2*N), N-2);
+		var ZCrit = (N-1)/Math.sqrt(N) * Math.sqrt((t*t)/(N-2+t*t));
+		var M = jStat.mean(arr);
+		var SD = jStat.stdev(arr, true);
+		var Z = undefined;
+		var Zindex = -1;
+		arr.forEach(function(e, i) {
+			var tmp = Math.abs(e - M) / SD;
+			if (Z == undefined || tmp > Z) {
+				Z = tmp;
+				Zindex = i;
+			}
+		});
+		if (Z > ZCrit) { 
+			arr.splice(Zindex, 1);
+		} else {
+			gogo = false;
+		}
+	}
+	return arr;
+}
+
+alasql.fn.MEAN = function(arr) {
+	if (!Array.isArray(arr)) {
+		throw new Error("Argument of MEAN is not an array!");
+	}
+	return jStat.mean(arr);
+}
+
+alasql.fn.STDDEV_SAMP = function(arr) {
+	if (!Array.isArray(arr)) {
+		throw new Error("Argument of STDDEV_SAMP is not an array!");
+	}
+	return jStat.stdev(arr, true);
+}
+
+alasql.fn.MARGIN_OF_ERROR = function(stdev, arr) {
+	if (!Array.isArray(arr)) {
+		throw new Error("Second argument of MARGIN_OF_ERROR is not an array!");
+	}
+	var n = arr.length;
+	return jStat.studentt.inv(0.975, n-1) * stdev * Math.sqrt(n); //TODO: hardcoded confidence value!
 }
 
 function alasqlQuery(q) {

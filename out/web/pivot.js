@@ -241,7 +241,7 @@
 				  if (data.intable) {
 					  return formatter(x[attr]);
 				  } else {
-					  var ret = "<span class=\"hasTooltip\">"+formatter(x[attr])+"</span><span ><table><tr>";
+					  var ret = "<span class=\"hasTooltip\">"+formatter(x[attr])+"</span><span style=\"position:absolute;\" ><table style=\"width: 100%;\"><tr>";
 					  for (key in x) {
 						  ret += "<th class=\"pvtAxisLabel\">" + key + "</th>";
 					  }
