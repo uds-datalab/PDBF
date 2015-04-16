@@ -1431,6 +1431,10 @@ function getFullscreenDiv() {
 	return fullscreen;
 }
 
+/* Does not work for queries with multiple statements
+ * Does not work for subqueries
+ * Does not work for multiple occurences of ROWNUM() in one query
+ */ 
 var rownumcount = false;
 alasql.fn.ROWNUM = function() {
 	rownumcount = true;
@@ -1442,11 +1446,11 @@ alasql.fn.GRUBBS_FILTER = function(arr) {
 	if (!Array.isArray(arr)) {
 		throw new Error("Argument of GRUBBS_FILTER is not an array!");
 	}
-	var confidence = 0.95; //TODO: hardcoded confidence value!
+	var alpha = 0.05; //TODO: hardcoded confidence value!
 	var gogo = true;
 	while(gogo) {
 		var N = arr.length;
-		var t = jStat.studentt.inv((1-confidence)/(2*N), N-2);
+		var t = jStat.studentt.inv((alpha)/(2*N), N-2);
 		var ZCrit = (N-1)/Math.sqrt(N) * Math.sqrt((t*t)/(N-2+t*t));
 		var M = jStat.mean(arr);
 		var SD = jStat.stdev(arr, true);
@@ -1482,12 +1486,69 @@ alasql.fn.STDDEV_SAMP = function(arr) {
 	return jStat.stdev(arr, true);
 }
 
-alasql.fn.MARGIN_OF_ERROR = function(stdev, arr) {
+alasql.fn.MARGIN_OF_ERROR = function(arr) {
 	if (!Array.isArray(arr)) {
-		throw new Error("Second argument of MARGIN_OF_ERROR is not an array!");
+		throw new Error("Argument of MARGIN_OF_ERROR is not an array!");
 	}
+	var stdev = jStat.stdev(arr, true);
+	var alpha = 0.05; //TODO: hardcoded confidence value!
 	var n = arr.length;
-	return jStat.studentt.inv(0.975, n-1) * stdev * Math.sqrt(n); //TODO: hardcoded confidence value!
+	return jStat.studentt.inv(1-alpha/2, n-1) * stdev * Math.sqrt(n); 
+}
+
+alasql.fn.CONF_INT = function(arr) {
+	if (!Array.isArray(arr)) {
+		throw new Error("Argument of CONF_INT is not an array!");
+	}
+	var MOE = alasql.fn.MARGIN_OF_ERROR(arr); //TODO: maybe remove null/undefined values?
+	var MEAN = alasql.fn.MEAN(arr); //TODO: maybe remove null/undefined values?
+	return [MEAN - MOE, MEAN + MOE] 
+}
+
+alasql.fn.T_TEST = function(arr) {
+	if (!Array.isArray(arr)) {
+		throw new Error("Argument of T_TEST is not an array!");
+	}
+	return jStat.mean(arr);
+}
+
+function problem_solutions_difference(runtimes) { 
+	var runtime_count = runtimes.length;
+	var means = [];
+	var min;
+	var min_int;
+	    
+	// calculate mean of each experiment, search minimum of conf. int. lower bounds
+	for (var i=0; i < runtime_count; ++i) {
+		var cur = runtimes.slice(i);
+		    means[i] = alasql.fn.MEAN(cur); //TODO: maybe remove null/undefined values?
+		    ci = alasql.fn.CONF_INT(cur);
+		    if (min_int == undefined || ci[0] < min_int[0]) {
+		    	min = i;
+		    	min_int = ci;
+		    }
+	}
+	  
+	distance = []; // distance from best experiment
+	  
+	// print(cat("Best one: ", min, conf_int(runtimes[min, ]), means[min]))
+	   
+	for (var i=0; i<runtime_count; ++i) {
+		// for t_bests the distance is set to 0
+	    if (t_test(runtimes[min, ], runtimes[i, ])) {
+	    	distance[i] = 0      
+	    } else {
+	    	distance[i] = means[i] - min_int[2]
+	    	if (distance[i] < 0) { 
+	    		// t_test_res = t.test(runtimes[i, ], runtimes[min, ])
+	    		// print(cat("Negative distance: ", i, conf_int(runtimes[i, ]), means[i], t_test_res$conf.int))
+	    	}
+	    }
+	}
+	  
+	  slowDown = (distance + min_int[2])/min_int[2] - 1.0
+	  Fn = ecdf(slowDown)
+	  c(Fn = Fn, Range = range(slowDown))
 }
 
 function alasqlQuery(q) {
