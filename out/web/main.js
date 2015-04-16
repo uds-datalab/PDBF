@@ -867,7 +867,7 @@ function getTableFromResults(results, container) {
 				container.removeChild(container.firstChild);
 			}
 			var span = document.createElement('span');
-			span.innerHTML = 'No rows returned.';
+			span.innerHTML = '<u><b>Result for Query</b></u>:<br/>No rows returned.';
 			container.appendChild(span);
 			return;
 		}

@@ -4947,6 +4947,9 @@ yy.Select.prototype.compile = function(databaseid) {
 //	console.log(this.into);
 	if(this.into) {
 		if(this.into instanceof yy.Table) {
+			if (alasql.databases[(this.into.databaseid||databaseid)].tables[this.into.tableid] == undefined) {
+				throw new Error("Table \"" + this.into.tableid + "\" does not exist!");
+			}
 			if(alasql.options.autocommit && alasql.databases[this.into.databaseid||databaseid].engineid) {
 				query.intoallfns = 'return alasql.engines["'+alasql.databases[this.into.databaseid||databaseid].engineid+'"]'+
 					'.intoTable("'+(this.into.databaseid||databaseid)+'","'+this.into.tableid+'",this.data, columns, cb);';
@@ -6274,6 +6277,9 @@ yy.Select.prototype.compileSelect1 = function(query) {
 					if(xcolumns && columns.length > 0) {
 //						console.log(1);
 						var tcol = xcolumns[col.columnid];
+						if (tcol == undefined) {
+							throw new Error("Column \"" + col.columnid + "\" does not exist in table \""+tbid+"\"!");
+						}
 						var coldef = {
 							columnid:col.as || col.columnid, 
 							dbtypeid:tcol.dbtypeid, 
@@ -6728,6 +6734,9 @@ yy.Select.prototype.compileDefCols = function(query, databaseid) {
 //console.log(alasql.databases);
 				var table = alasql.databases[fr.databaseid || databaseid].tables[fr.tableid];
 //console.log(table);
+				if (table == undefined) {
+					throw new Error("Table \"" + fr.tableid + "\" does not exist!");
+				}
 				if(table.columns) {
 					table.columns.forEach(function(col){
 						if(defcols[col.columnid]) {
