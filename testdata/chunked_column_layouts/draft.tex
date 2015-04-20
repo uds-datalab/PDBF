@@ -37,8 +37,7 @@
 
 \usepackage{PDBF}
 
-\DBSQLFile{somedb.sql}
-\DBSQLJDBC{jdbc:postgresql://localhost:5432/postgres}{postgres}{test}{dim_time, dim_compiler, dim_dataset, dim_implementation, dim_layout, dim_query, dim_machine, fact_experiment}
+\dbSQLJDBC{jdbc:postgresql://localhost:5432/postgres}{postgres}{test}{dim_time, dim_compiler, dim_dataset, dim_implementation, dim_layout, dim_query, dim_machine, fact_experiment}
 \renewcommand\pdbfScale{1.00}
 \renewcommand\pdbfQuality{4.00}
   
@@ -228,7 +227,57 @@ Table~\ref{fig:problem_bests_table} displays our recommendations for choosing a 
 
 \begin{figure*}[!ht]
 \centering
-\MultiplotChart[width=.97\textwidth, height=.641\textwidth, xunit={Relative size of the set of best solutions}, yunit={Slowdown compared to best solution}, xCount=6, yCount=4, yValues={["runtimeA AS [engine A]", "runtimeB AS [engine B]", "runtimeA AS [engine A]", "runtimeB AS [engine B]"]}, xValues={["date <= '2008/05/10'", "date > '2008/05/10'", "date <= '2008/05/10'", "date > '2008/05/10'", "date <= '2008/05/10'", "date > '2008/05/10'"]}, rightArr={["Nehalem", "Westmere", "Sandy Bridge", "Ivy Bridge"]}, topArr={["Q1, char", "Q2, char", "Q1, int", "Q2, int", "Q1, long", "Q2, long"]}, forceXequal, forceYequal, yFirst, options={"legend": { "show": true }, "axis": { "x": { "tick": { "fit":true } } }}]{SELECT date, ? FROM data2 WHERE ?;}
+\multiplotChart[
+width=.97\textwidth, 
+height=.641\textwidth, 
+xunit={Relative size of the set of best solutions}, 
+yunit={Slowdown compared to best solution}, 
+xCount=6, yCount=4, 
+yValues={[ 
+"cpuarchitecture='Nehalem'", 
+"cpuarchitecture='Westmere'", 
+"cpuarchitecture='Sandy Bridge'", 
+"cpuarchitecture='Ivy Bridge'" 
+]}, 
+xValues={[
+"querytext='SELECT MIN(a+b) FROM t' AND tableschema='(char a, char b)'", 
+"querytext='SELECT SUM(a*b) FROM t' AND tableschema='(char a, char b)'", 
+"querytext='SELECT MIN(a+b) FROM t' AND tableschema='(int a, int b)'", 
+"querytext='SELECT SUM(a*b) FROM t' AND tableschema='(int a, int b)'", 
+"querytext='SELECT MIN(a+b) FROM t' AND tableschema='(long a, long b)'", 
+"querytext='SELECT SUM(a*b) FROM t' AND tableschema='(long a, long b)'"
+]}, 
+rightArr={["Nehalem", "Westmere", "Sandy Bridge", "Ivy Bridge"]}, 
+topArr={["Q1, char", "Q2, char", "Q1, int", "Q2, int", "Q1, long", "Q2, long"]}, 
+forceXequal, 
+forceYequal, 
+yFirst,
+chartType=SignaturePlot,
+options={
+	"padding" : { "top" : 6, "right" : 8 }, 
+	"axis": { 
+		"x" : { 
+			"tick" : { "values" : [0, 0.25, 0.5, 0.75, 1], "rotate" : 90 }, 
+			"min" : 0, 
+			"max" : 1, 
+			"padding" : { "left" : 0, "right" : 0 } 
+		}, 
+		"y": { 
+			"tick" : { "values" : [0, 0.5, 1, 1.5, 2, 2.5] }, 
+			"min" : 0, 
+			"max" : 2.5, 
+			"padding" : { "top" : 0, "bottom" : 0 } 
+		} 
+	}, 
+	"legend" : { "show" : false } 
+} 
+]
+{SELECT runtimes 
+  FROM (SELECT machineid, datasetid, queryid, compilerid,   layoutid, implementationid, timeid,   GRUBBS_FILTER(ARRAY(runtime)) as runtimes FROM fact_experiment GROUP BY machineid, datasetid, queryid, compilerid, layoutid, implementationid, timeid) AS v 
+    JOIN dim_machine m ON m.id = v.machineid
+    JOIN dim_dataset d ON d.id = v.datasetid
+    JOIN dim_query q ON q.id = v.queryid 
+    WHERE ? AND ?;}
 \caption{Robustness graphs for 24 different experiments displaying the impact of non--optimal layouts on runtime performance. The horizontal axis displays the k-th-best data layout picked (where $k$ is in 1$,\ldots, N=$252; normalized to 100\%). The vertical axis displays the performance overhead of that method over the best one (displayed till at most 250\% overhead; notice that some curves leave their plot).
 The bigger the area under the curve, the more likely it is that a decision for a non-optimal data layout will trigger a performance loss. }  
 \label{fig:fragility}

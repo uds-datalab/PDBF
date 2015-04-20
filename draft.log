@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.4.16)  14 APR 2015 15:46
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.4.16)  21 APR 2015 01:00
 entering extended mode
 **C:/workspaceAndroid/PDBF/testdata/chunked_column_layouts/draft.tex
 (C:/workspaceAndroid/PDBF/testdata/chunked_column_layouts/draft.tex
@@ -470,18 +470,18 @@ Package: xparse 2014/11/25 v5471 L3 Experimental document command parser
 )
 Package: PDBF 2015/02/23    1.0    (Patrick Bender)
 (C:\workspaceAndroid\PDBF\draft.aux)
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 45.
-LaTeX Font Info:    ... okay on input line 45.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 45.
-LaTeX Font Info:    ... okay on input line 45.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 45.
-LaTeX Font Info:    ... okay on input line 45.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 45.
-LaTeX Font Info:    ... okay on input line 45.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 45.
-LaTeX Font Info:    ... okay on input line 45.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 45.
-LaTeX Font Info:    ... okay on input line 45.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 44.
+LaTeX Font Info:    ... okay on input line 44.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 44.
+LaTeX Font Info:    ... okay on input line 44.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 44.
+LaTeX Font Info:    ... okay on input line 44.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 44.
+LaTeX Font Info:    ... okay on input line 44.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 44.
+LaTeX Font Info:    ... okay on input line 44.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 44.
+LaTeX Font Info:    ... okay on input line 44.
 *geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
 * driver: pdftex
@@ -532,23 +532,23 @@ LaTeX Font Info:    ... okay on input line 45.
 \c@lstlisting=\count165
 \AtBeginShipoutBox=\box49
 \temp=\write5
-LaTeX Font Info:    Try loading font information for U+msa on input line 63.
+LaTeX Font Info:    Try loading font information for U+msa on input line 62.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 63.
+LaTeX Font Info:    Try loading font information for U+msb on input line 62.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for U+lasy on input line 63.
+LaTeX Font Info:    Try loading font information for U+lasy on input line 62.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\ulasy.fd"
 File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
 ) <pdf/ColumnXNIllustration.pdf, id=1, 405.74084pt x 106.44992pt>
 File: pdf/ColumnXNIllustration.pdf Graphic file (type pdf)
 <use pdf/ColumnXNIllustration.pdf>
-Package pdftex.def Info: pdf/ColumnXNIllustration.pdf used on input line 82.
+Package pdftex.def Info: pdf/ColumnXNIllustration.pdf used on input line 81.
 (pdftex.def)             Requested size: 226.79846pt x 59.5027pt.
-LaTeX Font Info:    Try loading font information for T1+aett on input line 101.
+LaTeX Font Info:    Try loading font information for T1+aett on input line 100.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\ae\t1aett.fd"
 File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
@@ -556,7 +556,13 @@ File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
 File: lstlang1.sty 2014/03/04 1.5c listings language file
 )
 
-Package xcolor Warning: Incompatible color definition on input line 117.
+Package xcolor Warning: Incompatible color definition on input line 116.
+
+
+Package xcolor Warning: Incompatible color definition on input line 116.
+
+
+Package xcolor Warning: Incompatible color definition on input line 116.
 
 
 Package xcolor Warning: Incompatible color definition on input line 117.
@@ -565,90 +571,84 @@ Package xcolor Warning: Incompatible color definition on input line 117.
 Package xcolor Warning: Incompatible color definition on input line 117.
 
 
-Package xcolor Warning: Incompatible color definition on input line 118.
-
-
-Package xcolor Warning: Incompatible color definition on input line 118.
-
-
-Package xcolor Warning: Incompatible color definition on input line 118.
+Package xcolor Warning: Incompatible color definition on input line 117.
 
 [1{C:/Users/User/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}
 
 
  <C:/workspaceAndroid/PDBF/testdata/chunked_column_layouts/pdf/ColumnXNIllustra
 tion.pdf>]
-Overfull \hbox (0.58218pt too wide) in paragraph at lines 134--143
+Overfull \hbox (0.58218pt too wide) in paragraph at lines 133--142
  [][] 
  []
 
 <pdf/methodology_runtimes.pdf, id=31, 85.4616pt x 127.28635pt>
 File: pdf/methodology_runtimes.pdf Graphic file (type pdf)
 <use pdf/methodology_runtimes.pdf>
-Package pdftex.def Info: pdf/methodology_runtimes.pdf used on input line 176.
+Package pdftex.def Info: pdf/methodology_runtimes.pdf used on input line 175.
 (pdftex.def)             Requested size: 90.71631pt x 135.11319pt.
 
-Underfull \hbox (badness 5533) in paragraph at lines 178--178
+Underfull \hbox (badness 5533) in paragraph at lines 177--177
 []\T1/aer/bx/n/9 Figure 3: Query
  []
 
 
-Underfull \hbox (badness 2189) in paragraph at lines 178--178
+Underfull \hbox (badness 2189) in paragraph at lines 177--177
 \T1/aer/bx/n/9 times for two dif-
  []
 
 
-Underfull \hbox (badness 1087) in paragraph at lines 184--185
+Underfull \hbox (badness 1087) in paragraph at lines 183--184
 [][]\T1/aer/m/n/9 We should keep in mind
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 184--185
+Underfull \hbox (badness 10000) in paragraph at lines 183--184
 \T1/aer/m/n/9 that when ex-per-i-men-tally
  []
 
 
-Underfull \hbox (badness 3302) in paragraph at lines 184--185
+Underfull \hbox (badness 3302) in paragraph at lines 183--184
 \T1/aer/m/n/9 we only get a \T1/aer/m/it/9 sam-ple \T1/aer/m/n/9 of
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 184--185
+Underfull \hbox (badness 10000) in paragraph at lines 183--184
 \T1/aer/m/n/9 their per-for-mance met-rics
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 184--185
+Underfull \hbox (badness 10000) in paragraph at lines 183--184
 \T1/aer/m/it/9 es-ti-mate \T1/aer/m/n/9 the pop-u-la-tions'
  []
 
 
-Underfull \hbox (badness 2189) in paragraph at lines 184--185
+Underfull \hbox (badness 2189) in paragraph at lines 183--184
 \T1/aer/m/n/9 there is al-ways a level of
  []
 
 
-Underfull \hbox (badness 2326) in paragraph at lines 184--185
+Underfull \hbox (badness 2326) in paragraph at lines 183--184
 \T1/aer/m/n/9 in-ter-vals, which ex-press in
  []
 
 
-Underfull \hbox (badness 6608) in paragraph at lines 184--185
+Underfull \hbox (badness 6608) in paragraph at lines 183--184
 \T1/aer/m/n/9 nat-u-ral lan-guage: ``There
  []
 
 
-Underfull \hbox (badness 1852) in paragraph at lines 184--185
+Underfull \hbox (badness 1852) in paragraph at lines 183--184
 \T1/aer/m/n/9 is a 95% chance that the
  []
 
 <pdf/problem_bests_table.pdf, id=32, 379.45935pt x 593.70575pt>
 File: pdf/problem_bests_table.pdf Graphic file (type pdf)
 <use pdf/problem_bests_table.pdf>
-Package pdftex.def Info: pdf/problem_bests_table.pdf used on input line 187.
+Package pdftex.def Info: pdf/problem_bests_table.pdf used on input line 186.
 (pdftex.def)             Requested size: 240.9104pt x 376.93555pt.
 
-Overfull \hbox (0.9104pt too wide) in paragraph at lines 187--189
+Overfull \hbox (0.9104pt too wide) in paragraph at lines 186--188
 [][]
  []
 
@@ -659,17 +659,17 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 ntimes.pdf>] <pdf/problem_bests_plot.pdf, id=61, 360.34625pt x 249.93375pt>
 File: pdf/problem_bests_plot.pdf Graphic file (type pdf)
 <use pdf/problem_bests_plot.pdf>
-Package pdftex.def Info: pdf/problem_bests_plot.pdf used on input line 222.
+Package pdftex.def Info: pdf/problem_bests_plot.pdf used on input line 221.
 (pdftex.def)             Requested size: 241.91785pt x 167.79034pt.
 
-Overfull \hbox (1.91785pt too wide) in paragraph at lines 222--224
+Overfull \hbox (1.91785pt too wide) in paragraph at lines 221--223
  [][] 
  []
 
 <Overlay1.png, id=62, 2454.92157pt x 1622.31094pt>
 File: Overlay1.png Graphic file (type png)
 <use Overlay1.png>
-Package pdftex.def Info: Overlay1.png used on input line 231.
+Package pdftex.def Info: Overlay1.png used on input line 280.
 (pdftex.def)             Requested size: 488.87791pt x 323.07019pt.
 [3 <C:/workspaceAndroid/PDBF/testdata/chunked_column_layouts/pdf/problem_bests_
 table.pdf> <C:/workspaceAndroid/PDBF/testdata/chunked_column_layouts/pdf/proble
@@ -682,13 +682,13 @@ Package balance Warning: You have called \balance in second column
 [4 <C:/workspaceAndroid/PDBF/Overlay1.png>] (C:\workspaceAndroid\PDBF\draft.aux
 ) ) 
 Here is how much of TeX's memory you used:
- 11912 strings out of 493921
- 205372 string characters out of 3144879
- 295746 words of memory out of 3000000
- 15007 multiletter control sequences out of 15000+200000
+ 11913 strings out of 493921
+ 205391 string characters out of 3144879
+ 295796 words of memory out of 3000000
+ 15008 multiletter control sequences out of 15000+200000
  63075 words of font info for 91 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 45i,12n,49p,10414b,1329s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 68i,12n,49p,10414b,1329s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}<C:/Progr
 am Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx7.pfb><C:/Program 
 Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx9.pfb><C:/Program Fil
@@ -706,7 +706,7 @@ ublic/amsfonts/cm/cmtt9.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/
 helvetic/uhvb8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/helvetic
 /uhvr8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pfb
 ><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb>
-Output written on draft.pdf (4 pages, 469601 bytes).
+Output written on draft.pdf (4 pages, 554128 bytes).
 PDF statistics:
  154 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)

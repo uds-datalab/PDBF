@@ -94,17 +94,7 @@ function buildContainerChartBig(json, containerOver, initial) {
 	}
 }
 
-function buildContainerChart(container, json, zoomFactor, style, containerOver,
-		enableFullscreenButton) {
-	if (enableFullscreenButton) {
-		var fullscreen = getFullscreenDiv();
-		container.appendChild(fullscreen);
-		fullscreen.addEventListener("click", function() {
-			containerOver.style.visibility = 'visible';
-			containerOver.style.opacity = 1;
-		});
-	}
-
+function buildContainerChart(container, json, zoomFactor, style, containerOver) {
 	var chart = document.createElement('div');
 	chart.setAttribute('style', 'width:100%; height:100%;');
 	container.appendChild(chart);
@@ -214,16 +204,7 @@ function buildContainerPivotBig(json, containerOver, initial) {
 	}
 }
 
-function buildContainerPivot(container, json, zoomFactor, style, containerOver,
-		enableFullscreenButton) {
-	if (enableFullscreenButton) {
-		var fullscreen = getFullscreenDiv();
-		container.appendChild(fullscreen);
-		fullscreen.addEventListener("click", function() {
-			containerOver.style.visibility = 'visible';
-			containerOver.style.opacity = 1;
-		});
-	}
+function buildContainerPivot(container, json, zoomFactor, style, containerOver) {
 	var chart = document.createElement('div');
 	chart.setAttribute('style', 'width:100%; height:100%;');
 	container.appendChild(chart);
@@ -308,16 +289,7 @@ function buildContainerTableBig(json, containerOver) {
 	}
 }
 
-function buildContainerMultiplotChart(container, json, zoomFactor, style,
-		containerOver, enableFullscreenButton) {
-	if (enableFullscreenButton) {
-		var fullscreen = getFullscreenDiv();
-		container.appendChild(fullscreen);
-		fullscreen.addEventListener("click", function() {
-			containerOver.style.visibility = 'visible';
-			containerOver.style.opacity = 1;
-		});
-	}
+function buildContainerMultiplotChart(container, json, zoomFactor, style, containerOver) {
 
 	function getLeft(cur, json, td) {
 		var ret;
@@ -332,8 +304,10 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style,
 			ret = 1;
 		} else {
 			if (cur.c == undefined || cur.text == undefined) {
-				alert("leftArr of "+json.name+
-						" has wrong format!\nShould be: [{text: \"...\", c:somenumber}, ...]\nBut it was: "+JSON.stringify(topArr));
+				alert("leftArr of "
+						+ json.name
+						+ " has wrong format!\nShould be: [{text: \"...\", c:somenumber}, ...]\nBut it was: "
+						+ JSON.stringify(topArr));
 			}
 			td.setAttribute('rowspan', cur.c);
 			div.innerHTML = "<div class=\"vertical-text__innerL\">" + cur.text
@@ -356,8 +330,10 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style,
 			ret = 1;
 		} else {
 			if (cur.c == undefined || cur.text == undefined) {
-				alert("rightArr of "+json.name+
-						" has wrong format!\nShould be: [{text: \"...\", c:somenumber}, ...]\nBut it was: "+JSON.stringify(topArr));
+				alert("rightArr of "
+						+ json.name
+						+ " has wrong format!\nShould be: [{text: \"...\", c:somenumber}, ...]\nBut it was: "
+						+ JSON.stringify(topArr));
 			}
 			td.setAttribute('rowspan', cur.c);
 			div.innerHTML = "<div class=\"vertical-text__innerR\">" + cur.text
@@ -375,8 +351,10 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style,
 			ret = 1;
 		} else {
 			if (cur.c == undefined || cur.text == undefined) {
-				alert("topArr of "+json.name+
-						" has wrong format!\nShould be: [{text: \"...\", c:somenumber}, ...]\nBut it was: "+JSON.stringify(topArr));
+				alert("topArr of "
+						+ json.name
+						+ " has wrong format!\nShould be: [{text: \"...\", c:somenumber}, ...]\nBut it was: "
+						+ JSON.stringify(topArr));
 			}
 			td.setAttribute('colspan', cur.c);
 			td.innerHTML = cur.text;
@@ -394,8 +372,10 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style,
 			ret = 1;
 		} else {
 			if (cur.c == undefined || cur.text == undefined) {
-				alert("bottomArr of "+json.name+
-						" has wrong format!\nShould be: [{text: \"...\", c:somenumber}, ...]\nBut it was: "+JSON.stringify(topArr));
+				alert("bottomArr of "
+						+ json.name
+						+ " has wrong format!\nShould be: [{text: \"...\", c:somenumber}, ...]\nBut it was: "
+						+ JSON.stringify(topArr));
 			}
 			td.setAttribute('colspan', cur.c);
 			td.innerHTML = cur.text;
@@ -551,6 +531,65 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style,
 	var legendItems = [];
 	var colors = {};
 
+	// Calculate size of axis labels
+	var div = document.createElement('div');
+	div.setAttribute('style', style);
+	overlay.appendChild(div);
+	var cellquery = queryBackup;
+	if (yFirst) {
+		cellquery = cellquery.replace("?", yValues[0]);
+		cellquery = cellquery.replace("?", xValues[0]);
+	} else {
+		cellquery = cellquery.replace("?", xValues[0]);
+		cellquery = cellquery.replace("?", yValues[0]);
+	}
+	json.type.I.query = cellquery;
+	defaultChartOptions.noyticks = true;
+	defaultChartOptions.noxticks = true;
+	var chartdata = getChartData(json);
+	if (chartdata.error != undefined) {
+		alert(json.name + " has error:\n" + chartdata.error);
+	}
+	var options = getChartOptions(json, zoomFactor, chartdata.values, div);
+	delete options.axis.y.label;
+	delete options.axis.x.label;
+	options.legend.show = false;
+	var chart = c3.generate(options);
+	var pl = chart.pl();
+	var pb = chart.pb();
+	overlay.removeChild(div);
+	
+	var div = document.createElement('div');
+	div.setAttribute('style', style);
+	overlay.appendChild(div);
+	var cellquery = queryBackup;
+	if (yFirst) {
+		cellquery = cellquery.replace("?", yValues[0]);
+		cellquery = cellquery.replace("?", xValues[0]);
+	} else {
+		cellquery = cellquery.replace("?", xValues[0]);
+		cellquery = cellquery.replace("?", yValues[0]);
+	}
+	json.type.I.query = cellquery;
+	defaultChartOptions.noyticks = false;
+	defaultChartOptions.noxticks = false;
+	var chartdata = getChartData(json);
+	if (chartdata.error != undefined) {
+		alert(json.name + " has error:\n" + chartdata.error);
+	}
+	var options = getChartOptions(json, zoomFactor, chartdata.values, div);
+	delete options.axis.y.label;
+	delete options.axis.x.label;
+	options.legend.show = false;
+	var chart = c3.generate(options);
+	var pl = chart.pl()-pl;
+	var pb = chart.pb()-pb;
+	overlay.removeChild(div);
+	///////////////////////////////
+	
+	var h = Math.floor((overlayheight - top - bottom - legend - pb - 1) / yCount);
+	var w = Math.floor((overlaywidth - left - right - pl - 1) / xCount);
+
 	if (top != 0) {
 		var tr = document.createElement('tr');
 		inner.appendChild(tr);
@@ -558,6 +597,11 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style,
 			var td = document.createElement('td');
 			tr.appendChild(td);
 		}
+		var cur = topArr.shift();
+		var td = document.createElement('td');
+		tr.appendChild(td);
+		getTop(cur, json, td);
+		$(td).css("padding-left", pl);
 		while (topArr.length != 0) {
 			var cur = topArr.shift();
 			var td = document.createElement('td');
@@ -577,13 +621,14 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style,
 			var td = document.createElement('td');
 			tr.appendChild(td);
 			nextLeft += getLeft(cur, json, td);
+			if (y == yCount-1) {
+				$(td).css("padding-bottom", pb);
+			}
 		}
 		for (var x = 0; x < xCount; ++x) {
 			var td = document.createElement('td');
 			tr.appendChild(td);
-			td.setAttribute('style', style);
 			var cellInner = document.createElement('div');
-			cellInner.setAttribute('style', style);
 			td.appendChild(cellInner);
 
 			var cellquery = queryBackup;
@@ -598,14 +643,20 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style,
 
 			if (x % xCount != 0) {
 				defaultChartOptions.noyticks = true;
+				var style = 'width: ' + w + 'px;';
 			} else {
 				defaultChartOptions.noyticks = false;
+				var style = 'width: ' + (w+pl) + 'px;';
 			}
 			if (y % yCount != yCount - 1) {
 				defaultChartOptions.noxticks = true;
+				style += 'height: ' + h + 'px;';
 			} else {
 				defaultChartOptions.noxticks = false;
+				style += 'height: ' + (h+pb) + 'px;';
 			}
+			cellInner.setAttribute('style', style);
+			td.setAttribute('style', style);
 
 			var chartdata = getChartData(json);
 			if (chartdata.error != undefined) {
@@ -662,7 +713,7 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style,
 			}
 			if (forceXequal) {
 				if (y == 0) {
-					// save y extent
+					// save x extent
 					xExtent[x] = chart.xd();
 				}
 			}
@@ -672,6 +723,9 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style,
 			var td = document.createElement('td');
 			tr.appendChild(td);
 			nextRight += getRight(cur, json, td);
+			if (y == yCount-1) {
+				$(td).css("padding-bottom", pb);
+			}
 		}
 	}
 	if (bottom != 0) {
@@ -706,27 +760,18 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style,
 		td.setAttribute('style', 'height: 1.5em; width: ' + w + 'px;');
 		td.setAttribute('colspan', cur.c);
 
-		d3
-				.select(td)
-				.insert('div', '.chart')
-				.attr('class', 'legend')
-				.selectAll('span')
-				.data(legendItems)
-				.enter()
-				.append('span')
+		d3.select(td).insert('div', '.chart').attr('class', 'legend')
+				.selectAll('span').data(legendItems).enter().append('span')
 				.attr('data-id', function(id) {
 					return id;
-				})
-				.html(
+				}).html(
 						function(id) {
-							return "<span style='width:"
-									+ (11 * zoomFactor)
-									+ "px; height:"
-									+ (11 * zoomFactor)
-									+ "px; background-color: "
-									+ colors[id]
-									+ "; margin-right:"+(5 * zoomFactor)+"px; margin-left:"+(10 * zoomFactor)+"px;'></span>"
-									+ id;
+							return "<span style='width:" + (11 * zoomFactor)
+									+ "px; height:" + (11 * zoomFactor)
+									+ "px; background-color: " + colors[id]
+									+ "; margin-right:" + (5 * zoomFactor)
+									+ "px; margin-left:" + (10 * zoomFactor)
+									+ "px;'></span>" + id;
 						}).on('mouseover', function(id) {
 					charts.forEach(function(c, i, a) {
 						c.focus(id);
@@ -961,20 +1006,17 @@ function getChartOptions(json, zoomFactor, values, chart) {
 				label : json.type.I.xUnitName,
 				tick : {
 					fit : false,
-					outer : false
 				},
 			},
 			y : {
 				label : json.type.I.yUnitName,
 				tick : {
 					fit : false,
-					outer : false
 				}
 			},
 			y2 : {
 				tick : {
 					fit : false,
-					outer : false
 				}
 			}
 		},
@@ -1007,17 +1049,30 @@ function getChartOptions(json, zoomFactor, values, chart) {
 	if (options.axis.y.label == '')
 		delete options.axis.y.label;
 
-	switch (json.type.C) {
-	case 'pdbf.common.MultiplotChart':
+	switch (json.type.I.chartType) {
+	case 'Line':
+	case 'line':
+		break;
+	case 'Bar':
+	case 'bar':
 		options.data.type = 'bar';
 		break;
-	case 'pdbf.common.LineChart':
-		break;
-	case 'pdbf.common.BarChart':
-		options.data.type = 'bar';
+	case 'SignaturePlot':
+	case 'signatureplot':
+		try {
+			options.data = signaturePlot([ options.data ]);
+			options.axis.x.tick.format = function(x) {
+				return '' + (Math.round(x * 10000) / 100) + '%';
+			};
+			options.axis.y.tick.format = function(y) {
+				return '' + (Math.round(y * 10000) / 100) + '%';
+			};
+		} catch (e) {
+			alert(e);
+		}
 		break;
 	default:
-		alert('unknown chart type');
+		alert('Unknown chart type. Type was: "' + json.type.I.chartType + '"');
 	}
 
 	if (values.json != undefined && isNaN(values.json[0][values.x])) {
@@ -1088,8 +1143,9 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr,
 
 	var textareaWrapper = document.createElement('div');
 	containerControl.appendChild(textareaWrapper);
-	textareaWrapper.setAttribute('style', 'border: 1px solid black; margin-top: 3px; margin-bottom: 3px;');
-	
+	textareaWrapper.setAttribute('style',
+			'border: 1px solid black; margin-top: 3px; margin-bottom: 3px;');
+
 	var textarea = document.createElement('textarea');
 	textareaWrapper.appendChild(textarea);
 
@@ -1105,8 +1161,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr,
 			containerOver.removeChild(containerOver.firstChild);
 		}
 		switch (json.type.C) {
-		case "pdbf.common.LineChart":
-		case "pdbf.common.BarChart":
+		case "pdbf.common.Chart":
 			buildContainerChartBig(json, containerOver, true);
 			break;
 		case "pdbf.common.Text":
@@ -1431,27 +1486,29 @@ function getFullscreenDiv() {
 	return fullscreen;
 }
 
-/* Does not work for queries with multiple statements
- * Does not work for subqueries
- * Does not work for multiple occurences of ROWNUM() in one query
- */ 
+/*
+ * Does not work for queries with multiple statements Does not work for
+ * subqueries Does not work for multiple occurences of ROWNUM() in one query
+ */
 var rownumcount = false;
 alasql.fn.ROWNUM = function() {
 	rownumcount = true;
 }
 
-alasql.fn.GRUBBS_FILTER = function(arr) {
-//	var arr = alasql("SELECT VALUE ARRAY("+attribString+") FROM " + tableString);
+alasql.fn.GRUBBS_FILTER = function(arr, alpha) {
 	var arr = arr.slice();
 	if (!Array.isArray(arr)) {
 		throw new Error("Argument of GRUBBS_FILTER is not an array!");
 	}
-	var alpha = 0.05; //TODO: hardcoded confidence value!
+	if (alpha == undefined) {
+		var alpha = 0.05;
+	}
 	var gogo = true;
-	while(gogo) {
+	while (gogo) {
 		var N = arr.length;
-		var t = jStat.studentt.inv((alpha)/(2*N), N-2);
-		var ZCrit = (N-1)/Math.sqrt(N) * Math.sqrt((t*t)/(N-2+t*t));
+		var t = jStat.studentt.inv((alpha) / (2 * N), N - 2);
+		var ZCrit = (N - 1) / Math.sqrt(N)
+				* Math.sqrt((t * t) / (N - 2 + t * t));
 		var M = jStat.mean(arr);
 		var SD = jStat.stdev(arr, true);
 		var Z = undefined;
@@ -1463,7 +1520,7 @@ alasql.fn.GRUBBS_FILTER = function(arr) {
 				Zindex = i;
 			}
 		});
-		if (Z > ZCrit) { 
+		if (Z > ZCrit) {
 			arr.splice(Zindex, 1);
 		} else {
 			gogo = false;
@@ -1486,69 +1543,149 @@ alasql.fn.STDDEV_SAMP = function(arr) {
 	return jStat.stdev(arr, true);
 }
 
-alasql.fn.MARGIN_OF_ERROR = function(arr) {
+alasql.fn.MARGIN_OF_ERROR = function(arr, alpha) {
 	if (!Array.isArray(arr)) {
 		throw new Error("Argument of MARGIN_OF_ERROR is not an array!");
 	}
 	var stdev = jStat.stdev(arr, true);
-	var alpha = 0.05; //TODO: hardcoded confidence value!
+	if (alpha == undefined) {
+		var alpha = 0.05;
+	}
 	var n = arr.length;
-	return jStat.studentt.inv(1-alpha/2, n-1) * stdev * Math.sqrt(n); 
+	return jStat.studentt.inv(1 - alpha / 2, n - 1) * stdev * Math.sqrt(n);
 }
 
 alasql.fn.CONF_INT = function(arr) {
 	if (!Array.isArray(arr)) {
 		throw new Error("Argument of CONF_INT is not an array!");
 	}
-	var MOE = alasql.fn.MARGIN_OF_ERROR(arr); //TODO: maybe remove null/undefined values?
-	var MEAN = alasql.fn.MEAN(arr); //TODO: maybe remove null/undefined values?
-	return [MEAN - MOE, MEAN + MOE] 
+	var MOE = alasql.fn.MARGIN_OF_ERROR(arr); // TODO: maybe remove
+	// null/undefined values?
+	var MEAN = alasql.fn.MEAN(arr); // TODO: maybe remove null/undefined values?
+	return [ MEAN - MOE, MEAN + MOE ]
 }
 
-alasql.fn.T_TEST = function(arr) {
-	if (!Array.isArray(arr)) {
-		throw new Error("Argument of T_TEST is not an array!");
+alasql.fn.T_TEST = function(arr1, arr2, alpha) {
+	if (!Array.isArray(arr1)) {
+		throw new Error("Argument 1 of T_TEST is not an array!");
 	}
-	return jStat.mean(arr);
+	if (!Array.isArray(arr2)) {
+		throw new Error("Argument 2 of T_TEST is not an array!");
+	}
+	if (alpha == undefined) {
+		var alpha = 0.05;
+	}
+
+	var m1 = jStat.mean(arr1);
+	var m2 = jStat.mean(arr2);
+	var n1 = arr1.length;
+	var n2 = arr2.length;
+	var s1 = jStat.stdev(arr1, true);
+	var s2 = jStat.stdev(arr2, true);
+
+	var sp = Math.sqrt(((n1 - 1) * (s1 * s1) + (n2 - 1) * (s2 * s2))
+			/ (n1 + n2 - 2));
+	var t = Math.abs((m1 - m2) / (sp * Math.sqrt(1 / n1 + 1 / n2)));
+	var df = n1 + n2 - 2;
+	var p = 2 - jStat.studentt.cdf(t, df) * 2;
+
+	return p >= alpha;
 }
 
-function problem_solutions_difference(runtimes) { 
+alasql.fn.WELCH_TEST = function(arr1, arr2, alpha) {
+	if (!Array.isArray(arr1)) {
+		throw new Error("Argument 1 of WELCH_TEST is not an array!");
+	}
+	if (!Array.isArray(arr2)) {
+		throw new Error("Argument 2 of WELCH_TEST is not an array!");
+	}
+	if (alpha == undefined) {
+		var alpha = 0.05;
+	}
+
+	var m1 = jStat.mean(arr1);
+	var m2 = jStat.mean(arr2);
+	var n1 = arr1.length;
+	var n2 = arr2.length;
+	var s1 = jStat.stdev(arr1, true);
+	var s2 = jStat.stdev(arr2, true);
+
+	var s1s1n1 = s1 * s1 / n1;
+	var s2s2n2 = s2 * s2 / n2;
+
+	var t = Math.abs((m1 - m2) / Math.sqrt(s1s1n1 + s2s2n2));
+	var df = ((s1s1n1 + s2s2n2) * (s1s1n1 + s2s2n2))
+			/ (((s1s1n1 * s1s1n1) / (n1 - 1)) + ((s2s2n2 * s2s2n2) / (n2 - 1)));
+	var p = 2 - jStat.studentt.cdf(t, df) * 2;
+
+	return p >= alpha;
+}
+
+function signaturePlot(valuesArr) {
+	var values = valuesArr[0]; // Call by reference
+	if (values.keys == undefined)
+		return;
+	var keys = values.keys.value;
+	if (keys.length > 1) {
+		throw new Error("SignaturePlot does only support one attribute");
+	}
+	values.x = "x";
+	var aname = keys[0];
+	keys[keys.length] = "x";
+	var runtimes = values.json;
+
 	var runtime_count = runtimes.length;
 	var means = [];
 	var min;
 	var min_int;
-	    
-	// calculate mean of each experiment, search minimum of conf. int. lower bounds
-	for (var i=0; i < runtime_count; ++i) {
-		var cur = runtimes.slice(i);
-		    means[i] = alasql.fn.MEAN(cur); //TODO: maybe remove null/undefined values?
-		    ci = alasql.fn.CONF_INT(cur);
-		    if (min_int == undefined || ci[0] < min_int[0]) {
-		    	min = i;
-		    	min_int = ci;
-		    }
+
+	// calculate mean of each experiment, search minimum of conf. int. lower
+	// bounds
+	for (var i = 0; i < runtime_count; ++i) {
+		var cur = runtimes[i][aname];
+		means[i] = alasql.fn.MEAN(cur);
+		var ci = alasql.fn.CONF_INT(cur);
+		if (min_int == undefined || ci[0] < min_int[0]) {
+			min = i;
+			min_int = ci;
+		}
 	}
-	  
-	distance = []; // distance from best experiment
-	  
-	// print(cat("Best one: ", min, conf_int(runtimes[min, ]), means[min]))
-	   
-	for (var i=0; i<runtime_count; ++i) {
+
+	var distance = []; // distance from best experiment
+
+	for (var i = 0; i < runtime_count; ++i) {
 		// for t_bests the distance is set to 0
-	    if (t_test(runtimes[min, ], runtimes[i, ])) {
-	    	distance[i] = 0      
-	    } else {
-	    	distance[i] = means[i] - min_int[2]
-	    	if (distance[i] < 0) { 
-	    		// t_test_res = t.test(runtimes[i, ], runtimes[min, ])
-	    		// print(cat("Negative distance: ", i, conf_int(runtimes[i, ]), means[i], t_test_res$conf.int))
-	    	}
-	    }
+		if (alasql.fn.WELCH_TEST(runtimes[min][aname], runtimes[i][aname])) {
+			distance[i] = 0;
+		} else {
+			distance[i] = means[i] - min_int[1];
+			if (distance[i] < 0) {
+				distance[i] = 0;
+			}
+		}
 	}
-	  
-	  slowDown = (distance + min_int[2])/min_int[2] - 1.0
-	  Fn = ecdf(slowDown)
-	  c(Fn = Fn, Range = range(slowDown))
+
+	var slowDown = [];
+	distance.forEach(function(v, i) {
+		slowDown[i] = (distance[i] + min_int[1]) / min_int[1] - 1.0;
+
+	});
+
+	slowDown.sort(function(a, b) {
+		return a - b;
+	});
+
+	var res = [];
+	slowDown.forEach(function(v, i) {
+		res[i] = {
+			x : i / (runtime_count - 1)
+		};
+		res[i][aname] = slowDown[i];
+	});
+
+	values.json = res;
+
+	return values;
 }
 
 function alasqlQuery(q) {

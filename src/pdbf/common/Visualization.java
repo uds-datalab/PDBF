@@ -51,4 +51,6 @@ public abstract class Visualization {
     public double zoom;
     public double quality;
     public double fontsize;
+    
+    public String chartType;
 }

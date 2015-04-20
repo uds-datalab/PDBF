@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.4.16)  13 APR 2015 11:40
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.4.16)  20 APR 2015 13:29
 entering extended mode
 **C:/workspaceAndroid/PDBF/testdata/chunked_column_layouts/draft.tex
 (C:/workspaceAndroid/PDBF/testdata/chunked_column_layouts/draft.tex
@@ -597,24 +597,6 @@ LaTeX Font Info:    Try loading font information for U+lasy on input line 63.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\ulasy.fd"
 File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
 )
-
-LaTeX Warning: Citation `VP' on page \thepage  undefined on input line 75.
-
-
-LaTeX Warning: Citation `grund2010hyrise' on page \thepage  undefined on input 
-line 75.
-
-
-LaTeX Warning: Citation `JITHybrid' on page \thepage  undefined on input line 7
-5.
-
-
-LaTeX Warning: Citation `PAX' on page \thepage  undefined on input line 77.
-
-
-LaTeX Warning: Reference `fig:ColumnXN' on page \thepage  undefined on input li
-ne 77.
-
 <pdf/ColumnXNIllustration.pdf, id=1, 405.74084pt x 106.44992pt>
 File: pdf/ColumnXNIllustration.pdf Graphic file (type pdf)
 
@@ -627,10 +609,6 @@ LaTeX Font Info:    Try loading font information for T1+aett on input line 101.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\ae\t1aett.fd"
 File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
 )
-
-LaTeX Warning: Reference `fig:queries' on page \thepage  undefined on input lin
-e 112.
-
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\listings\lstlang1.sty
 File: lstlang1.sty 2014/03/04 1.5c listings language file
 )
@@ -652,10 +630,6 @@ Package xcolor Warning: Incompatible color definition on input line 118.
 
 Package xcolor Warning: Incompatible color definition on input line 118.
 
-
-LaTeX Warning: Reference `tab:machines' on page \thepage  undefined on input li
-ne 127.
-
 [1{C:/Users/User/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}
 
 
@@ -664,10 +638,6 @@ tion.pdf>]
 Overfull \hbox (0.58218pt too wide) in paragraph at lines 134--143
  [][] 
  []
-
-
-LaTeX Warning: Reference `sec:layouts' on page \thepage  undefined on input lin
-e 168.
 
 <pdf/methodology_runtimes.pdf, id=31, 85.4616pt x 127.28635pt>
 File: pdf/methodology_runtimes.pdf Graphic file (type pdf)
@@ -684,14 +654,6 @@ Underfull \hbox (badness 5533) in paragraph at lines 178--178
 Underfull \hbox (badness 2189) in paragraph at lines 178--178
 \T1/aer/bx/n/9 times for two dif-
  []
-
-
-LaTeX Warning: Reference `fig:methodology_runtimes' on page \thepage  undefined
- on input line 182.
-
-
-LaTeX Warning: Citation `jain1991art' on page \thepage  undefined on input line
- 182.
 
 
 Underfull \hbox (badness 1087) in paragraph at lines 184--185
@@ -750,39 +712,10 @@ Overfull \hbox (0.9104pt too wide) in paragraph at lines 187--189
  []
 
 
-LaTeX Warning: Citation `jain1991art' on page \thepage  undefined on input line
- 198.
-
-
-LaTeX Warning: Reference `fig:methodology_runtimes' on page \thepage  undefined
- on input line 200.
-
-
-LaTeX Warning: Citation `jain1991art' on page \thepage  undefined on input line
- 200.
-
-
-LaTeX Warning: Reference `fig:methodology_runtimes' on page \thepage  undefined
- on input line 201.
-
-
-LaTeX Warning: Citation `grubbs1950sample' on page \thepage  undefined on input
- line 205.
-
-
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [2 <C:/workspaceAndroid/PDBF/testdata/chunked_column_layouts/pdf/methodology_r
-untimes.pdf>]
-
-LaTeX Warning: Citation `welch1947generalization' on page \thepage  undefined o
-n input line 209.
-
-
-LaTeX Warning: Reference `fig:problem_bests_table' on page \thepage  undefined 
-on input line 216.
-
-<pdf/problem_bests_plot.pdf, id=61, 360.34625pt x 249.93375pt>
+untimes.pdf>] <pdf/problem_bests_plot.pdf, id=61, 360.34625pt x 249.93375pt>
 File: pdf/problem_bests_plot.pdf Graphic file (type pdf)
 
 <use pdf/problem_bests_plot.pdf>
@@ -793,28 +726,50 @@ Overfull \hbox (1.91785pt too wide) in paragraph at lines 222--224
  [][] 
  []
 
-Runaway argument?
-width=.97\textwidth , height=.641\textwidth , xunit={Relative size of\ETC.
-! Paragraph ended before \MultiplotChart was complete.
-<to be read again> 
-                   \par 
-l.237 
-      
-? 
-! Emergency stop.
-<to be read again> 
-                   \par 
-l.237 
-      
-End of file on the terminal!
+<Overlay1.png, id=62, 2454.92157pt x 1622.31094pt>
+File: Overlay1.png Graphic file (type png)
+ <use Overlay1.png>
+Package pdftex.def Info: Overlay1.png used on input line 264.
+(pdftex.def)             Requested size: 488.87791pt x 323.07019pt.
+ [3 <C:/workspaceAndroid/PDBF/testdata/chunked_column_layouts/pdf/problem_bests
+_table.pdf> <C:/workspaceAndroid/PDBF/testdata/chunked_column_layouts/pdf/probl
+em_bests_plot.pdf>] (C:\workspaceAndroid\PDBF\testdata\chunked_column_layouts\d
+raft.bbl)
 
- 
+Package balance Warning: You have called \balance in second column
+(balance)                Columns might not be balanced.
+
+[4 <C:/workspaceAndroid/PDBF/testdata/chunked_column_layouts/Overlay1.png>]
+(C:\workspaceAndroid\PDBF\testdata\chunked_column_layouts\draft.aux) ) 
 Here is how much of TeX's memory you used:
- 11884 strings out of 493921
- 205020 string characters out of 3144879
- 295671 words of memory out of 3000000
- 14992 multiletter control sequences out of 15000+200000
- 59937 words of font info for 86 fonts, out of 3000000 for 9000
+ 11912 strings out of 493921
+ 205558 string characters out of 3144879
+ 295774 words of memory out of 3000000
+ 15008 multiletter control sequences out of 15000+200000
+ 63075 words of font info for 91 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 45i,11n,49p,10414b,1329s stack positions out of 5000i,500n,10000p,200000b,50000s
-!  ==> Fatal error occurred, no output PDF file produced!
+ 45i,12n,49p,10414b,1329s stack positions out of 5000i,500n,10000p,200000b,50000s
+{C:/Progr
+am Files (x86)/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}<C:/Program Files (x8
+6)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx7.pfb><C:/Program Files (x86)/
+MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx9.pfb><C:/Program Files (x86)/MiK
+TeX 2.9/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Program Files (x86)/MiKTeX
+ 2.9/fonts/type1/public/amsfonts/cm/cmmi9.pfb><C:/Program Files (x86)/MiKTeX 2.
+9/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Program Files (x86)/MiKTeX 2.9/fo
+nts/type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/
+type1/public/amsfonts/cm/cmr9.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type
+1/public/amsfonts/cm/cmsy6.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/p
+ublic/amsfonts/cm/cmsy9.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/publ
+ic/amsfonts/cm/cmti7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/
+amsfonts/cm/cmti9.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/ams
+fonts/cm/cmtt8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfon
+ts/cm/cmtt9.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/helvetic/uhv
+b8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/helvetic/uhvr8a.pfb>
+<C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Program
+ Files (x86)/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb>
+Output written on draft.pdf (4 pages, 469601 bytes).
+PDF statistics:
+ 154 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 26 words of extra memory for PDF output out of 10000 (max. 10000000)
+

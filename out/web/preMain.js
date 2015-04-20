@@ -7,7 +7,9 @@ tic();
 if (tmp2 != "") {
 	alasql.databases = JSON.parse(tmp2);
 }
-alasqlQuery(tmp);
+if (tmp != "") {
+	alasqlQuery(tmp);
+}
 toc("DB load time");
 
 var rawZoomFactor;
@@ -111,10 +113,17 @@ function display(json, page) {
 		} else {
 			//TODO: containerOver.update();
 		}
-		buildContainerMultiplotChart(container, json, zoomFactor, style, containerOver, true);
+		
+		var fullscreen = getFullscreenDiv();
+		container.appendChild(fullscreen);
+		fullscreen.addEventListener("click", function() {
+			containerOver.style.visibility = 'visible';
+			containerOver.style.opacity = 1;
+		});
+		container.setAttribute('style', style);
+		//buildContainerMultiplotChart(container, json, zoomFactor, style, containerOver);
 		break;
-	case "pdbf.common.LineChart":
-	case "pdbf.common.BarChart":
+	case "pdbf.common.Chart":
 		var containerOver = document.getElementById(json.name + "Big");
 		if (containerOver == null) {
 			var containerOver = document.createElement('div');
@@ -128,7 +137,15 @@ function display(json, page) {
 		} else {
 			containerOver.update();
 		}
-		buildContainerChart(container, json, zoomFactor, style, containerOver, true);
+		
+		var fullscreen = getFullscreenDiv();
+		container.appendChild(fullscreen);
+		fullscreen.addEventListener("click", function() {
+			containerOver.style.visibility = 'visible';
+			containerOver.style.opacity = 1;
+		});
+		container.setAttribute('style', style);
+		//buildContainerChart(container, json, zoomFactor, style, containerOver);
 		break;
 	case "pdbf.common.Text":
 		var containerOver = document.getElementById(json.name + "Big");
@@ -165,7 +182,15 @@ function display(json, page) {
 		} else {
 			containerOver.update();
 		}
-		buildContainerPivot(container, json, zoomFactor, style, containerOver, true);
+		
+		var fullscreen = getFullscreenDiv();
+		container.appendChild(fullscreen);
+		fullscreen.addEventListener("click", function() {
+			containerOver.style.visibility = 'visible';
+			containerOver.style.opacity = 1;
+		});
+		container.setAttribute('style', style);
+		//buildContainerPivot(container, json, zoomFactor, style, containerOver);
 		break;
 	default:
 		alert("Unknown: " + json.type.C);

@@ -45,6 +45,8 @@
 \define@key{pdbf}{quality}{\def\pdbfQuality{#1}}
 \def\pdbfScale{1.0}
 \define@key{pdbf}{scale}{\def\pdbfScale{#1}}
+\def\pdbf@chartType{Line}
+\define@key{pdbf}{chartType}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@chartType]}
 
 %LineChart und BarChart
 \def\pdbfLogscale{false}
@@ -167,6 +169,7 @@
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"forceYequal": \pdbf@forceYequal,}% 
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"cols": "\pdbf@cols",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"rows": "\pdbf@rows",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"chartType": "\pdbf@chartType",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x1": \zposx{Overlay\arabic{visual}1},}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x2": \zposx{Overlay\arabic{visual}2},}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y1": \zposy{Overlay\arabic{visual}1},}%
@@ -180,19 +183,15 @@
 	\relax
 }
 
-\def\lineChart[#1]#2{
-	\pdbf@chart[#1]{#2}{#2}{LineChart}
-}
-
-\def\barChart[#1]#2{
-	\pdbf@chart[#1]{#2}{#2}{BarChart}
+\def\chart[#1]#2{
+	\pdbf@chart[#1]{#2}{#2}{Chart}
 }
 
 \def\pivotTable[#1]#2#3{
 	\pdbf@chart[#1]{#2}{#3}{Pivot}
 }
 
-\def\MultiplotChart[#1]#2{
+\def\multiplotChart[#1]#2{
 	\pdbf@chart[#1]{#2}{#2}{MultiplotChart}
 }
 
@@ -238,6 +237,7 @@
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationattributeBig": "\pdbf@aggregationattributeBig",}% 
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"cols": "\pdbf@cols",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"rows": "\pdbf@rows",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"chartType": "\pdbf@chartType",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x1": \zposx{Overlay\arabic{visual}1},}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x2": \zposx{Overlay\arabic{visual}2},}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y1": \zposy{Overlay\arabic{visual}1},}%
@@ -254,7 +254,7 @@
 	\sqlmult{#1}{#1}
 }
 	
-\def\DBSQLText#1{%
+\def\dbSQLText#1{%
 	\stepcounter{overlay}%
 	\StrSubstitute{#1}{"}{\@backslashchar"}[\pdbf@value]%
 	\ifnum \value{overlay} > 1%
@@ -273,7 +273,7 @@
 	\immediate\write\tempfile{\@charrb}%
 }
 
-\def\DBSQLFile#1{%
+\def\dbSQLFile#1{%
 	\stepcounter{overlay}%
 	\StrSubstitute{#1}{"}{\@backslashchar"}[\pdbf@value]%
 	\ifnum \value{overlay} > 1%
@@ -292,7 +292,7 @@
 	\immediate\write\tempfile{\@charrb}%
 }
 
-\def\DBSQLJDBC#1#2#3#4{%
+\def\dbSQLJDBC#1#2#3#4{%
 	\stepcounter{overlay}%
 	\StrSubstitute{#1}{"}{\@backslashchar"}[\pdbf@valueA]%
 	\StrSubstitute{#2}{"}{\@backslashchar"}[\pdbf@valueB]%

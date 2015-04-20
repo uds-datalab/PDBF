@@ -230,6 +230,8 @@
         var yd = $$.getYDomain($$.data.targets, 'y');
         c3_chart_fn.xd = function() { return xd };
         c3_chart_fn.yd = function() { return yd };
+        c3_chart_fn.pl = function() { return $$.margin.left; };
+        c3_chart_fn.pb = function() { return $$.margin.bottom; };
         $$.x.domain(d3.extent(xd));
         $$.y.domain(yd);
         $$.y2.domain($$.getYDomain($$.data.targets, 'y2'));
@@ -1042,8 +1044,8 @@
             size_width: undefined,
             size_height: undefined,
             padding_left: undefined,
-            padding_right: 0,
-            padding_top: 0,
+            padding_right: 1,
+            padding_top: 1,
             padding_bottom: undefined,
             innerTickSize: 3,
             zoom_enabled: false,
@@ -1132,7 +1134,7 @@
             axis_x_tick_values: null,
             axis_x_tick_rotate: 0,
             axis_x_tick_outer: true,
-            axis_x_tick_multiline: true,
+            axis_x_tick_multiline: false,
             axis_x_tick_width: null,
             axis_x_max: undefined,
             axis_x_min: undefined,
@@ -2682,7 +2684,7 @@
     c3_chart_internal_fn.getAxisWidthByAxisId = function (id, withoutRecompute) {
         var $$ = this, position = $$.axis.getLabelPositionById(id);
         if ($$.config.noyticks) {
-        	return ($$.config.innerTickSize+1.0)*$$.config.completeScale;
+        	return ($$.config.innerTickSize+2.0)*$$.config.completeScale;
         }
         return $$.axis.getMaxTickWidth(id, withoutRecompute) + (position.isInner ? 1 : 2)*$$.config.completeScale + ($$.config.innerTickSize+3)*$$.config.completeScale;
     };
@@ -2702,7 +2704,7 @@
         	h += config.completeScale*8;
         }
         if (config.noxticks) {
-        	return (config.innerTickSize+1.0)*config.completeScale;
+        	return (config.innerTickSize+2.0)*config.completeScale;
         }
         return h + ($$.axis.getLabelPositionById(axisId).isInner ? 0 : 10) + (axisId === 'y2' ? -10 : 0) + 
         (config.lengend_show ? 2*config.completeScale : 0); //padding legend
@@ -6730,7 +6732,7 @@
 
         params = params || {};
         params.$$ = $$;
-        outerTickSize = params.withOuterTick ? 6*$$.config.completeScale : 0;
+        outerTickSize = params.withOuterTick ? 3*$$.config.completeScale : 0;
 
         function axisX(selection, x) {
             selection.attr("transform", function (d) {
@@ -6929,7 +6931,7 @@
                     if (!rotate) {
                         return tickLength - params.$$.config.completeScale*2;
                     }
-                    return tickLength - params.$$.config.completeScale*12 + params.$$.config.completeScale*10 * Math.cos(Math.PI * (rotate / 180));
+                    return tickLength - params.$$.config.completeScale*9.5 + params.$$.config.completeScale*10 * Math.cos(Math.PI * (rotate / 180));
                 }
 
                 switch (orient) {

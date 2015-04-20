@@ -16,7 +16,7 @@
 	<script src="jquery-ui-1.9.2.custom.min.js"></script>
 	<script src="jquery.dataTables.js"></script>
     <script src="main.js"></script>
-    <script src="science.v1.js"></script>
+    <script src="jstat.js"></script>
     <script>
     //redirect alerts to console
     function alert(e) {
@@ -46,7 +46,10 @@ var tmp2 = dbjson_base64;
 if (tmp2 != "") {
 	alasql.databases = JSON.parse(tmp2);
 }
-alasql(tmp);
+
+if (tmp != "") {
+	alasql(tmp);
+}
 
 //Load config.json
 json = JSON.parse(UTF8ArrToStr(base64DecToArr(json_base64)));
@@ -86,17 +89,13 @@ function display(json, page) {
 	page.appendChild(container);
 	switch(json.type.C) {
  		case "pdbf.common.MultiplotChart":
-			buildContainerMultiplotChart(container, json, zoomFactor, style, containerOver, false);
+			buildContainerMultiplotChart(container, json, zoomFactor, style, containerOver);
 			break;
-		case "pdbf.common.LineChart":
-		case "pdbf.common.BarChart":
-			buildContainerChart(container, json, zoomFactor, style, containerOver, false);
-			break;
-		case "pdbf.common.Text":
-			//DO NOTHING
+		case "pdbf.common.Chart":
+			buildContainerChart(container, json, zoomFactor, style, containerOver);
 			break;
 		case "pdbf.common.Pivot":
-			buildContainerPivot(container, json, zoomFactor, style, containerOver, false);
+			buildContainerPivot(container, json, zoomFactor, style, containerOver);
 			break;
 		default:
 			alert("Unknown: " + json.type.C);

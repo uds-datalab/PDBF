@@ -29,17 +29,14 @@
 \author{
  Patrick Bender\\
   \texttt{s9pabend@stud.uni-saarland.de}
-  \\[5pt]
- Christian Goldstein\\
-  \texttt{c.goldstein@goldstein-systemberatung.de}
 }
 \date{}
 
 \renewcommand\pdbfScale{0.833}
 
-\DBSQLText{CREATE TABLE table1 (column1 INTEGER, column2 DATE, column3 FLOAT);}
-\DBSQLFile{somedb.sql}
-\DBSQLJDBC{jdbc:postgresql://localhost:5432/postgres}{postgres}{test}{testtest, dim_time, dim_compiler, dim_dataset, dim_implementation, dim_layout, dim_query, dim_machine, fact_experiment}%
+\dbSQLText{CREATE TABLE table1 (column1 INTEGER, column2 DATE, column3 FLOAT);}
+\dbSQLFile{somedb.sql}
+\dbSQLJDBC{jdbc:postgresql://localhost:5432/postgres}{postgres}{test}{testtest, dim_time, dim_compiler, dim_dataset, dim_implementation, dim_layout, dim_query, dim_machine, fact_experiment}%
 
 \begin{document}
 
@@ -122,14 +119,14 @@ LIMIT 100;}
 \subsection*{}
 \begin{frame}\frametitle{Line Chart with little data}
 	{ \centering 
-	\lineChart[width=0.8\textwidth, height=0.6\textwidth, xunit=Money (in €), yunit=Date, options={"title": "Title"}]{SELECT * FROM data1;}%
+	\chart[width=0.8\textwidth, height=0.6\textwidth, chartType=Line, xunit=Money (in €), yunit=Date, options={"title": "Title"}]{SELECT * FROM data1;}%
 	\\}
 \end{frame}
 
 \subsection*{}
 \begin{frame}\frametitle{Line Chart with much data}
 	{\centering
-	    \lineChart[width=1.0\textwidth, height=0.5\textwidth, xunit=Row Number, yunit={Runtime [in sec]}]{SELECT ROWNUM(), runtime FROM fact_experiment;}%
+	    \chart[width=1.0\textwidth, height=0.5\textwidth, chartType=Line, xunit=Row Number, yunit={Runtime [in sec]}]{SELECT ROWNUM(), runtime FROM fact_experiment;}%
 	\\}
 \end{frame}
 
@@ -138,12 +135,12 @@ LIMIT 100;}
 	\begin{figure}[h]
     \centering
     \begin{minipage}{.48\textwidth}
-    \lineChart[width=\textwidth, height=0.8\textwidth, xunit=Date, yunit={Runtime [in sec]}]{SELECT date, runtimeA AS engine_A, runtimeB AS engine_B FROM data2;}%
+    \chart[width=\textwidth, height=0.8\textwidth, chartType=Line, xunit=Date, yunit={Runtime [in sec]}]{SELECT date, runtimeA AS engine_A, runtimeB AS engine_B FROM data2;}%
     \caption{Multi-column Line Chart}
     \end{minipage}
     \hspace{5pt}
     \begin{minipage}{.48\textwidth}
-    \barChart[width=\textwidth, height=0.8\textwidth, xunit=Date, yunit={Runtime [in sec]}]{SELECT date, runtimeA AS [engine A], runtimeB AS [engine B] FROM data2;}%
+    \chart[width=\textwidth, height=0.8\textwidth, chartType=Line, xunit=Date, yunit={Runtime [in sec]}]{SELECT date, runtimeA AS [engine A], runtimeB AS [engine B] FROM data2;}%
     \caption{Multi-column Bar Chart}
     \end{minipage}\\[8pt]
     \end{figure}
@@ -154,12 +151,12 @@ LIMIT 100;}
 	\begin{figure}[h]
     \centering
     \begin{minipage}{.48\textwidth}
-    \barChart[width=\textwidth, height=0.8\textwidth, xunit=Date, yunit={Runtime [in sec]}, overlap=2]{SELECT date, runtimeA AS [engine A], runtimeB AS [engine B] FROM data2;}
+    \chart[width=\textwidth, height=0.8\textwidth, chartType=Bar, xunit=Date, yunit={Runtime [in sec]}, overlap=2]{SELECT date, runtimeA AS [engine A], runtimeB AS [engine B] FROM data2;}
     \caption{Multi-column overlapping Bar Chart}
     \end{minipage}
     \hspace{5pt}
     \begin{minipage}{.48\textwidth}
-    \lineChart[width=\textwidth, height=0.8\textwidth, xunit=Date, yunit={Runtime [in sec]}, options={"strokeWidth": 0, "drawPoints": true, "pointSize": 3, "highlightCircleSize": 4, "xRangePad": 10}]{SELECT date, runtimeA AS [engine A], runtimeB AS [engine B] FROM data2;}
+    \chart[width=\textwidth, height=0.8\textwidth, chartType=Line, xunit=Date, yunit={Runtime [in sec]}, options={"strokeWidth": 0, "drawPoints": true, "pointSize": 3, "highlightCircleSize": 4, "xRangePad": 10}]{SELECT date, runtimeA AS [engine A], runtimeB AS [engine B] FROM data2;}
     \caption{Multi-column Dot Chart}
     \end{minipage}
     \end{figure}
