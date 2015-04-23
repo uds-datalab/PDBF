@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.4.16)  21 APR 2015 01:00
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.4.16)  22 APR 2015 13:52
 entering extended mode
 **C:/workspaceAndroid/PDBF/testdata/chunked_column_layouts/draft.tex
 (C:/workspaceAndroid/PDBF/testdata/chunked_column_layouts/draft.tex
@@ -642,50 +642,49 @@ Underfull \hbox (badness 1852) in paragraph at lines 183--184
 \T1/aer/m/n/9 is a 95% chance that the
  []
 
-<pdf/problem_bests_table.pdf, id=32, 379.45935pt x 593.70575pt>
-File: pdf/problem_bests_table.pdf Graphic file (type pdf)
-<use pdf/problem_bests_table.pdf>
-Package pdftex.def Info: pdf/problem_bests_table.pdf used on input line 186.
-(pdftex.def)             Requested size: 240.9104pt x 376.93555pt.
-
-Overfull \hbox (0.9104pt too wide) in paragraph at lines 186--188
-[][]
- []
-
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 [2 <C:/workspaceAndroid/PDBF/testdata/chunked_column_layouts/pdf/methodology_ru
-ntimes.pdf>] <pdf/problem_bests_plot.pdf, id=61, 360.34625pt x 249.93375pt>
+ntimes.pdf>] <Overlay1.png, id=60, 1209.76968pt x 1892.57062pt>
+File: Overlay1.png Graphic file (type png)
+<use Overlay1.png>
+Package pdftex.def Info: Overlay1.png used on input line 239.
+(pdftex.def)             Requested size: 240.89745pt x 376.89024pt.
+
+Overfull \hbox (0.89758pt too wide) in paragraph at lines 239--241
+[][]
+ []
+
+<pdf/problem_bests_plot.pdf, id=62, 360.34625pt x 249.93375pt>
 File: pdf/problem_bests_plot.pdf Graphic file (type pdf)
 <use pdf/problem_bests_plot.pdf>
-Package pdftex.def Info: pdf/problem_bests_plot.pdf used on input line 221.
+Package pdftex.def Info: pdf/problem_bests_plot.pdf used on input line 261.
 (pdftex.def)             Requested size: 241.91785pt x 167.79034pt.
 
-Overfull \hbox (1.91785pt too wide) in paragraph at lines 221--223
+Overfull \hbox (1.91785pt too wide) in paragraph at lines 261--263
  [][] 
  []
 
-<Overlay1.png, id=62, 2454.92157pt x 1622.31094pt>
-File: Overlay1.png Graphic file (type png)
-<use Overlay1.png>
-Package pdftex.def Info: Overlay1.png used on input line 280.
+<Overlay2.png, id=63, 2454.92157pt x 1622.31094pt>
+File: Overlay2.png Graphic file (type png)
+<use Overlay2.png>
+Package pdftex.def Info: Overlay2.png used on input line 320.
 (pdftex.def)             Requested size: 488.87791pt x 323.07019pt.
-[3 <C:/workspaceAndroid/PDBF/testdata/chunked_column_layouts/pdf/problem_bests_
-table.pdf> <C:/workspaceAndroid/PDBF/testdata/chunked_column_layouts/pdf/proble
-m_bests_plot.pdf>] (C:/workspaceAndroid/PDBF/testdata/chunked_column_layouts\dr
-aft.bbl)
+[3 <C:/workspaceAndroid/PDBF/Overlay1.png> <C:/workspaceAndroid/PDBF/testdata/c
+hunked_column_layouts/pdf/problem_bests_plot.pdf>] (C:/workspaceAndroid/PDBF/te
+stdata/chunked_column_layouts\draft.bbl)
 
 Package balance Warning: You have called \balance in second column
 (balance)                Columns might not be balanced.
 
-[4 <C:/workspaceAndroid/PDBF/Overlay1.png>] (C:\workspaceAndroid\PDBF\draft.aux
+[4 <C:/workspaceAndroid/PDBF/Overlay2.png>] (C:\workspaceAndroid\PDBF\draft.aux
 ) ) 
 Here is how much of TeX's memory you used:
- 11913 strings out of 493921
- 205391 string characters out of 3144879
- 295796 words of memory out of 3000000
- 15008 multiletter control sequences out of 15000+200000
+ 11915 strings out of 493921
+ 205346 string characters out of 3144879
+ 294846 words of memory out of 3000000
+ 15010 multiletter control sequences out of 15000+200000
  63075 words of font info for 91 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
  68i,12n,49p,10414b,1329s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -706,9 +705,9 @@ ublic/amsfonts/cm/cmtt9.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/
 helvetic/uhvb8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/helvetic
 /uhvr8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pfb
 ><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb>
-Output written on draft.pdf (4 pages, 554128 bytes).
+Output written on draft.pdf (4 pages, 667903 bytes).
 PDF statistics:
- 154 PDF objects out of 1000 (max. 8388607)
+ 138 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  26 words of extra memory for PDF output out of 10000 (max. 10000000)
 

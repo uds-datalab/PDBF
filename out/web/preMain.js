@@ -121,7 +121,7 @@ function display(json, page) {
 			containerOver.style.opacity = 1;
 		});
 		container.setAttribute('style', style);
-		//buildContainerMultiplotChart(container, json, zoomFactor, style, containerOver);
+		buildContainerMultiplotChart(container, json, zoomFactor, style, containerOver);
 		break;
 	case "pdbf.common.Chart":
 		var containerOver = document.getElementById(json.name + "Big");
@@ -145,7 +145,7 @@ function display(json, page) {
 			containerOver.style.opacity = 1;
 		});
 		container.setAttribute('style', style);
-		//buildContainerChart(container, json, zoomFactor, style, containerOver);
+		buildContainerChart(container, json, zoomFactor, style, containerOver);
 		break;
 	case "pdbf.common.Text":
 		var containerOver = document.getElementById(json.name + "Big");
@@ -190,7 +190,7 @@ function display(json, page) {
 			containerOver.style.opacity = 1;
 		});
 		container.setAttribute('style', style);
-		//buildContainerPivot(container, json, zoomFactor, style, containerOver);
+		buildContainerPivot(container, json, zoomFactor, style, containerOver);
 		break;
 	default:
 		alert("Unknown: " + json.type.C);

@@ -182,14 +182,6 @@ However, if we take a look at the runtimes of all 5 runs in Figure~\ref{fig:meth
 
 We should keep in mind that when experimentally comparing multiple systems, we only get a \textit{sample} of their performance metrics which can only be used to \textit{estimate} the populations' performance metrics. Thus, there is always a level of uncertainty in our estimates, which renders the necessity of expressing this uncertainty in some way. One possible way to do this is to use confidence intervals, which express in natural language: ``There is a 95\% chance that the actual average runtime of System~A is between 1.7 and 1.8 seconds.''
 
-\begin{table}[!b]
-\includegraphics[width=.478\textwidth]{pdf/problem_bests_table.pdf}
-\vspace*{-20pt}
-\caption{The best layouts and most efficient ways of implementing a given query on a given table and executed on a given machine.}  
-\label{fig:problem_bests_table}
-%\vspace{-10pt}
-\end{table}
-
 \noindent\textbf{Confidence intervals.}
 To create a confidence interval we first have to choose our confidence level, typically 90\%, 95\% or 99\%, denoted by $1 - \alpha$, where $\alpha$ is called the significance level. 
 %A higher level of confidence yields a wider confidence interval for the same sample. The use-case determines the suitable confidence level, however, the latter trade-off has to be kept in mind when choosing one.
@@ -203,11 +195,59 @@ When looking at the measured query times on Layout~A in Figure~\ref{fig:methodol
 An outlier is an element of a sample that does not ``fit" into the sample in some way. It is hard to quantify the criteria for labelling an element as an outlier, and it also depends heavily on the use-case. Therefore, the most common technique used for detecting outliers is plotting the sample on a scatter plot, and visually inspecting the plot by a human.
 If we assume, that there is only one outlier in the sample, and it is either the minimum, or the maximum value, than we can use Grubb's test~\cite{grubbs1950sample} to automatically detect outliers. The only problem is that this method tends to identify outliers too often for samples with less than eight elements. This explains why it detected an outlier in 27\% of the cases in our experiments. To counter the error rate of the method we have included an additional condition for labelling an outlier: $\text{margin\_or\_error} / \overline{x} \geq$ 2.5\%, where the margin of error is defined as the radius of the confidence interval. This reduces the detection rate to 3\%, and those elements proved to be outliers after manual inspection.
 
+\begin{table}[!b] 
+\pivotTable[width=0.478\textwidth, height=0.7478\textwidth, scale=0.666, rows={"Machine", "Table schema", "Query"}, aggregation=Minimum, aggregationattribute=Query time, aggregationBig=Minimum, aggregationattributeBig=Query time (in Sec)]
+{SELECT
+m.cpuarchitecture AS Machine,
+IIF(d.tableschema = '(long a, long b)', 'long', IIF(d.tableschema = '(char a, char b)', 'char', IIF(d.tableschema = '(int a, int b)', 'int', 'n/a')))   AS [Table schema],
+IIF(q.querytext = 'SELECT MIN(a+b) FROM t', 'Q1', 'Q2')     AS [Query],
+c.compiler      AS Compiler,
+c.optlevel      AS [Opt. level],
+l.name          AS [Layout name],
+CAST(COALESCE(IIF(i.templateparam, 'C', 'R'), 'n/a') AS VARCHAR) AS [Chunk size provided at],
+ROUND(v.runtime, 3) 		AS [Query time]
+FROM fact_experiment AS v
+    JOIN dim_machine m ON m.id = v.machineid
+    JOIN dim_dataset d ON d.id = v.datasetid
+    JOIN dim_compiler c ON c.id = v.compilerid
+    JOIN dim_layout l ON l.id = v.layoutid
+    JOIN dim_implementation i ON i.id = v.implementationid
+    JOIN dim_query q ON q.id = v.queryid
+ORDER BY m.id DESC, d.tableschema, q.querytext,
+    c.compiler, c.optlevel, i.templateparam, i.logscaleparam, l.chunksize;}
+{SELECT
+m.cpu + ' (' +  m.cpuarchitecture + ')' AS Machine,
+d.tableschema   AS [Table schema],
+q.querytext     AS [Query],
+c.compiler      AS Compiler,
+c.optlevel      AS [Opt. level],
+l.name          AS [Layout name],
+CAST(COALESCE(l.chunksize, 'n/a') AS VARCHAR) AS [Chunk size (tuples)],
+IIF(i.templateparam, 'Compile time', 'Runtime') AS [Chunk size provided at],
+IIF(i.logscaleparam, 'Powers of 2', 'Multiples of 2') AS [Chunk sizes considered],
+t.timestamp 	AS [Time of experiment],
+ROUND(v.runtime, 3) 		AS [Query time (in Sec)]
+FROM fact_experiment AS v
+    JOIN dim_machine m ON m.id = v.machineid
+    JOIN dim_dataset d ON d.id = v.datasetid
+    JOIN dim_compiler c ON c.id = v.compilerid
+    JOIN dim_layout l ON l.id = v.layoutid
+    JOIN dim_implementation i ON i.id = v.implementationid
+    JOIN dim_query q ON q.id = v.queryid
+    JOIN dim_time t ON t.id = v.timeid
+ORDER BY m.id DESC, d.tableschema, q.querytext,
+    c.compiler, c.optlevel, i.templateparam, i.logscaleparam, l.chunksize;}
+\vspace*{-5pt}
+\caption{The best layouts and most efficient ways of implementing a given query on a given table and executed on a given machine.}  
+\label{fig:problem_bests_table}
+\vspace{-10pt}
+\end{table}
+
 \noindent\textbf{Choosing the best solution when there is no single best solution.}
 Choosing the best solution using the average runtime is easy, we simply take the one with the smallest one. We have also seen that this can be arbitrarily wrong, and that is why confidence intervals provide a better basis of comparison than the sample mean. 
 However, comparing confidence intervals is not that straight-forward as comparing scalars. If two intervals are disjoint, they are easily comparable. It they are not disjoint, and the mean of one sample is inside the other sample's confidence interval, they are indistinguishable from each other with the same level of confidence, as that of the intervals. Finally, if they are not disjoint, but their means do not fall into the other sample's interval, an independent two-sample t-test (Welch's t-test~\cite{welch1947generalization}) can decide whether they are distinguishable, and if so, which one is better.
 
-\vspace*{-0.2cm}
+\vspace*{-0.15cm}
 
 \section{Results}
 

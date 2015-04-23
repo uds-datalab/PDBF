@@ -60,7 +60,7 @@ public class LaTeX_Compiler {
 	    System.exit(-1);
 	}
 
-	String latexFolder = latex.getParent();
+	String latexFolder = latex.getAbsoluteFile().getParent();
 
 	ArrayList<String> commands = new ArrayList<String>(Arrays.asList(pathToLaTeXScript));
 	commands.add(latex.getAbsolutePath());
@@ -163,7 +163,7 @@ public class LaTeX_Compiler {
 	    }
 	}
 
-	// copy images to latex file
+	// Copy images to latex file
 	for (String s : copyfiles) {
 	    File source = new File(s);
 	    String target = latexFolder + File.separator + source.getName();
