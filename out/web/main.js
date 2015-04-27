@@ -138,15 +138,6 @@ function buildContainerPivotBig(json, containerOver, initial) {
 		$(containerContent).pivotUI(r.res, {
 			aggregator : aggr
 		}, true);
-		var pvtAgg = containerOver.getElementsByClassName("pvtAggregator")[0];
-		$(pvtAgg).val(aggrName);
-		$(pvtAgg).trigger("change");
-		setTimeout(function() {
-			var pvtAtt = containerOver
-					.getElementsByClassName("pvtAttrDropdown")[0];
-			$(pvtAtt).val(aggrAtt);
-			$(pvtAtt).trigger("change");
-		}, 500);
 	};
 
 	var tip = "Tip: Drag and drop attributes to the row/column area. <br/>Move the cursor over the result cells to see more detailed results for min and max aggregator.<br/>";
@@ -183,18 +174,10 @@ function buildContainerPivotBig(json, containerOver, initial) {
 	$(containerContent).pivotUI(r.res, {
 		rows : r.rows,
 		cols : r.cols,
-		aggregator : aggr
+		aggregator : aggr,
+		vals: [aggrAtt],
+		aggregator: aggrName
 	});
-	var pvtAgg = containerOver.getElementsByClassName("pvtAggregator")[0];
-	$(pvtAgg).val(aggrName);
-	$(pvtAgg).trigger("change");
-	setTimeout(
-			function() {
-				var pvtAtt = containerOver
-						.getElementsByClassName("pvtAttrDropdown")[0];
-				$(pvtAtt).val(aggrAtt);
-				$(pvtAtt).trigger("change");
-			}, 500);
 
 	containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
 
@@ -221,7 +204,7 @@ function buildContainerPivot(container, json, zoomFactor, style, containerOver) 
 	var aggrAtt = r.aggrAttribute;
 	var unused = [];
 	for (key in r.res[0]) {
-		if (aggrName != key && $.inArray(key, r.rows) == -1
+		if (aggrAtt != key && $.inArray(key, r.rows) == -1
 				&& $.inArray(key, r.cols) == -1) {
 			unused[unused.length] = key;
 		}
@@ -1495,7 +1478,7 @@ alasql.fn.ROWNUM = function() {
 	rownumcount = true;
 }
 
-alasql.fn.GRUBBS_FILTER = function(arr, alpha) {
+function GRUBBS_FILTER(arr, alpha) {
 	var arr = arr.slice();
 	if (!Array.isArray(arr)) {
 		throw new Error("Argument of GRUBBS_FILTER is not an array!");
@@ -1528,22 +1511,25 @@ alasql.fn.GRUBBS_FILTER = function(arr, alpha) {
 	}
 	return arr;
 }
+alasql.fn.GRUBBS_FILTER = GRUBBS_FILTER;
 
-alasql.fn.MEAN = function(arr) {
+function MEAN(arr) {
 	if (!Array.isArray(arr)) {
 		throw new Error("Argument of MEAN is not an array!");
 	}
 	return jStat.mean(arr);
 }
+alasql.fn.MEAN = MEAN;
 
-alasql.fn.STDDEV_SAMP = function(arr) {
+function STDDEV_SAMP(arr) {
 	if (!Array.isArray(arr)) {
 		throw new Error("Argument of STDDEV_SAMP is not an array!");
 	}
 	return jStat.stdev(arr, true);
 }
+alasql.fn.STDDEV_SAMP = STDDEV_SAMP;
 
-alasql.fn.MARGIN_OF_ERROR = function(arr, alpha) {
+function MARGIN_OF_ERROR(arr, alpha) {
 	if (!Array.isArray(arr)) {
 		throw new Error("Argument of MARGIN_OF_ERROR is not an array!");
 	}
@@ -1554,8 +1540,9 @@ alasql.fn.MARGIN_OF_ERROR = function(arr, alpha) {
 	var n = arr.length;
 	return jStat.studentt.inv(1 - alpha / 2, n - 1) * stdev * Math.sqrt(n);
 }
+alasql.fn.MARGIN_OF_ERROR = MARGIN_OF_ERROR;
 
-alasql.fn.CONF_INT = function(arr) {
+function CONF_INT(arr) {
 	if (!Array.isArray(arr)) {
 		throw new Error("Argument of CONF_INT is not an array!");
 	}
@@ -1564,8 +1551,9 @@ alasql.fn.CONF_INT = function(arr) {
 	var MEAN = alasql.fn.MEAN(arr); // TODO: maybe remove null/undefined values?
 	return [ MEAN - MOE, MEAN + MOE ]
 }
+alasql.fn.CONF_INT = CONF_INT;
 
-alasql.fn.T_TEST = function(arr1, arr2, alpha) {
+function T_TEST(arr1, arr2, alpha) {
 	if (!Array.isArray(arr1)) {
 		throw new Error("Argument 1 of T_TEST is not an array!");
 	}
@@ -1591,8 +1579,9 @@ alasql.fn.T_TEST = function(arr1, arr2, alpha) {
 
 	return p >= alpha;
 }
+alasql.fn.T_TEST = T_TEST;
 
-alasql.fn.WELCH_TEST = function(arr1, arr2, alpha) {
+function WELCH_TEST(arr1, arr2, alpha) {
 	if (!Array.isArray(arr1)) {
 		throw new Error("Argument 1 of WELCH_TEST is not an array!");
 	}
@@ -1620,6 +1609,7 @@ alasql.fn.WELCH_TEST = function(arr1, arr2, alpha) {
 
 	return p >= alpha;
 }
+alasql.fn.WELCH_TEST = WELCH_TEST;
 
 function signaturePlot(valuesArr) {
 	var values = valuesArr[0]; // Call by reference

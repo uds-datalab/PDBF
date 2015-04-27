@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.4.16)  22 APR 2015 13:52
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.4.16)  27 APR 2015 14:44
 entering extended mode
 **C:/workspaceAndroid/PDBF/testdata/chunked_column_layouts/draft.tex
 (C:/workspaceAndroid/PDBF/testdata/chunked_column_layouts/draft.tex
@@ -649,27 +649,27 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 ntimes.pdf>] <Overlay1.png, id=60, 1209.76968pt x 1892.57062pt>
 File: Overlay1.png Graphic file (type png)
 <use Overlay1.png>
-Package pdftex.def Info: Overlay1.png used on input line 239.
+Package pdftex.def Info: Overlay1.png used on input line 235.
 (pdftex.def)             Requested size: 240.89745pt x 376.89024pt.
 
-Overfull \hbox (0.89758pt too wide) in paragraph at lines 239--241
+Overfull \hbox (0.89758pt too wide) in paragraph at lines 235--237
 [][]
  []
 
 <pdf/problem_bests_plot.pdf, id=62, 360.34625pt x 249.93375pt>
 File: pdf/problem_bests_plot.pdf Graphic file (type pdf)
 <use pdf/problem_bests_plot.pdf>
-Package pdftex.def Info: pdf/problem_bests_plot.pdf used on input line 261.
+Package pdftex.def Info: pdf/problem_bests_plot.pdf used on input line 257.
 (pdftex.def)             Requested size: 241.91785pt x 167.79034pt.
 
-Overfull \hbox (1.91785pt too wide) in paragraph at lines 261--263
+Overfull \hbox (1.91785pt too wide) in paragraph at lines 257--259
  [][] 
  []
 
 <Overlay2.png, id=63, 2454.92157pt x 1622.31094pt>
 File: Overlay2.png Graphic file (type png)
 <use Overlay2.png>
-Package pdftex.def Info: Overlay2.png used on input line 320.
+Package pdftex.def Info: Overlay2.png used on input line 316.
 (pdftex.def)             Requested size: 488.87791pt x 323.07019pt.
 [3 <C:/workspaceAndroid/PDBF/Overlay1.png> <C:/workspaceAndroid/PDBF/testdata/c
 hunked_column_layouts/pdf/problem_bests_plot.pdf>] (C:/workspaceAndroid/PDBF/te
@@ -705,7 +705,7 @@ ublic/amsfonts/cm/cmtt9.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/
 helvetic/uhvb8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/helvetic
 /uhvr8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pfb
 ><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb>
-Output written on draft.pdf (4 pages, 667903 bytes).
+Output written on draft.pdf (4 pages, 548980 bytes).
 PDF statistics:
  138 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)

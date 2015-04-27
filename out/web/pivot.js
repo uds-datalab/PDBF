@@ -36,7 +36,7 @@
     numberFormat = function(opts) {
       var defaults;
       defaults = {
-        digitsAfterDecimal: 2,
+        digitsAfterDecimal: 3,
         scaler: 1,
         thousandsSep: ",",
         decimalSep: ".",
@@ -163,13 +163,97 @@
           };
         };
       },
+      //TODO: add variable alpha (also to UI)
+      bests: function(formatter) {
+  		if (formatter == null) {
+            formatter = usFmt;
+          }
+          return function(_arg) {
+            var attr = _arg[0];
+            //TODO: var alpha = _arg[1];
+            return function(data, rowKey, colKey) {
+              return {
+  			  label: "95% confidence interval of average " + attr,
+                data: data,
+  			  special: true,
+  			  vals: [],
+  			  res: [],
+                push: function(record) {
+                  if (attr == undefined) return;
+            	  if (!Array.isArray(record[attr])) {
+            		  throw new Error("Argument of best aggregator is not an array!\nValue was: " + record[attr]);
+            	  }
+                  this.vals[this.vals.length] = record;
+                },
+                value: function() {
+                  if (attr == undefined) return;
+                  function proxy(attr, f) {
+                	  return function(obj) { return f(obj[attr]); };
+                  }
+                  if (this.res.length == 0) {
+                	  var avg_runtime = this.vals.map(proxy(attr, MEAN));
+                	  var stdev_runtime = this.vals.map(proxy(attr, STDDEV_SAMP));
+                	  var margin_of_error_runtime = this.vals.map(proxy(attr, MARGIN_OF_ERROR));
+                	  var min_interval;
+                	  var min_interval_index;
+                	  for (var i=0; i<this.vals.length; ++i) {
+                		var x = avg_runtime[i] - margin_of_error_runtime[i];
+      					if (min_interval == undefined || x <= min_interval) {
+      						min_interval = x;
+      						min_interval_index = i;
+    					}
+                	  }
+                	  var best_attr = this.vals[min_interval_index][attr];
+                	  for (var i=0; i<this.vals.length; ++i) {
+                  		if (WELCH_TEST(best_attr, this.vals[i][attr])) {
+                  			var cpy = jQuery.extend({}, this.vals[i]);
+                  			cpy[attr] = '{' + formatter(avg_runtime[i] - margin_of_error_runtime[i]) + ', ' + formatter(avg_runtime[i] + margin_of_error_runtime[i]) + '}';
+                  			this.res[this.res.length] = cpy;
+                  		}
+                  	  }
+                  }
+                  return this.res;
+                },
+                format: function(arr){
+                  if (attr == undefined) return;
+				  var r = '<table class="innerTable" style="width: 100%; height:100%; white-space: nowrap;">';
+  				  //TODO: td.setAttribute("data-value", p_data);
+				  for (var i=0; i<arr.length; ++i) {
+  					  r += '<tr style="height='+(100/arr.length)+'%;"><td>';
+  					  var x = arr[i];
+					  if (data.intable) {
+						  var ret = "";
+						  r += (x[attr]);
+					  } else {
+						  var ret = "<span class=\"hasTooltip\">"+(x[attr])+"</span><span style=\"position:absolute;\" ><table style=\"width: 100%;\"><tr>";
+						  for (key in x) {
+							  ret += "<th class=\"pvtAxisLabel\">" + key + "</th>";
+						  }
+						  ret += "</tr><tr>";
+						  for (key in x) {
+							  ret += "<td>" + x[key] + "</td>";
+						  }
+						  ret += '</tr></table></span>';
+						  r += ret;
+					  }
+					  r += '</td></tr>';
+  				  }
+  				  r += '</table>';
+  				  return r;
+  			    },
+  			    formatPlain: function(x){
+  			    },
+                numInputs: attr != null ? 0 : 1
+              };
+            };
+          };
+        },
       min: function(formatter) {
 		if (formatter == null) {
           formatter = usFmt;
         }
         return function(_arg) {
-          var attr;
-          attr = _arg[0];
+          var attr = _arg[0];
           return function(data, rowKey, colKey) {
             return {
 			  label: "Min. of " + attr,
@@ -205,7 +289,7 @@
 				  }
 			  },
 			  formatPlain: function(x){
-				  return formatter(x[attr]);
+				  return x[attr];
 			  },
               numInputs: attr != null ? 0 : 1
             };
@@ -254,7 +338,7 @@
 				  }
 			  },
 			  formatPlain: function(x){
-				  return formatter(x[attr]);
+				  return x[attr];
 			  },
               numInputs: attr != null ? 0 : 1
             };
@@ -391,6 +475,7 @@
         "Sum": tpl.sum(usFmt),
         "Integer Sum": tpl.sum(usFmtInt),
         "Average": tpl.average(usFmt),
+        "Bests" : tpl.bests(usFmt),
         "Minimum": tpl.min(usFmt),
         "Maximum": tpl.max(usFmt),
         "Sum over Sum": tpl.sumOverSum(usFmt),
@@ -943,10 +1028,25 @@
 			val = totalAggregator.value();
 			for (var i=0; i<pivotData.unused.length; ++i) {
 				td = document.createElement("td");
+				td.setAttribute('style', 'padding:0px;');
 				td.className = "pvtTotal rowTotal";
-				td.innerHTML = val[pivotData.unused[i]];
+				var p_res = '';
+				if (Array.isArray(val)) {
+					for (var j=0; j<val.length; ++j) {
+						p_res += val[j][pivotData.unused[i]] + '<BR />';
+					}
+				} else {
+					p_res = val[pivotData.unused[i]];
+				}
+				td.innerHTML = p_res;
 			    if (totalAggregator.special) {
-			   	  td.setAttribute("data-value", totalAggregator.formatPlain(val));
+			      //TODO: check data-value. is array ok?
+			      var p_data = totalAggregator.formatPlain(val);
+			   	  if (p_data != undefined) {
+			   		td.setAttribute("data-value", p_data);
+			   	  } else {
+			   		td.setAttribute('style', 'padding:0px;');
+			   	  }
 			    } else {
 				  td.setAttribute("data-value", val);
 			    }
@@ -958,8 +1058,14 @@
 			td = document.createElement("td");
 			td.className = "pvtTotal rowTotal";
 			td.innerHTML = totalAggregator.format(val);
-			if (totalAggregator.special) {
-			  td.setAttribute("data-value", totalAggregator.formatPlain(val));
+		    if (totalAggregator.special) {
+		      //TODO: check data-value. is array ok?
+		      var p_data = totalAggregator.formatPlain(val);
+		   	  if (p_data != undefined) {
+		   		td.setAttribute("data-value", p_data);
+		   	  } else {
+		   		td.setAttribute('style', 'padding:0px;');
+		   	  }
 		    } else {
 			  td.setAttribute("data-value", val);
 		    }
@@ -971,8 +1077,14 @@
 			td = document.createElement("td");
 			td.className = "pvtTotal rowTotal";
 			td.innerHTML = totalAggregator.format(val);
-			if (totalAggregator.special) {
-			  td.setAttribute("data-value", totalAggregator.formatPlain(val));
+		    if (totalAggregator.special) {
+		      //TODO: check data-value. is array ok?
+		      var p_data = totalAggregator.formatPlain(val);
+		   	  if (p_data != undefined) {
+		   		td.setAttribute("data-value", p_data);
+		   	  } else {
+		   		td.setAttribute('style', 'padding:0px;');
+		   	  }
 		    } else {
 			  td.setAttribute("data-value", val);
 		    }
@@ -996,11 +1108,17 @@
         td = document.createElement("td");
         td.className = "pvtTotal colTotal";
         td.innerHTML = totalAggregator.format(val);
-        if (totalAggregator.special) {
-			td.setAttribute("data-value", totalAggregator.formatPlain(val));
-		} else {
-			td.setAttribute("data-value", val);
-		}
+	    if (totalAggregator.special) {
+	      //TODO: check data-value. is array ok?
+	      var p_data = totalAggregator.formatPlain(val);
+	   	  if (p_data != undefined) {
+	   		td.setAttribute("data-value", p_data);
+	   	  } else {
+	   		td.setAttribute('style', 'padding:0px;');
+	   	  }
+	    } else {
+		  td.setAttribute("data-value", val);
+	    }
         td.setAttribute("data-for", "col" + j);
         tr.appendChild(td);
       }
@@ -1011,11 +1129,17 @@
 		  td = document.createElement("td");
 		  td.className = "pvtGrandTotal";
 		  td.innerHTML = totalAggregator.format(val);
-		  if (totalAggregator.special) {
-			td.setAttribute("data-value", totalAggregator.formatPlain(val));
-		  } else {
-			td.setAttribute("data-value", val);
-		  }
+		    if (totalAggregator.special) {
+		      //TODO: check data-value. is array ok?
+		      var p_data = totalAggregator.formatPlain(val);
+		   	  if (p_data != undefined) {
+		   		td.setAttribute("data-value", p_data);
+		   	  } else {
+		   		td.setAttribute('style', 'padding:0px;');
+		   	  }
+		    } else {
+			  td.setAttribute("data-value", val);
+		    }
 		  tr.appendChild(td);
 		  result.appendChild(tr);
 		  result.setAttribute("data-numrows", rowKeys.length);
@@ -1295,6 +1419,7 @@
           if (!__hasProp.call(_ref2, x)) continue;
           aggregator.append($("<option>").val(x).html(x));
         }
+        aggregator.val(opts.aggregator);
         $("<td>").addClass('pvtVals').appendTo(tr1).append(aggregator).append($("<br>"));
         $("<td>").addClass('pvtAxisContainer pvtHorizList pvtCols').appendTo(tr1);
         tr2 = $("<tr>").appendTo(uiTable);
@@ -1431,6 +1556,7 @@
               }).appendTo(unusedAttrsContainer);
             }
             pivotTable.css("opacity", 1);
+            pivotTable.children().css("white-space", "nowrap");
             if (opts.onRefresh != null) {
               return opts.onRefresh(pivotUIOptions);
             }

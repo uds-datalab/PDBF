@@ -1,3 +1,25 @@
+table.innerTable {
+    border-collapse: collapse;
+}
+table.innerTable td, table.innerTable th {
+    border: 1px solid #CDCDCD;
+    padding: 0.1em;
+}
+table.innerTable tr:first-child td {
+    border-top: 0;
+}
+table.innerTable tr:last-child td {
+    border-bottom: 0;
+}
+table.innerTable tr td:first-child,
+table.innerTable tr th:first-child {
+    border-left: 0;
+}
+table.innerTable tr td:last-child,
+table.innerTable tr th:last-child {
+    border-right: 0;
+}
+
 .hasTooltip + span {
 	visibility: hidden;
 	background-color: white;
@@ -42,7 +64,7 @@ table.pvtTable tr td {
     color: #3D3D3D;
     background-color: #FFF;
     border: 1px solid #CDCDCD;
-    text-align: right;
+    text-align: left;
 }
 
 .pvtVals { text-align: center;}
