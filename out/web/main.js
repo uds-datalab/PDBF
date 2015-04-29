@@ -1563,6 +1563,7 @@ function T_TEST(arr1, arr2, alpha) {
 	if (alpha == undefined) {
 		var alpha = 0.05;
 	}
+	if (arr1 == arr2) return true;
 
 	var m1 = jStat.mean(arr1);
 	var m2 = jStat.mean(arr2);
@@ -1591,6 +1592,7 @@ function WELCH_TEST(arr1, arr2, alpha) {
 	if (alpha == undefined) {
 		var alpha = 0.05;
 	}
+	if (arr1 == arr2) return true;
 
 	var m1 = jStat.mean(arr1);
 	var m2 = jStat.mean(arr2);
