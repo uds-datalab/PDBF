@@ -1503,7 +1503,9 @@ function GRUBBS_FILTER(arr, alpha) {
 				Zindex = i;
 			}
 		});
-		if (Z > ZCrit) {
+		var margin_of_error_runtime = MARGIN_OF_ERROR(arr);
+		var avg_runtime = MEAN(arr);
+		if (Z > ZCrit && margin_of_error_runtime / avg_runtime >= 0.025) {
 			arr.splice(Zindex, 1);
 		} else {
 			gogo = false;

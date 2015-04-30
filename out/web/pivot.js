@@ -225,6 +225,13 @@
 										}
 									}
 								}
+								if (this.res.length > this.max) {
+									this.tooBig = this.res.length;
+									var cpy = jQuery.extend({}, this.vals[min_interval_index]);
+									cpy[attr] = ['{' + formatter(avg_runtime[min_interval_index] - margin_of_error_runtime[min_interval_index]) + ', '
+												+ formatter(avg_runtime[min_interval_index] + margin_of_error_runtime[min_interval_index]) + '}'];
+									this.res = [cpy];
+								}
 								return this.res;
 							},
 							format : function(arr) {
@@ -233,35 +240,6 @@
 								var r = '<table class="innerTable" style="width: 100%; height:100%; white-space: nowrap;">';
 								// TODO: td.setAttribute("data-value", p_data);
 								for (var i = 0; i < arr.length; ++i) {
-									r += '<tr style="height=' + (100 / arr.length) + '%;"><td>';
-									var x = arr[i];
-									if (data.intable) {
-										var ret = "";
-										r += (x[attr]);
-									} else {
-										var ret = "<span class=\"hasTooltip\">" + (x[attr])
-												+ "</span><span style=\"position:absolute;\" ><table style=\"width: 100%;\"><tr>";
-										for (key in x) {
-											ret += "<th class=\"pvtAxisLabel\">" + key + "</th>";
-										}
-										ret += "</tr><tr>";
-										for (key in x) {
-											ret += "<td>" + x[key] + "</td>";
-										}
-										ret += '</tr></table></span>';
-										r += ret;
-									}
-									r += '</td></tr>';
-								}
-								r += '</table>';
-								return r;
-							},
-							formatOne : function(arr) {
-								if (attr == undefined)
-									return;
-								var r = '<table class="innerTable" style="width: 100%; height:100%; white-space: nowrap;">';
-								// TODO: td.setAttribute("data-value", p_data);
-								for (var i = 0; i < Math.max(1, arr.length); ++i) {
 									r += '<tr style="height=' + (100 / arr.length) + '%;"><td>';
 									var x = arr[i];
 									if (data.intable) {
@@ -1090,10 +1068,13 @@
 						td.className = "pvtTotal rowTotal";
 						var r = '<table class="innerTable" style="width: 100%; height:100%; white-space: nowrap;">';
 						if (Array.isArray(val)) {
-							if (totalAggregator.max && val.length > totalAggregator.max) {
+							if (totalAggregator.tooBig) {
 								// TODO: td.setAttribute("data-value", p_data);
 								td.setAttribute("colspan", pivotData.unused.length);
-								td.innerHTML = '' + (val.length) + ' indistinguishable best solutions';
+								td.innerHTML = '' + (totalAggregator.tooBig) + ' indistinguishable best solutions';
+								tr.appendChild(td);
+								td.setAttribute("data-for", "row" + i);
+								result.appendChild(tr);
 								break;
 							} else {
 								for (var j = 0; j < val.length; ++j) {
@@ -1124,13 +1105,7 @@
 					val = totalAggregator.value();
 					td = document.createElement("td");
 					td.className = "pvtTotal rowTotal";
-					if (totalAggregator.max && val.length > totalAggregator.max) {
-						// TODO: td.setAttribute("data-value", p_data);
-						td.innerHTML = totalAggregator.formatOne(val);
-						break;
-					} else {
-						td.innerHTML = totalAggregator.format(val);
-					}
+					td.innerHTML = totalAggregator.format(val);
 					if (totalAggregator.special) {
 						// TODO: check data-value. is array ok?
 						var p_data = totalAggregator.formatPlain(val);
