@@ -176,7 +176,7 @@ function buildContainerPivotBig(json, containerOver, initial) {
 		cols : r.cols,
 		aggregator : aggr,
 		vals: [aggrAtt],
-		aggregator: aggrName
+		aggregatorName: aggrName
 	});
 
 	containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
