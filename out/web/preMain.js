@@ -109,9 +109,37 @@ function display(json, page) {
 							'position:fixed; z-index:9; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;');
 			containerOver.id = json.name + "Big";
 			containerOver.className = "centerhv";
-			//TODO: buildContainerChartBig(json, containerOver, true);
+			//TODO: maybe handle this different
+			var jsonCpy = jQuery.extend(true, {}, json);
+			var xValues;
+			try {
+				xValues = JSON.parse(json.type.I.xValues);
+			} catch (e) {
+				alert("Parsing of xValues for " + json.name + " failed!\nError: "
+						+ e.message + "\nValue: " + json.type.I.xValues);
+			}
+			var yValues;
+			try {
+				yValues = JSON.parse(json.type.I.yValues);
+			} catch (e) {
+				alert("Parsing of yValues for " + json.name + " failed!\nError: "
+						+ e.message + "\nValue: " + json.type.I.yValues);
+			}
+
+			var cellquery = json.type.I.query;
+			var yFirst = json.type.I.yFirst;
+			if (yFirst) {
+				cellquery = cellquery.replace("?", yValues[0]);
+				cellquery = cellquery.replace("?", xValues[0]);
+			} else {
+				cellquery = cellquery.replace("?", xValues[0]);
+				cellquery = cellquery.replace("?", yValues[0]);
+			}
+			jsonCpy.type.I.query = cellquery;
+			jsonCpy.type.I.queryB = cellquery;
+			buildContainerChartBig(jsonCpy, containerOver, true);
 		} else {
-			//TODO: containerOver.update();
+			containerOver.update();
 		}
 		
 		var fullscreen = getFullscreenDiv();

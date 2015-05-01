@@ -33,7 +33,7 @@ CREATE OR REPLACE FUNCTION rsql_get_outlier(x FLOAT8[]) RETURNS FLOAT8 AS '
 CREATE OR REPLACE FUNCTION rsql_remove_outlier(runtimes FLOAT8[], margin_of_error_runtime FLOAT8, avg_runtime FLOAT8) RETURNS FLOAT8[] AS $$
 BEGIN
 --IF rsql_contains_outlier(x) AND margin_of_error_runtime >= 0.02
-  IF rsql_contains_outlier(runtimes) AND margin_of_error_runtime / avg_runtime >= 0.025
+  IF rsql_contains_outlier(runtimes) AND margin_of_error_runtime / avg_runtime >= 0.025   !!!!ENDRE FRAGEN!!!
   THEN
     RETURN array_remove(runtimes, rsql_get_outlier(runtimes));
   ELSE

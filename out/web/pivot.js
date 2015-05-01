@@ -224,6 +224,7 @@
 											this.res[this.res.length] = cpy;
 										}
 									}
+									this.minAvg = avg_runtime[min_interval_index];
 								}
 								if (this.res.length > this.max) {
 									this.tooBig = this.res.length;
@@ -264,6 +265,7 @@
 								return r;
 							},
 							formatPlain : function(x) {
+								return this.minAvg;
 							},
 							numInputs : attr != null ? 0 : 1
 						};

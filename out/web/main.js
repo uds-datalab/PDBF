@@ -21,11 +21,11 @@ function buildContainerChartBig(json, containerOver, initial) {
 		json.chart = c3.generate(optionsBig);
 	};
 	var update = function() {
-		json.jsonBig.type.I.logScale = logScale.checked;
-		json.jsonBig.type.I.includeZero = includeZero.checked;
-		json.jsonBig.type.I.drawPoints = drawPoints.checked;
-		json.jsonBig.type.I.fillGraph = fillGraph.checked;
-		json.jsonBig.type.I.showRangeSelector = showRangeSelector.checked;
+		//json.jsonBig.type.I.logScale = logScale.checked;
+		//json.jsonBig.type.I.includeZero = includeZero.checked;
+		//json.jsonBig.type.I.drawPoints = drawPoints.checked;
+		//json.jsonBig.type.I.fillGraph = fillGraph.checked;
+		//json.jsonBig.type.I.showRangeSelector = showRangeSelector.checked;
 
 		var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor,
 				json.chartdataBig.values, containerContent);
@@ -35,7 +35,7 @@ function buildContainerChartBig(json, containerOver, initial) {
 	json.jsonBig = jQuery.extend(true, {}, json);
 	var chartdataCpy = getChartData(json);
 	json.resultBig = chartdataCpy.res;
-	var tip = "Tip: Click-and drag to zoom the graph. Shift + click-and drag to pan the graph.<br/>";
+	var tip = "Tip: Scroll to zoom the graph. Click and drag to pan the graph.<br/>";
 	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip,
 			[ json ], updateData, 'graph', true);
 	var containerContent = ref.containerContent;
@@ -57,7 +57,7 @@ function buildContainerChartBig(json, containerOver, initial) {
 		}
 	}
 
-	var logScale = getCheckbox('LogScale', containerOptions);
+	/*var logScale = getCheckbox('LogScale', containerOptions);
 	logScale.addEventListener('change', update);
 	logScale.checked = json.jsonBig.type.I.logScale;
 
@@ -75,7 +75,7 @@ function buildContainerChartBig(json, containerOver, initial) {
 
 	var showRangeSelector = getCheckbox('ShowRangeSelector', containerOptions);
 	showRangeSelector.addEventListener('change', update);
-	showRangeSelector.checked = json.jsonBig.type.I.showRangeSelector;
+	showRangeSelector.checked = json.jsonBig.type.I.showRangeSelector;*/
 
 	var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor,
 			chartdataCpy.values, containerContent);
@@ -1144,6 +1144,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr,
 			containerOver.removeChild(containerOver.firstChild);
 		}
 		switch (json.type.C) {
+		case "pdbf.common.MultiplotChart":
 		case "pdbf.common.Chart":
 			buildContainerChartBig(json, containerOver, true);
 			break;
