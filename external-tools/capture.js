@@ -15,6 +15,7 @@ page.onError = function (msg, trace) {
 
 page.open(system.args[1], function() {
 	var size = page.evaluate(function() {
+		document.body.bgColor = 'white';
 		return {w: outw, h: outh};
 	});
 	

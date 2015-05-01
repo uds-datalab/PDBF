@@ -25,13 +25,13 @@ public class HTML_Compiler {
 	    String viewer;
 	    String viewerHEAD = FileUtils.readFileToString(new File("out/web/templateHEADalasql.html"), Tools.utf8);
 	    String viewerTAIL = FileUtils.readFileToString(new File("out/web/templateTAILalasql.html"), Tools.utf8);
-	    String all = FileUtils.readFileToString(new File("out/web/all"), Tools.utf8);
+	    //String all = FileUtils.readFileToString(new File("out/web/all"), Tools.utf8);
 	    viewer = viewerHEAD + 
 		    "pdf_base64 = \"" + Tools.encodeFileToBase64Binary(new File(pdfname)) + "\";\r\n" + 
 		    "db_base64 = \"" + Tools.encodeFileToBase64Binary(new File("db.sql")) + "\";\r\n" + 
 		    "json_base64 = \"" + Tools.encodeFileToBase64Binary(new File("config.json")) + "\";\r\n" + 
 		    "dbjson_base64 = \"" + Tools.escapeQuotes(new File("db.json")) + "\";\r\n" +
-		    "\r\n" + all +		    
+		    //"\r\n" + all +		    
 		    viewerTAIL;
 	    String insert1 = "%<!DOCTYPE html><html dir=\"ltr\" mozdisallowselectionprint moznomarginboxes>" +
   		      	     "<head><meta charset=\"utf-8\"><!--\n";

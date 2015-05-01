@@ -191,7 +191,7 @@ function buildContainerPivot(container, json, zoomFactor, style, containerOver) 
 	var chart = document.createElement('div');
 	chart.setAttribute('style', 'width:100%; height:100%;');
 	container.appendChild(chart);
-	container.setAttribute('style', style);
+	container.setAttribute('style', style+"background: white;");
 
 	var r = getPivotTableData(json, false);
 	if (r.error != undefined) {
@@ -1619,8 +1619,11 @@ alasql.fn.WELCH_TEST = WELCH_TEST;
 function signaturePlot(valuesArr) {
 	var values = valuesArr[0]; // Call by reference
 	if (values.keys == undefined)
-		return;
+		return values;
 	var keys = values.keys.value;
+	if (values.finished) {
+		return values;
+	}
 	if (keys.length > 1) {
 		throw new Error("SignaturePlot does only support one attribute");
 	}
@@ -1679,7 +1682,7 @@ function signaturePlot(valuesArr) {
 	});
 
 	values.json = res;
-
+	values.finished = true;
 	return values;
 }
 

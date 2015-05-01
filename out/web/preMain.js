@@ -1,3 +1,20 @@
+$(function() {
+	var a = document.body.lastChild;
+	var b = $("#mozPrintCallback-shim").get(0);
+	while (a != b) {
+		$(a).remove();
+		a = document.body.lastChild;
+	}
+
+	var a = document.body.parentElement.lastChild;
+	var b = document.body;
+	while (a != b) {
+		$(a).remove();
+		a = document.body.parentElement.lastChild;
+	}
+	// Handler for .ready() called.
+});
+
 // Load the database
 tic();
 var tmp = UTF8ArrToStr(base64DecToArr(db_base64));
@@ -18,10 +35,8 @@ var init = true;
 function fixOverlaySize() {
 	var tmp = document.getElementsByClassName("centerhv");
 	for (var i = 0; i < tmp.length; ++i) {
-		tmp[i].style.left = ($(window).width() - $(tmp[i])
-				.outerWidth()) / 2;
-		tmp[i].style.top = ($(window).height() - 32 - $(tmp[i])
-				.outerHeight()) / 2 + 32;
+		tmp[i].style.left = ($(window).width() - $(tmp[i]).outerWidth()) / 2;
+		tmp[i].style.top = ($(window).height() - 32 - $(tmp[i]).outerHeight()) / 2 + 32;
 	}
 }
 
@@ -81,21 +96,18 @@ function getCheckbox(labelname, containerControl) {
 	return checkbox;
 }
 
-//function alert(e) {
-//	var a;
-//}
+// function alert(e) {
+// var a;
+// }
 
 function display(json, page) {
-	var zoomFactor = PDFViewerApplication.pdfViewer._currentScale
-			* json.type.I.zoom;
+	var zoomFactor = PDFViewerApplication.pdfViewer._currentScale * json.type.I.zoom;
 	tic();
 	var container = document.createElement('div');
 	container.id = json.name;
 	container.className = "overlay";
-	var style = "z-index: 8; position: absolute; width:"
-			+ (json.type.I.x2 - json.type.I.x1) * 100 + "%; height:"
-			+ (json.type.I.y1 - json.type.I.y2) * 100 + "%; left:"
-			+ json.type.I.x1 * 100 + "%; bottom:" + json.type.I.y2 * 100 + "%;";
+	var style = "z-index: 8; position: absolute; width:" + (json.type.I.x2 - json.type.I.x1 + 0.001) * 100 + "%; height:" + (json.type.I.y1 - json.type.I.y2 + 0.001)
+			* 100 + "%; left:" + json.type.I.x1 * 100 + "%; bottom:" + (json.type.I.y2 - 0.001) * 100 + "%;";
 	page.appendChild(container);
 
 	switch (json.type.C) {
@@ -109,21 +121,19 @@ function display(json, page) {
 							'position:fixed; z-index:9; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;');
 			containerOver.id = json.name + "Big";
 			containerOver.className = "centerhv";
-			//TODO: maybe handle this different
+			// TODO: maybe handle this different
 			var jsonCpy = jQuery.extend(true, {}, json);
 			var xValues;
 			try {
 				xValues = JSON.parse(json.type.I.xValues);
 			} catch (e) {
-				alert("Parsing of xValues for " + json.name + " failed!\nError: "
-						+ e.message + "\nValue: " + json.type.I.xValues);
+				alert("Parsing of xValues for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.xValues);
 			}
 			var yValues;
 			try {
 				yValues = JSON.parse(json.type.I.yValues);
 			} catch (e) {
-				alert("Parsing of yValues for " + json.name + " failed!\nError: "
-						+ e.message + "\nValue: " + json.type.I.yValues);
+				alert("Parsing of yValues for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.yValues);
 			}
 
 			var cellquery = json.type.I.query;
@@ -141,7 +151,7 @@ function display(json, page) {
 		} else {
 			containerOver.update();
 		}
-		
+
 		var fullscreen = getFullscreenDiv();
 		container.appendChild(fullscreen);
 		fullscreen.addEventListener("click", function() {
@@ -165,7 +175,7 @@ function display(json, page) {
 		} else {
 			containerOver.update();
 		}
-		
+
 		var fullscreen = getFullscreenDiv();
 		container.appendChild(fullscreen);
 		fullscreen.addEventListener("click", function() {
@@ -210,7 +220,7 @@ function display(json, page) {
 		} else {
 			containerOver.update();
 		}
-		
+
 		var fullscreen = getFullscreenDiv();
 		container.appendChild(fullscreen);
 		fullscreen.addEventListener("click", function() {

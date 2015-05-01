@@ -2,8 +2,9 @@ table.innerTable {
     border-collapse: collapse;
 }
 table.innerTable td, table.innerTable th {
-    border: 1px solid #CDCDCD;
+    border: 0.1em solid #CDCDCD;
     padding: 0.1em;
+    line-height: 1.0;
 }
 table.innerTable tr:first-child td {
     border-top: 0;
@@ -54,7 +55,8 @@ table {
 }
 table.pvtTable tr th, table.pvtTable tr th {
     background-color: #e6EEEE;
-    border: 1px solid #CDCDCD;
+    border: 0.1em solid #CDCDCD;
+    line-height: 1.0;
 }
 
 table.pvtTable .pvtColLabel {text-align: center;}
@@ -62,15 +64,16 @@ table.pvtTable .pvtTotalLabel {text-align: right;}
 
 table.pvtTable tr td {
     color: #3D3D3D;
-    border: 1px solid #CDCDCD;
+    border: 0.1em solid #CDCDCD;
     text-align: left;
+    line-height: 1.0;
 }
 
 .pvtVals { text-align: center;}
 .pvtAggregator { margin-bottom: 5px ;}
 
 .pvtAxisContainer, .pvtVals {
-    border: 1px solid gray;
+    border: 0.1em solid gray;
     background: #EEE;
     padding: 5px;
     min-width: 20px;
