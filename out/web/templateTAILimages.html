@@ -1,116 +1,29 @@
-﻿	</script>
-	<link rel="stylesheet" href="pivot.css"/>
-	<link rel="stylesheet" href="codemirror.css"/>
-	<link rel="stylesheet" href="jquery.dataTables.css"/>
-	<link rel="stylesheet" href="c3.css"/>
-	
-	<script src="base64.js"></script>
-	<script src="d3.js"></script>
-	<script src="alasql.js"></script>
-	<script src="codemirror-compressed.js"></script>
-	<script src="c3.js"></script>
-	<script src="excanvas.compiled.js"></script>
-	<script src="diff_match_patch.js"></script>
-	<script src="jquery-1.11.2.min.js"></script>
-	<script src="pivot.js"></script>
-	<script src="jquery-ui-1.9.2.custom.min.js"></script>
-	<script src="jquery.dataTables.js"></script>
-    <script src="main.js"></script>
-    <script src="jstat.js"></script>
-    <script>
-    //redirect alerts to console
-    function alert(e) {
-    	throw new Error(e);
-    }
-    </script>
-	
-  </head>
-
-  <body style="width:100%; height:100%; margin:0px; background-color: white;">
-
-<script>
-//Load dim.json
-var json;
-json = JSON.parse(UTF8ArrToStr(base64DecToArr(dim_base64)));
-tmpw = json.width / 655 / 60;
-tmph = json.height / 655 / 60;
-
-function replaceAll(str, s, r) {
-	return str.split(s).join(r);
-}
-	
-//Load the database
-var tmp = UTF8ArrToStr(base64DecToArr(db_base64));
-var tmp2 = dbjson_base64;
-
-if (tmp2 != "") {
-	alasql.databases = JSON.parse(tmp2);
-}
-
-if (tmp != "") {
-	alasql(tmp);
-}
-
-//Load config.json
-json = JSON.parse(UTF8ArrToStr(base64DecToArr(json_base64)));
-var width = (json.type.I.x2 - json.type.I.x1);
-var height = (json.type.I.y1 - json.type.I.y2);
-outw = tmpw*width;
-outh = tmph*height;
-
-$(document.body).css('width', outw);
-$(document.body).css('height', outh);
-
-var pageOverlays = [];
-parse(json);
-function isValidDate(d) {
-  if ( Object.prototype.toString.call(d) !== "[object Date]" )
-    return false;
-  return !isNaN(d.getTime());
-}
-function parse(json) {
-	page = 0;
-	pageOverlay = pageOverlays[page];
-	if (typeof pageOverlay == 'undefined') {
-		pageOverlay = [];
-		pageOverlays[page] = pageOverlay;
-	}
-	pageOverlay[pageOverlay.length] = json;
-}
-
-var zoomFactor = json.type.I.zoom * 1.30 * json.type.I.quality;
-var rawZoomFactor = json.type.I.zoom * 1.30 * json.type.I.quality;
-
-function display(json, page) {
-	var containerOver;
-	var container = document.createElement('div');
-	container.id = json.name;
-	var style = "width:100%; height:100%;";
-	page.appendChild(container);
-	switch(json.type.C) {
- 		case "pdbf.common.MultiplotChart":
-			buildContainerMultiplotChart(container, json, zoomFactor, style, containerOver);
-			break;
-		case "pdbf.common.Chart":
-			buildContainerChart(container, json, zoomFactor, style, containerOver);
-			break;
-		case "pdbf.common.Pivot":
-			buildContainerPivot(container, json, zoomFactor, style, containerOver);
-			break;
-		default:
-			alert("Unknown: " + json.type.C);
-			break;
-	}
-}
-
-function overlay() {
-	document.body.innerHTML = '';
-  	var pageNr = 0;
-	for (var i = 0; i < pageOverlays[pageNr].length; ++i) {
-		display(pageOverlays[pageNr][i], document.body)
-	}
-}
+﻿
 </script>
+<link rel="stylesheet" href="viewer.css"/>
+<link rel="stylesheet" href="pivot.css"/>
+<link rel="stylesheet" href="codemirror.css"/>
+<link rel="stylesheet" href="jquery.dataTables.css"/>
+<link rel="stylesheet" href="c3.css"/>
 
-  </body>
+<script src="base64.js"></script>
+<script src="d3.js"></script>
+<script src="alasql.js"></script>
+<script src="codemirror-compressed.js"></script>
+<script src="c3.js"></script>
+<script src="excanvas.compiled.js"></script>
+<script src="diff_match_patch.js"></script>
+<script src="jquery-1.11.2.min.js"></script>
+<script src="pivot.js"></script>
+<script src="jquery-ui-1.9.2.custom.min.js"></script>
+<script src="jquery.dataTables.js"></script>
+<script src="main.js"></script>
+<script src="jstat.js"></script>
+
+<script src="imagesJS.js"></script>
+
+</head>
+
+<body style="width: 100%; height: 100%; margin: 0px; background-color: white;">
+</body>
 </html>
