@@ -1,5 +1,170 @@
 'use strict';
 
+function fixOverlaySize() {
+	var tmp = document.getElementsByClassName("centerhv");
+	for (var i = 0; i < tmp.length; ++i) {
+		tmp[i].style.left = ($(window).width() - $(tmp[i]).outerWidth()) / 2;
+		tmp[i].style.top = ($(window).height() - 32 - $(tmp[i]).outerHeight()) / 2 + 32;
+	}
+}
+
+//Performance measurement functions
+var tictime;
+if (!window.performance || !performance.now) {
+	window.performance = {
+		now : Date.now
+	}
+}
+function tic() {/* tictime = performance.now() */
+}
+function toc(msg) {
+	// var dt = performance.now()-tictime;
+	// console.log((msg||'toc') + ": " + dt + "ms");
+}
+
+function replaceAll(str, s, r) {
+	return str.split(s).join(r);
+}
+
+function isValidDate(d) {
+	if (Object.prototype.toString.call(d) !== "[object Date]")
+		return false;
+	return !isNaN(d.getTime());
+}
+
+function getCheckbox(labelname, containerControl) {
+	var label = document.createElement('label');
+	var span = document.createElement('span');
+	span.innerHTML = ' ' + labelname + '<br />';
+	var checkbox = document.createElement('input');
+	checkbox.setAttribute('style', 'position:relative; top:2px;');
+	label.appendChild(checkbox);
+	label.appendChild(span);
+	checkbox.type = 'checkbox';
+	containerControl.appendChild(label);
+	return checkbox;
+}
+
+function display(json, page, showFullscreenButton) {
+	if (window.PDFViewerApplication != undefined) {
+		var zoomFactor = PDFViewerApplication.pdfViewer._currentScale * json.type.I.zoom;
+	}
+	
+	tic();
+	var container = document.createElement('div');
+	container.id = json.name;
+	container.className = "overlay";
+	var style = "z-index: 8; position: absolute; width:" + (json.type.I.x2 - json.type.I.x1 + 0.001) * 100 + "%; height:"
+			+ (json.type.I.y1 - json.type.I.y2 + 0.001) * 100 + "%; left:" + json.type.I.x1 * 100 + "%; bottom:" + (json.type.I.y2 - 0.001) * 100 + "%;";
+	page.appendChild(container);
+
+	switch (json.type.C) {
+	case "pdbf.common.MultiplotChart":
+		var containerOver = document.getElementById(json.name + "Big");
+		if (containerOver == null) {
+			var containerOver = document.createElement('div');
+			containerOver
+					.setAttribute(
+							'style',
+							'position:fixed; z-index:9; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;');
+			containerOver.id = json.name + "Big";
+			containerOver.className = "centerhv";
+			buildContainerMultiplotChartBig(json, containerOver, true);
+		} else {
+			containerOver.update();
+		}
+
+		if (showFullscreenButton) {
+			var fullscreen = getFullscreenDiv();
+			container.appendChild(fullscreen);
+			fullscreen.addEventListener("click", function() {
+				containerOver.style.visibility = 'visible';
+				containerOver.style.opacity = 1;
+			});
+		}
+		container.setAttribute('style', style);
+		buildContainerMultiplotChart(container, json, zoomFactor, style, containerOver);
+		break;
+	case "pdbf.common.Chart":
+		var containerOver = document.getElementById(json.name + "Big");
+		if (containerOver == null) {
+			var containerOver = document.createElement('div');
+			containerOver
+					.setAttribute(
+							'style',
+							'position:fixed; z-index:9; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;');
+			containerOver.id = json.name + "Big";
+			containerOver.className = "centerhv";
+			buildContainerChartBig(json, containerOver, true);
+		} else {
+			containerOver.update();
+		}
+
+		if (showFullscreenButton) {
+			var fullscreen = getFullscreenDiv();
+			container.appendChild(fullscreen);
+			fullscreen.addEventListener("click", function() {
+				containerOver.style.visibility = 'visible';
+				containerOver.style.opacity = 1;
+			});
+		}
+		container.setAttribute('style', style);
+		buildContainerChart(container, json, zoomFactor, style, containerOver);
+		break;
+	case "pdbf.common.Text":
+		var containerOver = document.getElementById(json.name + "Big");
+		if (containerOver == null) {
+			var containerOver = document.createElement('div');
+			containerOver
+					.setAttribute(
+							'style',
+							'position:fixed; z-index:9; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;');
+			containerOver.id = json.name + "Big";
+			containerOver.className = "centerhv";
+			buildContainerTableBig(json, containerOver);
+		} else {
+			containerOver.update();
+		}
+		container.addEventListener("click", function() {
+			containerOver.style.visibility = 'visible';
+			containerOver.style.opacity = 1;
+		});
+		style += 'cursor: pointer;';
+		container.setAttribute('style', style);
+		break;
+	case "pdbf.common.Pivot":
+		var containerOver = document.getElementById(json.name + "Big");
+		if (containerOver == null) {
+			var containerOver = document.createElement('div');
+			containerOver
+					.setAttribute(
+							'style',
+							'position:fixed; z-index:9; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;');
+			containerOver.id = json.name + "Big";
+			containerOver.className = "centerhv";
+			buildContainerPivotBig(json, containerOver, true);
+		} else {
+			containerOver.update();
+		}
+
+		if (showFullscreenButton) {
+			var fullscreen = getFullscreenDiv();
+			container.appendChild(fullscreen);
+			fullscreen.addEventListener("click", function() {
+				containerOver.style.visibility = 'visible';
+				containerOver.style.opacity = 1;
+			});
+		}
+		container.setAttribute('style', style);
+		buildContainerPivot(container, json, zoomFactor, style, containerOver);
+		break;
+	default:
+		alert("Unknown: " + json.type.C);
+		break;
+	}
+	toc("Display time for " + json.name);
+}
+
 function buildContainerChartBig(json, containerOver, initial) {
 	var basetextsize = 8;
 
@@ -16,19 +181,17 @@ function buildContainerChartBig(json, containerOver, initial) {
 			error.innerHTML = 'Query status: OK';
 			containerOptions.style.visibility = 'visible';
 		}
-		var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor,
-				json.chartdataBig.values, containerContent);
+		var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor, json.chartdataBig.values, containerContent);
 		json.chart = c3.generate(optionsBig);
 	};
 	var update = function() {
-		//json.jsonBig.type.I.logScale = logScale.checked;
-		//json.jsonBig.type.I.includeZero = includeZero.checked;
-		//json.jsonBig.type.I.drawPoints = drawPoints.checked;
-		//json.jsonBig.type.I.fillGraph = fillGraph.checked;
-		//json.jsonBig.type.I.showRangeSelector = showRangeSelector.checked;
+		// json.jsonBig.type.I.logScale = logScale.checked;
+		// json.jsonBig.type.I.includeZero = includeZero.checked;
+		// json.jsonBig.type.I.drawPoints = drawPoints.checked;
+		// json.jsonBig.type.I.fillGraph = fillGraph.checked;
+		// json.jsonBig.type.I.showRangeSelector = showRangeSelector.checked;
 
-		var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor,
-				json.chartdataBig.values, containerContent);
+		var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor, json.chartdataBig.values, containerContent);
 		json.chart = c3.generate(optionsBig);
 	};
 
@@ -36,8 +199,7 @@ function buildContainerChartBig(json, containerOver, initial) {
 	var chartdataCpy = getChartData(json);
 	json.resultBig = chartdataCpy.res;
 	var tip = "Tip: Scroll to zoom the graph. Click and drag to pan the graph.<br/>";
-	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip,
-			[ json ], updateData, 'graph', true);
+	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip, [ json ], updateData, 'graph', true);
 	var containerContent = ref.containerContent;
 	var containerControl = ref.containerControl;
 	var containerOptions = ref.options;
@@ -57,28 +219,29 @@ function buildContainerChartBig(json, containerOver, initial) {
 		}
 	}
 
-	/*var logScale = getCheckbox('LogScale', containerOptions);
-	logScale.addEventListener('change', update);
-	logScale.checked = json.jsonBig.type.I.logScale;
+	/*
+	 * var logScale = getCheckbox('LogScale', containerOptions);
+	 * logScale.addEventListener('change', update); logScale.checked =
+	 * json.jsonBig.type.I.logScale;
+	 * 
+	 * var includeZero = getCheckbox('IncludeZero', containerOptions);
+	 * includeZero.addEventListener('change', update); includeZero.checked =
+	 * json.jsonBig.type.I.includeZero;
+	 * 
+	 * var drawPoints = getCheckbox('DrawPoints', containerOptions);
+	 * drawPoints.addEventListener('change', update); drawPoints.checked =
+	 * json.jsonBig.type.I.drawPoints;
+	 * 
+	 * var fillGraph = getCheckbox('FillGraph', containerOptions);
+	 * fillGraph.addEventListener('change', update); fillGraph.checked =
+	 * json.jsonBig.type.I.fillGraph;
+	 * 
+	 * var showRangeSelector = getCheckbox('ShowRangeSelector',
+	 * containerOptions); showRangeSelector.addEventListener('change', update);
+	 * showRangeSelector.checked = json.jsonBig.type.I.showRangeSelector;
+	 */
 
-	var includeZero = getCheckbox('IncludeZero', containerOptions);
-	includeZero.addEventListener('change', update);
-	includeZero.checked = json.jsonBig.type.I.includeZero;
-
-	var drawPoints = getCheckbox('DrawPoints', containerOptions);
-	drawPoints.addEventListener('change', update);
-	drawPoints.checked = json.jsonBig.type.I.drawPoints;
-
-	var fillGraph = getCheckbox('FillGraph', containerOptions);
-	fillGraph.addEventListener('change', update);
-	fillGraph.checked = json.jsonBig.type.I.fillGraph;
-
-	var showRangeSelector = getCheckbox('ShowRangeSelector', containerOptions);
-	showRangeSelector.addEventListener('change', update);
-	showRangeSelector.checked = json.jsonBig.type.I.showRangeSelector;*/
-
-	var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor,
-			chartdataCpy.values, containerContent);
+	var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor, chartdataCpy.values, containerContent);
 
 	json.chart = c3.generate(optionsBig);
 	json.chartdataBig = chartdataCpy;
@@ -86,11 +249,9 @@ function buildContainerChartBig(json, containerOver, initial) {
 	containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
 
 	containerOver.update = function() {
-		var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor,
-				json.chartdataBig.values, containerContent);
+		var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor, json.chartdataBig.values, containerContent);
 		json.chart = c3.generate(optionsBig);
-		containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize
-				+ 'pt';
+		containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
 	}
 }
 
@@ -99,15 +260,18 @@ function buildContainerChart(container, json, zoomFactor, style, containerOver) 
 	chart.setAttribute('style', 'width:100%; height:100%;');
 	container.appendChild(chart);
 
-	var chartdata = getChartData(json);
-	if (chartdata.error != undefined) {
-		alert(chartdata.error + '\nWhere: ' + json.name + '\nQuery was: '
-				+ json.type.I.query);
-		return;
+	var chartdata;
+	if (json.result == undefined) {
+		chartdata = getChartData(json);
+		if (chartdata.error != undefined) {
+			alert(chartdata.error + '\nWhere: ' + json.name + '\nQuery was: ' + json.type.I.query);
+			return;
+		}
+	} else {
+		chartdata = json.result;
 	}
 
-	style = "background: white; font-size: " + (zoomFactor * 10) + "pt; "
-			+ style;
+	style = "background: white; font-size: " + (zoomFactor * 10) + "pt; " + style;
 	container.setAttribute('style', style);
 
 	var options = getChartOptions(json, zoomFactor, chartdata.values, chart);
@@ -141,8 +305,7 @@ function buildContainerPivotBig(json, containerOver, initial) {
 	};
 
 	var tip = "Tip: Drag and drop attributes to the row/column area. <br/>Move the cursor over the result cells to see more detailed results for min and max aggregator.<br/>";
-	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip,
-			[ json ], updateData, 'pivot table', false);
+	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip, [ json ], updateData, 'pivot table', false);
 	var containerContent = ref.containerContent;
 	var containerControl = ref.containerControl;
 	var containerOptions = ref.options;
@@ -175,15 +338,14 @@ function buildContainerPivotBig(json, containerOver, initial) {
 		rows : r.rows,
 		cols : r.cols,
 		aggregator : aggr,
-		vals: [aggrAtt],
-		aggregatorName: aggrName
+		vals : [ aggrAtt ],
+		aggregatorName : aggrName
 	});
 
 	containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
 
 	containerOver.update = function() {
-		containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize
-				+ 'pt';
+		containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
 	}
 }
 
@@ -191,12 +353,18 @@ function buildContainerPivot(container, json, zoomFactor, style, containerOver) 
 	var chart = document.createElement('div');
 	chart.setAttribute('style', 'width:100%; height:100%;');
 	container.appendChild(chart);
-	container.setAttribute('style', style+"background: white;");
+	container.setAttribute('style', style + "background: white;");
 
-	var r = getPivotTableData(json, false);
-	if (r.error != undefined) {
-		alert(r.error);
-		return;
+	var r;
+	if (json.result == undefined) {
+		r = getPivotTableData(json, false);
+		if (r.error != undefined) {
+			alert(r.error);
+			return;
+		}
+		json.result = r;
+	} else {
+		r = json.result;
 	}
 
 	var aggr = r.aggr;
@@ -204,8 +372,7 @@ function buildContainerPivot(container, json, zoomFactor, style, containerOver) 
 	var aggrAtt = r.aggrAttribute;
 	var unused = [];
 	for (key in r.res[0]) {
-		if (aggrAtt != key && $.inArray(key, r.rows) == -1
-				&& $.inArray(key, r.cols) == -1) {
+		if (aggrAtt != key && $.inArray(key, r.rows) == -1 && $.inArray(key, r.cols) == -1) {
 			unused[unused.length] = key;
 		}
 	}
@@ -215,8 +382,7 @@ function buildContainerPivot(container, json, zoomFactor, style, containerOver) 
 		aggregator : aggr,
 		unused : unused
 	});
-	container.getElementsByClassName("pvtTable")[0].setAttribute('style',
-			'width: 100%; height: 100%; font-size: ' + zoomFactor * 12 + 'pt;');
+	container.getElementsByClassName("pvtTable")[0].setAttribute('style', 'width: 100%; height: 100%; font-size: ' + zoomFactor * 12 + 'pt;');
 }
 
 function buildContainerTableBig(json, containerOver) {
@@ -257,8 +423,7 @@ function buildContainerTableBig(json, containerOver) {
 	}
 
 	var tip = 'Tip: Click on the attributes to change the sorting.';
-	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip,
-			[ json ], update, 'table', false);
+	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip, [ json ], update, 'table', false);
 	var containerContent = ref.containerContent;
 	var containerOptions = ref.options;
 	var error = ref.error;
@@ -267,8 +432,7 @@ function buildContainerTableBig(json, containerOver) {
 	getTableFromResults(results, containerContent);
 
 	containerOver.update = function() {
-		containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize
-				+ 'pt';
+		containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
 	}
 }
 
@@ -282,19 +446,14 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 		td.appendChild(div);
 		if (typeof cur == 'string' || cur instanceof String) {
 			td.setAttribute('rowspan', 1);
-			div.innerHTML = "<div class=\"vertical-text__innerL\">" + cur
-					+ "</div>";
+			div.innerHTML = "<div class=\"vertical-text__innerL\">" + cur + "</div>";
 			ret = 1;
 		} else {
 			if (cur.c == undefined || cur.text == undefined) {
-				alert("leftArr of "
-						+ json.name
-						+ " has wrong format!\nShould be: [{text: \"...\", c:somenumber}, ...]\nBut it was: "
-						+ JSON.stringify(topArr));
+				alert("leftArr of " + json.name + " has wrong format!\nShould be: [{text: \"...\", c:somenumber}, ...]\nBut it was: " + JSON.stringify(topArr));
 			}
 			td.setAttribute('rowspan', cur.c);
-			div.innerHTML = "<div class=\"vertical-text__innerL\">" + cur.text
-					+ "</div>";
+			div.innerHTML = "<div class=\"vertical-text__innerL\">" + cur.text + "</div>";
 			ret = cur.c;
 		}
 		return ret;
@@ -308,19 +467,14 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 		td.appendChild(div);
 		if (typeof cur == 'string' || cur instanceof String) {
 			td.setAttribute('rowspan', 1);
-			div.innerHTML = "<div class=\"vertical-text__innerR\">" + cur
-					+ "</div>";
+			div.innerHTML = "<div class=\"vertical-text__innerR\">" + cur + "</div>";
 			ret = 1;
 		} else {
 			if (cur.c == undefined || cur.text == undefined) {
-				alert("rightArr of "
-						+ json.name
-						+ " has wrong format!\nShould be: [{text: \"...\", c:somenumber}, ...]\nBut it was: "
-						+ JSON.stringify(topArr));
+				alert("rightArr of " + json.name + " has wrong format!\nShould be: [{text: \"...\", c:somenumber}, ...]\nBut it was: " + JSON.stringify(topArr));
 			}
 			td.setAttribute('rowspan', cur.c);
-			div.innerHTML = "<div class=\"vertical-text__innerR\">" + cur.text
-					+ "</div>";
+			div.innerHTML = "<div class=\"vertical-text__innerR\">" + cur.text + "</div>";
 			ret = cur.c;
 		}
 		return ret;
@@ -334,10 +488,7 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 			ret = 1;
 		} else {
 			if (cur.c == undefined || cur.text == undefined) {
-				alert("topArr of "
-						+ json.name
-						+ " has wrong format!\nShould be: [{text: \"...\", c:somenumber}, ...]\nBut it was: "
-						+ JSON.stringify(topArr));
+				alert("topArr of " + json.name + " has wrong format!\nShould be: [{text: \"...\", c:somenumber}, ...]\nBut it was: " + JSON.stringify(topArr));
 			}
 			td.setAttribute('colspan', cur.c);
 			td.innerHTML = cur.text;
@@ -355,9 +506,7 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 			ret = 1;
 		} else {
 			if (cur.c == undefined || cur.text == undefined) {
-				alert("bottomArr of "
-						+ json.name
-						+ " has wrong format!\nShould be: [{text: \"...\", c:somenumber}, ...]\nBut it was: "
+				alert("bottomArr of " + json.name + " has wrong format!\nShould be: [{text: \"...\", c:somenumber}, ...]\nBut it was: "
 						+ JSON.stringify(topArr));
 			}
 			td.setAttribute('colspan', cur.c);
@@ -379,48 +528,42 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 	try {
 		leftArr = JSON.parse(json.type.I.leftArr);
 	} catch (e) {
-		alert("Parsing of leftArr for " + json.name + " failed!\nError: "
-				+ e.message + "\nValue: " + json.type.I.leftArr);
+		alert("Parsing of leftArr for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.leftArr);
 	}
 
 	var rightArr;
 	try {
 		rightArr = JSON.parse(json.type.I.rightArr);
 	} catch (e) {
-		alert("Parsing of rightArr for " + json.name + " failed!\nError: "
-				+ e.message + "\nValue: " + json.type.I.rightArr);
+		alert("Parsing of rightArr for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.rightArr);
 	}
 
 	var topArr;
 	try {
 		topArr = JSON.parse(json.type.I.topArr);
 	} catch (e) {
-		alert("Parsing of topArr for " + json.name + " failed!\nError: "
-				+ e.message + "\nValue: " + json.type.I.topArr);
+		alert("Parsing of topArr for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.topArr);
 	}
 
 	var bottomArr;
 	try {
 		bottomArr = JSON.parse(json.type.I.bottomArr);
 	} catch (e) {
-		alert("Parsing of bottomArr for " + json.name + " failed!\nError: "
-				+ e.message + "\nValue: " + json.type.I.bottomArr);
+		alert("Parsing of bottomArr for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.bottomArr);
 	}
 
 	var xValues;
 	try {
 		xValues = JSON.parse(json.type.I.xValues);
 	} catch (e) {
-		alert("Parsing of xValues for " + json.name + " failed!\nError: "
-				+ e.message + "\nValue: " + json.type.I.xValues);
+		alert("Parsing of xValues for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.xValues);
 	}
 
 	var yValues;
 	try {
 		yValues = JSON.parse(json.type.I.yValues);
 	} catch (e) {
-		alert("Parsing of yValues for " + json.name + " failed!\nError: "
-				+ e.message + "\nValue: " + json.type.I.yValues);
+		alert("Parsing of yValues for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.yValues);
 	}
 
 	var queryBackup = json.type.I.query;
@@ -429,17 +572,14 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 	var forceYequal = json.type.I.forceYequal;
 
 	if (xValues.length != xCount) {
-		alert("Length of xValues array does not match xCount!\nxValues has length "
-				+ xCount.length + " but xCount is " + xCount);
+		alert("Length of xValues array does not match xCount!\nxValues has length " + xCount.length + " but xCount is " + xCount);
 	}
 	if (yValues.length != yCount) {
-		alert("Length of yValues array does not match yCount!\nyValues has length "
-				+ yCount.length + " but yCount is " + yCount);
+		alert("Length of yValues array does not match yCount!\nyValues has length " + yCount.length + " but yCount is " + yCount);
 	}
 
 	if (((queryBackup.match(/\?/g) || []).length) != 2) {
-		alert("Query for multiplot must contain exactly 2 occurrences of \"?\"\nQuery was: "
-				+ queryBackup);
+		alert("Query for multiplot must contain exactly 2 occurrences of \"?\"\nQuery was: " + queryBackup);
 	}
 
 	if (leftArr.length == 0) {
@@ -483,13 +623,8 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 	var legend = options.legend.show ? fontbasesize * zoomFactor * 1.6 : 0;
 	var inner = document.createElement('table');
 	var charts = [];
-	inner
-			.setAttribute(
-					'style',
-					'height: 100%; width: 100%; border-collapse: collapse; text-align:center; font-size: '
-							+ fontbasesize
-							* zoomFactor
-							+ 'px; font-weight: bold;');
+	inner.setAttribute('style', 'height: 100%; width: 100%; border-collapse: collapse; text-align:center; font-size: ' + fontbasesize * zoomFactor
+			+ 'px; font-weight: bold;');
 	overlay.appendChild(inner);
 	inner.className = 'multiplot';
 
@@ -541,7 +676,7 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 	var pl = chart.pl();
 	var pb = chart.pb();
 	overlay.removeChild(div);
-	
+
 	var div = document.createElement('div');
 	div.setAttribute('style', style);
 	overlay.appendChild(div);
@@ -556,20 +691,32 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 	json.type.I.query = cellquery;
 	defaultChartOptions.noyticks = false;
 	defaultChartOptions.noxticks = false;
-	var chartdata = getChartData(json);
-	if (chartdata.error != undefined) {
-		alert(json.name + " has error:\n" + chartdata.error);
+
+	var chartdata;
+	if (json.result == undefined) {
+		json.result = [];
 	}
+
+	if (json.result[0] == undefined) {
+		chartdata = getChartData(json);
+		if (chartdata.error != undefined) {
+			alert(json.name + " has error:\n" + chartdata.error);
+		}
+		json.result[0] = chartdata;
+	} else {
+		chartdata = json.result[0];
+	}
+
 	var options = getChartOptions(json, zoomFactor, chartdata.values, div);
 	delete options.axis.y.label;
 	delete options.axis.x.label;
 	options.legend.show = false;
 	var chart = c3.generate(options);
-	var pl = chart.pl()-pl;
-	var pb = chart.pb()-pb;
+	var pl = chart.pl() - pl;
+	var pb = chart.pb() - pb;
 	overlay.removeChild(div);
-	///////////////////////////////
-	
+	// /////////////////////////////
+
 	var h = Math.floor((overlayheight - top - bottom - legend - pb - 1) / yCount);
 	var w = Math.floor((overlaywidth - left - right - pl - 1) / xCount);
 
@@ -604,7 +751,7 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 			var td = document.createElement('td');
 			tr.appendChild(td);
 			nextLeft += getLeft(cur, json, td);
-			if (y == yCount-1) {
+			if (y == yCount - 1) {
 				$(td).css("padding-bottom", pb);
 			}
 		}
@@ -629,24 +776,29 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 				var style = 'width: ' + w + 'px;';
 			} else {
 				defaultChartOptions.noyticks = false;
-				var style = 'width: ' + (w+pl) + 'px;';
+				var style = 'width: ' + (w + pl) + 'px;';
 			}
 			if (y % yCount != yCount - 1) {
 				defaultChartOptions.noxticks = true;
 				style += 'height: ' + h + 'px;';
 			} else {
 				defaultChartOptions.noxticks = false;
-				style += 'height: ' + (h+pb) + 'px;';
+				style += 'height: ' + (h + pb) + 'px;';
 			}
 			cellInner.setAttribute('style', style);
 			td.setAttribute('style', style);
 
-			var chartdata = getChartData(json);
-			if (chartdata.error != undefined) {
-				alert(json.name + " has error:\n" + chartdata.error);
+			var chartdata;
+			if (json.result[x + y * yCount] == undefined) {
+				chartdata = getChartData(json);
+				if (chartdata.error != undefined) {
+					alert(json.name + " has error:\n" + chartdata.error);
+				}
+				json.result[x + y * yCount] = chartdata;
+			} else {
+				chartdata = json.result[x + y * yCount];
 			}
-			var options = getChartOptions(json, zoomFactor, chartdata.values,
-					cellInner);
+			var options = getChartOptions(json, zoomFactor, chartdata.values, cellInner);
 
 			if (forceYequal) {
 				if (x != 0) {
@@ -706,7 +858,7 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 			var td = document.createElement('td');
 			tr.appendChild(td);
 			nextRight += getRight(cur, json, td);
-			if (y == yCount-1) {
+			if (y == yCount - 1) {
 				$(td).css("padding-bottom", pb);
 			}
 		}
@@ -743,33 +895,27 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 		td.setAttribute('style', 'height: 1.5em; width: ' + w + 'px;');
 		td.setAttribute('colspan', cur.c);
 
-		d3.select(td).insert('div', '.chart').attr('class', 'legend')
-				.selectAll('span').data(legendItems).enter().append('span')
-				.attr('data-id', function(id) {
-					return id;
-				}).html(
-						function(id) {
-							return "<span style='width:" + (11 * zoomFactor)
-									+ "px; height:" + (11 * zoomFactor)
-									+ "px; background-color: " + colors[id]
-									+ "; margin-right:" + (5 * zoomFactor)
-									+ "px; margin-left:" + (10 * zoomFactor)
-									+ "px;'></span>" + id;
-						}).on('mouseover', function(id) {
-					charts.forEach(function(c, i, a) {
-						c.focus(id);
-					});
-				}).on('mouseout', function(id) {
-					charts.forEach(function(c, i, a) {
-						legendItems.forEach(function(c2, i2, a2) {
-							c.revert(c2);
-						});
-					});
-				}).on('click', function(id) {
-					charts.forEach(function(c, i, a) {
-						c.toggle(id);
-					});
+		d3.select(td).insert('div', '.chart').attr('class', 'legend').selectAll('span').data(legendItems).enter().append('span').attr('data-id', function(id) {
+			return id;
+		}).html(
+				function(id) {
+					return "<span style='width:" + (11 * zoomFactor) + "px; height:" + (11 * zoomFactor) + "px; background-color: " + colors[id]
+							+ "; margin-right:" + (5 * zoomFactor) + "px; margin-left:" + (10 * zoomFactor) + "px;'></span>" + id;
+				}).on('mouseover', function(id) {
+			charts.forEach(function(c, i, a) {
+				c.focus(id);
+			});
+		}).on('mouseout', function(id) {
+			charts.forEach(function(c, i, a) {
+				legendItems.forEach(function(c2, i2, a2) {
+					c.revert(c2);
 				});
+			});
+		}).on('click', function(id) {
+			charts.forEach(function(c, i, a) {
+				c.toggle(id);
+			});
+		});
 
 		if (right != 0) {
 			var td = document.createElement('td');
@@ -780,6 +926,36 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 	json.type.I.query = queryBackup;
 	defaultChartOptions.noxticks = false;
 	defaultChartOptions.noyticks = false;
+}
+
+function buildContainerMultiplotChartBig(json, containerOver, initial) {
+	// TODO: maybe handle this different
+	var jsonCpy = jQuery.extend(true, {}, json);
+	var xValues;
+	try {
+		xValues = JSON.parse(json.type.I.xValues);
+	} catch (e) {
+		alert("Parsing of xValues for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.xValues);
+	}
+	var yValues;
+	try {
+		yValues = JSON.parse(json.type.I.yValues);
+	} catch (e) {
+		alert("Parsing of yValues for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.yValues);
+	}
+
+	var cellquery = json.type.I.query;
+	var yFirst = json.type.I.yFirst;
+	if (yFirst) {
+		cellquery = cellquery.replace("?", yValues[0]);
+		cellquery = cellquery.replace("?", xValues[0]);
+	} else {
+		cellquery = cellquery.replace("?", xValues[0]);
+		cellquery = cellquery.replace("?", yValues[0]);
+	}
+	jsonCpy.type.I.query = cellquery;
+	jsonCpy.type.I.queryB = cellquery;
+	buildContainerChartBig(jsonCpy, containerOver, true);
 }
 
 function print(text) {
@@ -844,8 +1020,7 @@ function getTableFromResults(results, container) {
 		for (var i = 0; i < results.length; ++i) {
 			if (typeof (results[i]) == 'number') {
 				var span = document.createElement('span');
-				span.innerHTML = '<u><b>Result for Query' + (i + 1)
-						+ '</b></u>:';
+				span.innerHTML = '<u><b>Result for Query' + (i + 1) + '</b></u>:';
 				container.appendChild(span);
 				container.appendChild(getSpacer());
 				var span = document.createElement('span');
@@ -854,8 +1029,7 @@ function getTableFromResults(results, container) {
 				container.appendChild(getSpacer());
 			} else if (results[i] instanceof Array) {
 				var span = document.createElement('span');
-				span.innerHTML = '<u><b>Result for Query' + (i + 1)
-						+ '</b></u>:';
+				span.innerHTML = '<u><b>Result for Query' + (i + 1) + '</b></u>:';
 				container.appendChild(span);
 				container.appendChild(getSpacer());
 				if (results[i].length > 0) {
@@ -864,8 +1038,7 @@ function getTableFromResults(results, container) {
 					table.cellspacing = 0;
 					table.border = 0;
 					table.className = 'display';
-					table.setAttribute('style',
-							'border: 1px solid black; margin-top: 5px;');
+					table.setAttribute('style', 'border: 1px solid black; margin-top: 5px;');
 					container.appendChild(table);
 					tableCreate(results[i], table);
 				} else {
@@ -883,8 +1056,7 @@ function getTableFromResults(results, container) {
 				table.cellspacing = 0;
 				table.border = 0;
 				table.className = 'display';
-				table.setAttribute('style',
-						'border: 1px solid black; margin-top: 5px;');
+				table.setAttribute('style', 'border: 1px solid black; margin-top: 5px;');
 				container.appendChild(table);
 				tableCreate(results, table);
 				break;
@@ -1066,40 +1238,17 @@ function getChartOptions(json, zoomFactor, values, chart) {
 	var css = document.createElement('style');
 	css.setAttribute('scoped', 'scoped');
 	$(chart).parent().append(css);
-	css.innerHTML = '																' + '.c3-line {																	'
-			+ ' stroke-width: '
-			+ (zoomFactor)
-			+ 'px; }										'
-			+ '																			'
-			+ '.c3-circle._expanded_ {													'
-			+ ' stroke-width: '
-			+ (zoomFactor)
-			+ 'px;											'
-			+ ' stroke: white; }															'
-			+ '																			'
-			+ '.c3-selected-circle {														'
-			+ ' fill: white;																'
-			+ ' stroke-width: '
-			+ (2 * zoomFactor)
-			+ 'px; }										'
-			+ '																			'
-			+ '.c3-target.c3-focused path.c3-line, .c3-target.c3-focused path.c3-step {	'
-			+ ' stroke-width: '
-			+ (2 * zoomFactor)
-			+ 'px; }										'
-			+ '																			'
-			+ '.c3-legend-background {													'
-			+ ' opacity: 0.75;															'
-			+ ' fill: white;																'
-			+ ' stroke: lightgray;														'
-			+ ' stroke-width: '
-			+ (zoomFactor) + '; }											';
+	css.innerHTML = '																' + '.c3-line {																	' + ' stroke-width: ' + (zoomFactor) + 'px; }										' + '																			'
+			+ '.c3-circle._expanded_ {													' + ' stroke-width: ' + (zoomFactor) + 'px;											' + ' stroke: white; }															'
+			+ '																			' + '.c3-selected-circle {														' + ' fill: white;																' + ' stroke-width: ' + (2 * zoomFactor)
+			+ 'px; }										' + '																			' + '.c3-target.c3-focused path.c3-line, .c3-target.c3-focused path.c3-step {	' + ' stroke-width: '
+			+ (2 * zoomFactor) + 'px; }										' + '																			' + '.c3-legend-background {													' + ' opacity: 0.75;															'
+			+ ' fill: white;																' + ' stroke: lightgray;														' + ' stroke-width: ' + (zoomFactor) + '; }											';
 
 	return options;
 }
 
-function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr,
-		update, f, fixed) {
+function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, update, f, fixed) {
 	var json = jsonArr[0]; // pass by reference
 	var containerChart = document.createElement('div');
 	if (fixed) {
@@ -1120,14 +1269,12 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr,
 					'width:40%; height:80%; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; padding:2%; background:white; margin:1%; display: inline-block; text-align: left; white-space: normal;');
 
 	var header = document.createElement('span');
-	header.innerHTML = 'SQL Query for ' + f
-			+ ':<br />Tip: Press CTRL-Space for autocomplete';
+	header.innerHTML = 'SQL Query for ' + f + ':<br />Tip: Press CTRL-Space for autocomplete';
 	containerControl.appendChild(header);
 
 	var textareaWrapper = document.createElement('div');
 	containerControl.appendChild(textareaWrapper);
-	textareaWrapper.setAttribute('style',
-			'border: 1px solid black; margin-top: 3px; margin-bottom: 3px;');
+	textareaWrapper.setAttribute('style', 'border: 1px solid black; margin-top: 3px; margin-bottom: 3px;');
 
 	var textarea = document.createElement('textarea');
 	textareaWrapper.appendChild(textarea);
@@ -1190,14 +1337,12 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr,
 
 	if (fixed) {
 		var containerChartSub = document.createElement('div');
-		containerChartSub.setAttribute('style',
-				'width:100%; height:100%; z-index:9999');
+		containerChartSub.setAttribute('style', 'width:100%; height:100%; z-index:9999');
 		containerChart.appendChild(containerChartSub);
 	}
 
 	var containerCloseAndTip = document.createElement('div');
-	containerCloseAndTip.setAttribute('style',
-			'display: inline-block; margin-right: 30px;');
+	containerCloseAndTip.setAttribute('style', 'display: inline-block; margin-right: 30px;');
 	containerOver.appendChild(containerCloseAndTip);
 
 	var containerClose = document.createElement('div');
@@ -1211,8 +1356,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr,
 	containerCloseAndTip.appendChild(containerTip);
 
 	var containerSwitch = document.createElement('div');
-	containerSwitch.setAttribute('style',
-			'margin-bottom:5px; display: inline-block; vertical-align:top;');
+	containerSwitch.setAttribute('style', 'margin-bottom:5px; display: inline-block; vertical-align:top;');
 	containerOver.appendChild(containerSwitch);
 
 	var containerLabel = document.createElement('span');
@@ -1313,8 +1457,7 @@ function getChartData(json) {
 	}
 	if (results[0] instanceof Array) {
 		return {
-			error : "Query \"" + json.type.I.query
-					+ "\" contains multiple statements!"
+			error : "Query \"" + json.type.I.query + "\" contains multiple statements!"
 		};
 	}
 	var columns = [];
@@ -1366,15 +1509,13 @@ function getPivotTableData(json, isBig) {
 	}
 	if (results.length == 0) {
 		return {
-			error : "Query of " + (isBig ? json.name + 'Big' : json.name)
-					+ "returns empty result!\nQuery was: \""
+			error : "Query of " + (isBig ? json.name + 'Big' : json.name) + "returns empty result!\nQuery was: \""
 					+ (isBig ? json.type.I.queryB : json.type.I.query) + "\""
 		};
 	}
 	if (results[0] instanceof Array) {
 		return {
-			error : "Query of " + (isBig ? json.name + 'Big' : json.name)
-					+ "returns multiple statements!\nQuery was: \""
+			error : "Query of " + (isBig ? json.name + 'Big' : json.name) + "returns multiple statements!\nQuery was: \""
 					+ (isBig ? json.type.I.queryB : json.type.I.query) + "\""
 		};
 	}
@@ -1382,53 +1523,41 @@ function getPivotTableData(json, isBig) {
 		var rows = JSON.parse("[" + json.type.I.rows + "]");
 	} catch (e) {
 		return {
-			error : 'Parsing of rows for '
-					+ (isBig ? json.name + 'Big' : json.name)
-					+ ' failed. \nDid you forgot to enclose every row by ", or did you TeX program replace " by \'\'?\n JSON String was:\n'
-					+ json.type.I.rows
+			error : 'Parsing of rows for ' + (isBig ? json.name + 'Big' : json.name)
+					+ ' failed. \nDid you forgot to enclose every row by ", or did you TeX program replace " by \'\'?\n JSON String was:\n' + json.type.I.rows
 		};
 	}
 	try {
 		var cols = JSON.parse("[" + json.type.I.cols + "]");
 	} catch (e) {
 		return {
-			error : 'Parsing of cols for '
-					+ (isBig ? json.name + 'Big' : json.name)
-					+ ' failed. \nDid you forgot to enclose every col by ", or did you TeX program replace " by \'\'?\n JSON String was:\n'
-					+ json.type.I.cols
+			error : 'Parsing of cols for ' + (isBig ? json.name + 'Big' : json.name)
+					+ ' failed. \nDid you forgot to enclose every col by ", or did you TeX program replace " by \'\'?\n JSON String was:\n' + json.type.I.cols
 		};
 	}
 	for (var i = 0; i < rows.length; ++i) {
 		if (results[0][rows[i]] == undefined) {
 			return {
-				error : 'Rows attribute "' + rows[i] + '" for '
-						+ (isBig ? json.name + 'Big' : json.name)
-						+ ' does not exist!'
+				error : 'Rows attribute "' + rows[i] + '" for ' + (isBig ? json.name + 'Big' : json.name) + ' does not exist!'
 			};
 		}
 	}
 	for (var i = 0; i < cols.length; ++i) {
 		if (results[0][cols[i]] == undefined) {
 			return {
-				error : 'Cols attribute "' + cols[i] + '" for '
-						+ (isBig ? json.name + 'Big' : json.name)
-						+ ' does not exist!'
+				error : 'Cols attribute "' + cols[i] + '" for ' + (isBig ? json.name + 'Big' : json.name) + ' does not exist!'
 			};
 		}
 	}
 
-	var aggrAttribute = (isBig ? json.type.I.aggregationattributeBig
-			: json.type.I.aggregationattribute);
+	var aggrAttribute = (isBig ? json.type.I.aggregationattributeBig : json.type.I.aggregationattribute);
 	if (aggrAttribute != '' && results[0][aggrAttribute] == undefined) {
 		return {
-			error : 'Aggregation attribute "' + aggrAttribute + '" for '
-					+ (isBig ? json.name + 'Big' : json.name)
-					+ ' does not exist!'
+			error : 'Aggregation attribute "' + aggrAttribute + '" for ' + (isBig ? json.name + 'Big' : json.name) + ' does not exist!'
 		};
 	}
 
-	var aggrName = (isBig ? json.type.I.aggregationBig
-			: json.type.I.aggregation);
+	var aggrName = (isBig ? json.type.I.aggregationBig : json.type.I.aggregation);
 	try {
 		var aggr = $.pivotUtilities.aggregators[aggrName]([ aggrAttribute ]);
 	} catch (e) {
@@ -1491,8 +1620,7 @@ function GRUBBS_FILTER(arr, alpha) {
 	while (gogo) {
 		var N = arr.length;
 		var t = jStat.studentt.inv((alpha) / (2 * N), N - 2);
-		var ZCrit = (N - 1) / Math.sqrt(N)
-				* Math.sqrt((t * t) / (N - 2 + t * t));
+		var ZCrit = (N - 1) / Math.sqrt(N) * Math.sqrt((t * t) / (N - 2 + t * t));
 		var M = jStat.mean(arr);
 		var SD = jStat.stdev(arr, true);
 		var Z = undefined;
@@ -1566,7 +1694,8 @@ function T_TEST(arr1, arr2, alpha) {
 	if (alpha == undefined) {
 		var alpha = 0.05;
 	}
-	if (arr1 == arr2) return true;
+	if (arr1 == arr2)
+		return true;
 
 	var m1 = jStat.mean(arr1);
 	var m2 = jStat.mean(arr2);
@@ -1575,8 +1704,7 @@ function T_TEST(arr1, arr2, alpha) {
 	var s1 = jStat.stdev(arr1, true);
 	var s2 = jStat.stdev(arr2, true);
 
-	var sp = Math.sqrt(((n1 - 1) * (s1 * s1) + (n2 - 1) * (s2 * s2))
-			/ (n1 + n2 - 2));
+	var sp = Math.sqrt(((n1 - 1) * (s1 * s1) + (n2 - 1) * (s2 * s2)) / (n1 + n2 - 2));
 	var t = Math.abs((m1 - m2) / (sp * Math.sqrt(1 / n1 + 1 / n2)));
 	var df = n1 + n2 - 2;
 	var p = 2 - jStat.studentt.cdf(t, df) * 2;
@@ -1595,7 +1723,8 @@ function WELCH_TEST(arr1, arr2, alpha) {
 	if (alpha == undefined) {
 		var alpha = 0.05;
 	}
-	if (arr1 == arr2) return true;
+	if (arr1 == arr2)
+		return true;
 
 	var m1 = jStat.mean(arr1);
 	var m2 = jStat.mean(arr2);
@@ -1608,8 +1737,7 @@ function WELCH_TEST(arr1, arr2, alpha) {
 	var s2s2n2 = s2 * s2 / n2;
 
 	var t = Math.abs((m1 - m2) / Math.sqrt(s1s1n1 + s2s2n2));
-	var df = ((s1s1n1 + s2s2n2) * (s1s1n1 + s2s2n2))
-			/ (((s1s1n1 * s1s1n1) / (n1 - 1)) + ((s2s2n2 * s2s2n2) / (n2 - 1)));
+	var df = ((s1s1n1 + s2s2n2) * (s1s1n1 + s2s2n2)) / (((s1s1n1 * s1s1n1) / (n1 - 1)) + ((s2s2n2 * s2s2n2) / (n2 - 1)));
 	var p = 2 - jStat.studentt.cdf(t, df) * 2;
 
 	return p >= alpha;

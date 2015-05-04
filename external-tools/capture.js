@@ -1,4 +1,5 @@
 var system = require('system');
+var fs = require('fs');
 if (system.args.length !== 2) {
 	console.log('Usage: ' + system.args[0] + ' webpagefile');
 	phantom.exit();
@@ -16,7 +17,7 @@ page.onError = function (msg, trace) {
 page.open(system.args[1], function() {
 	var size = page.evaluate(function() {
 		document.body.bgColor = 'white';
-		return {w: outw, h: outh};
+		return {w: outw, h: outh, json: JSON.stringify(json.result), jsonBig: JSON.stringify(json.resultBig)};
 	});
 	
 	page.viewportSize = {
@@ -32,7 +33,9 @@ page.open(system.args[1], function() {
 		var name = page.evaluate(function() {
 			return json.name;
 		});
-		page.render(name +'.png');
+		fs.write(name + '.json', size.json, 'w');
+		fs.write(name + '.jsonBig', size.jsonBig, 'w');
+		page.render(size.name +'.png');
 		phantom.exit();
 	}, 500);
 });

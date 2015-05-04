@@ -37,11 +37,7 @@ $(document.body).css('height', outh);
 
 var pageOverlays = [];
 parse(json);
-function isValidDate(d) {
-	if (Object.prototype.toString.call(d) !== "[object Date]")
-		return false;
-	return !isNaN(d.getTime());
-}
+
 function parse(json) {
 	page = 0;
 	pageOverlay = pageOverlays[page];
@@ -55,32 +51,15 @@ function parse(json) {
 var zoomFactor = json.type.I.zoom * 1.30 * json.type.I.quality;
 var rawZoomFactor = json.type.I.zoom * 1.30 * json.type.I.quality;
 
-function display(json, page) {
-	var containerOver;
-	var container = document.createElement('div');
-	container.id = json.name;
-	var style = "width:100%; height:100%;";
-	page.appendChild(container);
-	switch (json.type.C) {
-	case "pdbf.common.MultiplotChart":
-		buildContainerMultiplotChart(container, json, zoomFactor, style, containerOver);
-		break;
-	case "pdbf.common.Chart":
-		buildContainerChart(container, json, zoomFactor, style, containerOver);
-		break;
-	case "pdbf.common.Pivot":
-		buildContainerPivot(container, json, zoomFactor, style, containerOver);
-		break;
-	default:
-		alert("Unknown: " + json.type.C);
-		break;
-	}
-}
-
 function overlay() {
 	document.body.innerHTML = '';
 	var pageNr = 0;
 	for (var i = 0; i < pageOverlays[pageNr].length; ++i) {
-		display(pageOverlays[pageNr][i], document.body)
+		var json = pageOverlays[pageNr][i];
+		json.type.I.x2 = 0.999;
+		json.type.I.x1 = 0.000;
+		json.type.I.y1 = 1.000;
+		json.type.I.y2 = 0.001;
+		display(json, document.body, false);
 	}
 }
