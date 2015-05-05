@@ -196,7 +196,7 @@ An outlier is an element of a sample that does not ``fit" into the sample in som
 If we assume, that there is only one outlier in the sample, and it is either the minimum, or the maximum value, than we can use Grubb's test~\cite{grubbs1950sample} to automatically detect outliers. The only problem is that this method tends to identify outliers too often for samples with less than eight elements. This explains why it detected an outlier in 27\% of the cases in our experiments. To counter the error rate of the method we have included an additional condition for labelling an outlier: $\text{margin\_or\_error} / \overline{x} \geq$ 2.5\%, where the margin of error is defined as the radius of the confidence interval. This reduces the detection rate to 3\%, and those elements proved to be outliers after manual inspection.
 
 \begin{table}[!b] 
-\pivotTable[width=0.478\textwidth, height=0.7478\textwidth, scale=0.666, rows={"Machine", "Table schema", "Query"}, aggregation=Bests, aggregationattribute=Query time]
+\pivotTable[width=0.478\textwidth, height=0.7478\textwidth, scale=0.666, rows={"Machine", "Table schema", "Query"}, aggregation=Minimum, aggregationattribute=Query time]
 {SELECT
 m.cpuarchitecture 																													AS Machine,
 IIF(d.tableschema = '(long a, long b)', 'long', IIF(d.tableschema = '(char a, char b)', 'char', IIF(d.tableschema = '(int a, int b)', 'int', 'n/a')))   			AS [Table schema],

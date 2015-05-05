@@ -64,7 +64,7 @@ function display(json, page, phantomJS) {
 		if (containerOver != null) {
 			containerOver.update();
 		}
-		
+
 		if (!phantomJS) {
 			var fullscreen = getFullscreenDiv();
 			container.appendChild(fullscreen);
@@ -81,7 +81,7 @@ function display(json, page, phantomJS) {
 				containerOver.style.opacity = 1;
 				$("svg").css('display', 'none');
 				$("svg").css('height');
-				$("svg").css('display', 'initial');//HACK for redraw of SVG
+				$("svg").css('display', 'initial');// HACK for redraw of SVG
 			});
 		}
 		container.setAttribute('style', style);
@@ -109,7 +109,7 @@ function display(json, page, phantomJS) {
 				containerOver.style.opacity = 1;
 				$("svg").css('display', 'none');
 				$("svg").css('height');
-				$("svg").css('display', 'initial');//HACK for redraw of SVG
+				$("svg").css('display', 'initial');// HACK for redraw of SVG
 			});
 		}
 		container.setAttribute('style', style);
@@ -120,7 +120,7 @@ function display(json, page, phantomJS) {
 		if (containerOver != null) {
 			containerOver.update();
 		}
-		
+
 		container.addEventListener("click", function() {
 			if (containerOver == null) {
 				containerOver = document.createElement('div');
@@ -376,9 +376,12 @@ function buildContainerPivot(container, json, zoomFactor, style, containerOver) 
 
 	var aggrName = r.aggrName;
 	var aggrAtt = r.aggrAttribute;
+	if ($.pivotUtilities.aggregators[aggrName] == undefined) {
+		alert("Aggregator \"" + aggrName + "\" is not defined! Where: " + json.name);
+	}
 	var aggr = $.pivotUtilities.aggregators[aggrName]([ aggrAtt ]);
 	var unused = [];
-	for (var key in r.res[0]) {
+	for ( var key in r.res[0]) {
 		if (aggrAtt != key && $.inArray(key, r.rows) == -1 && $.inArray(key, r.cols) == -1) {
 			unused[unused.length] = key;
 		}
@@ -670,12 +673,12 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 	json.type.I.query = cellquery;
 	defaultChartOptions.noyticks = true;
 	defaultChartOptions.noxticks = true;
-	
+
 	var chartdata;
 	if (json.result == undefined) {
 		json.result = [];
 	}
-	
+
 	var chartdata = getChartData(json);
 	if (chartdata.error != undefined) {
 		alert(json.name + " has error:\n" + chartdata.error);
@@ -1616,7 +1619,7 @@ function GRUBBS_FILTER(arr, alpha) {
 		});
 		var margin_of_error_runtime = MARGIN_OF_ERROR(arr);
 		var avg_runtime = MEAN(arr);
-		if (Z > ZCrit && margin_of_error_runtime / avg_runtime >= 0.025) {
+		if (Z > ZCrit && margin_of_error_runtime / avg_runtime >= 0.025) { //TODO: this as parameter. Ask endre!
 			arr.splice(Zindex, 1);
 		} else {
 			gogo = false;

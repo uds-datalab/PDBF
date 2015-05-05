@@ -42,13 +42,13 @@
 		numberFormat = function(opts) {
 			var defaults;
 			defaults = {
-				digitsAfterDecimal : 3,
-				scaler : 1,
-				thousandsSep : ",",
-				decimalSep : ".",
-				prefix : "",
-				suffix : "",
-				showZero : false
+			digitsAfterDecimal : 3,
+			scaler : 1,
+			thousandsSep : ",",
+			decimalSep : ".",
+			prefix : "",
+			suffix : "",
+			showZero : false
 			};
 			opts = $.extend(defaults, opts);
 			return function(x) {
@@ -68,488 +68,541 @@
 			digitsAfterDecimal : 0
 		});
 		usFmtPct = numberFormat({
-			digitsAfterDecimal : 1,
-			scaler : 100,
-			suffix : "%"
+		digitsAfterDecimal : 1,
+		scaler : 100,
+		suffix : "%"
 		});
 		aggregatorTemplates = {
-			count : function(formatter) {
-				if (formatter == null) {
-					formatter = usFmtInt;
-				}
-				return function() {
-					return function(data, rowKey, colKey) {
-						return {
-							label : "Count",
-							count : 0,
-							push : function() {
-								return this.count++;
-							},
-							value : function() {
-								return this.count;
-							},
-							format : formatter
-						};
-					};
-				};
-			},
-			countUnique : function(formatter) {
-				if (formatter == null) {
-					formatter = usFmtInt;
-				}
-				return function(_arg) {
-					var attr;
-					attr = _arg[0];
-					return function(data, rowKey, colKey) {
-						return {
-							label : "Cnt. Unique Val. of" + attr,
-							uniq : [],
-							push : function(record) {
-								var _ref;
-								if (_ref = record[attr], __indexOf.call(this.uniq, _ref) < 0) {
-									return this.uniq.push(record[attr]);
-								}
-							},
-							value : function() {
-								return this.uniq.length;
-							},
-							format : formatter,
-							numInputs : attr != null ? 0 : 1
-						};
-					};
-				};
-			},
-			listUnique : function(sep) {
-				return function(_arg) {
-					var attr;
-					attr = _arg[0];
-					return function(data, rowKey, colKey) {
-						return {
-							label : "Unique Val. of " + attr,
-							uniq : [],
-							push : function(record) {
-								var _ref;
-								if (_ref = record[attr], __indexOf.call(this.uniq, _ref) < 0) {
-									return this.uniq.push(record[attr]);
-								}
-							},
-							value : function() {
-								return this.uniq.join(sep);
-							},
-							format : function(x) {
-								return x;
-							},
-							numInputs : attr != null ? 0 : 1
-						};
-					};
-				};
-			},
-			sum : function(formatter) {
-				if (formatter == null) {
-					formatter = usFmt;
-				}
-				return function(_arg) {
-					var attr;
-					attr = _arg[0];
-					return function(data, rowKey, colKey) {
-						return {
-							label : "Sum of " + attr,
-							sum : 0,
-							push : function(record) {
-								if (!isNaN(parseFloat(record[attr]))) {
-									return this.sum += parseFloat(record[attr]);
-								}
-							},
-							value : function() {
-								return this.sum;
-							},
-							format : formatter,
-							numInputs : attr != null ? 0 : 1
-						};
-					};
-				};
-			},
-			// TODO: aggregatoren best zu minimum. neu worst. minimum bei value, best bei array
-			// TODO: special behandlung von endre als parameter machen
-			// TODO: add variable alpha (also to UI)
-			// TODO: add max
-			bests : function(formatter) {
-				if (formatter == null) {
-					formatter = usFmt;
-				}
-				return function(_arg) {
-					var attr = _arg[0];
-					// TODO: var alpha = _arg[1];
-					return function(data, rowKey, colKey) {
-						return {
-							label : "95% confidence interval of best average " + attr,
-							data : data,
-							special : true,
-							vals : [],
-							res : [],
-							max : 3,
-							push : function(record) {
-								if (attr == undefined)
-									return;
-								if (!Array.isArray(record[attr])) {
-									throw new Error("Argument of best aggregator is not an array!\nValue was: " + record[attr]);
-								}
-								this.vals[this.vals.length] = record;
-							},
-							value : function() {
-								if (attr == undefined)
-									return;
-								function proxy(attr, f) {
-									return function(obj) {
-										return f(obj[attr]);
-									};
-								}
-								if (this.res.length == 0) {
-									var avg_runtime = this.vals.map(proxy(attr, MEAN));
-									var stdev_runtime = this.vals.map(proxy(attr, STDDEV_SAMP));
-									var margin_of_error_runtime = this.vals.map(proxy(attr, MARGIN_OF_ERROR));
-									var min_interval;
-									var min_interval_index;
-									for (var i = 0; i < this.vals.length; ++i) {
-										var x = avg_runtime[i] - margin_of_error_runtime[i];
-										if (min_interval == undefined || x <= min_interval) {
-											min_interval = x;
-											min_interval_index = i;
-										}
-									}
-									var best_attr = this.vals[min_interval_index][attr];
-									for (var i = 0; i < this.vals.length; ++i) {
-										if (WELCH_TEST(best_attr, this.vals[i][attr])) {
-											var cpy = jQuery.extend({}, this.vals[i]);
-											cpy[attr] = '{' + formatter(avg_runtime[i] - margin_of_error_runtime[i]) + ', '
-													+ formatter(avg_runtime[i] + margin_of_error_runtime[i]) + '}';
-											this.res[this.res.length] = cpy;
-										}
-									}
-									this.minAvg = avg_runtime[min_interval_index];
-								}
-								if (this.res.length > this.max) {
-									this.tooBig = this.res.length;
-									var cpy = jQuery.extend({}, this.vals[min_interval_index]);
-									cpy[attr] = ['{' + formatter(avg_runtime[min_interval_index] - margin_of_error_runtime[min_interval_index]) + ', '
-												+ formatter(avg_runtime[min_interval_index] + margin_of_error_runtime[min_interval_index]) + '}'];
-									this.res = [cpy];
-								}
-								return this.res;
-							},
-							format : function(arr) {
-								if (attr == undefined)
-									return;
-								var r = '<table class="innerTable" style="width: 100%; height:100%; white-space: nowrap;">';
-								for (var i = 0; i < arr.length; ++i) {
-									r += '<tr style="height=' + (100 / arr.length) + '%;"><td>';
-									var x = arr[i];
-									if (data.intable) {
-										var ret = "";
-										r += (x[attr]);
-									} else {
-										var ret = "<span class=\"hasTooltip\">" + (x[attr])
-												+ "</span><span style=\"position:absolute;\" ><table style=\"width: 100%; border: 0.2em solid #CDCDCD; background: white;\"><tr>";
-										for (key in x) {
-											ret += "<th class=\"pvtAxisLabel\">" + key + "</th>";
-										}
-										ret += "</tr><tr>";
-										for (key in x) {
-											ret += "<td style=\"padding: 0.3em;\">" + x[key] + "</td>";
-										}
-										ret += '</tr></table></span>';
-										r += ret;
-									}
-									r += '</td></tr>';
-								}
-								r += '</table>';
-								return r;
-							},
-							formatPlain : function(x) {
-								return this.minAvg;
-							},
-							numInputs : attr != null ? 0 : 1
-						};
-					};
-				};
-			},
-			min : function(formatter) {
-				if (formatter == null) {
-					formatter = usFmt;
-				}
-				return function(_arg) {
-					var attr = _arg[0];
-					return function(data, rowKey, colKey) {
-						return {
-							label : "Min. of " + attr,
-							data : data,
-							special : true,
-							val : null,
-							push : function(record) {
-								var x;
-								x = parseFloat(record[attr]);
-								if (!isNaN(x)) {
-									if (this.val == null || x <= this.val[attr]) {
-										this.val = record;
-									}
-								}
-							},
-							value : function() {
-								return this.val != null ? this.val : '';
-							},
-							format : function(x) {
-								if (data.intable) {
-									return formatter(x[attr]);
-								} else {
-									var ret = "<span class=\"hasTooltip\">" + formatter(x[attr])
-											+ "</span><span style=\"position:absolute;\" ><table style=\"width: 100%;\"><tr>";
-									for (key in x) {
-										ret += "<th class=\"pvtAxisLabel\">" + key + "</th>";
-									}
-									ret += "</tr><tr>";
-									for (key in x) {
-										ret += "<td>" + x[key] + "</td>";
-									}
-									ret += "</tr></table></span>";
-									return ret;
-								}
-							},
-							formatPlain : function(x) {
-								return x[attr];
-							},
-							numInputs : attr != null ? 0 : 1
-						};
-					};
-				};
-			},
-			max : function(formatter) {
-				if (formatter == null) {
-					formatter = usFmt;
-				}
-				return function(_arg) {
-					var attr;
-					attr = _arg[0];
-					return function(data, rowKey, colKey) {
-						return {
-							label : "Max. of " + attr,
-							data : data,
-							special : true,
-							val : null,
-							push : function(record) {
-								var x;
-								x = parseFloat(record[attr]);
-								if (!isNaN(x)) {
-									if (this.val == null || x > this.val[attr]) {
-										this.val = record;
-									}
-								}
-							},
-							value : function() {
-								return this.val != null ? this.val : '';
-							},
-							format : function(x) {
-								if (data.intable) {
-									return formatter(x[attr]);
-								} else {
-									var ret = "<span class=\"hasTooltip\">" + formatter(x[attr])
-											+ "</span><span style=\"position:absolute;\" ><table style=\"width: 100%;\"><tr>";
-									for (key in x) {
-										ret += "<th class=\"pvtAxisLabel\">" + key + "</th>";
-									}
-									ret += "</tr><tr>";
-									for (key in x) {
-										ret += "<td>" + x[key] + "</td>";
-									}
-									ret += "</tr></table></span>";
-									return ret;
-								}
-							},
-							formatPlain : function(x) {
-								return x[attr];
-							},
-							numInputs : attr != null ? 0 : 1
-						};
-					};
-				};
-			},
-			average : function(formatter) {
-				if (formatter == null) {
-					formatter = usFmt;
-				}
-				return function(_arg) {
-					var attr;
-					attr = _arg[0];
-					return function(data, rowKey, colKey) {
-						return {
-							label : "Avg. of " + attr,
-							sum : 0,
-							len : 0,
-							push : function(record) {
-								if (!isNaN(parseFloat(record[attr]))) {
-									this.sum += parseFloat(record[attr]);
-									return this.len++;
-								}
-							},
-							value : function() {
-								return this.sum / this.len;
-							},
-							format : formatter,
-							numInputs : attr != null ? 0 : 1
-						};
-					};
-				};
-			},
-			sumOverSum : function(formatter) {
-				if (formatter == null) {
-					formatter = usFmt;
-				}
-				return function(_arg) {
-					var denom, num;
-					num = _arg[0], denom = _arg[1];
-					return function(data, rowKey, colKey) {
-						return {
-							label : "Sum over Sum",
-							sumNum : 0,
-							sumDenom : 0,
-							push : function(record) {
-								if (!isNaN(parseFloat(record[num]))) {
-									this.sumNum += parseFloat(record[num]);
-								}
-								if (!isNaN(parseFloat(record[denom]))) {
-									return this.sumDenom += parseFloat(record[denom]);
-								}
-							},
-							value : function() {
-								return this.sumNum / this.sumDenom;
-							},
-							format : formatter,
-							numInputs : (num != null) && (denom != null) ? 0 : 2
-						};
-					};
-				};
-			},
-			sumOverSumBound80 : function(upper, formatter) {
-				if (upper == null) {
-					upper = true;
-				}
-				if (formatter == null) {
-					formatter = usFmt;
-				}
-				return function(_arg) {
-					var denom, num;
-					num = _arg[0], denom = _arg[1];
-					return function(data, rowKey, colKey) {
-						return {
-							label : upper ? "80% Upper Bound" : "80% Lower Bound",
-							sumNum : 0,
-							sumDenom : 0,
-							push : function(record) {
-								if (!isNaN(parseFloat(record[num]))) {
-									this.sumNum += parseFloat(record[num]);
-								}
-								if (!isNaN(parseFloat(record[denom]))) {
-									return this.sumDenom += parseFloat(record[denom]);
-								}
-							},
-							value : function() {
-								var sign;
-								sign = upper ? 1 : -1;
-								return (0.821187207574908 / this.sumDenom + this.sumNum / this.sumDenom + 1.2815515655446004
-										* sign
-										* Math.sqrt(0.410593603787454 / (this.sumDenom * this.sumDenom) + (this.sumNum * (1 - this.sumNum / this.sumDenom))
-												/ (this.sumDenom * this.sumDenom)))
-										/ (1 + 1.642374415149816 / this.sumDenom);
-							},
-							format : formatter,
-							numInputs : (num != null) && (denom != null) ? 0 : 2
-						};
-					};
-				};
-			},
-			fractionOf : function(wrapped, type, formatter, label) {
-				if (type == null) {
-					type = "total";
-				}
-				if (formatter == null) {
-					formatter = usFmtPct;
-				}
-				return function() {
-					var x;
-					x = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-					return function(data, rowKey, colKey) {
-						return {
-							label : label,
-							selector : {
-								total : [ [], [] ],
-								row : [ rowKey, [] ],
-								col : [ [], colKey ]
-							}[type],
-							inner : wrapped.apply(null, x)(data, rowKey, colKey),
-							push : function(record) {
-								return this.inner.push(record);
-							},
-							format : formatter,
-							value : function() {
-								return this.inner.value() / data.getAggregator.apply(data, this.selector).inner.value();
-							},
-							numInputs : wrapped.apply(null, x)().numInputs
-						};
-					};
-				};
+		count : function(formatter) {
+			if (formatter == null) {
+				formatter = usFmtInt;
 			}
+			return function() {
+				return function(data, rowKey, colKey) {
+					return {
+					label : "Count",
+					count : 0,
+					push : function() {
+						return this.count++;
+					},
+					value : function() {
+						return this.count;
+					},
+					format : formatter
+					};
+				};
+			};
+		},
+		countUnique : function(formatter) {
+			if (formatter == null) {
+				formatter = usFmtInt;
+			}
+			return function(_arg) {
+				var attr;
+				attr = _arg[0];
+				return function(data, rowKey, colKey) {
+					return {
+					label : "Cnt. Unique Val. of" + attr,
+					uniq : [],
+					push : function(record) {
+						var _ref;
+						if (_ref = record[attr], __indexOf.call(this.uniq, _ref) < 0) {
+							return this.uniq.push(record[attr]);
+						}
+					},
+					value : function() {
+						return this.uniq.length;
+					},
+					format : formatter,
+					numInputs : attr != null ? 0 : 1
+					};
+				};
+			};
+		},
+		listUnique : function(sep) {
+			return function(_arg) {
+				var attr;
+				attr = _arg[0];
+				return function(data, rowKey, colKey) {
+					return {
+					label : "Unique Val. of " + attr,
+					uniq : [],
+					push : function(record) {
+						var _ref;
+						if (_ref = record[attr], __indexOf.call(this.uniq, _ref) < 0) {
+							return this.uniq.push(record[attr]);
+						}
+					},
+					value : function() {
+						return this.uniq.join(sep);
+					},
+					format : function(x) {
+						return x;
+					},
+					numInputs : attr != null ? 0 : 1
+					};
+				};
+			};
+		},
+		sum : function(formatter) {
+			if (formatter == null) {
+				formatter = usFmt;
+			}
+			return function(_arg) {
+				var attr;
+				attr = _arg[0];
+				return function(data, rowKey, colKey) {
+					return {
+					label : "Sum of " + attr,
+					sum : 0,
+					push : function(record) {
+						if (!isNaN(parseFloat(record[attr]))) {
+							return this.sum += parseFloat(record[attr]);
+						}
+					},
+					value : function() {
+						return this.sum;
+					},
+					format : formatter,
+					numInputs : attr != null ? 0 : 1
+					};
+				};
+			};
+		},
+		// TODO: add variable alpha (also to UI)
+		min : function(formatter) {
+			if (formatter == null) {
+				formatter = usFmt;
+			}
+			return function(_arg) {
+				var attr = _arg[0];
+				// TODO: var alpha = _arg[1];
+				return function(data, rowKey, colKey) {
+					return {
+					isArray : false,
+					label : (this.isArray ? ("95% confidence interval of minimum " + attr) : ("Min. of " + attr)),
+					data : data,
+					special : true,
+					vals : [],
+					max : 3,
+					push : function(record) {
+						if (attr == undefined)
+							return;
+						if (Array.isArray(record[attr])) {
+							this.vals[this.vals.length] = record;
+							this.isArray = true;
+						} else {
+							var x;
+							x = parseFloat(record[attr]);
+							if (!isNaN(x)) {
+								if (this.res == undefined || x <= this.res[attr]) {
+									this.res = record;
+								}
+							}
+						}
+					},
+					value : function() {
+						if (attr == undefined)
+							return;
+						function proxy(attr, f) {
+							return function(obj) {
+								return f(obj[attr]);
+							};
+						}
+						if (this.isArray) {
+							if (this.res == undefined) {
+								this.res = [];
+								var avg_runtime = this.vals.map(proxy(attr, MEAN));
+								var stdev_runtime = this.vals.map(proxy(attr, STDDEV_SAMP));
+								var margin_of_error_runtime = this.vals.map(proxy(attr, MARGIN_OF_ERROR));
+								var min_interval;
+								var min_interval_index;
+								for (var i = 0; i < this.vals.length; ++i) {
+									var x = avg_runtime[i] - margin_of_error_runtime[i];
+									if (min_interval == undefined || x <= min_interval) {
+										min_interval = x;
+										min_interval_index = i;
+									}
+								}
+								var best_attr = this.vals[min_interval_index][attr];
+								for (var i = 0; i < this.vals.length; ++i) {
+									if (WELCH_TEST(best_attr, this.vals[i][attr])) {
+										var cpy = jQuery.extend({}, this.vals[i]);
+										cpy[attr] = '{' + formatter(avg_runtime[i] - margin_of_error_runtime[i]) + ', ' + formatter(avg_runtime[i] + margin_of_error_runtime[i]) + '}';
+										this.res[this.res.length] = cpy;
+									}
+								}
+								this.minAvg = avg_runtime[min_interval_index];
+							}
+							if (this.res.length > this.max) {
+								this.tooBig = this.res.length;
+								var cpy = jQuery.extend({}, this.vals[min_interval_index]);
+								cpy[attr] = [ '{' + formatter(avg_runtime[min_interval_index] - margin_of_error_runtime[min_interval_index]) + ', ' + formatter(avg_runtime[min_interval_index] + margin_of_error_runtime[min_interval_index]) + '}' ];
+								this.res = [ cpy ];
+							}
+							return this.res;
+						} else {
+							return this.res != null ? this.res : '';
+						}
+					},
+					format : function(arr) {
+						if (attr == undefined)
+							return;
+						if (this.isArray) {
+							var r = '<table class="innerTable" style="width: 100%; height:100%; white-space: nowrap;">';
+							for (var i = 0; i < arr.length; ++i) {
+								r += '<tr style="height=' + (100 / arr.length) + '%;"><td>';
+								var x = arr[i];
+								if (data.intable) {
+									var ret = "";
+									r += (x[attr]);
+								} else {
+									var ret = "<span class=\"hasTooltip\">" + (x[attr]) + "</span><span style=\"position:absolute;\" ><table style=\"width: 100%; border: 0.2em solid #CDCDCD; background: white;\"><tr>";
+									for (key in x) {
+										ret += "<th class=\"pvtAxisLabel\">" + key + "</th>";
+									}
+									ret += "</tr><tr>";
+									for (key in x) {
+										ret += "<td style=\"padding: 0.3em;\">" + x[key] + "</td>";
+									}
+									ret += '</tr></table></span>';
+									r += ret;
+								}
+								r += '</td></tr>';
+							}
+							r += '</table>';
+							return r;
+						} else {
+							var x = arr;
+							if (data.intable) {
+								return formatter(x[attr]);
+							} else {
+								var ret = "<span class=\"hasTooltip\">" + formatter(x[attr]) + "</span><span style=\"position:absolute;\" ><table style=\"width: 100%;\"><tr>";
+								for (key in x) {
+									ret += "<th class=\"pvtAxisLabel\">" + key + "</th>";
+								}
+								ret += "</tr><tr>";
+								for (key in x) {
+									ret += "<td>" + x[key] + "</td>";
+								}
+								ret += "</tr></table></span>";
+								return ret;
+							}
+						}
+					},
+					formatPlain : function(x) {
+						if (attr == undefined)
+							return;
+						return (this.isArray ? this.minAvg : x[attr]);
+					},
+					numInputs : attr != null ? 0 : 1
+					};
+				};
+			};
+		},
+		max : function(formatter) {
+			if (formatter == null) {
+				formatter = usFmt;
+			}
+			return function(_arg) {
+				var attr = _arg[0];
+				// TODO: var alpha = _arg[1];
+				return function(data, rowKey, colKey) {
+					return {
+					isArray : false,
+					label : (this.isArray ? ("95% confidence interval of maximum " + attr) : ("Min. of " + attr)),
+					data : data,
+					special : true,
+					vals : [],
+					max : 3,
+					push : function(record) {
+						if (attr == undefined)
+							return;
+						if (Array.isArray(record[attr])) {
+							this.vals[this.vals.length] = record;
+							this.isArray = true;
+						} else {
+							var x;
+							x = parseFloat(record[attr]);
+							if (!isNaN(x)) {
+								if (this.res == undefined || x >= this.res[attr]) {
+									this.res = record;
+								}
+							}
+						}
+					},
+					value : function() {
+						if (attr == undefined)
+							return;
+						function proxy(attr, f) {
+							return function(obj) {
+								return f(obj[attr]);
+							};
+						}
+						if (this.isArray) {
+							if (this.res == undefined) {
+								this.res = [];
+								var avg_runtime = this.vals.map(proxy(attr, MEAN));
+								var stdev_runtime = this.vals.map(proxy(attr, STDDEV_SAMP));
+								var margin_of_error_runtime = this.vals.map(proxy(attr, MARGIN_OF_ERROR));
+								var max_interval;
+								var max_interval_index;
+								for (var i = 0; i < this.vals.length; ++i) {
+									var x = avg_runtime[i] + margin_of_error_runtime[i];
+									if (max_interval == undefined || x >= max_interval) {
+										max_interval = x;
+										max_interval_index = i;
+									}
+								}
+								var worst_attr = this.vals[max_interval_index][attr];
+								for (var i = 0; i < this.vals.length; ++i) {
+									if (WELCH_TEST(worst_attr, this.vals[i][attr])) {
+										var cpy = jQuery.extend({}, this.vals[i]);
+										cpy[attr] = '{' + formatter(avg_runtime[i] - margin_of_error_runtime[i]) + ', ' + formatter(avg_runtime[i] + margin_of_error_runtime[i]) + '}';
+										this.res[this.res.length] = cpy;
+									}
+								}
+								this.maxAvg = avg_runtime[max_interval_index];
+							}
+							if (this.res.length > this.max) {
+								this.tooBig = this.res.length;
+								var cpy = jQuery.extend({}, this.vals[min_interval_index]);
+								cpy[attr] = [ '{' + formatter(avg_runtime[max_interval_index] - margin_of_error_runtime[max_interval_index]) + ', ' + formatter(avg_runtime[max_interval_index] + margin_of_error_runtime[max_interval_index]) + '}' ];
+								this.res = [ cpy ];
+							}
+							return this.res;
+						} else {
+							return this.res != null ? this.res : '';
+						}
+					},
+					format : function(arr) {
+						if (attr == undefined)
+							return;
+						if (this.isArray) {
+							var r = '<table class="innerTable" style="width: 100%; height:100%; white-space: nowrap;">';
+							for (var i = 0; i < arr.length; ++i) {
+								r += '<tr style="height=' + (100 / arr.length) + '%;"><td>';
+								var x = arr[i];
+								if (data.intable) {
+									var ret = "";
+									r += (x[attr]);
+								} else {
+									var ret = "<span class=\"hasTooltip\">" + (x[attr]) + "</span><span style=\"position:absolute;\" ><table style=\"width: 100%; border: 0.2em solid #CDCDCD; background: white;\"><tr>";
+									for (key in x) {
+										ret += "<th class=\"pvtAxisLabel\">" + key + "</th>";
+									}
+									ret += "</tr><tr>";
+									for (key in x) {
+										ret += "<td style=\"padding: 0.3em;\">" + x[key] + "</td>";
+									}
+									ret += '</tr></table></span>';
+									r += ret;
+								}
+								r += '</td></tr>';
+							}
+							r += '</table>';
+							return r;
+						} else {
+							var x = arr;
+							if (data.intable) {
+								return formatter(x[attr]);
+							} else {
+								var ret = "<span class=\"hasTooltip\">" + formatter(x[attr]) + "</span><span style=\"position:absolute;\" ><table style=\"width: 100%;\"><tr>";
+								for (key in x) {
+									ret += "<th class=\"pvtAxisLabel\">" + key + "</th>";
+								}
+								ret += "</tr><tr>";
+								for (key in x) {
+									ret += "<td>" + x[key] + "</td>";
+								}
+								ret += "</tr></table></span>";
+								return ret;
+							}
+						}
+					},
+					formatPlain : function(x) {
+						if (attr == undefined)
+							return;
+						return (this.isArray ? this.maxAvg : x[attr]);
+					},
+					numInputs : attr != null ? 0 : 1
+					};
+				};
+			};
+		},
+		average : function(formatter) {
+			if (formatter == null) {
+				formatter = usFmt;
+			}
+			return function(_arg) {
+				var attr;
+				attr = _arg[0];
+				return function(data, rowKey, colKey) {
+					return {
+					label : "Avg. of " + attr,
+					sum : 0,
+					len : 0,
+					push : function(record) {
+						if (!isNaN(parseFloat(record[attr]))) {
+							this.sum += parseFloat(record[attr]);
+							return this.len++;
+						}
+					},
+					value : function() {
+						return this.sum / this.len;
+					},
+					format : formatter,
+					numInputs : attr != null ? 0 : 1
+					};
+				};
+			};
+		},
+		sumOverSum : function(formatter) {
+			if (formatter == null) {
+				formatter = usFmt;
+			}
+			return function(_arg) {
+				var denom, num;
+				num = _arg[0], denom = _arg[1];
+				return function(data, rowKey, colKey) {
+					return {
+					label : "Sum over Sum",
+					sumNum : 0,
+					sumDenom : 0,
+					push : function(record) {
+						if (!isNaN(parseFloat(record[num]))) {
+							this.sumNum += parseFloat(record[num]);
+						}
+						if (!isNaN(parseFloat(record[denom]))) {
+							return this.sumDenom += parseFloat(record[denom]);
+						}
+					},
+					value : function() {
+						return this.sumNum / this.sumDenom;
+					},
+					format : formatter,
+					numInputs : (num != null) && (denom != null) ? 0 : 2
+					};
+				};
+			};
+		},
+		sumOverSumBound80 : function(upper, formatter) {
+			if (upper == null) {
+				upper = true;
+			}
+			if (formatter == null) {
+				formatter = usFmt;
+			}
+			return function(_arg) {
+				var denom, num;
+				num = _arg[0], denom = _arg[1];
+				return function(data, rowKey, colKey) {
+					return {
+					label : upper ? "80% Upper Bound" : "80% Lower Bound",
+					sumNum : 0,
+					sumDenom : 0,
+					push : function(record) {
+						if (!isNaN(parseFloat(record[num]))) {
+							this.sumNum += parseFloat(record[num]);
+						}
+						if (!isNaN(parseFloat(record[denom]))) {
+							return this.sumDenom += parseFloat(record[denom]);
+						}
+					},
+					value : function() {
+						var sign;
+						sign = upper ? 1 : -1;
+						return (0.821187207574908 / this.sumDenom + this.sumNum / this.sumDenom + 1.2815515655446004 * sign * Math.sqrt(0.410593603787454 / (this.sumDenom * this.sumDenom) + (this.sumNum * (1 - this.sumNum / this.sumDenom)) / (this.sumDenom * this.sumDenom))) / (1 + 1.642374415149816 / this.sumDenom);
+					},
+					format : formatter,
+					numInputs : (num != null) && (denom != null) ? 0 : 2
+					};
+				};
+			};
+		},
+		fractionOf : function(wrapped, type, formatter, label) {
+			if (type == null) {
+				type = "total";
+			}
+			if (formatter == null) {
+				formatter = usFmtPct;
+			}
+			return function() {
+				var x;
+				x = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+				return function(data, rowKey, colKey) {
+					return {
+					label : label,
+					selector : {
+					total : [ [], [] ],
+					row : [ rowKey, [] ],
+					col : [ [], colKey ]
+					}[type],
+					inner : wrapped.apply(null, x)(data, rowKey, colKey),
+					push : function(record) {
+						return this.inner.push(record);
+					},
+					format : formatter,
+					value : function() {
+						return this.inner.value() / data.getAggregator.apply(data, this.selector).inner.value();
+					},
+					numInputs : wrapped.apply(null, x)().numInputs
+					};
+				};
+			};
+		}
 		};
 		aggregators = (function(tpl) {
 			return {
-				"Count" : tpl.count(usFmtInt),
-				"Count Unique Values" : tpl.countUnique(usFmtInt),
-				"List Unique Values" : tpl.listUnique(", "),
-				"Sum" : tpl.sum(usFmt),
-				"Integer Sum" : tpl.sum(usFmtInt),
-				"Average" : tpl.average(usFmt),
-				"Bests" : tpl.bests(usFmt),
-				"Minimum" : tpl.min(usFmt),
-				"Maximum" : tpl.max(usFmt),
-				"Sum over Sum" : tpl.sumOverSum(usFmt),
-				"80% Upper Bound" : tpl.sumOverSumBound80(true, usFmt),
-				"80% Lower Bound" : tpl.sumOverSumBound80(false, usFmt),
-				"Sum as Fraction of Total" : tpl.fractionOf(tpl.sum(), "total", usFmtPct, "Sum as Fraction of Total"),
-				"Sum as Fraction of Rows" : tpl.fractionOf(tpl.sum(), "row", usFmtPct, "Sum as Fraction of Rows"),
-				"Sum as Fraction of Columns" : tpl.fractionOf(tpl.sum(), "col", usFmtPct, "Sum as Fraction of Columns"),
-				"Count as Fraction of Total" : tpl.fractionOf(tpl.count(), "total", usFmtPct, "Count as Fraction of Total"),
-				"Count as Fraction of Rows" : tpl.fractionOf(tpl.count(), "row", usFmtPct, "Count as Fraction of Rows"),
-				"Count as Fraction of Columns" : tpl.fractionOf(tpl.count(), "col", usFmtPct, "Count as Fraction of Columns")
+			"Count" : tpl.count(usFmtInt),
+			"Count Unique Values" : tpl.countUnique(usFmtInt),
+			"List Unique Values" : tpl.listUnique(", "),
+			"Sum" : tpl.sum(usFmt),
+			"Integer Sum" : tpl.sum(usFmtInt),
+			"Average" : tpl.average(usFmt),
+			"Minimum" : tpl.min(usFmt),
+			"Maximum" : tpl.max(usFmt),
+			"Sum over Sum" : tpl.sumOverSum(usFmt),
+			"80% Upper Bound" : tpl.sumOverSumBound80(true, usFmt),
+			"80% Lower Bound" : tpl.sumOverSumBound80(false, usFmt),
+			"Sum as Fraction of Total" : tpl.fractionOf(tpl.sum(), "total", usFmtPct, "Sum as Fraction of Total"),
+			"Sum as Fraction of Rows" : tpl.fractionOf(tpl.sum(), "row", usFmtPct, "Sum as Fraction of Rows"),
+			"Sum as Fraction of Columns" : tpl.fractionOf(tpl.sum(), "col", usFmtPct, "Sum as Fraction of Columns"),
+			"Count as Fraction of Total" : tpl.fractionOf(tpl.count(), "total", usFmtPct, "Count as Fraction of Total"),
+			"Count as Fraction of Rows" : tpl.fractionOf(tpl.count(), "row", usFmtPct, "Count as Fraction of Rows"),
+			"Count as Fraction of Columns" : tpl.fractionOf(tpl.count(), "col", usFmtPct, "Count as Fraction of Columns")
 			};
 		})(aggregatorTemplates);
 		renderers = {
-			"Heatmap" : function(pvtData, opts) {
-				return $(pivotTableRenderer(pvtData, opts)).heatmap();
-			},
-			"Row Heatmap" : function(pvtData, opts) {
-				return $(pivotTableRenderer(pvtData, opts)).heatmap("rowheatmap");
-			},
-			"Col Heatmap" : function(pvtData, opts) {
-				return $(pivotTableRenderer(pvtData, opts)).heatmap("colheatmap");
-			},
-			"Table" : function(pvtData, opts) {
-				return pivotTableRenderer(pvtData, opts);
-			},
+		"Heatmap" : function(pvtData, opts) {
+			return $(pivotTableRenderer(pvtData, opts)).heatmap();
+		},
+		"Row Heatmap" : function(pvtData, opts) {
+			return $(pivotTableRenderer(pvtData, opts)).heatmap("rowheatmap");
+		},
+		"Col Heatmap" : function(pvtData, opts) {
+			return $(pivotTableRenderer(pvtData, opts)).heatmap("colheatmap");
+		},
+		"Table" : function(pvtData, opts) {
+			return pivotTableRenderer(pvtData, opts);
+		},
 		};
 		locales = {
 			en : {
-				aggregators : aggregators,
-				renderers : renderers,
-				localeStrings : {
-					renderError : "An error occurred rendering the PivotTable results.",
-					computeError : "An error occurred computing the PivotTable results.",
-					uiRenderError : "An error occurred rendering the PivotTable UI.",
-					selectAll : "Select All",
-					selectNone : "Select None",
-					tooMany : "(too many to list)",
-					filterResults : "Filter results",
-					totals : "Totals",
-					vs : "vs",
-					by : "by"
-				}
+			aggregators : aggregators,
+			renderers : renderers,
+			localeStrings : {
+			renderError : "An error occurred rendering the PivotTable results.",
+			computeError : "An error occurred computing the PivotTable results.",
+			uiRenderError : "An error occurred rendering the PivotTable UI.",
+			selectAll : "Select All",
+			selectNone : "Select None",
+			tooMany : "(too many to list)",
+			filterResults : "Filter results",
+			totals : "Totals",
+			vs : "vs",
+			by : "by"
+			}
 			}
 		};
 		mthNamesEn = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
@@ -558,55 +611,55 @@
 			return ("0" + number).substr(-2, 2);
 		};
 		derivers = {
-			bin : function(col, binWidth) {
-				return function(record) {
-					return record[col] - record[col] % binWidth;
-				};
-			},
-			dateFormat : function(col, formatString, utcOutput, mthNames, dayNames) {
-				var utc;
-				if (utcOutput == null) {
-					utcOutput = false;
-				}
-				if (mthNames == null) {
-					mthNames = mthNamesEn;
-				}
-				if (dayNames == null) {
-					dayNames = dayNamesEn;
-				}
-				utc = utcOutput ? "UTC" : "";
-				return function(record) {
-					var date;
-					date = new Date(Date.parse(record[col]));
-					if (isNaN(date)) {
-						return "";
-					}
-					return formatString.replace(/%(.)/g, function(m, p) {
-						switch (p) {
-						case "y":
-							return date["get" + utc + "FullYear"]();
-						case "m":
-							return zeroPad(date["get" + utc + "Month"]() + 1);
-						case "n":
-							return mthNames[date["get" + utc + "Month"]()];
-						case "d":
-							return zeroPad(date["get" + utc + "Date"]());
-						case "w":
-							return dayNames[date["get" + utc + "Day"]()];
-						case "x":
-							return date["get" + utc + "Day"]();
-						case "H":
-							return zeroPad(date["get" + utc + "Hours"]());
-						case "M":
-							return zeroPad(date["get" + utc + "Minutes"]());
-						case "S":
-							return zeroPad(date["get" + utc + "Seconds"]());
-						default:
-							return "%" + p;
-						}
-					});
-				};
+		bin : function(col, binWidth) {
+			return function(record) {
+				return record[col] - record[col] % binWidth;
+			};
+		},
+		dateFormat : function(col, formatString, utcOutput, mthNames, dayNames) {
+			var utc;
+			if (utcOutput == null) {
+				utcOutput = false;
 			}
+			if (mthNames == null) {
+				mthNames = mthNamesEn;
+			}
+			if (dayNames == null) {
+				dayNames = dayNamesEn;
+			}
+			utc = utcOutput ? "UTC" : "";
+			return function(record) {
+				var date;
+				date = new Date(Date.parse(record[col]));
+				if (isNaN(date)) {
+					return "";
+				}
+				return formatString.replace(/%(.)/g, function(m, p) {
+					switch (p) {
+					case "y":
+						return date["get" + utc + "FullYear"]();
+					case "m":
+						return zeroPad(date["get" + utc + "Month"]() + 1);
+					case "n":
+						return mthNames[date["get" + utc + "Month"]()];
+					case "d":
+						return zeroPad(date["get" + utc + "Date"]());
+					case "w":
+						return dayNames[date["get" + utc + "Day"]()];
+					case "x":
+						return date["get" + utc + "Day"]();
+					case "H":
+						return zeroPad(date["get" + utc + "Hours"]());
+					case "M":
+						return zeroPad(date["get" + utc + "Minutes"]());
+					case "S":
+						return zeroPad(date["get" + utc + "Seconds"]());
+					default:
+						return "%" + p;
+					}
+				});
+			};
+		}
 		};
 		naturalSort = (function(_this) {
 			return function(as, bs) {
@@ -676,14 +729,14 @@
 			}
 		};
 		$.pivotUtilities = {
-			aggregatorTemplates : aggregatorTemplates,
-			aggregators : aggregators,
-			renderers : renderers,
-			derivers : derivers,
-			locales : locales,
-			naturalSort : naturalSort,
-			numberFormat : numberFormat,
-			sortAs : sortAs
+		aggregatorTemplates : aggregatorTemplates,
+		aggregators : aggregators,
+		renderers : renderers,
+		derivers : derivers,
+		locales : locales,
+		naturalSort : naturalSort,
+		numberFormat : numberFormat,
+		sortAs : sortAs
 		};
 
 		/*
@@ -889,12 +942,12 @@
 					agg = this.tree[flatRowKey][flatColKey];
 				}
 				return agg != null ? agg : {
-					value : (function() {
-						return null;
-					}),
-					format : function() {
-						return "";
-					}
+				value : (function() {
+					return null;
+				}),
+				format : function() {
+					return "";
+				}
 				};
 			};
 
@@ -1081,7 +1134,8 @@
 								break;
 							} else {
 								for (var j = 0; j < val.length; ++j) {
-									// TODO: td.setAttribute("data-value", p_data);
+									// TODO: td.setAttribute("data-value",
+									// p_data);
 									r += '<tr style="height:' + (100 / val.length) + '%;"><td>' + val[j][pivotData.unused[i]] + '</td></tr>';
 								}
 							}
@@ -1207,20 +1261,20 @@
 		$.fn.pivot = function(input, opts) {
 			var defaults, e, pivotData, result, x;
 			defaults = {
-				cols : [],
-				rows : [],
-				intable : true,
-				filter : function() {
-					return true;
-				},
-				aggregator : aggregatorTemplates.count()(),
-				aggregatorName : "Count",
-				sorters : function() {
-				},
-				derivedAttributes : {},
-				renderer : pivotTableRenderer,
-				rendererOptions : null,
-				localeStrings : locales.en.localeStrings
+			cols : [],
+			rows : [],
+			intable : true,
+			filter : function() {
+				return true;
+			},
+			aggregator : aggregatorTemplates.count()(),
+			aggregatorName : "Count",
+			sorters : function() {
+			},
+			derivedAttributes : {},
+			renderer : pivotTableRenderer,
+			rendererOptions : null,
+			localeStrings : locales.en.localeStrings
 			};
 			opts = $.extend(defaults, opts);
 			result = null;
@@ -1261,27 +1315,27 @@
 				locale = "en";
 			}
 			defaults = {
-				derivedAttributes : {},
-				aggregators : locales[locale].aggregators,
-				renderers : locales[locale].renderers,
-				hiddenAttributes : [],
-				menuLimit : 200,
-				cols : [],
-				rows : [],
-				vals : [],
-				exclusions : {},
-				unusedAttrsVertical : "auto",
-				autoSortUnusedAttrs : false,
-				rendererOptions : {
-					localeStrings : locales[locale].localeStrings
-				},
-				onRefresh : null,
-				filter : function() {
-					return true;
-				},
-				sorters : function() {
-				},
+			derivedAttributes : {},
+			aggregators : locales[locale].aggregators,
+			renderers : locales[locale].renderers,
+			hiddenAttributes : [],
+			menuLimit : 200,
+			cols : [],
+			rows : [],
+			vals : [],
+			exclusions : {},
+			unusedAttrsVertical : "auto",
+			autoSortUnusedAttrs : false,
+			rendererOptions : {
 				localeStrings : locales[locale].localeStrings
+			},
+			onRefresh : null,
+			filter : function() {
+				return true;
+			},
+			sorters : function() {
+			},
+			localeStrings : locales[locale].localeStrings
 			};
 			existingOpts = this.data("pivotUIOptions");
 			if ((existingOpts == null) || overwrite) {
@@ -1400,9 +1454,9 @@
 							return valueList.find("input:visible").prop("checked", false);
 						}));
 						btns.append($("<input>", {
-							type : "text",
-							placeholder : opts.localeStrings.filterResults,
-							"class" : "pvtSearch"
+						type : "text",
+						placeholder : opts.localeStrings.filterResults,
+						"class" : "pvtSearch"
 						}).bind("keyup", function() {
 							var filter;
 							filter = $(this).val().toLowerCase();
@@ -1424,8 +1478,7 @@
 							filterItem = $("<label>");
 							filterItemExcluded = opts.exclusions[c] ? (__indexOf.call(opts.exclusions[c], k) >= 0) : false;
 							hasExcludedItem || (hasExcludedItem = filterItemExcluded);
-							$("<input>").attr("type", "checkbox").addClass('pvtFilter').attr("checked", !filterItemExcluded).data("filter", [ c, k ]).appendTo(
-									filterItem);
+							$("<input>").attr("type", "checkbox").addClass('pvtFilter').attr("checked", !filterItemExcluded).data("filter", [ c, k ]).appendTo(filterItem);
 							filterItem.append($("<span>").html(k));
 							filterItem.append($("<span>").text(" (" + v + ")"));
 							checkContainer.append($("<p>").append(filterItem));
@@ -1450,8 +1503,8 @@
 					}).text("OK").bind("click", updateFilter));
 					showFilterList = function(e) {
 						valueList.css({
-							left : e.pageX,
-							top : e.pageY
+						left : e.pageX,
+						top : e.pageY
 						}).toggle();
 						valueList.find('.pvtSearch').val('');
 						return valueList.find('.pvtCheckContainer p').show();
@@ -1514,13 +1567,13 @@
 					return function() {
 						var attr, exclusions, newDropdown, numInputsToProcess, pivotUIOptions, pvtVals, subopts, unusedAttrsContainer, vals, _len4, _m, _n, _ref5;
 						subopts = {
-							derivedAttributes : opts.derivedAttributes,
-							localeStrings : opts.localeStrings,
-							rendererOptions : opts.rendererOptions,
-							sorters : opts.sorters,
-							intable : false,
-							cols : [],
-							rows : []
+						derivedAttributes : opts.derivedAttributes,
+						localeStrings : opts.localeStrings,
+						rendererOptions : opts.rendererOptions,
+						sorters : opts.sorters,
+						intable : false,
+						cols : [],
+						rows : []
 						};
 						numInputsToProcess = (_ref5 = opts.aggregators[aggregator.val()]([])().numInputs) != null ? _ref5 : 0;
 						vals = [];
@@ -1542,8 +1595,7 @@
 						});
 						if (numInputsToProcess !== 0) {
 							pvtVals = _this.find(".pvtVals");
-							for (x = _m = 0; 0 <= numInputsToProcess ? _m < numInputsToProcess : _m > numInputsToProcess; x = 0 <= numInputsToProcess ? ++_m
-									: --_m) {
+							for (x = _m = 0; 0 <= numInputsToProcess ? _m < numInputsToProcess : _m > numInputsToProcess; x = 0 <= numInputsToProcess ? ++_m : --_m) {
 								newDropdown = $("<select>").addClass('pvtAttrDropdown').append($("<option>")).bind("change", function() {
 									return refresh();
 								});
@@ -1603,12 +1655,12 @@
 						subopts.unused = tmp;
 						pivotTable.pivot(input, subopts);
 						pivotUIOptions = $.extend(opts, {
-							cols : subopts.cols,
-							rows : subopts.rows,
-							vals : vals,
-							exclusions : exclusions,
-							aggregatorName : aggregator.val(),
-							rendererName : renderer.val()
+						cols : subopts.cols,
+						rows : subopts.rows,
+						vals : vals,
+						exclusions : exclusions,
+						aggregatorName : aggregator.val(),
+						rendererName : renderer.val()
 						});
 						_this.data("pivotUIOptions", pivotUIOptions);
 						if (opts.autoSortUnusedAttrs) {
@@ -1647,14 +1699,14 @@
 				})(this);
 				refresh();
 				this.find(".pvtAxisContainer").sortable({
-					update : function(e, ui) {
-						if (ui.sender == null) {
-							return refresh();
-						}
-					},
-					connectWith : this.find(".pvtAxisContainer"),
-					items : 'li',
-					placeholder : 'pvtPlaceholder'
+				update : function(e, ui) {
+					if (ui.sender == null) {
+						return refresh();
+					}
+				},
+				connectWith : this.find(".pvtAxisContainer"),
+				items : 'li',
+				placeholder : 'pvtPlaceholder'
 				});
 			} catch (_error) {
 				e = _error;
@@ -1776,26 +1828,26 @@
 						var text, wrapper;
 						text = elem.text();
 						wrapper = $("<div>").css({
-							"position" : "relative",
-							"height" : "55px"
+						"position" : "relative",
+						"height" : "55px"
 						});
 						wrapper.append($("<div>").css({
-							"position" : "absolute",
-							"bottom" : 0,
-							"left" : 0,
-							"right" : 0,
-							"height" : scaler(x) + "%",
-							"background-color" : "gray"
+						"position" : "absolute",
+						"bottom" : 0,
+						"left" : 0,
+						"right" : 0,
+						"height" : scaler(x) + "%",
+						"background-color" : "gray"
 						}));
 						wrapper.append($("<div>").text(text).css({
-							"position" : "relative",
-							"padding-left" : "5px",
-							"padding-right" : "5px"
+						"position" : "relative",
+						"padding-left" : "5px",
+						"padding-right" : "5px"
 						}));
 						return elem.css({
-							"padding" : 0,
-							"padding-top" : "5px",
-							"text-align" : "center"
+						"padding" : 0,
+						"padding-top" : "5px",
+						"text-align" : "center"
 						}).html(wrapper);
 					});
 				};
