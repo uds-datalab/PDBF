@@ -426,8 +426,8 @@
 
         $$.width = $$.currentWidth - $$.margin.left - $$.margin.right;
         $$.height = $$.currentHeight - $$.margin.top - $$.margin.bottom;
-        if ($$.width < 0) { $$.width = 0; }
-        if ($$.height < 0) { $$.height = 0; }
+        if ($$.width <= 0) { $$.width = 1; }
+        if ($$.height <= 0) { $$.height = 1; }
 
         $$.width2 = config.axis_rotated ? $$.margin.left - $$.rotated_padding_left - $$.rotated_padding_right : $$.width;
         $$.height2 = config.axis_rotated ? $$.height : $$.currentHeight - $$.margin2.top - $$.margin2.bottom;
@@ -4613,7 +4613,7 @@
             left = Math.max(30, $$.margin.left),
             right = Math.max(30, $$.margin.right);
         // width + axis line width + padding for left/right
-        return (forHorizontal ? $$.width + 2 + left + right : $$.margin.left + 20) + this.config.completeScale*100;
+        return (forHorizontal ? $$.width + 2 + left + right : $$.margin.left + 20 + this.config.completeScale*100);
     };
     c3_chart_internal_fn.getAxisClipHeight = function (forHorizontal) {
         // less than 20 is not enough to show the axis label 'outer' without legend

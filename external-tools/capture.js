@@ -1,4 +1,5 @@
 var system = require('system');
+var fs = require('fs');
 if (system.args.length !== 2) {
 	console.log('Usage: ' + system.args[0] + ' webpagefile');
 	phantom.exit();
@@ -24,15 +25,14 @@ page.open(system.args[1], function() {
 		height: size.h
 	};
 
-	page.evaluate(function() {
+	var data = page.evaluate(function() {
 		overlay();
+		return {name: json.name, result: JSON.stringify(json.result)};
 	});
 		
 	window.setTimeout(function () {
-		var name = page.evaluate(function() {
-			return json.name;
-		});
-		page.render(name +'.png');
+		fs.write(data.name + '.json', data.result, 'w');
+		page.render(data.name +'.png');
 		phantom.exit();
 	}, 500);
 });

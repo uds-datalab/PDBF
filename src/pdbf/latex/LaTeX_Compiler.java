@@ -33,6 +33,7 @@ public class LaTeX_Compiler {
     private static ArrayList<Process> processes = new ArrayList<Process>();
     private static ArrayList<String> cleanupfiles = new ArrayList<String>();
     private static ArrayList<String> copyfiles = new ArrayList<String>();
+    private static ArrayList<String> preloadfiles = new ArrayList<String>();
     private static Gson gson;
     private static String suffix;
     private static Dimension dimOrg;
@@ -151,7 +152,7 @@ public class LaTeX_Compiler {
 	System.out.println("Generating images...");
 	for (int i = 0; i < overlays.length; ++i) {
 	    if (overlays[i].type instanceof Chart) {
-		processChart(overlays[i], i);
+		processChart(overlays[i]);
 	    }
 	}
 
@@ -172,6 +173,20 @@ public class LaTeX_Compiler {
 	    } catch (IOException e) {
 		e.printStackTrace();
 	    }
+	}
+	
+	String preload = "";
+	for (String pre : preloadfiles) {
+	    try {
+		preload += "var " + pre.substring(0, pre.length()-5) + " = " + FileUtils.readFileToString(new File(pre)) + ";\n";
+	    } catch (IOException e) {
+		e.printStackTrace();
+	    }
+	}
+	try {
+	    FileUtils.writeStringToFile(new File("preload"), preload);
+	} catch (IOException e2) {
+	    e2.printStackTrace();
 	}
 
 	System.out.println("Compiling LaTeX (2/2)...");
@@ -259,10 +274,12 @@ public class LaTeX_Compiler {
 	}
     }
 
-    private static void processChart(Overlay o, int i) {
+    private static void processChart(Overlay o) {
 	Chart c = (Chart) o.type;
-	cleanupfiles.add("out/web/" + i + ".html");
+	cleanupfiles.add("out/web/" + o.name + ".html");
 	cleanupfiles.add("" + o.name + ".png");
+	cleanupfiles.add("" + o.name + ".json");
+	preloadfiles.add("" + o.name + ".json");
 	copyfiles.add("" + o.name + ".png");
 	try {
 	    Dimension dim = new Dimension(dimOrg.width * c.quality, dimOrg.height * c.quality);
@@ -270,12 +287,12 @@ public class LaTeX_Compiler {
 	    String viewerHEAD = FileUtils.readFileToString(new File("out/web/templateHEADimages.html"), Tools.utf8);
 	    String viewerTAIL = FileUtils.readFileToString(new File("out/web/templateTAILimages.html"), Tools.utf8);
 	    viewer = viewerHEAD + "dim_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(dim)) + "\";\r\n" + "json_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(o)) + "\";\r\n" + "db_base64 = \"" + Tools.encodeFileToBase64Binary(new File("db.sql")) + "\";\r\n" + "dbjson_base64 = \"" + Tools.escapeQuotes(new File("db.json")) + "\";\r\n" + viewerTAIL;
-	    FileUtils.writeStringToFile(new File("out/web/" + i + ".html"), viewer, Tools.utf8);
+	    FileUtils.writeStringToFile(new File("out/web/" + o.name + ".html"), viewer, Tools.utf8);
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
 	try {
-	    ProcessBuilder pb = new ProcessBuilder("external-tools/phantomjs-" + suffix, "external-tools/capture.js", "out/web/" + i + ".html");
+	    ProcessBuilder pb = new ProcessBuilder("external-tools/phantomjs-" + suffix, "external-tools/capture.js", "out/web/" + o.name + ".html");
 	    pb.inheritIO();
 	    Process p = pb.start();
 	    processes.add(p);

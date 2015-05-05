@@ -56,10 +56,6 @@ function overlay() {
 	var pageNr = 0;
 	for (var i = 0; i < pageOverlays[pageNr].length; ++i) {
 		var json = pageOverlays[pageNr][i];
-		json.type.I.x2 = 0.999;
-		json.type.I.x1 = 0.000;
-		json.type.I.y1 = 1.000;
-		json.type.I.y2 = 0.001;
-		display(json, document.body, false);
+		display(json, document.body, true);
 	}
 }

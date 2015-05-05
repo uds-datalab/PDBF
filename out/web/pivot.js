@@ -180,7 +180,7 @@
 					// TODO: var alpha = _arg[1];
 					return function(data, rowKey, colKey) {
 						return {
-							label : "95% confidence interval of average " + attr,
+							label : "95% confidence interval of best average " + attr,
 							data : data,
 							special : true,
 							vals : [],
@@ -239,7 +239,6 @@
 								if (attr == undefined)
 									return;
 								var r = '<table class="innerTable" style="width: 100%; height:100%; white-space: nowrap;">';
-								// TODO: td.setAttribute("data-value", p_data);
 								for (var i = 0; i < arr.length; ++i) {
 									r += '<tr style="height=' + (100 / arr.length) + '%;"><td>';
 									var x = arr[i];
@@ -248,13 +247,13 @@
 										r += (x[attr]);
 									} else {
 										var ret = "<span class=\"hasTooltip\">" + (x[attr])
-												+ "</span><span style=\"position:absolute;\" ><table style=\"width: 100%;\"><tr>";
+												+ "</span><span style=\"position:absolute;\" ><table style=\"width: 100%; border: 0.2em solid #CDCDCD; background: white;\"><tr>";
 										for (key in x) {
 											ret += "<th class=\"pvtAxisLabel\">" + key + "</th>";
 										}
 										ret += "</tr><tr>";
 										for (key in x) {
-											ret += "<td>" + x[key] + "</td>";
+											ret += "<td style=\"padding: 0.3em;\">" + x[key] + "</td>";
 										}
 										ret += '</tr></table></span>';
 										r += ret;

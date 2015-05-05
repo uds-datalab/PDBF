@@ -31,6 +31,7 @@ if (tmp != "") {
 toc("DB load time");
 
 var rawZoomFactor;
+var zoomFactor;
 var init = true;
 
 $(window).resize(fixOverlaySize);
@@ -43,6 +44,9 @@ for (var i = 0; i < json.length; ++i) {
 }
 
 function parse(json) {
+	if (window[json.name]) {
+		json.result = window[json.name];
+	}
 	var page = json.type.I.page;
 	var pageOverlay = pageOverlays[page];
 	if (typeof pageOverlay == 'undefined') {
@@ -52,9 +56,9 @@ function parse(json) {
 	pageOverlay[pageOverlay.length] = json;
 }
 
-//function alert(e) {
-//var a;
-//}
+// function alert(e) {
+// var a;
+// }
 
 function overlay(pageNr) {
 	if (init) {
@@ -65,7 +69,9 @@ function overlay(pageNr) {
 	if (typeof pageOverlays[pageNr] != 'undefined') {
 		var page = document.getElementById("pageContainer" + pageNr);
 		for (var i = 0; i < pageOverlays[pageNr].length; ++i) {
-			display(pageOverlays[pageNr][i], page, true)
+			var json = pageOverlays[pageNr][i];
+			zoomFactor = PDFViewerApplication.pdfViewer._currentScale * json.type.I.zoom;
+			display(json, page, false);
 		}
 	}
 }

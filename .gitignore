@@ -53,3 +53,6 @@ Overlay15.png
 .classpath
 .settings/
 .git//db.json
+/preload
+/Overlay2.json
+/Overlay1.json

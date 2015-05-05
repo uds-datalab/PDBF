@@ -25,13 +25,9 @@ table.innerTable tr th:last-child {
 	visibility: hidden;
 	background-color: white;
     color: white;
-    padding:5px;
     position: absolute;
     width: 60%;
 	margin-left: -60%;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    border-radius: 5px;
 	-webkit-transition:opacity 200ms linear; 
 	-moz-transition:opacity 200ms linear; 
 	-o-transition:opacity 200ms linear; 
@@ -63,7 +59,6 @@ table.pvtTable .pvtColLabel {text-align: center;}
 table.pvtTable .pvtTotalLabel {text-align: right;}
 
 table.pvtTable tr td {
-    color: #3D3D3D;
     border: 0.1em solid #CDCDCD;
     text-align: left;
     line-height: 1.0;
