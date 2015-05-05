@@ -169,6 +169,8 @@
 					};
 				};
 			},
+			// TODO: aggregatoren best zu minimum. neu worst. minimum bei value, best bei array
+			// TODO: special behandlung von endre als parameter machen
 			// TODO: add variable alpha (also to UI)
 			// TODO: add max
 			bests : function(formatter) {

@@ -33,7 +33,7 @@ public class HTML_Compiler {
 		    "json_base64 = \"" + Tools.encodeFileToBase64Binary(new File("config.json")) + "\";\r\n" + 
 		    "dbjson_base64 = \"" + Tools.escapeQuotes(new File("db.json")) + "\";\r\n" +
 		    preload + "\r\n" +
-		    //"\r\n" + all +		    
+		    //all + "\r\n" +		    
 		    viewerTAIL;
 	    String insert1 = "%<!DOCTYPE html><html dir=\"ltr\" mozdisallowselectionprint moznomarginboxes>" +
   		      	     "<head><meta charset=\"utf-8\"><!--\n";
