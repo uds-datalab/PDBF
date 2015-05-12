@@ -58,7 +58,7 @@ function createChart(completeScale, rotateX) {
 	//add scoped css
 	var css = document.createElement('style');
 	css.setAttribute('scoped', 'scoped');
-	$(c).parent().append(css);
+	c.parentElement.appendChild(css);
 	css.innerHTML = '																'+
 		'.c3-line {																	'+
 		' stroke-width: '+(zoomFactor)+'px; }										'+
@@ -106,7 +106,7 @@ function createChart(completeScale, rotateX) {
 				rescale: true
 			},
 			legend: {
-				show: false
+				show: true
 			},
 			noxticks: false,
 			noyticks: false,

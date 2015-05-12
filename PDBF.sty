@@ -1,4 +1,3 @@
-% TODO: switcher, table, picasso diag
 \def\filedate{2015/02/23}
 \def\fileversion{1.0}
 \NeedsTeXFormat{LaTeX2e}
@@ -20,6 +19,17 @@
 \immediate\write\tempfile{[}
 
 \AtBeginDocument{
+	\newlength{\emptylen} 
+	\settowidth{\emptylen}{} 
+	
+	\ifdim\emptylen=\paperwidth
+	  \errmessage{^^J ^^J Error: paperwidth value missing! Did you forgot to specify the papersize via the geometry package? ^^J}%
+	\fi
+	
+	\ifdim\emptylen=\paperheight
+	  \errmessage{^^J ^^J Error: paperheight value missing! Did you forgot to specify the papersize via the geometry package? ^^J}%
+	\fi
+	
 	\newwrite\temp
 	\immediate\openout\temp=dim.json
 	\immediate\write\temp{\@charlb "width": "\number\paperwidth",}
@@ -183,19 +193,19 @@
 	\relax
 }
 
-\def\chart[#1]#2{
-	\pdbf@chart[#1]{#2}{#2}{Chart}
+\NewDocumentCommand\chart{O{} o m}{%
+\pdbf@chart[#1]{#3}{\IfValueTF{#2}{#2}{#3}}{Chart}%
 }
 
-\def\pivotTable[#1]#2#3{
-	\pdbf@chart[#1]{#2}{#3}{Pivot}
+\NewDocumentCommand\pivotTable{O{} o m}{%
+\pdbf@chart[#1]{#3}{\IfValueTF{#2}{#2}{#3}}{Pivot}%
 }
 
-\def\multiplotChart[#1]#2{
-	\pdbf@chart[#1]{#2}{#2}{MultiplotChart}
+\NewDocumentCommand\multiplotChart{O{} o m}{%
+\pdbf@chart[#1]{#3}{\IfValueTF{#2}{#2}{#3}}{MultiplotChart}%
 }
 
-\def\sqlmult#1#2{%
+\def\pdbf@sqlmult#1#2{%
 	\edef\pdbf@fontsave{\f@size}%
 	{\fontsize{5pt}{1sp}\selectfont%
 		\stepcounter{visual}%
@@ -234,7 +244,18 @@
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregation": "\pdbf@aggregation",}% 
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationattribute": "\pdbf@aggregationattribute",}% 
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationBig": "\pdbf@aggregationBig",}% 
-		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationattributeBig": "\pdbf@aggregationattributeBig",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationattributeBig": "\pdbf@aggregationattributeBig",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xCount": \pdbf@xCount,}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yCount": \pdbf@yCount,}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"leftArr": "\pdbf@leftArr",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"rightArr": "\pdbf@rightArr",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"topArr": "\pdbf@topArr",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"bottomArr": "\pdbf@bottomArr",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xValues": "\pdbf@xValues",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yValues": "\pdbf@yValues",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yFirst": \pdbf@yFirst,}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"forceXequal": \pdbf@forceXequal,}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"forceYequal": \pdbf@forceYequal,}%  
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"cols": "\pdbf@cols",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"rows": "\pdbf@rows",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"chartType": "\pdbf@chartType",}%
@@ -250,8 +271,8 @@
 	}%
 }
 
-\def\sql#1{
-	\sqlmult{#1}{#1}
+\NewDocumentCommand\sql{o m}{%
+\pdbf@sqlmult{\IfValueTF{#1}{#1}{#2}}{#2}%
 }
 	
 \def\dbSQLText#1{%

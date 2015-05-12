@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.4.16)  22 APR 2015 13:40
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.4.16)  12 MAY 2015 23:34
 entering extended mode
 **C:/workspaceAndroid/PDBF/testdata/chunked_column_layouts/draft.tex
 (C:/workspaceAndroid/PDBF/testdata/chunked_column_layouts/draft.tex
@@ -517,6 +517,26 @@ Package: xparse 2014/11/25 v5471 L3 Experimental document command parser
 \c@visual=\count157
 \c@overlay=\count158
 \tempfile=\write4
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \chart with sig. 'O{} o m' on line 198.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \pivotTable with sig. 'O{} o m' on line 202.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \multiplotChart with sig. 'O{} o m' on line 206.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \sql with sig. 'o m' on line 276.
+.................................................
 )
 Package: PDBF 2015/02/23    1.0    (Patrick Bender)
  (C:\workspaceAndroid\PDBF\testdata\chunked_column_layouts\draft.aux)
@@ -582,6 +602,7 @@ LaTeX Font Info:    ... okay on input line 44.
 )
 \c@lstlisting=\count165
 \AtBeginShipoutBox=\box49
+\emptylen=\skip60
 \temp=\write5
 LaTeX Font Info:    Try loading font information for U+msa on input line 62.
  ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
@@ -704,13 +725,13 @@ Underfull \hbox (badness 1852) in paragraph at lines 183--184
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [2 <C:/workspaceAndroid/PDBF/testdata/chunked_column_layouts/pdf/methodology_r
-untimes.pdf>] <Overlay1.png, id=60, 1224.07312pt x 1892.57062pt>
+untimes.pdf>] <Overlay1.png, id=60, 1209.76968pt x 1892.57062pt>
 File: Overlay1.png Graphic file (type png)
  <use Overlay1.png>
-Package pdftex.def Info: Overlay1.png used on input line 239.
-(pdftex.def)             Requested size: 240.90662pt x 376.89024pt.
+Package pdftex.def Info: Overlay1.png used on input line 235.
+(pdftex.def)             Requested size: 240.89745pt x 376.89024pt.
 
-Overfull \hbox (0.90675pt too wide) in paragraph at lines 239--241
+Overfull \hbox (0.89758pt too wide) in paragraph at lines 235--237
 [][]
  []
 
@@ -718,17 +739,17 @@ Overfull \hbox (0.90675pt too wide) in paragraph at lines 239--241
 File: pdf/problem_bests_plot.pdf Graphic file (type pdf)
 
 <use pdf/problem_bests_plot.pdf>
-Package pdftex.def Info: pdf/problem_bests_plot.pdf used on input line 261.
+Package pdftex.def Info: pdf/problem_bests_plot.pdf used on input line 257.
 (pdftex.def)             Requested size: 241.91785pt x 167.79034pt.
 
-Overfull \hbox (1.91785pt too wide) in paragraph at lines 261--263
+Overfull \hbox (1.91785pt too wide) in paragraph at lines 257--259
  [][] 
  []
 
 <Overlay2.png, id=63, 2454.92157pt x 1622.31094pt>
 File: Overlay2.png Graphic file (type png)
  <use Overlay2.png>
-Package pdftex.def Info: Overlay2.png used on input line 320.
+Package pdftex.def Info: Overlay2.png used on input line 316.
 (pdftex.def)             Requested size: 488.87791pt x 323.07019pt.
  [3 <C:/workspaceAndroid/PDBF/testdata/chunked_column_layouts/Overlay1.png> <C:
 /workspaceAndroid/PDBF/testdata/chunked_column_layouts/pdf/problem_bests_plot.p
@@ -741,13 +762,13 @@ Package balance Warning: You have called \balance in second column
 [4 <C:/workspaceAndroid/PDBF/testdata/chunked_column_layouts/Overlay2.png>]
 (C:\workspaceAndroid\PDBF\testdata\chunked_column_layouts\draft.aux) ) 
 Here is how much of TeX's memory you used:
- 11914 strings out of 493921
- 205513 string characters out of 3144879
- 294846 words of memory out of 3000000
- 15010 multiletter control sequences out of 15000+200000
+ 11923 strings out of 493921
+ 205614 string characters out of 3144879
+ 295551 words of memory out of 3000000
+ 15019 multiletter control sequences out of 15000+200000
  63075 words of font info for 91 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 68i,12n,49p,10414b,1329s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 67i,12n,49p,10414b,1329s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Progr
 am Files (x86)/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}<C:/Program Files (x8
 6)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx7.pfb><C:/Program Files (x86)/
@@ -766,7 +787,7 @@ ts/cm/cmtt9.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/helvetic/uhv
 b8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/helvetic/uhvr8a.pfb>
 <C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Program
  Files (x86)/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb>
-Output written on draft.pdf (4 pages, 680227 bytes).
+Output written on draft.pdf (4 pages, 697713 bytes).
 PDF statistics:
  138 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)

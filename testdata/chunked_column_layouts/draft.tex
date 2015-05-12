@@ -197,24 +197,7 @@ If we assume, that there is only one outlier in the sample, and it is either the
 
 \begin{table}[!b] 
 \pivotTable[width=0.478\textwidth, height=0.7478\textwidth, scale=0.666, rows={"Machine", "Table schema", "Query"}, aggregation=Minimum, aggregationattribute=Query time]
-{SELECT
-m.cpuarchitecture 																													AS Machine,
-IIF(d.tableschema = '(long a, long b)', 'long', IIF(d.tableschema = '(char a, char b)', 'char', IIF(d.tableschema = '(int a, int b)', 'int', 'n/a')))   			AS [Table schema],
-IIF(q.querytext = 'SELECT MIN(a+b) FROM t', 'Q1', 'Q2')     																				AS [Query],
-c.compiler      																														AS Compiler,
-c.optlevel      																														AS [Opt. level],
-l.name          																														AS [Layout name],
-CAST(COALESCE(IIF(i.templateparam, 'C', 'R'), 'n/a') AS VARCHAR) 																		AS [Chunk size provided at],
-runtimes																																AS [Query time]
-  FROM (SELECT machineid, datasetid, queryid, compilerid, layoutid, implementationid, GRUBBS_FILTER(ARRAY(runtime)) as runtimes FROM fact_experiment GROUP BY machineid, datasetid, queryid, compilerid, layoutid, implementationid) AS v 
-  JOIN dim_machine m ON m.id = v.machineid 
-  JOIN dim_dataset d ON d.id = v.datasetid 
-  JOIN dim_compiler c ON c.id = v.compilerid 
-  JOIN dim_layout l ON l.id = v.layoutid 
-  JOIN dim_implementation i ON i.id = v.implementationid 
-  JOIN dim_query q ON q.id = v.queryid 
-  ORDER BY m.id DESC, d.tableschema, q.querytext, c.compiler, c.optlevel, i.templateparam, i.logscaleparam, l.chunksize;}
-{SELECT 
+[SELECT 
   m.cpu + ' (' + m.cpuarchitecture + ')' 						AS Machine, 
   d.tableschema 											AS [Table schema], 
   q.querytext 												AS [Query], 
@@ -225,6 +208,23 @@ runtimes																																AS [Query time]
   IIF(i.templateparam, 'Compile time', 'Runtime') 				AS [Chunk size provided at], 
   IIF(i.logscaleparam, 'Powers of 2', 'Multiples of 2') 			AS [Chunk sizes considered], 
   runtimes 												AS [Query time] 
+  FROM (SELECT machineid, datasetid, queryid, compilerid, layoutid, implementationid, GRUBBS_FILTER(ARRAY(runtime)) as runtimes FROM fact_experiment GROUP BY machineid, datasetid, queryid, compilerid, layoutid, implementationid) AS v 
+  JOIN dim_machine m ON m.id = v.machineid 
+  JOIN dim_dataset d ON d.id = v.datasetid 
+  JOIN dim_compiler c ON c.id = v.compilerid 
+  JOIN dim_layout l ON l.id = v.layoutid 
+  JOIN dim_implementation i ON i.id = v.implementationid 
+  JOIN dim_query q ON q.id = v.queryid 
+  ORDER BY m.id DESC, d.tableschema, q.querytext, c.compiler, c.optlevel, i.templateparam, i.logscaleparam, l.chunksize;]
+{SELECT
+m.cpuarchitecture 																													AS Machine,
+IIF(d.tableschema = '(long a, long b)', 'long', IIF(d.tableschema = '(char a, char b)', 'char', IIF(d.tableschema = '(int a, int b)', 'int', 'n/a')))   			AS [Table schema],
+IIF(q.querytext = 'SELECT MIN(a+b) FROM t', 'Q1', 'Q2')     																				AS [Query],
+c.compiler      																														AS Compiler,
+c.optlevel      																														AS [Opt. level],
+l.name          																														AS [Layout name],
+CAST(COALESCE(IIF(i.templateparam, 'C', 'R'), 'n/a') AS VARCHAR) 																		AS [Chunk size provided at],
+runtimes																																AS [Query time]
   FROM (SELECT machineid, datasetid, queryid, compilerid, layoutid, implementationid, GRUBBS_FILTER(ARRAY(runtime)) as runtimes FROM fact_experiment GROUP BY machineid, datasetid, queryid, compilerid, layoutid, implementationid) AS v 
   JOIN dim_machine m ON m.id = v.machineid 
   JOIN dim_dataset d ON d.id = v.datasetid 

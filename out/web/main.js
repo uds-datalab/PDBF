@@ -1619,7 +1619,12 @@ function GRUBBS_FILTER(arr, alpha) {
 		});
 		var margin_of_error_runtime = MARGIN_OF_ERROR(arr);
 		var avg_runtime = MEAN(arr);
-		if (Z > ZCrit && margin_of_error_runtime / avg_runtime >= 0.025) { //TODO: this as parameter. Ask endre!
+		if (Z > ZCrit && margin_of_error_runtime / avg_runtime >= 0.025) { // TODO:
+																			// this
+																			// as
+																			// parameter.
+																			// Ask
+																			// endre!
 			arr.splice(Zindex, 1);
 		} else {
 			gogo = false;

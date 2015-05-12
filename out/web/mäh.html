@@ -4,37 +4,59 @@
 <link rel="stylesheet" href="c3.css"/>
 </head>
 <body>
-<script src="jquery-1.11.2.min.js"></script>
 <script src="d3.js"></script>
 <script src="c3.js"></script>
-<div id="chart" style="border: 1px solid black; width: 400px; height: 300px;"></div>
+<div id="wrapper"></div>
 <script>
-var chart = c3.generate({
-    data: {
-        columns: [
-            ['data1', 100, 200, 150, 300, 200],
-            ['data2', 400, 500, 250, 700, 300],
-        ]
-    },
-	axis: { 
-		x: { 
-			label: 'xLabel',
-			tick: { fit: false, outer: false, rotate: 90 },
-		}, 
-		y: {
-			label: 'yLabel', 
-			tick: { fit: false, outer: false }
-		},
-		y2: {
-			tick: { fit: false, outer: false }
-		},
-	},
-	zoom: {
-		enabled: true,
-		rescale: true
-	}
-});
+    var completeScale = 2;
+	var zoomFactor = completeScale;
+	wrapper.innerHTML = '';
+	c = document.createElement('div');
+	c.setAttribute('style', 'border: 1px solid black; width: 400px; height: 300px;');
+	wrapper.appendChild(c);
+	//add scoped css
+	var css = document.createElement('style');
+	css.setAttribute('scoped', 'scoped');
+	c.parentElement.appendChild(css);
+	css.innerHTML = '																'+
+		'.c3-line {																	'+
+		' stroke-width: '+(zoomFactor)+'px; }										'+
+		'																			'+
+		'.c3-circle._expanded_ {													'+
+		' stroke-width: '+(zoomFactor)+'px;											'+
+		' stroke: white; }															'+
+		'																			'+
+		'.c3-selected-circle {														'+
+		' fill: white;																'+
+		' stroke-width: '+(2*zoomFactor)+'px; }										'+
+		'																			'+
+		'.c3-target.c3-focused path.c3-line, .c3-target.c3-focused path.c3-step {	'+
+		' stroke-width: '+(2*zoomFactor)+'px; }										'+
+		'																			'+
+		'.c3-legend-background {													'+
+		' opacity: 0.75;															'+
+		' fill: white;																'+
+		' stroke: lightgray;														'+
+		' stroke-width: '+(zoomFactor)+'; }											';
 
+	var chart = c3.generate({
+		bindto: c,
+	    data: {
+	        columns: [
+	            ['data1', 100, 200, 150, 300, 200],
+	            ['data2', 400, 500, 250, 700, 300],
+	        ]
+	    },
+	    axis: { 
+			x: { 
+				label: 'xLabel',
+				tick: { rotate: 45 },
+			}, 
+		},
+		noxticks: false,
+		noyticks: false,
+		completeScale: completeScale
+	});
 </script>
 </body>
 </html>

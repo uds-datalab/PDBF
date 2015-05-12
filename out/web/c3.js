@@ -256,8 +256,8 @@
         
         //////////////////////////////////////////////////////////////////////
         config.point_r = config.point_r * config.completeScale;
-        $($$.svg[0]).css("font-size", config.completeScale*10);
-        $($$.svg[0]).css("stroke-width", config.completeScale);
+        $$.svg[0][0].style.fontSize = config.completeScale*10;
+        $$.svg[0][0].style.strokeWidth = config.completeScale;
         config.padding_right = config.padding_right*config.completeScale;
         config.padding_top = config.padding_top*config.completeScale;
         //////////////////////////////////////////////////////////////////////
@@ -2690,7 +2690,7 @@
     };
     c3_chart_internal_fn.getHorizontalAxisHeight = function (axisId) {
         var $$ = this, config = $$.config, h = (config.innerTickSize+1.5)*config.completeScale;
-        if (axisId === 'x' && !config.axis_x_show) { return 8; }
+        if (axisId === 'x' && !config.axis_x_show) { return 12; }
         if (axisId === 'x' && config.axis_x_height) { return config.axis_x_height; }
         if (axisId === 'y' && !config.axis_y_show) { return config.legend_show && !$$.isLegendRight && !$$.isLegendInset ? 10 : 1; }
         if (axisId === 'y2' && !config.axis_y2_show) { return $$.rotated_padding_top; }
@@ -2698,10 +2698,10 @@
         if (axisId === 'x' && !config.axis_rotated && config.axis_x_tick_rotate) {
         	var tmp = Math.cos(Math.PI * (90 - config.axis_x_tick_rotate) / 180);
         	h += $$.axis.getMaxTickWidth(axisId) * tmp + config.completeScale*3 * tmp +
-        	     config.completeScale*8 * Math.abs(1-tmp);
+        	     config.completeScale*13 * Math.abs(1-tmp);
         }
         if (axisId === 'x' && !config.axis_rotated && !config.axis_x_tick_rotate) {
-        	h += config.completeScale*8;
+        	h += config.completeScale*13;
         }
         if (config.noxticks) {
         	return (config.innerTickSize+2.0)*config.completeScale;
@@ -4587,10 +4587,10 @@
     c3_chart_internal_fn.getAxisClipX = function (forHorizontal) {
         // axis line width + padding for left
         var left = Math.max(40, this.margin.left);
-        return (forHorizontal ? -(1 + left) : -(left - 1)) - this.config.completeScale*10;
+        return (forHorizontal ? -(1 + left) : -(left - 1));
     };
     c3_chart_internal_fn.getAxisClipY = function (forHorizontal) {
-        return (forHorizontal ? -10 : -this.margin.top) - this.config.completeScale*10;
+        return (forHorizontal ? -10 : -this.margin.top);
     };
     c3_chart_internal_fn.getXAxisClipX = function () {
         var $$ = this;
@@ -6929,7 +6929,7 @@
                 }
                 function yForText(rotate) {
                     if (!rotate) {
-                        return tickLength - params.$$.config.completeScale*2;
+                        return tickLength + params.$$.config.completeScale*0.5;
                     }
                     return tickLength - params.$$.config.completeScale*9.5 + params.$$.config.completeScale*10 * Math.cos(Math.PI * (rotate / 180));
                 }

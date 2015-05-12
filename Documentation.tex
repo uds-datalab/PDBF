@@ -2,17 +2,15 @@
 \usepackage{PDBF}
 \usepackage{wrapfig}
 \usepackage{hyperref}
-\usepackage[a4paper,vmargin={28mm,28mm},hmargin={28mm,28mm}]{geometry}
+\usepackage{ngerman}
+\usepackage[a4paper,vmargin={20mm,20mm},hmargin={28mm,28mm}]{geometry}
 
 \title{PDBF Documentation}
 \author{
  Patrick Bender\\
   \texttt{s9pabend@stud.uni-saarland.de}
-  \and
- Christian Goldstein\\
-  \texttt{c.goldstein@goldstein-systemberatung.de}
 }
-\date{\today{}, Saarbrücken}
+\date{\today{}, Saarbr"ucken}
 
 \makeatletter
 \def\@maketitle{%
@@ -39,14 +37,34 @@
 \begin{document}
 \maketitle
 
-TODO: Write small abstract \newpage
+%TODO: Write small abstract 
+
+% TODO: picasso diag
+
+%Required packages:
+%\RequirePackage{zref-savepos}
+%\RequirePackage{zref-abspage}
+%\RequirePackage{zref-user}
+%\RequirePackage{xcolor}
+%\RequirePackage{graphicx}
+%\RequirePackage{xstring}
+%\RequirePackage{xparse}
+%\RequirePackage{geometry}
+
+%need to use geometry package
+
+\newpage
 
 \section{Chart options}
 Macros: \\[3pt]
-\verb|\lineChart[options]{query}| \\
-\verb|\barChart[options]{query}| \\[8pt]
+\verb|\chart[options][queryForOverlay]{queryForPage}| \\[8pt]
 \noindent Options: \\[3pt]
 \begin{tabular}{ll}
+\textbf{chartType} & \\
+Desc.:	&	Sets the type of the chart. \\
+Argument:	&\verb|line or bar or signatureplot| (more info here)  \\
+Default:&	\verb|line| \\[4pt]
+
 \textbf{width} & \\
 Desc.:	&	Sets the width of the chart. \\
 Argument:	&LaTeX length \\
@@ -68,16 +86,17 @@ Argument: 	&String \\
 Default:& 	\verb|""| (which means hide) \\[4pt]
 
 \textbf{options} \\
-Desc.:	&	Sets options that are directly passed to the dygraphs library (\href{http://dygraphs.com/options.html}{$\rightarrow$ Documentation}). \\
+Desc.:	&	Sets options that are directly passed to the c3 chart library (\href{http://c3js.org/reference.html}{$\rightarrow$ Documentation}). \\
 & You need to wrap the JSON-String with \verb|{}| if you want to use \verb|[| or \verb|]| or \verb|,|. \\
 Argument: 	&JSON-String \\
 Default:&	\verb|{}| (which means empty object) \\[4pt]
 
-\textbf{logscale} \\
-Desc.:	&	If set, the y axis uses log scale. \\
-& Can also be redefined globally (\verb|\pdbfLogscale|) \\
-Argument:&	\verb|{true, false}| \\
-Default:&	\verb|false| \\[4pt]
+%TODO: not yet implemented
+%\textbf{logscale} \\
+%Desc.:	&	If set, the y axis uses log scale. \\
+%& Can also be redefined globally (\verb|\pdbfLogscale|) \\
+%Argument:&	\verb|true or false| \\
+%Default:&	\verb|false| \\[4pt]
 
 \textbf{quality} \\
 Desc.:	&	Sets the quality for the image version of the chart. \\
@@ -91,18 +110,21 @@ Desc.:	&	Sets the scale for the chart. 1.0 corresponds roughly to 12pt in \LaTeX
 Argument:	&Number $>$ 0 \\
 Default:&	\verb|1.0| \\[4pt]
 
-\textbf{legendpos} \\
-Desc.: 	&	Sets the position of the legend of the chart. \\
-& Can also be redefined globally (\verb|\pdbfLegendpos|).\\
-Argument:&	\verb|{topright, topcenter, topleft, belowleft, belowcenter, belowright}| \\
-Default:&	\verb|topright| \\[4pt]
+%TODO: not yet implemented
+%\textbf{legendpos} \\
+%Desc.: 	&	Sets the position of the legend of the chart. \\
+%& Can also be redefined globally (\verb|\pdbfLegendpos|).\\
+%Argument:&	\verb|{topright, topcenter, topleft, belowleft, belowcenter, belowright}| \\
+%Default:&	\verb|topright| \\[4pt]
 \end{tabular} \\
 
 \newpage
 \section{F.A.Q.}
 \begin{itemize}
-\item F.: The chart is horribly slow when i try to zoom! \\
-A.: Add the following to options: animatedZooms: false 
+\item Q.: The overlay is not on the right position \\
+A.: Most likely you use pages with different sizes in your document. This is currently not supported by PBDF 
+\item Q.: I get \verb|Error: paperwidth value missing! Did you forgot to specify the| \\ \verb|papersize via the geometry package?| when compiling my document \\
+A.: You need to explicitly specify the papersize of your document via the geometry package (e.g. \verb|\usepackage[letterpaper]{geometry}|)
 \end{itemize}
 
 \end{document}

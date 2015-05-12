@@ -50,8 +50,8 @@
 Test Queries:\\[3pt]
 \sql{SELECT * FROM test;}\\[3pt]
 \sql{SELECT col2 FROM test WHERE col1=1;}\\[3pt]
-\sqlmult{INSERT INTO test}{INSERT INTO test VALUES (1, 123);}\\
-\sqlmult{VALUES (1, 123);}{INSERT INTO test VALUES (1, 123);}\\[8pt]
+\sql[INSERT INTO test]{INSERT INTO test VALUES (1, 123);}\\
+\sql[VALUES (1, 123);]{INSERT INTO test VALUES (1, 123);}\\[8pt]
 Lorem ipsum \sql{SELECT * FROM test;} dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.\\
 
 \noindent \begin{wrapfigure}{r!}{0.37\textwidth}
@@ -100,25 +100,7 @@ Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lo
 \begin{wrapfigure}{r}{0.52\textwidth}
 { \centering %
 \pivotTable[width=0.5\textwidth, height=0.8\textwidth, scale=0.5, rows={"Machine", "Table schema", "Query"}, aggregation=Minimum, aggregationattribute=Query time, aggregationBig=Minimum, aggregationattributeBig=Query time (in Sec)]
-{SELECT
-m.cpuarchitecture AS Machine,
-IIF(d.tableschema = '(long a, long b)', 'long', IIF(d.tableschema = '(char a, char b)', 'char', IIF(d.tableschema = '(int a, int b)', 'int', 'n/a')))   AS [Table schema],
-IIF(q.querytext = 'SELECT MIN(a+b) FROM t', 'Q1', 'Q2')     AS [Query],
-c.compiler      AS Compiler,
-c.optlevel      AS [Opt. level],
-l.name          AS [Layout name],
-CAST(COALESCE(IIF(i.templateparam, 'C', 'R'), 'n/a') AS VARCHAR) AS [Chunk size provi- ded at],
-ROUND(v.runtime, 3) 		AS [Query time]
-FROM fact_experiment AS v
-    JOIN dim_machine m ON m.id = v.machineid
-    JOIN dim_dataset d ON d.id = v.datasetid
-    JOIN dim_compiler c ON c.id = v.compilerid
-    JOIN dim_layout l ON l.id = v.layoutid
-    JOIN dim_implementation i ON i.id = v.implementationid
-    JOIN dim_query q ON q.id = v.queryid
-ORDER BY m.id DESC, d.tableschema, q.querytext,
-    c.compiler, c.optlevel, i.templateparam, i.logscaleparam, l.chunksize;}
-{SELECT
+[SELECT
 m.cpu + ' (' +  m.cpuarchitecture + ')' AS Machine,
 d.tableschema   AS [Table schema],
 q.querytext     AS [Query],
@@ -138,6 +120,24 @@ FROM fact_experiment AS v
     JOIN dim_implementation i ON i.id = v.implementationid
     JOIN dim_query q ON q.id = v.queryid
     JOIN dim_time t ON t.id = v.timeid
+ORDER BY m.id DESC, d.tableschema, q.querytext,
+    c.compiler, c.optlevel, i.templateparam, i.logscaleparam, l.chunksize;]
+{SELECT
+m.cpuarchitecture AS Machine,
+IIF(d.tableschema = '(long a, long b)', 'long', IIF(d.tableschema = '(char a, char b)', 'char', IIF(d.tableschema = '(int a, int b)', 'int', 'n/a')))   AS [Table schema],
+IIF(q.querytext = 'SELECT MIN(a+b) FROM t', 'Q1', 'Q2')     AS [Query],
+c.compiler      AS Compiler,
+c.optlevel      AS [Opt. level],
+l.name          AS [Layout name],
+CAST(COALESCE(IIF(i.templateparam, 'C', 'R'), 'n/a') AS VARCHAR) AS [Chunk size provi- ded at],
+ROUND(v.runtime, 3) 		AS [Query time]
+FROM fact_experiment AS v
+    JOIN dim_machine m ON m.id = v.machineid
+    JOIN dim_dataset d ON d.id = v.datasetid
+    JOIN dim_compiler c ON c.id = v.compilerid
+    JOIN dim_layout l ON l.id = v.layoutid
+    JOIN dim_implementation i ON i.id = v.implementationid
+    JOIN dim_query q ON q.id = v.queryid
 ORDER BY m.id DESC, d.tableschema, q.querytext,
     c.compiler, c.optlevel, i.templateparam, i.logscaleparam, l.chunksize;}
 \\ }
