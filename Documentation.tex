@@ -53,11 +53,15 @@
 
 %need to use geometry package
 
+%problems with utf8 package. for german umlauts use ngerman package instead. 
+%if you really have to use the utf8 package then you cant use special characters inside queries.
+
 \newpage
 
 \section{Chart options}
 Macros: \\[3pt]
-\verb|\chart[options][queryForOverlay]{queryForPage}| \\[8pt]
+\verb|\chart[options][queryForOverlay]{queryForPage}| \\
+Note: if \verb|queryForOverlay| is omitted the \verb|QueryForPage| is used for the overlay\\[8pt]
 \noindent Options: \\[3pt]
 \begin{tabular}{ll}
 \textbf{chartType} & \\
@@ -98,14 +102,30 @@ Default:&	\verb|{}| (which means empty object) \\[4pt]
 %Argument:&	\verb|true or false| \\
 %Default:&	\verb|false| \\[4pt]
 
+%TODO: not yet implemented
+%\textbf{overlap} \\
+%Desc.:	&	unused \\
+%Argument:&	\verb|-| \\
+%Default:&	\verb|-| \\[4pt]
+
+legendpos
+
+includeZero
+
+drawPoints
+
+fillGraph
+
+showRangeSelector
+
 \textbf{quality} \\
-Desc.:	&	Sets the quality for the image version of the chart. \\
+Desc.:	&	Sets the quality for the image version of the chart in the pdf. 1.0 corresponds roughly to 120 pixels per inch \\
 & Can also be redefined globally (\verb|\pdbfQuality|). \\
 Argument:	&Number $>$ 0 \\
 Default:&	\verb|1.0| \\[4pt]
 
 \textbf{scale} \\
-Desc.:	&	Sets the scale for the chart. 1.0 corresponds roughly to 12pt in \LaTeX. \\
+Desc.:	&	Scales the size of the chart. 1.0 corresponds roughly to font-size that is currently choosen in \LaTeX. \\
 & Can also be redefined globally (\verb|\pdbfScale|). \\
 Argument:	&Number $>$ 0 \\
 Default:&	\verb|1.0| \\[4pt]
@@ -118,6 +138,34 @@ Default:&	\verb|1.0| \\[4pt]
 %Default:&	\verb|topright| \\[4pt]
 \end{tabular} \\
 
+%TODO: Pivot
+%TODO: MultiplotChart
+
+%\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregation": "\pdbf@aggregation",}% 
+%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationattribute": "\pdbf@aggregationattribute",}% 
+%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationBig": "\pdbf@aggregationBig",}% 
+%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationattributeBig": "\pdbf@aggregationattributeBig",}% 
+%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xCount": \pdbf@xCount,}% 
+%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yCount": \pdbf@yCount,}% 
+%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"leftArr": "\pdbf@leftArr",}% 
+%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"rightArr": "\pdbf@rightArr",}% 
+%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"topArr": "\pdbf@topArr",}% 
+%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"bottomArr": "\pdbf@bottomArr",}% 
+%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xValues": "\pdbf@xValues",}% 
+%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yValues": "\pdbf@yValues",}% 
+%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yFirst": \pdbf@yFirst,}% 
+%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"forceXequal": \pdbf@forceXequal,}% 
+%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"forceYequal": \pdbf@forceYequal,}% 
+%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"cols": "\pdbf@cols",}%
+%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"rows": "\pdbf@rows",}%
+
+%TODO: \sql[textForPage]{queryForOverlay}
+%TODO: \dbSQLText{sqlQueryString}
+%TODO: \dbSQLFile{fileWithSqlQueries}
+%TODO: \dbSQLJDBC{jdbcConnectionURL}{user}{password}{commaSeperatedListOfTableNames}
+%jdbcConnectionURL consist of ... (e.g. jdbc:postgresql://localhost:5432/postgres)
+%Note: jdbcConnectionURL, user, and password are not stored in the output document
+
 \newpage
 \section{F.A.Q.}
 \begin{itemize}
@@ -125,6 +173,7 @@ Default:&	\verb|1.0| \\[4pt]
 A.: Most likely you use pages with different sizes in your document. This is currently not supported by PBDF 
 \item Q.: I get \verb|Error: paperwidth value missing! Did you forgot to specify the| \\ \verb|papersize via the geometry package?| when compiling my document \\
 A.: You need to explicitly specify the papersize of your document via the geometry package (e.g. \verb|\usepackage[letterpaper]{geometry}|)
+%TODO: check utf8 error message and put a faq entry here
 \end{itemize}
 
 \end{document}
