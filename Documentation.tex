@@ -1,16 +1,16 @@
 \documentclass[11pt]{scrartcl}
+\usepackage[utf8]{inputenc}
 \usepackage{PDBF}
 \usepackage{wrapfig}
 \usepackage{hyperref}
-\usepackage{ngerman}
-\usepackage[a4paper,vmargin={20mm,20mm},hmargin={28mm,28mm}]{geometry}
+\usepackage[a4paper,vmargin={20mm,40mm},hmargin={20mm,20mm}]{geometry}
 
 \title{PDBF Documentation}
 \author{
  Patrick Bender\\
   \texttt{s9pabend@stud.uni-saarland.de}
 }
-\date{\today{}, Saarbr"ucken}
+\date{\today{}, Saarbrücken}
 
 \makeatletter
 \def\@maketitle{%
@@ -34,146 +34,353 @@
 
 \urlstyle{rm}
 
+\def\a{5cm}
+\def\b{10.5cm}
+
+\def\option#1#2#3#4{%
+\noindent \begin{tabular}{|p{\a}|p{\b}|}
+\hline
+\textbf{#1} & \\
+\hline
+Desc.: & #2 \\
+\hline
+Argument: & #3\\
+\hline
+Default:& #4\\
+\hline
+\end{tabular} \\[4pt]%
+}
+
+\dbSQLText{CREATE TABLE test(a int, b int); INSERT INTO test VALUES(1, 10); INSERT INTO test VALUES(2, 100); INSERT INTO test VALUES(3, 120); INSERT INTO test VALUES(4, 100);}
+
 \begin{document}
 \maketitle
 
-%TODO: Write small abstract 
+\section{Abstract}
+TODO ...
 
-% TODO: picasso diag
-
-%Required packages:
-%\RequirePackage{zref-savepos}
-%\RequirePackage{zref-abspage}
-%\RequirePackage{zref-user}
-%\RequirePackage{xcolor}
-%\RequirePackage{graphicx}
-%\RequirePackage{xstring}
-%\RequirePackage{xparse}
-%\RequirePackage{geometry}
-
-%need to use geometry package
-
-%problems with utf8 package. for german umlauts use ngerman package instead. 
-%if you really have to use the utf8 package then you cant use special characters inside queries.
+\section{Requirements}
+Required packages:\\
+zref-savepos\\
+zref-abspage\\
+zref-user\\
+xcolor\\
+graphicx\\
+xstring\\
+xparse\\
+geometry\\
+need to use geometry package\\
+problems with utf8 package. for german umlauts use ngerman package instead. \\
+if you really have to use the utf8 package then you cant use special characters inside queries.\\
+All options in all modes because of switcher.\\
 
 \newpage
+\section{Chart}
+\begin{figure}[h!]%
+\hspace{-218pt}Examples:\\
+    \centering
+    \begin{minipage}{.48\textwidth}
+    \chart[width=\textwidth, height=0.7\textwidth, chartType=line]{SELECT * FROM test;}
+    \caption{Line Chart}
+    \end{minipage}
+    \hspace{11pt}
+    \begin{minipage}{.48\textwidth}
+    \chart[width=\textwidth, height=0.7\textwidth, chartType=bar]{SELECT * FROM test;}
+    \caption{Bar Chart}
+    \end{minipage} \\[8pt]
+    
+    \begin{minipage}{1.0\textwidth}
+    \chart[width=\textwidth, height=0.36\textwidth, chartType=signatureplot]{SELECT b FROM test;}
+    \caption{Signatureplot Chart}
+    \end{minipage}
+%    \begin{minipage}{.48\textwidth}
+%    \chart[width=\textwidth, height=0.8\textwidth, chartType=signatureplot]{SELECT * FROM test;}
+%    \caption{Signatureplot Chart}
+%    \end{minipage}
+%    \hspace{11pt}
+%    \begin{minipage}{.48\textwidth}
+%    \chart[width=\textwidth, height=0.8\textwidth, chartType=Line, xunit=Date, yunit={Runtime [in sec]}, options={"strokeWidth": 0, "drawPoints": true, "pointSize": 3, "highlightCircleSize": 4, "xRangePad": 10}]{SELECT date, runtimeA AS [engine A], runtimeB AS [engine B] FROM data2;}
+%    \caption{Multi-column Dot Chart}
+%    \end{minipage}
+\end{figure}
 
-\section{Chart options}
-Macros: \\[3pt]
+\noindent Macros: \\[3pt]
 \verb|\chart[options][queryForOverlay]{queryForPage}| \\
-Note: if \verb|queryForOverlay| is omitted the \verb|QueryForPage| is used for the overlay\\[8pt]
-\noindent Options: \\[3pt]
-\begin{tabular}{ll}
-\textbf{chartType} & \\
-Desc.:	&	Sets the type of the chart. \\
-Argument:	&\verb|line or bar or signatureplot| (more info here)  \\
-Default:&	\verb|line| \\[4pt]
+Note: if \verb|queryForOverlay| is omitted the \verb|queryForPage| is used for the overlay\\[8pt]
+\noindent Options:\\[3pt]
+%
+Common options\\[4pt]
+%
+\option
+{width}
+{Sets the width of the chart.}
+{\LaTeX\relax length}
+{No default value. Value must always be set!}
 
-\textbf{width} & \\
-Desc.:	&	Sets the width of the chart. \\
-Argument:	&LaTeX length \\
-Default:&	no default value. value must always be set! \\[4pt]
+\option
+{height}
+{Sets the height of the chart.}
+{\LaTeX\relax length}
+{No default value. Value must always be set!}
 
-\textbf{height} \\
-Desc.:	&	Sets the height of the chart. \\
-Argument: &	LaTeX length \\
-Default:&	no default value. value must always be set! \\[4pt]
+\option
+{quality}
+{Sets the quality for the image version of the chart in the pdf. 1.0 corresponds roughly to 120 pixels per inch. Can also be redefined globally (\texttt{pdbfQuality}).}
+{Number $>$ 0}
+{\texttt{1.0}}
 
-\textbf{xunit} \\
-Desc.:	&	Sets the a label for the x axis. \\
-Argument: &	String \\
-Default:& 	\verb|""| (which means hide) \\[4pt]
+\option
+{scale}
+{Scales the size of the chart. 1.0 corresponds roughly to font-size that is currently choosen in \LaTeX. Can also be redefined globally (\texttt{pdbfScale}).}
+{Number $>$ 0}
+{\texttt{1.0}}
 
-\textbf{yunit} \\
-Desc.:	&	Sets the a label for the y axis. \\
-Argument: 	&String \\
-Default:& 	\verb|""| (which means hide) \\[4pt]
+\option
+{chartType}
+{Sets the type of the chart.}
+{\texttt{line} or \texttt{bar} or \texttt{signatureplot}}
+{\texttt{line}}
 
-\textbf{options} \\
-Desc.:	&	Sets options that are directly passed to the c3 chart library (\href{http://c3js.org/reference.html}{$\rightarrow$ Documentation}). \\
-& You need to wrap the JSON-String with \verb|{}| if you want to use \verb|[| or \verb|]| or \verb|,|. \\
-Argument: 	&JSON-String \\
-Default:&	\verb|{}| (which means empty object) \\[4pt]
+\option
+{xunit}
+{Sets the a label for the x-axis.}
+{String}
+{\texttt{""} (which means hide)}
 
-%TODO: not yet implemented
-%\textbf{logscale} \\
-%Desc.:	&	If set, the y axis uses log scale. \\
-%& Can also be redefined globally (\verb|\pdbfLogscale|) \\
-%Argument:&	\verb|true or false| \\
-%Default:&	\verb|false| \\[4pt]
+\option
+{yunit}
+{Sets the a label for the y-axis.}
+{String}
+{\texttt{""} (which means hide)}
 
-%TODO: not yet implemented
-%\textbf{overlap} \\
-%Desc.:	&	unused \\
-%Argument:&	\verb|-| \\
-%Default:&	\verb|-| \\[4pt]
+\option
+{options}
+{Sets options that are directly passed to the c3 chart library (\href{http://c3js.org/reference.html}{$\rightarrow$ Documentation}). You need to wrap the JSON-String with \texttt{\{\}} if you want to use \texttt{[} or \texttt{]} or \texttt{,}.}
+{JSON-String}
+{\texttt{\{\}} (which means empty object)}
 
-legendpos
+\option %TODO: not yet implemented
+{logscale}
+{If set, the y axis uses log scale. Can also be redefined globally (\texttt{pdbfLogscale}).}
+{\texttt{true} or \texttt{false}}
+{\texttt{false}}
 
-includeZero
+\option %TODO: not yet implemented
+{overlap}
+{Unused.}
+{\texttt{TODO: ...}}
+{\texttt{TODO: ...}}
 
-drawPoints
+\option %TODO: not yet implemented
+{legendpos}
+{Sets the position of the legend of the chart.}
+{\texttt{TODO: ...}}
+{\texttt{TODO: ...}}
 
-fillGraph
+\option %TODO: not yet implemented
+{includeZero}
+{Set the minimum of the range of the y-axis to zero.}
+{\texttt{true} or \texttt{false}}
+{\texttt{false}}
 
-showRangeSelector
+\option %TODO: not yet implemented
+{drawPoints}
+{Whether to show each point in line.}
+{\texttt{true} or \texttt{false}}
+{\texttt{false}}
 
-\textbf{quality} \\
-Desc.:	&	Sets the quality for the image version of the chart in the pdf. 1.0 corresponds roughly to 120 pixels per inch \\
-& Can also be redefined globally (\verb|\pdbfQuality|). \\
-Argument:	&Number $>$ 0 \\
-Default:&	\verb|1.0| \\[4pt]
+\option %TODO: not yet implemented
+{fillGraph}
+{Whether to fill the area below the graph.}
+{\texttt{true} or \texttt{false}}
+{\texttt{false}}
 
-\textbf{scale} \\
-Desc.:	&	Scales the size of the chart. 1.0 corresponds roughly to font-size that is currently choosen in \LaTeX. \\
-& Can also be redefined globally (\verb|\pdbfScale|). \\
-Argument:	&Number $>$ 0 \\
-Default:&	\verb|1.0| \\[4pt]
-
-%TODO: not yet implemented
-%\textbf{legendpos} \\
-%Desc.: 	&	Sets the position of the legend of the chart. \\
-%& Can also be redefined globally (\verb|\pdbfLegendpos|).\\
-%Argument:&	\verb|{topright, topcenter, topleft, belowleft, belowcenter, belowright}| \\
-%Default:&	\verb|topright| \\[4pt]
-\end{tabular} \\
-
-%TODO: Pivot
-%TODO: MultiplotChart
-
-%\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregation": "\pdbf@aggregation",}% 
-%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationattribute": "\pdbf@aggregationattribute",}% 
-%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationBig": "\pdbf@aggregationBig",}% 
-%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationattributeBig": "\pdbf@aggregationattributeBig",}% 
-%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xCount": \pdbf@xCount,}% 
-%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yCount": \pdbf@yCount,}% 
-%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"leftArr": "\pdbf@leftArr",}% 
-%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"rightArr": "\pdbf@rightArr",}% 
-%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"topArr": "\pdbf@topArr",}% 
-%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"bottomArr": "\pdbf@bottomArr",}% 
-%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xValues": "\pdbf@xValues",}% 
-%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yValues": "\pdbf@yValues",}% 
-%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yFirst": \pdbf@yFirst,}% 
-%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"forceXequal": \pdbf@forceXequal,}% 
-%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"forceYequal": \pdbf@forceYequal,}% 
-%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"cols": "\pdbf@cols",}%
-%		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"rows": "\pdbf@rows",}%
-
-%TODO: \sql[textForPage]{queryForOverlay}
-%TODO: \dbSQLText{sqlQueryString}
-%TODO: \dbSQLFile{fileWithSqlQueries}
-%TODO: \dbSQLJDBC{jdbcConnectionURL}{user}{password}{commaSeperatedListOfTableNames}
-%jdbcConnectionURL consist of ... (e.g. jdbc:postgresql://localhost:5432/postgres)
-%Note: jdbcConnectionURL, user, and password are not stored in the output document
+\option %TODO: not yet implemented
+{showRangeSelector}
+{Whether to show a range selector for the x-axis below the chart.}
+{\texttt{true} or \texttt{false}}
+{\texttt{false}}
 
 \newpage
+\section{Multiplot Chart}
+\begin{figure}[h!]%
+    Example:\\
+    \multiplotChart[width=\textwidth, height=0.5\textwidth, xCount=2, yCount=2, yValues={["b", "b*2"]}, xValues={["a > 2", "a <= 2"]}, yFirst]{SELECT a,? FROM test WHERE ?;}
+    \caption{Multiplot Line Chart}
+\end{figure}
+
+\noindent Macros: \\[3pt]
+\verb|\multiplotChart[options][queryForOverlay]{queryForPage}| \\
+Note: If \verb|queryForOverlay| is omitted the \verb|queryForPage| is used for the overlay\\
+Note: Both \verb|queryForOverlay| and \verb|queryForPage| must contain exactly two occurences of the ? character. These are later replaced with values from the xValues/yValues option.\\[8pt]
+\noindent Options: \\[3pt]
+%
+Note: For multiplot charts all options of chart are also valid options.\\[4pt]
+%
+\option
+{xCount}
+{Sets number of columns.}
+{Number $>$ 0}
+{No default value. Value must always be set!}
+
+\option
+{yCount}
+{Sets number of rows.}
+{Number $>$ 0}
+{No default value. Value must always be set!}
+
+\option
+{leftArr}
+{Sets the labels for the left side.}
+{Either a JavaScript array of Strings where each string corresponds to exactly one row (e.g \{"row1", "row2"\}) or a JavaScript array of Objects with a c property which corresponds to the number of rows this text should span and a text property which corresponds to the text-string.}
+{If this option is not set, then the value of the xunit option is used spanning over the whole site.}
+
+\option
+{rightArr}
+{Sets the labels for the right side.}
+{Either a JavaScript array of Strings where each string corresponds to exactly one row (e.g \{"row1", "row2"\}) or a JavaScript array of Objects with a c property which corresponds to the number of rows this text should span and a text property which corresponds to the text-string.}
+{If this option is not set, then the value that is used for the query in this row is used.}
+
+\option
+{bottomArr}
+{Sets the labels for the bottom side.}
+{Either a JavaScript array of Strings where each string corresponds to exactly one column (e.g \{"column1", "column2"\}) or a JavaScript array of Objects with a c property which corresponds to the number of columns this text should span and a text property which corresponds to the text-string.}
+{If this option is not set, then the value of the yunit option is used spanning over the whole site.}
+
+\option
+{topArr}
+{Sets the labels for the tod side.}
+{Either a JavaScript array of Strings where each string corresponds to exactly one column (e.g \{"column1", "column2"\}) or a JavaScript array of Objects with a c property which corresponds to the number of columns this text should span and a text property which corresponds to the text-string.}
+{If this option is not set, then the value that is used for the query in this column is used.}
+
+\option
+{xValues}
+{The values that replace the first ? character in the query. If yFirst is set, they replace the second ? character in the query instead.}
+{A JavaScript array that has as much entries as the xCount options value}
+{No default value. Value must always be set!}
+
+\option
+{yValues}
+{The values that replace the second ? character in the query. If yFirst is set, they replace the first ? character in the query instead.}
+{A JavaScript array that has as much entries as the yCount options value}
+{No default value. Value must always be set!}
+
+\option
+{yFirst}
+{If this option is set, then first ? character is replaced with values from yValues option and second ? character is replaced with values from xValues. If this option is not set, then first ? character is replaced with values from xValues option and second ? character is replaced with values from yValues.}
+{\texttt{true} or \texttt{false}}
+{\texttt{false}}
+
+\option
+{forceXequal}
+{If this option is set, then all columns have the same x-axis range as the uppermost chart. If this option is not set, then all charts have individual x-axis ranges.}
+{\texttt{true} or \texttt{false}}
+{\texttt{false}}
+
+\option
+{forceYequal}
+{If this option is set, then all rows have the same y-axis range as the leftmost chart. If this option is not set, then all charts have individual y-axis ranges.}
+{\texttt{true} or \texttt{false}}
+{\texttt{false}}
+
+\newpage
+\section{Pivot Table}
+\begin{figure}[h!]%
+    Example:\\
+    \pivotTable[width=\textwidth, height=0.5\textwidth, rows={["a"]}, aggregationattribute=b]{SELECT * FROM test;}
+    \caption{Pivot Table}
+\end{figure}
+
+\noindent Macros: \\[3pt]
+\verb|\pivotTable[options][queryForOverlay]{queryForPage}| \\
+Note: if \verb|queryForOverlay| is omitted the \verb|queryForPage| is used for the overlay\\[8pt]
+\noindent Options: \\[3pt]
+%
+\option
+{width}
+{Sets the width of the chart.}
+{\LaTeX\relax length}
+{No default value. Value must always be set!}
+
+\option
+{height}
+{Sets the height of the chart.}
+{\LaTeX\relax length}
+{No default value. Value must always be set!}
+
+\option
+{quality}
+{Sets the quality for the image version of the chart in the pdf. 1.0 corresponds roughly to 120 pixels per inch. Can also be redefined globally (\texttt{pdbfQuality}).}
+{Number $>$ 0}
+{\texttt{1.0}}
+
+\option
+{scale}
+{Scales the size of the chart. 1.0 corresponds roughly to font-size that is currently choosen in \LaTeX. Can also be redefined globally (\texttt{pdbfScale}).}
+{Number $>$ 0}
+{\texttt{1.0}}
+
+\option
+{aggregation}
+{Sets the aggregation function for the page.}
+{\texttt{Count} or \texttt{Count Unique Values} or \texttt{List Unique Values} or \texttt{Sum} or \texttt{Integer Sum} or \texttt{Average} or \texttt{Minimum} or \texttt{Maximum} or \texttt{Sum over Sum} or \texttt{80\% Upper Bound} or \texttt{80\% Lower Bound} or \texttt{Sum as Fraction of Total} or \texttt{Sum as Fraction of Rows} or \texttt{Sum as Fraction of Columns} or \texttt{Count as Fraction of Total} or \texttt{Count as Fraction of Rows} or \texttt{Count as Fraction of Columns}}
+{\texttt{Minimum}}
+
+\option
+{aggregationBig}
+{Sets the aggregation function for the overlay.}
+{\texttt{Count} or \texttt{Count Unique Values} or \texttt{List Unique Values} or \texttt{Sum} or \texttt{Integer Sum} or \texttt{Average} or \texttt{Minimum} or \texttt{Maximum} or \texttt{Sum over Sum} or \texttt{80\% Upper Bound} or \texttt{80\% Lower Bound} or \texttt{Sum as Fraction of Total} or \texttt{Sum as Fraction of Rows} or \texttt{Sum as Fraction of Columns} or \texttt{Count as Fraction of Total} or \texttt{Count as Fraction of Rows} or \texttt{Count as Fraction of Columns}}
+{If this option is not set, then the value of the aggregation option is used}
+
+\option
+{aggregationattribute}
+{Sets the attribute for the aggregation function in the page.}
+{The name of an attribute that is present in the result of the sql query for the page}
+{No default value. Value must always be set!}
+
+\option
+{aggregationattributeBig}
+{Sets the attribute for the aggregation function in the overlay.}
+{The name of an attribute that is present in the result of the sql query for the overlay}
+{If this option is not set, then the value of the aggregationattribute option is used}
+
+\option
+{cols}
+{The attributes for the columns in the pivot table.}
+{JavaScript array of strings (e.g. ["a", "b", "c"]). The name of attributes have to be present in the result of the sql query for the overlay and page}
+{\texttt{[]} (which means empty array)}
+
+\option
+{rows}
+{The attributes for the rows in the pivot table.}
+{JavaScript array of strings (e.g. ["a", "b", "c"]). The name of attributes have to be present in the result of the sql query for the overlay and page}
+{\texttt{[]} (which means empty array)}
+
+\newpage
+\section{Sql}
+Example:\\[3pt]
+\sql{SELECT * FROM test;}\\[3pt]
+%
+\noindent Macros: \\[3pt]
+\verb|\sql[textForPage]{queryForOverlay}| \\
+Note: if \verb|textForPage| is omitted the \verb|queryForOverlay| is used as text for the page.\\[8pt]
+
+\section{Sql data sources}
+\noindent Macros: \\[3pt]
+\verb|\dbSQLText{sqlQueryString}| \\
+\verb|\dbSQLFile{fileWithSqlQueries}| \\
+\verb|\dbSQLJDBC{jdbcConnectionURL}{user}{password}{commaSeperatedListOfTableNames}| \\
+Note: jdbcConnectionURL consist of jdbc followed by the name of the dbms (currently only postgresql and mysql are supported) followed by the url of the dbms followed by the database name (e.g. jdbc:postgresql://localhost:5432/postgres).\\
+Note: jdbcConnectionURL, user, and password are not stored in the output document.\\[8pt]
+
 \section{F.A.Q.}
 \begin{itemize}
-\item Q.: The overlay is not on the right position \\
+\item Q.: The overlay is not on the right position.\\
 A.: Most likely you use pages with different sizes in your document. This is currently not supported by PBDF 
-\item Q.: I get \verb|Error: paperwidth value missing! Did you forgot to specify the| \\ \verb|papersize via the geometry package?| when compiling my document \\
+\item Q.: I get \verb|Error: paperwidth value missing! Did you forgot to specify the| \\ \verb|papersize via the geometry package?| when compiling my document.\\
 A.: You need to explicitly specify the papersize of your document via the geometry package (e.g. \verb|\usepackage[letterpaper]{geometry}|)
-%TODO: check utf8 error message and put a faq entry here
+\item Q.: I get \verb|\unhbox \voidb@x \bgroup \let \unhbox \voidb@x \setbox \@tempboxa \hbox| \verb|{u\global \mathchardef \accent@spacefactor \spacefactor }\accent 127 u\egroup| \newline \verb|\spacefactor \accent@spacefactor| or a similar string in a error message.\\
+A.: Chances are high that you use the \verb|\usepackage[utf8]{inputenc}| package or a similar package. These are not fully compatible with PDBF. If you really have to use the utf8 package then you cant use special characters inside PDBF commands.
 \end{itemize}
 
 \end{document}

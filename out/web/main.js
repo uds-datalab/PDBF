@@ -1517,14 +1517,14 @@ function getPivotTableData(json, isBig) {
 		};
 	}
 	try {
-		var rows = JSON.parse("[" + json.type.I.rows + "]");
+		var rows = JSON.parse(json.type.I.rows);
 	} catch (e) {
 		return {
 			error : 'Parsing of rows for ' + (isBig ? json.name + 'Big' : json.name) + ' failed. \nDid you forgot to enclose every row by ", or did you TeX program replace " by \'\'?\n JSON String was:\n' + json.type.I.rows
 		};
 	}
 	try {
-		var cols = JSON.parse("[" + json.type.I.cols + "]");
+		var cols = JSON.parse(json.type.I.cols);
 	} catch (e) {
 		return {
 			error : 'Parsing of cols for ' + (isBig ? json.name + 'Big' : json.name) + ' failed. \nDid you forgot to enclose every col by ", or did you TeX program replace " by \'\'?\n JSON String was:\n' + json.type.I.cols
@@ -1620,11 +1620,11 @@ function GRUBBS_FILTER(arr, alpha) {
 		var margin_of_error_runtime = MARGIN_OF_ERROR(arr);
 		var avg_runtime = MEAN(arr);
 		if (Z > ZCrit && margin_of_error_runtime / avg_runtime >= 0.025) { // TODO:
-																			// this
-																			// as
-																			// parameter.
-																			// Ask
-																			// endre!
+			// this
+			// as
+			// parameter.
+			// Ask
+			// endre!
 			arr.splice(Zindex, 1);
 		} else {
 			gogo = false;
@@ -1750,58 +1750,105 @@ function signaturePlot(valuesArr) {
 	keys[keys.length] = "x";
 	var runtimes = values.json;
 
-	var runtime_count = runtimes.length;
-	var means = [];
-	var min;
-	var min_int;
+	if (Array.isArray(runtimes[0])) {
+		var runtime_count = runtimes.length;
+		var means = [];
+		var min;
+		var min_int;
 
-	// calculate mean of each experiment, search minimum of conf. int. lower
-	// bounds
-	for (var i = 0; i < runtime_count; ++i) {
-		var cur = runtimes[i][aname];
-		means[i] = alasql.fn.MEAN(cur);
-		var ci = alasql.fn.CONF_INT(cur);
-		if (min_int == undefined || ci[0] < min_int[0]) {
-			min = i;
-			min_int = ci;
-		}
-	}
-
-	var distance = []; // distance from best experiment
-
-	for (var i = 0; i < runtime_count; ++i) {
-		// for t_bests the distance is set to 0
-		if (alasql.fn.WELCH_TEST(runtimes[min][aname], runtimes[i][aname])) {
-			distance[i] = 0;
-		} else {
-			distance[i] = means[i] - min_int[1];
-			if (distance[i] < 0) {
-				distance[i] = 0;
+		// calculate mean of each experiment, search minimum of conf. int. lower
+		// bounds
+		for (var i = 0; i < runtime_count; ++i) {
+			var cur = runtimes[i][aname];
+			means[i] = alasql.fn.MEAN(cur);
+			var ci = alasql.fn.CONF_INT(cur);
+			if (min_int == undefined || ci[0] < min_int[0]) {
+				min = i;
+				min_int = ci;
 			}
 		}
+
+		var distance = []; // distance from best experiment
+
+		for (var i = 0; i < runtime_count; ++i) {
+			// for t_bests the distance is set to 0
+			if (alasql.fn.WELCH_TEST(runtimes[min][aname], runtimes[i][aname])) {
+				distance[i] = 0;
+			} else {
+				distance[i] = means[i] - min_int[1];
+				if (distance[i] < 0) {
+					distance[i] = 0;
+				}
+			}
+		}
+
+		var slowDown = [];
+		distance.forEach(function(v, i) {
+			slowDown[i] = (distance[i] + min_int[1]) / min_int[1] - 1.0;
+
+		});
+
+		slowDown.sort(function(a, b) {
+			return a - b;
+		});
+
+		var res = [];
+		slowDown.forEach(function(v, i) {
+			res[i] = {
+				x : i / (runtime_count - 1)
+			};
+			res[i][aname] = slowDown[i];
+		});
+
+		values.json = res;
+		values.finished = true;
+		return values;
+	} else {
+		var runtime_count = runtimes.length;
+		var means = [];
+		var min;
+		var min_int;
+
+		// calculate mean of each experiment, search minimum of conf. int. lower
+		// bounds
+		for (var i = 0; i < runtime_count; ++i) {
+			var cur = runtimes[i][aname];
+			means[i] = cur;
+			var ci = [cur, cur];
+			if (min_int == undefined || ci[0] < min_int[0]) {
+				min = i;
+				min_int = ci;
+			}
+		}
+
+		var distance = []; // distance from best experiment
+
+		for (var i = 0; i < runtime_count; ++i) {
+			distance[i] = means[i] - min_int[1];
+		}
+
+		var slowDown = [];
+		distance.forEach(function(v, i) {
+			slowDown[i] = (distance[i] + min_int[1]) / min_int[1] - 1.0;
+
+		});
+
+		slowDown.sort(function(a, b) {
+			return a - b;
+		});
+
+		var res = [];
+		slowDown.forEach(function(v, i) {
+			res[i] = {
+				x : i / (runtime_count - 1)
+			};
+			res[i][aname] = slowDown[i];
+		});
+
+		values.json = res;
+		values.finished = true;
+		return values;
 	}
-
-	var slowDown = [];
-	distance.forEach(function(v, i) {
-		slowDown[i] = (distance[i] + min_int[1]) / min_int[1] - 1.0;
-
-	});
-
-	slowDown.sort(function(a, b) {
-		return a - b;
-	});
-
-	var res = [];
-	slowDown.forEach(function(v, i) {
-		res[i] = {
-			x : i / (runtime_count - 1)
-		};
-		res[i][aname] = slowDown[i];
-	});
-
-	values.json = res;
-	values.finished = true;
-	return values;
 }
 
 function alasqlQuery(q) {

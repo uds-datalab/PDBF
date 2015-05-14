@@ -7505,7 +7505,7 @@
     return d3_scale_nice(domain, d3_scale_niceStep(d3_scale_linearTickRange(domain, m)[2]));
   }
   function d3_scale_linearTickRange(domain, m) {
-    if (m == null) m = 10;
+    if (m == null) m = 8;
     var extent = d3_scaleExtent(domain), span = extent[1] - extent[0], step = Math.pow(10, Math.floor(Math.log(span / m) / Math.LN10)), err = m / span * step;
     if (err <= .15) step *= 10; else if (err <= .35) step *= 5; else if (err <= .75) step *= 2;
     extent[0] = Math.ceil(extent[0] / step) * step;

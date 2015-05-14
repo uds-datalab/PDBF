@@ -69,9 +69,9 @@
 \define@key{pdbf}{overlap}[2]{\def\pdbf@overlap{#1}}
 
 %Pivot
-\def\pdbf@rows{}
+\def\pdbf@rows{[]}
 \define@key{pdbf}{rows}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@rows]}
-\def\pdbf@cols{}
+\def\pdbf@cols{[]}
 \define@key{pdbf}{cols}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@cols]}
 \def\pdbf@aggregation{Minimum}
 \define@key{pdbf}{aggregation}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@aggregation]}

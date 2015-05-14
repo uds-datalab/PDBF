@@ -1,2 +1,3 @@
 		// TODO: special behandlung von endre als parameter machen
 		// TODO: add variable alpha (also to UI)
+		// TODO: picasso diag
