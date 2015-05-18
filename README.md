@@ -4,6 +4,8 @@ If you change the file extension to PDF and open it with an PDF viewer you can s
 
 PDBF files are created from LaTeX code and data in SQL format. The raw data can either be a SQL statements string, a file with SQL statements, or in a database (currently PostgreSQL/MySQL/MariaDB supported). In the LaTeX code one can then specify how the PDBF element (currently charts/pivot tables/multiplot charts/sql statements are supported) is created from the raw data with options and an SQL query. Read more in the Documentation -> http://ichbinkeinreh.de/PDBF/Documentation.html (which is itself a PDBF document).
 
+PDBF toolkit is written in Java and LaTeX an can therefore be run on Windows/Mac/Linux. PDBF documents are also platform independent and run on any OS with a browser/PDF viewer.
+
 This toolkit is licensed unter the MIT License.
 
 Thanks to the authors of:
