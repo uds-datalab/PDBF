@@ -74,6 +74,17 @@ problems with utf8 package. for german umlauts use ngerman package instead. \\
 if you really have to use the utf8 package then you cant use special characters inside queries.\\
 All options in all modes because of switcher.\\
 
+\section{SQL queries}
+attributes with spaces sourrounded by square bracets. E.g. SELECT a AS [This is a test] FROM test;\\
+TODO: write about special sql functions. link to alasql.\\
+\verb|GRUBBS_FILTER(arr, alpha)|: \\
+\verb|MEAN(arr)|: \\
+\verb|STDDEV_SAMP(arr)|: \\
+\verb|MARGIN_OF_ERROR(arr, alpha)|: \\
+\verb|CONF_INT(arr)|: \\
+\verb|T_TEST(arr1, arr2, alpha)|: \\
+\verb|WELCH_TEST(arr1, arr2, alpha)|: \\
+
 \newpage
 \section{Chart}
 \begin{figure}[h!]%
@@ -106,7 +117,8 @@ All options in all modes because of switcher.\\
 
 \noindent Macros: \\[3pt]
 \verb|\chart[options][queryForOverlay]{queryForPage}| \\
-Note: if \verb|queryForOverlay| is omitted the \verb|queryForPage| is used for the overlay\\[8pt]
+Note: if \verb|queryForOverlay| is omitted the \verb|queryForPage| is used for the overlay.\\
+Note: The first column of the query result is used for the x-Axis, all other columns are used for y-Axis.\\[8pt] 
 \noindent Options:\\[3pt]
 %
 Common options\\[4pt]

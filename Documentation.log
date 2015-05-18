@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.4.16)  18 MAY 2015 12:52
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.4.16)  18 MAY 2015 18:50
 entering extended mode
 **C:/workspaceAndroid/PDBF/Documentation.tex
 (C:/workspaceAndroid/PDBF/Documentation.tex
@@ -18,19 +18,23 @@ Document Class: scrartcl 2013/12/19 v3.12 KOMA-Script document class (article)
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\koma-script\scrkbase.sty
 Package: scrkbase 2013/12/19 v3.12 KOMA-Script package (KOMA-Script-dependent b
 asics and keyval usage)
+
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\koma-script\scrbase.sty
 Package: scrbase 2013/12/19 v3.12 KOMA-Script package (KOMA-Script-independent 
 basics and keyval usage)
+
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\keyval.sty"
 Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
 \KV@toks@=\toks14
-) (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\koma-script\scrlfile.sty
+)
+(C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\koma-script\scrlfile.sty
 Package: scrlfile 2013/12/19 v3.12 KOMA-Script package (loading files)
+
 Package scrlfile, 2013/12/19 v3.12 KOMA-Script package (loading files)
                   Copyright (C) Markus Kohm
 
-))) (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\koma-script\tocbasic.st
-y
+)))
+(C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\koma-script\tocbasic.sty
 Package: tocbasic 2013/12/19 v3.12 KOMA-Script package (handling toc-files)
 )
 Package tocbasic Info: omitting babel extension for `toc'
@@ -56,6 +60,7 @@ File: scrsize11pt.clo 2013/12/19 v3.12 KOMA-Script font size class option (11pt
 )
 ) (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\koma-script\typearea.sty
 Package: typearea 2013/12/19 v3.12 KOMA-Script package (type area)
+
 Package typearea, 2013/12/19 v3.12 KOMA-Script package (type area)
                   Copyright (C) Frank Neukam, 1992-1994
                   Copyright (C) Markus Kohm, 1994-
@@ -100,12 +105,14 @@ Package typearea Info: These are the values describing the layout:
 Package: inputenc 2008/03/30 v1.1d Input encoding file
 \inpenc@prehook=\toks15
 \inpenc@posthook=\toks16
+
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\utf8.def"
 File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
 Now handling font encoding OML ...
 ... no UTF-8 mapping file for font encoding OML
 Now handling font encoding T1 ...
 ... processing UTF-8 mapping file for font encoding T1
+
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\t1enc.dfu"
 File: t1enc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
    defining Unicode char U+00A1 (decimal 161)
@@ -255,6 +262,7 @@ File: t1enc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
 )
 Now handling font encoding OT1 ...
 ... processing UTF-8 mapping file for font encoding OT1
+
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\ot1enc.dfu"
 File: ot1enc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
    defining Unicode char U+00A1 (decimal 161)
@@ -285,6 +293,7 @@ File: ot1enc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
 )
 Now handling font encoding OMS ...
 ... processing UTF-8 mapping file for font encoding OMS
+
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\omsenc.dfu"
 File: omsenc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
    defining Unicode char U+00A7 (decimal 167)
@@ -308,19 +317,26 @@ Now handling font encoding U ...
    defining Unicode char U+2026 (decimal 8230)
    defining Unicode char U+2122 (decimal 8482)
    defining Unicode char U+2423 (decimal 9251)
-)) (C:\workspaceAndroid\PDBF\PDBF.sty ("C:\Program Files (x86)\MiKTeX 2.9\tex\l
-atex\oberdiek\zref-savepos.sty"
+))
+(C:\workspaceAndroid\PDBF\PDBF.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\oberdiek\zref-savepos.sty"
 Package: zref-savepos 2012/04/04 v2.24 Module savepos for zref (HO)
+
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\oberdiek\zref-base.sty"
 Package: zref-base 2012/04/04 v2.24 Module base for zref (HO)
+
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\ltxcmds.sty"
 Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
-) ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\infwarerr.sty"
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\infwarerr.sty"
 Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
-) ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\kvsetkeys.sty"
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\kvsetkeys.sty"
 Package: kvsetkeys 2012/04/25 v1.16 Key value parser (HO)
+
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\etexcmds.sty"
 Package: etexcmds 2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)
+
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\ifluatex.sty"
 Package: ifluatex 2010/03/01 v1.3 Provides the ifluatex switch (HO)
 Package ifluatex Info: LuaTeX not detected.
@@ -329,11 +345,14 @@ Package etexcmds Info: Could not find \expanded.
 (etexcmds)             That can mean that you are not using pdfTeX 1.50 or
 (etexcmds)             that some package has redefined \expanded.
 (etexcmds)             In the latter case, load this package earlier.
-)) ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\kvdefinekeys.sty"
+))
+("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\kvdefinekeys.sty"
 Package: kvdefinekeys 2011/04/07 v1.3 Define keys (HO)
-) ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\pdftexcmds.sty"
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\pdftexcmds.sty"
 Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
 )
+
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\ifpdf.sty"
 Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)
 Package ifpdf Info: pdfTeX in PDF mode is detected.
@@ -342,7 +361,8 @@ Package pdftexcmds Info: LuaTeX not detected.
 Package pdftexcmds Info: \pdf@primitive is available.
 Package pdftexcmds Info: \pdf@ifprimitive is available.
 Package pdftexcmds Info: \pdfdraftmode found.
-) ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\oberdiek\auxhook.sty"
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\oberdiek\auxhook.sty"
 Package: auxhook 2011/03/04 v1.3 Hooks for auxiliary files (HO)
 )
 Package zref Info: New property list: main on input line 759.
@@ -352,21 +372,27 @@ Package zref Info: New property: page on input line 761.
 Package zref Info: New property list: savepos on input line 75.
 Package zref Info: New property: posx on input line 76.
 Package zref Info: New property: posy on input line 77.
-) ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\oberdiek\zref-abspage.sty"
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\oberdiek\zref-abspage.sty"
 Package: zref-abspage 2012/04/04 v2.24 Module abspage for zref (HO)
+
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\atbegshi.sty"
 Package: atbegshi 2011/10/05 v1.16 At begin shipout hook (HO)
 )
 \c@abspage=\count88
 Package zref Info: New property: abspage on input line 62.
-) ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\oberdiek\zref-user.sty"
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\oberdiek\zref-user.sty"
 Package: zref-user 2012/04/04 v2.24 Module user for zref (HO)
-) (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\xcolor\xcolor.sty
+)
+(C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\xcolor\xcolor.sty
 Package: xcolor 2007/01/21 v2.11 LaTeX color extensions (UK)
+
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\00miktex\color.cfg"
 File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
 )
 Package xcolor Info: Driver file: pdftex.def on input line 225.
+
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\pdftex-def\pdftex.def"
 File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
 \Gread@gobject=\count89
@@ -380,21 +406,26 @@ Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1357.
 Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1358.
 Package xcolor Info: Model `Gray' substituted by `gray' on input line 1359.
 Package xcolor Info: Model `wave' substituted by `hsb' on input line 1360.
-) ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\graphicx.sty"
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\graphicx.sty"
 Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\graphics.sty"
 Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\trig.sty"
 Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
-) ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\00miktex\graphics.cfg"
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\00miktex\graphics.cfg"
 File: graphics.cfg 2007/01/18 v1.5 graphics configuration of teTeX/TeXLive
 )
 Package graphics Info: Driver file: pdftex.def on input line 91.
 )
 \Gin@req@height=\dimen103
 \Gin@req@width=\dimen104
-) (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\xstring\xstring.sty (C:\U
-sers\User\AppData\Roaming\MiKTeX\2.9\tex\generic\xstring\xstring.tex
+)
+(C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\xstring\xstring.sty
+(C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\generic\xstring\xstring.tex
 \@xs@message=\write3
 \integerpart=\count90
 \decimalpart=\count91
@@ -404,9 +435,11 @@ Package: xstring 2013/10/13  v1.7c  String manipulations (C Tellechea)
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\l3packages\xparse\xparse.st
 y (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\l3kernel\expl3.sty
 Package: expl3 2015/03/01 v5547 L3 programming layer (loader) 
+
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\l3kernel\expl3-code.tex
 Package: expl3 2015/03/01 v5547 L3 programming layer (code) 
 L3 Module: l3bootstrap 2015/02/28 v5542 L3 Bootstrap code
+
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\misc\etex.sty"
 Package: etex 1998/03/26 v2.0 eTeX basic definition package (PEB)
 \et@xins=\count92
@@ -551,17 +584,20 @@ Package: xparse 2014/11/25 v5471 L3 Experimental document command parser
 .................................................
 )
 Package: PDBF 2015/02/23    1.0    (Patrick Bender)
-(C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\wrapfig\wrapfig.sty
+ (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\wrapfig\wrapfig.sty
 \wrapoverhang=\dimen136
 \WF@size=\dimen137
 \c@WF@wrappedlines=\count123
 \WF@box=\box42
 \WF@everypar=\toks17
 Package: wrapfig 2003/01/31  v 3.6
-) ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\hyperref\hyperref.sty"
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\hyperref\hyperref.sty"
 Package: hyperref 2012/11/06 v6.83m Hypertext links for LaTeX
+
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\hobsub-hyperref.sty"
 Package: hobsub-hyperref 2012/04/25 v1.12 Bundle oberdiek, subset hyperref (HO)
+
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\hobsub-generic.sty"
 Package: hobsub-generic 2012/04/25 v1.12 Bundle oberdiek, subset generic (HO)
@@ -592,20 +628,24 @@ Package atveryend Info: \enddocument detected (standard20110627).
 Package hobsub Info: Skipping package `atbegshi' (already loaded).
 Package: refcount 2011/10/16 v3.4 Data extraction from label references (HO)
 Package: hycolor 2011/01/30 v1.7 Color options for hyperref/bookmark (HO)
-) ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\ifxetex\ifxetex.sty"
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\ifxetex\ifxetex.sty"
 Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
-) ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\oberdiek\kvoptions.sty"
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\oberdiek\kvoptions.sty"
 Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
 )
 \@linkdim=\dimen138
 \Hy@linkcounter=\count124
 \Hy@pagecounter=\count125
+
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\hyperref\pd1enc.def"
 File: pd1enc.def 2012/11/06 v6.83m Hyperref: PDFDocEncoding definition (HO)
 Now handling font encoding PD1 ...
 ... no UTF-8 mapping file for font encoding PD1
 )
 \Hy@SavedSpaceFactor=\count126
+
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\00miktex\hyperref.cfg"
 File: hyperref.cfg 2002/06/06 v1.2 hyperref configuration of TeXLive
 )
@@ -617,6 +657,7 @@ Package hyperref Info: Backreferencing OFF on input line 4463.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4688.
 \c@Hy@tempcnt=\count127
+
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\latex\url\url.sty
 \Urlmuskip=\muskip16
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
@@ -647,13 +688,15 @@ File: hpdftex.def 2012/11/06 v6.83m Hyperref driver for pdfTeX
 \HyAnn@Count=\count132
 \Fld@listcount=\count133
 \c@bookmark@seq@number=\count134
+
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\oberdiek\rerunfilecheck.sty"
 Package: rerunfilecheck 2011/04/15 v1.7 Rerun checks for auxiliary files (HO)
 Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 82.
 )
 \Hy@SectionHShift=\skip54
-) ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\geometry\geometry.sty"
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\geometry\geometry.sty"
 Package: geometry 2010/09/12 v5.6 Page Geometry
 \Gm@cnth=\count135
 \Gm@cntv=\count136
@@ -667,8 +710,9 @@ Package: geometry 2010/09/12 v5.6 Page Geometry
 \Gm@layouthoffset=\dimen148
 \Gm@layoutvoffset=\dimen149
 \Gm@dimlist=\toks18
-("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\geometry\geometry.cfg")) (C:\work
-spaceAndroid\PDBF\Documentation.aux)
+
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\geometry\geometry.cfg"))
+(C:\workspaceAndroid\PDBF\Documentation.aux)
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 56.
 LaTeX Font Info:    ... okay on input line 56.
 LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 56.
@@ -684,6 +728,7 @@ LaTeX Font Info:    ... okay on input line 56.
 LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 56.
 LaTeX Font Info:    ... okay on input line 56.
 \AtBeginShipoutBox=\box43
+
 (C:\Users\User\AppData\Roaming\MiKTeX\2.9\tex\context\base\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count138
@@ -701,8 +746,9 @@ LaTeX Font Info:    ... okay on input line 56.
 \emptylen=\skip55
 \temp=\write5
 Package hyperref Info: Link coloring OFF on input line 56.
-("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\hyperref\nameref.sty"
+ ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\hyperref\nameref.sty"
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
+
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\gettitlestring.sty"
 Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
@@ -711,9 +757,11 @@ Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 LaTeX Info: Redefining \ref on input line 56.
 LaTeX Info: Redefining \pageref on input line 56.
 LaTeX Info: Redefining \nameref on input line 56.
-(C:\workspaceAndroid\PDBF\Documentation.out) (C:\workspaceAndroid\PDBF\Document
-ation.out)
+
+(C:\workspaceAndroid\PDBF\Documentation.out)
+(C:\workspaceAndroid\PDBF\Documentation.out)
 \@outlinefile=\write6
+
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
@@ -759,47 +807,33 @@ Underfull \hbox (badness 10000) in paragraph at lines 63--76
 
  []
 
+
+Underfull \hbox (badness 10000) in paragraph at lines 78--87
+
+ []
+
 [1
 
 
 
 {C:/Users/User/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 83.
-<Overlay1.png, id=45, 291.33844pt x 206.27063pt>
-File: Overlay1.png Graphic file (type png)
-<use Overlay1.png>
-Package pdftex.def Info: Overlay1.png used on input line 83.
-(pdftex.def)             Requested size: 232.17752pt x 162.5208pt.
+(Font)              <5> on input line 94.
+
+<dummy.png, id=50, 24.09pt x 24.09pt>
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <10.95> on input line 85.
-<Overlay2.png, id=47, 291.33844pt x 206.27063pt>
-File: Overlay2.png Graphic file (type png)
-<use Overlay2.png>
-Package pdftex.def Info: Overlay2.png used on input line 88.
-(pdftex.def)             Requested size: 232.17752pt x 162.5208pt.
-<Overlay3.png, id=48, 608.2725pt x 221.32687pt>
-File: Overlay3.png Graphic file (type png)
-<use Overlay3.png>
-Package pdftex.def Info: Overlay3.png used on input line 93.
-(pdftex.def)             Requested size: 483.71356pt x 174.14046pt.
+(Font)              <10.95> on input line 96.
 
-Underfull \hbox (badness 10000) in paragraph at lines 107--119
+Overfull \hbox (0.55124pt too wide) in paragraph at lines 104--105
+[][] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 118--131
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 124--125
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 130--131
-
- []
-
-[2 <C:/workspaceAndroid/PDBF/Overlay1.png> <C:/workspaceAndroid/PDBF/Overlay2.p
-ng> <C:/workspaceAndroid/PDBF/Overlay3.png>]
 Underfull \hbox (badness 10000) in paragraph at lines 136--137
 
  []
@@ -809,7 +843,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 142--143
 
  []
 
-
+[2]
 Underfull \hbox (badness 10000) in paragraph at lines 148--149
 
  []
@@ -818,14 +852,6 @@ Underfull \hbox (badness 10000) in paragraph at lines 148--149
 Underfull \hbox (badness 10000) in paragraph at lines 154--155
 
  []
-
-LaTeX Font Info:    Try loading font information for OMS+cmtt on input line 160
-.
-LaTeX Font Info:    No file OMScmtt.fd. on input line 160.
-
-LaTeX Font Warning: Font shape `OMS/cmtt/m/n' undefined
-(Font)              using `OMS/cmsy/m/n' instead
-(Font)              for symbol `textbraceleft' on input line 160.
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 160--161
@@ -836,6 +862,14 @@ Underfull \hbox (badness 10000) in paragraph at lines 160--161
 Underfull \hbox (badness 10000) in paragraph at lines 166--167
 
  []
+
+LaTeX Font Info:    Try loading font information for OMS+cmtt on input line 172
+.
+LaTeX Font Info:    No file OMScmtt.fd. on input line 172.
+
+LaTeX Font Warning: Font shape `OMS/cmtt/m/n' undefined
+(Font)              using `OMS/cmsy/m/n' instead
+(Font)              for symbol `textbraceleft' on input line 172.
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 172--173
@@ -852,7 +886,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 184--185
 
  []
 
-[3]
+
 Underfull \hbox (badness 10000) in paragraph at lines 190--191
 
  []
@@ -862,49 +896,49 @@ Underfull \hbox (badness 10000) in paragraph at lines 196--197
 
  []
 
-
+[3]
 Underfull \hbox (badness 10000) in paragraph at lines 202--203
 
  []
 
-[4] <Overlay4.png, id=74, 608.2725pt x 303.38344pt>
-File: Overlay4.png Graphic file (type png)
-<use Overlay4.png>
-Package pdftex.def Info: Overlay4.png used on input line 208.
-(pdftex.def)             Requested size: 483.71356pt x 241.85066pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 212--225
+Underfull \hbox (badness 10000) in paragraph at lines 208--209
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 230--231
+Underfull \hbox (badness 10000) in paragraph at lines 214--215
 
  []
 
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 236.
+[4]
+Overfull \hbox (0.55124pt too wide) in paragraph at lines 219--221
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 224--237
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 242--243
+
+ []
+
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 248.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\omscmr.fd"
 File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 236.
-
-Underfull \hbox (badness 10000) in paragraph at lines 236--237
-
- []
-
-[5 <C:/workspaceAndroid/PDBF/Overlay4.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 242--243
-
- []
-
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 248.
 
 Underfull \hbox (badness 10000) in paragraph at lines 248--249
 
  []
 
-
+[5]
 Underfull \hbox (badness 10000) in paragraph at lines 254--255
 
  []
@@ -919,7 +953,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 266--267
 
  []
 
-[6]
+
 Underfull \hbox (badness 10000) in paragraph at lines 272--273
 
  []
@@ -929,28 +963,28 @@ Underfull \hbox (badness 10000) in paragraph at lines 278--279
 
  []
 
-
+[6]
 Underfull \hbox (badness 10000) in paragraph at lines 284--285
 
  []
 
-[7] <Overlay5.png, id=90, 608.2725pt x 303.38344pt>
-File: Overlay5.png Graphic file (type png)
-<use Overlay5.png>
-Package pdftex.def Info: Overlay5.png used on input line 290.
-(pdftex.def)             Requested size: 483.71356pt x 241.85066pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 294--304
+Underfull \hbox (badness 10000) in paragraph at lines 290--291
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 309--310
+Underfull \hbox (badness 10000) in paragraph at lines 296--297
 
  []
 
+[7]
+Overfull \hbox (0.55124pt too wide) in paragraph at lines 301--303
+[] 
+ []
 
-Underfull \hbox (badness 10000) in paragraph at lines 315--316
+
+Underfull \hbox (badness 10000) in paragraph at lines 306--316
 
  []
 
@@ -959,7 +993,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 321--322
 
  []
 
-[8 <C:/workspaceAndroid/PDBF/Overlay5.png>]
+
 Underfull \hbox (badness 10000) in paragraph at lines 327--328
 
  []
@@ -969,7 +1003,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 333--334
 
  []
 
-
+[8]
 Underfull \hbox (badness 10000) in paragraph at lines 339--340
 
  []
@@ -989,37 +1023,48 @@ Underfull \hbox (badness 10000) in paragraph at lines 357--358
 
  []
 
+
+Underfull \hbox (badness 10000) in paragraph at lines 363--364
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 369--370
+
+ []
+
 [9] [10]
-Underfull \hbox (badness 10000) in paragraph at lines 361--367
+Underfull \hbox (badness 10000) in paragraph at lines 373--379
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 369--375
+Underfull \hbox (badness 10000) in paragraph at lines 381--387
 
  []
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 386.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 398.
 [11]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 386.
-(C:\workspaceAndroid\PDBF\Documentation.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 386.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 386.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 398.
+ (C:\workspaceAndroid\PDBF\Documentation.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 398.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 398.
 Package rerunfilecheck Info: File `Documentation.out' has not changed.
-(rerunfilecheck)             Checksum: CB4D16C062209E2D83FFA9159BA9F2F5;364.
+(rerunfilecheck)             Checksum: 2ECADEF79BA31557220862CACA862AAB;411.
+
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 386.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 398.
  ) 
 Here is how much of TeX's memory you used:
- 14092 strings out of 493921
- 246910 string characters out of 3144879
+ 14079 strings out of 493921
+ 246640 string characters out of 3144879
  364817 words of memory out of 3000000
- 17231 multiletter control sequences out of 15000+200000
- 9129 words of font info for 33 fonts, out of 3000000 for 9000
+ 17216 multiletter control sequences out of 15000+200000
+ 9297 words of font info for 34 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 55i,14n,54p,10410b,505s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 55i,13n,54p,10410b,525s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb>
 <C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C
 :/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/P
@@ -1029,10 +1074,11 @@ ram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program
 es (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmssbx10.pfb><C:/Program Fil
 es (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files
  (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Program Files (
-x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on Documentation.pdf (11 pages, 189359 bytes).
+x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt12.pfb><C:/Program Files (x8
+6)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt8.pfb>
+Output written on Documentation.pdf (11 pages, 157777 bytes).
 PDF statistics:
- 149 PDF objects out of 1000 (max. 8388607)
- 25 named destinations out of 1000 (max. 500000)
- 90 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 148 PDF objects out of 1000 (max. 8388607)
+ 26 named destinations out of 1000 (max. 500000)
+ 78 words of extra memory for PDF output out of 10000 (max. 10000000)
 
