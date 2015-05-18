@@ -25,7 +25,7 @@ public class HTML_Compiler {
 	    String viewer;
 	    String viewerHEAD = FileUtils.readFileToString(new File("out/web/templateHEADalasql.html"), Tools.utf8);
 	    String viewerTAIL = FileUtils.readFileToString(new File("out/web/templateTAILalasql.html"), Tools.utf8);
-	    //String all = FileUtils.readFileToString(new File("out/web/all"), Tools.utf8);
+	    String all = FileUtils.readFileToString(new File("out/web/all"), Tools.utf8);
 	    String preload = FileUtils.readFileToString(new File("preload"));
 	    viewer = viewerHEAD + 
 		    "pdf_base64 = \"" + Tools.encodeFileToBase64Binary(new File(pdfname)) + "\";\r\n" + 
@@ -33,7 +33,7 @@ public class HTML_Compiler {
 		    "json_base64 = \"" + Tools.encodeFileToBase64Binary(new File("config.json")) + "\";\r\n" + 
 		    "dbjson_base64 = \"" + Tools.escapeQuotes(new File("db.json")) + "\";\r\n" +
 		    preload + "\r\n" +
-		    //all + "\r\n" +		    
+		    (CompleteRun_HTML.includeRes ? (all + "\r\n") : ("")) +		    
 		    viewerTAIL;
 	    String insert1 = "%<!DOCTYPE html><html dir=\"ltr\" mozdisallowselectionprint moznomarginboxes>" +
   		      	     "<head><meta charset=\"utf-8\"><!--\n";

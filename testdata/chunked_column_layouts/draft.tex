@@ -254,7 +254,52 @@ Table~\ref{fig:problem_bests_table} displays our recommendations for choosing a 
 \begin{figure}[!h]
 \vspace{-5pt}
 \centering
-\includegraphics[width=0.48\textwidth]{pdf/problem_bests_plot.pdf}
+\multiplot[
+width=0.48\textwidth, 
+height=0.3329\textwidth, 
+charttype=scatter,
+xunit={Best layouts}, 
+yunit={Average query time [seconds]}, 
+xCount=1, yCount=4, 
+yValues={[ 
+"cpuarchitecture='Nehalem'", 
+"cpuarchitecture='Westmere'", 
+"cpuarchitecture='Sandy Bridge'", 
+"cpuarchitecture='Ivy Bridge'" 
+]}, 
+xValues={[
+"querytext='SELECT MIN(a+b) FROM t' AND tableschema='(char a, char b)'"%, 
+%"querytext='SELECT SUM(a*b) FROM t' AND tableschema='(char a, char b)'", 
+%"querytext='SELECT MIN(a+b) FROM t' AND tableschema='(int a, int b)'", 
+%"querytext='SELECT SUM(a*b) FROM t' AND tableschema='(int a, int b)'", 
+%"querytext='SELECT MIN(a+b) FROM t' AND tableschema='(long a, long b)'", 
+%"querytext='SELECT SUM(a*b) FROM t' AND tableschema='(long a, long b)'"
+]}, 
+rightArr={["Nehalem", "Westmere", "Sandy Bridge", "Ivy Bridge"]}, 
+topArr={[""]}, 
+forceXequal, 
+forceYequal, 
+yFirst,
+chartType=SignaturePlot,
+options={
+	"padding" : { "top" : 6, "right" : 8 }, 
+	"axis": { 
+%		"x" : { 
+%			"tick" : { "values" : [0, 0.25, 0.5, 0.75, 1], "rotate" : 90 }, 
+%			"min" : 0, 
+%			"max" : 1, 
+%			"padding" : { "left" : 0, "right" : 0 } 
+%		}, 
+		"y": { 
+			"tick" : { "values" : [0, 0.2, 0.4, 0.6, 0.8, 1.0]}, 
+			"min" : 0, 
+			"max" : 1, 
+			"padding" : { "top" : 0, "bottom" : 0 } 
+		} 
+	}, 
+	"legend" : { "show" : false } 
+} 
+]]{}
 \vspace{-20pt}
 \caption{Best layouts and their query times. Drilled-down along machine, schema, and query.}  
 \label{fig:problem_bests_plot}

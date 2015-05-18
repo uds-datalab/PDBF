@@ -6,8 +6,14 @@ import pdbf.latex.LaTeX_Compiler;
 
 public class CompleteRun_HTML {
 
+    public static boolean includeRes = false;
+    
     public static void main(String[] args) {
 	long begin = System.currentTimeMillis();
+	
+	if (includeRes) {
+	    MinifyResources.main(args);
+	}
 	
 	LaTeX_Compiler.main(args);
 	HTML_Compiler.main(args);
