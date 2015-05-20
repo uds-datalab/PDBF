@@ -12,6 +12,7 @@ page.onError = function (msg, trace) {
     trace.forEach(function(item) {
         console.log('  ', item.file, ':', item.line);
     });
+	phantom.exit();
 };
 
 page.open(system.args[1], function() {

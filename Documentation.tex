@@ -2,7 +2,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{PDBF}
 \usepackage{wrapfig}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 \usepackage[a4paper,vmargin={20mm,40mm},hmargin={20mm,20mm}]{geometry}
 
 \title{PDBF Documentation}
@@ -11,6 +11,12 @@
   \texttt{s9pabend@stud.uni-saarland.de}
 }
 \date{\today{}, Saarbrücken}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  urlcolor=blue!70!black
+}
 
 \makeatletter
 \def\@maketitle{%
@@ -105,17 +111,98 @@ geometry\\
 \noindent \textbf{Warning:} There are problems with inputenc UTF8 package. If you really have to use the inputenc UTF8 package then you cant use non-ASCII characters inside queries.
 
 \section{SQL queries for PDBF elements}
-Attributes with spaces sourrounded by square bracets. E.g. SELECT a AS [This is a test] FROM test;\\
+PDBF uses AlaSQL as database engine. For all available features visit \url{https://github.com/agershun/alasql}. Some functionality might not yet be available because we currently use not the latest version.\\
+Mostly sql syntax is standart sql, but for example attributes with spaces in their name have to be sourrounded by square brackets. E.g. SELECT a AS [This is a test] FROM test;\\
 
-\noindent TODO: write about special sql functions. AlaSQL (\url{https://github.com/agershun/alasql}).\\
+\noindent We extended AlaSQL with the following statistical sql functions:\\[5pt]
 \verb|GRUBBS_FILTER(arr, alpha)|: \\
+\indent Desc.: Filters an array of values with a \href{http://en.wikipedia.org/wiki/Grubbs'_test_for_outliers}{grubbs test}\\
+\indent Returns the filtered array.\\[3pt]
+\indent \option
+{arr}
+{Array on which the operation is performed.}
+{JavaScript array}
+{No default value. Value must always be set!}
+\indent \option
+{alpha}
+{significance level}
+{Number $>$ 0 AND Number $<$ 1}
+{\texttt{0.05}}\\[3pt]
+%
 \verb|MEAN(arr)|: \\
+\indent Desc.: Calculates the \href{http://en.wikipedia.org/wiki/Arithmetic_mean}{arithmetic mean} of an array of values.\\
+\indent Returns the arithmetic mean of the array.\\[3pt]
+\indent \option
+{arr}
+{Array on which the operation is performed.}
+{JavaScript array}
+{No default value. Value must always be set!}\\[3pt]
+%
 \verb|STDDEV_SAMP(arr)|: \\
+\indent Desc.: Calculates the \href{http://en.wikipedia.org/wiki/Standard_deviation}{ sample standard deviation} of an array of values.\\
+\indent Returns the sample standard deviation of the array.\\[3pt]
+\indent \option
+{arr}
+{Array on which the operation is performed.}
+{JavaScript array}
+{No default value. Value must always be set!}\\[3pt]
+%
 \verb|MARGIN_OF_ERROR(arr, alpha)|: \\
-\verb|CONF_INT(arr)|: \\
+\indent Desc.: Calculates the \href{http://en.wikipedia.org/wiki/Margin_of_error}{margin of error} of an array of values.\\
+\indent Returns the margin of error of the array.\\[3pt]
+\indent \option
+{arr}
+{Array on which the operation is performed.}
+{JavaScript array}
+{No default value. Value must always be set!}
+\indent \option
+{alpha}
+{significance level}
+{Number $>$ 0 AND Number $<$ 1}
+{\texttt{0.05}}\\[3pt]
+%
+\verb|CONF_INT(arr, alpha)|: \\
+\indent Desc.: Calculates the \href{http://en.wikipedia.org/wiki/Confidence_interval}{confidence interval} of an array.\\
+\indent Returns the confidence interval of the array.\\[3pt]
+\indent \option
+{arr}
+{Array on which the operation is performed.}
+{JavaScript array}
+{No default value. Value must always be set!}
+\indent \option
+{alpha}
+{significance level}
+{Number $>$ 0 AND Number $<$ 1}
+{\texttt{0.05}}\\[3pt]
+%
 \verb|T_TEST(arr1, arr2, alpha)|: \\
-\verb|WELCH_TEST(arr1, arr2, alpha)|:
-
+\indent Desc.: Performs a \href{http://en.wikipedia.org/wiki/Student's_t-test}{Student's t-test} on two arrays.\\
+\indent Returns true if they are indistinguishable, and returns false otherwise.\\[3pt]
+\indent \option
+{arr1, arr2}
+{Arrays on which the operation is performed.}
+{JavaScript array}
+{No default value. Value must always be set!}
+\indent \option
+{alpha}
+{significance level}
+{Number $>$ 0 AND Number $<$ 1}
+{\texttt{0.05}}\\[3pt]
+%
+\verb|WELCH_TEST(arr1, arr2, alpha)|:\\
+\indent Desc.: Performs a \href{http://en.wikipedia.org/wiki/Welch's_t_test}{Welch's t-test} on two arrays.\\
+\indent Returns true if they are indistinguishable, and returns false otherwise.\\[3pt]
+\indent \option
+{arr1, arr2}
+{Arrays on which the operation is performed.}
+{JavaScript array}
+{No default value. Value must always be set!}
+\indent \option
+{alpha}
+{significance level}
+{Number $>$ 0 AND Number $<$ 1}
+{\texttt{0.05}}\\[3pt]
+%
 \section{Sql data sources}
 \noindent Macros: \\[3pt]
 \verb|\dbSQLText{sqlQueryString}| \\

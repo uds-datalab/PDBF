@@ -1,0 +1,17 @@
+\documentclass[10pt]{scrartcl}
+\usepackage{PDBF}
+\usepackage[a4paper]{geometry}
+
+\dbSQLText{CREATE TABLE test(a int, b int); INSERT INTO test VALUES(1, 10); INSERT INTO test VALUES(2, 100); INSERT INTO test VALUES(3, 120); INSERT INTO test VALUES(4, 100);}
+%\dbSQLFile{somedb.sql}
+%\dbSQLJDBC{jdbc:postgresql://localhost:5432/postgres}{postgres}{test}{testtable}%
+
+\begin{document}
+\noindent
+\sql{SELECT * FROM test;}\\[3pt]
+\chart[width=\textwidth, height=0.45\textwidth, chartType=line]{SELECT * FROM test;}\\[3pt]
+\chart[width=\textwidth, height=0.45\textwidth, chartType=bar]{SELECT * FROM test;}\\[3pt]
+\chart[width=\textwidth, height=0.45\textwidth, chartType=signatureplot]{SELECT b FROM test;}\\[3pt]
+\multiplotChart[width=\textwidth, height=0.9\textwidth, xCount=2, yCount=2, yValues={["b", "b*2"]}, xValues={["a > 2", "a <= 2"]}, yFirst]{SELECT a,? FROM test WHERE ?;}\\[3pt]
+\pivotTable[width=\textwidth, height=0.5\textwidth, rows={["a"]}, aggregationattribute=b]{SELECT * FROM test;}
+\end{document}

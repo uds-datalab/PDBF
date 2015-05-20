@@ -1663,11 +1663,11 @@ function MARGIN_OF_ERROR(arr, alpha) {
 }
 alasql.fn.MARGIN_OF_ERROR = MARGIN_OF_ERROR;
 
-function CONF_INT(arr) {
+function CONF_INT(arr, alpha) {
 	if (!Array.isArray(arr)) {
 		throw new Error("Argument of CONF_INT is not an array!");
 	}
-	var MOE = alasql.fn.MARGIN_OF_ERROR(arr); // TODO: maybe remove
+	var MOE = alasql.fn.MARGIN_OF_ERROR(arr, alpha); // TODO: maybe remove
 	// null/undefined values?
 	var MEAN = alasql.fn.MEAN(arr); // TODO: maybe remove null/undefined values?
 	return [ MEAN - MOE, MEAN + MOE ]
