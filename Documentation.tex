@@ -57,10 +57,40 @@ Default:& #4\\
 \maketitle
 
 \section{Abstract}
-TODO ...
+PDBF documents are a hybrid format. They are a valid PDF and a valid HTML page at the same time. 
+If you change the file extension to PDF and open it with an PDF viewer you can see the static part of the document. If you change the file extension to HTML and open it with a Browser (currently Chrome/Firefox/IE 10 supported) you can see the dynamic part of the document. For example if the static version contains an image of a chart which displays some data, then the dynamic version contains the actual raw data used to render the chart and renders the chart when opening the document. The advantage is that you can open the chart in an overlay view by clicking on the enlarge symbol at the upper left corner and then start to change parameters of the chart. For example you can remove filtering functions that are applied to the raw data or change confidence levels to other values an see the results of these changes directly in the chart. \\[4pt]
+%
+\noindent PDBF files are created from LaTeX code and data in SQL format. The raw data can either be a SQL statements string, a file with SQL statements, or in a database (currently PostgreSQL/MySQL/MariaDB supported). In the LaTeX code one can then specify how the PDBF element (currently charts/pivot tables/multiplot charts/sql statements are supported) is created from the raw data with options and an SQL query.\\[4pt]
+%
+\noindent PDBF toolkit is written in Java and LaTeX an can therefore be run on Windows/Mac/Linux. PDBF documents are also platform independent and run on any OS with a browser/PDF viewer.\\[4pt]
+%
+\noindent This toolkit is licensed unter the MIT License.\\
+
+\noindent Thanks to the authors of:\\
+phantomJS (\url{https://github.com/ariya/phantomjs})\\
+Apache Commons IO (\url{http://commons.apache.org/proper/commons-io/})\\
+Apache Commons Codec (\url{http://commons.apache.org/proper/commons-codec/})\\
+google-gson (\url{https://github.com/google/gson})\\
+postgreSQL JDBC Driver (\url{https://jdbc.postgresql.org/})\\
+MariaDB JDBC Driver (\url{https://mariadb.com/kb/en/mariadb/about-the-mariadb-java-client/})\\
+AlaSQL (\url{https://github.com/agershun/alasql})\\
+C3 (\url{https://github.com/masayuki0812/c3})\\
+D3 (\url{https://github.com/mbostock/d3})\\
+Codemirror (\url{https://github.com/codemirror/codemirror})\\
+google-diff-match-patch (\url{https://code.google.com/p/google-diff-match-patch/})\\
+explorercanvas (\url{https://code.google.com/p/explorercanvas/})\\
+DataTables (\url{https://github.com/DataTables/DataTables})\\
+jQuery (\url{https://github.com/jquery/jquery})\\
+jQuery-UI (\url{https://github.com/jquery/jquery-ui})\\
+jStat (\url{https://github.com/jstat/jstat})\\
+pivottable (\url{https://github.com/nicolaskruchten/pivottable})\\
+PDF.js (\url{https://github.com/mozilla/pdf.js})\\
+\newpage
+\tableofcontents
+\newpage
 
 \section{Requirements}
-Required packages:\\
+These \LaTeX\relax packages are required for PDBF documents:\\
 zref-savepos\\
 zref-abspage\\
 zref-user\\
@@ -69,34 +99,46 @@ graphicx\\
 xstring\\
 xparse\\
 geometry\\
-need to use geometry package\\
-problems with utf8 package. for german umlauts use ngerman package instead. \\
-if you really have to use the utf8 package then you cant use special characters inside queries.\\
-All options in all modes because of switcher.\\
 
-\section{SQL queries}
-attributes with spaces sourrounded by square bracets. E.g. SELECT a AS [This is a test] FROM test;\\
-TODO: write about special sql functions. link to alasql.\\
+\noindent Furthermore it is needed that your \LaTeX\relax document uses the geometry package to specify the page size.\\
+
+\noindent \textbf{Warning:} There are problems with inputenc UTF8 package. If you really have to use the inputenc UTF8 package then you cant use non-ASCII characters inside queries.
+
+\section{SQL queries for PDBF elements}
+Attributes with spaces sourrounded by square bracets. E.g. SELECT a AS [This is a test] FROM test;\\
+
+\noindent TODO: write about special sql functions. AlaSQL (\url{https://github.com/agershun/alasql}).\\
 \verb|GRUBBS_FILTER(arr, alpha)|: \\
 \verb|MEAN(arr)|: \\
 \verb|STDDEV_SAMP(arr)|: \\
 \verb|MARGIN_OF_ERROR(arr, alpha)|: \\
 \verb|CONF_INT(arr)|: \\
 \verb|T_TEST(arr1, arr2, alpha)|: \\
-\verb|WELCH_TEST(arr1, arr2, alpha)|: \\
+\verb|WELCH_TEST(arr1, arr2, alpha)|:
+
+\section{Sql data sources}
+\noindent Macros: \\[3pt]
+\verb|\dbSQLText{sqlQueryString}| \\
+\verb|\dbSQLFile{fileWithSqlQueries}| \\
+\verb|\dbSQLJDBC{jdbcConnectionURL}{user}{password}{commaSeperatedListOfTableNames}| \\
+\textbf{Note:} jdbcConnectionURL consist of jdbc followed by the name of the dbms (currently only postgresql and mysql are supported) followed by the url of the dbms followed by the database name (e.g. jdbc:postgresql://localhost:5432/postgres).\\
+\textbf{Note:} jdbcConnectionURL, user, and password are not stored in the output document.
 
 \newpage
-\section{Chart}
+\section{PDBF elements}
+Currently there are four different PDBF elements: charts, pivot tables, multiplot charts, and sql statements.
+
+\subsection{Chart}
 \begin{figure}[h!]%
 \hspace{-218pt}Examples:\\
     \centering
     \begin{minipage}{.48\textwidth}
-    \chart[width=\textwidth, height=0.7\textwidth, chartType=line]{SELECT * FROM test;}
+    \chart[width=\textwidth, height=0.6\textwidth, chartType=line]{SELECT * FROM test;}
     \caption{Line Chart}
     \end{minipage}
     \hspace{11pt}
     \begin{minipage}{.48\textwidth}
-    \chart[width=\textwidth, height=0.7\textwidth, chartType=bar]{SELECT * FROM test;}
+    \chart[width=\textwidth, height=0.6\textwidth, chartType=bar]{SELECT * FROM test;}
     \caption{Bar Chart}
     \end{minipage} \\[8pt]
     
@@ -117,8 +159,8 @@ TODO: write about special sql functions. link to alasql.\\
 
 \noindent Macros: \\[3pt]
 \verb|\chart[options][queryForOverlay]{queryForPage}| \\
-Note: if \verb|queryForOverlay| is omitted the \verb|queryForPage| is used for the overlay.\\
-Note: The first column of the query result is used for the x-Axis, all other columns are used for y-Axis.\\[8pt] 
+\textbf{Note:} if \verb|queryForOverlay| is omitted the \verb|queryForPage| is used for the overlay.\\
+\textbf{Note:} The first column of the query result is used for the x-Axis, all other columns are used for y-Axis.\\[8pt] 
 \noindent Options:\\[3pt]
 %
 Common options\\[4pt]
@@ -214,7 +256,7 @@ Common options\\[4pt]
 {\texttt{false}}
 
 \newpage
-\section{Multiplot Chart}
+\subsection{Multiplot Chart}
 \begin{figure}[h!]%
     Example:\\
     \multiplotChart[width=\textwidth, height=0.5\textwidth, xCount=2, yCount=2, yValues={["b", "b*2"]}, xValues={["a > 2", "a <= 2"]}, yFirst]{SELECT a,? FROM test WHERE ?;}
@@ -223,11 +265,11 @@ Common options\\[4pt]
 
 \noindent Macros: \\[3pt]
 \verb|\multiplotChart[options][queryForOverlay]{queryForPage}| \\
-Note: If \verb|queryForOverlay| is omitted the \verb|queryForPage| is used for the overlay\\
-Note: Both \verb|queryForOverlay| and \verb|queryForPage| must contain exactly two occurences of the ? character. These are later replaced with values from the xValues/yValues option.\\[8pt]
+\textbf{Note:} If \verb|queryForOverlay| is omitted the \verb|queryForPage| is used for the overlay\\
+\textbf{Note:} Both \verb|queryForOverlay| and \verb|queryForPage| must contain exactly two occurences of the ? character. These are later replaced with values from the xValues/yValues option.\\[8pt]
 \noindent Options: \\[3pt]
 %
-Note: For multiplot charts all options of chart are also valid options.\\[4pt]
+\textbf{Note:} For multiplot charts all options of chart are also valid options.\\[4pt]
 %
 \option
 {xCount}
@@ -296,7 +338,7 @@ Note: For multiplot charts all options of chart are also valid options.\\[4pt]
 {\texttt{false}}
 
 \newpage
-\section{Pivot Table}
+\subsection{Pivot Table}
 \begin{figure}[h!]%
     Example:\\
     \pivotTable[width=\textwidth, height=0.5\textwidth, rows={["a"]}, aggregationattribute=b]{SELECT * FROM test;}
@@ -305,7 +347,7 @@ Note: For multiplot charts all options of chart are also valid options.\\[4pt]
 
 \noindent Macros: \\[3pt]
 \verb|\pivotTable[options][queryForOverlay]{queryForPage}| \\
-Note: if \verb|queryForOverlay| is omitted the \verb|queryForPage| is used for the overlay\\[8pt]
+\textbf{Note:} if \verb|queryForOverlay| is omitted the \verb|queryForPage| is used for the overlay\\[8pt]
 \noindent Options: \\[3pt]
 %
 \option
@@ -369,21 +411,13 @@ Note: if \verb|queryForOverlay| is omitted the \verb|queryForPage| is used for t
 {\texttt{[]} (which means empty array)}
 
 \newpage
-\section{Sql}
+\subsection{Sql}
 Example:\\[3pt]
 \sql{SELECT * FROM test;}\\[3pt]
 %
 \noindent Macros: \\[3pt]
 \verb|\sql[textForPage]{queryForOverlay}| \\
-Note: if \verb|textForPage| is omitted the \verb|queryForOverlay| is used as text for the page.\\[8pt]
-
-\section{Sql data sources}
-\noindent Macros: \\[3pt]
-\verb|\dbSQLText{sqlQueryString}| \\
-\verb|\dbSQLFile{fileWithSqlQueries}| \\
-\verb|\dbSQLJDBC{jdbcConnectionURL}{user}{password}{commaSeperatedListOfTableNames}| \\
-Note: jdbcConnectionURL consist of jdbc followed by the name of the dbms (currently only postgresql and mysql are supported) followed by the url of the dbms followed by the database name (e.g. jdbc:postgresql://localhost:5432/postgres).\\
-Note: jdbcConnectionURL, user, and password are not stored in the output document.\\[8pt]
+\textbf{Note:} if \verb|textForPage| is omitted the \verb|queryForOverlay| is used as text for the page.\\[8pt]
 
 \section{F.A.Q.}
 \begin{itemize}
