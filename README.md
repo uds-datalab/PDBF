@@ -9,7 +9,8 @@ PDBF toolkit is written in Java and LaTeX an can therefore be run on Windows/Mac
 This toolkit is licensed unter the MIT License.
 
 ##Getting started
-* [Download the latest version](https://github.com/IchbinkeinReh/PDBF/blob/gh-pages/dist/PDBF.zip?raw=true) and extract
+* [Download the latest version](https://github.com/IchbinkeinReh/PDBF/blob/gh-pages/dist/PDBF.zip?raw=true)
+* Extract zip and change workingdir to extracted folder
 * Adjust config.cfg
 * Try to compile Documentation.tex file with this command:
     java -jar PDBF.jar Documentation.tex
