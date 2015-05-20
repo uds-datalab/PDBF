@@ -2,7 +2,7 @@
 PDBF documents are a hybrid format. They are a valid PDF and a valid HTML page at the same time. 
 If you change the file extension to PDF and open it with an PDF viewer you can see the static part of the document. If you change the file extension to HTML and open it with a Browser (currently Chrome/Firefox/IE 10 supported) you can see the dynamic part of the document. For example if the static version contains an image of a chart which displays some data, then the dynamic version contains the actual raw data used to render the chart and renders the chart when opening the document. The advantage is that you can open the chart in an overlay view by clicking on the enlarge symbol at the upper left corner and then start to change parameters of the chart. For example you can remove filtering functions that are applied to the raw data or change confidence levels to other values an see the results of these changes directly in the chart. 
 
-PDBF files are created from LaTeX code and data in SQL format. The raw data can either be a SQL statements string, a file with SQL statements, or in a database (currently PostgreSQL/MySQL/MariaDB supported). In the LaTeX code one can then specify how the PDBF element (currently charts/pivot tables/multiplot charts/sql statements are supported) is created from the raw data with options and an SQL query. Read more in the [Documentation](https://ichbinkeinreh.github.io/PDBF/) (which is itself a PDBF document).
+PDBF files are created from LaTeX code and data in SQL format. The raw data can either be a SQL statements string, a file with SQL statements, or in a database (currently PostgreSQL/MySQL/MariaDB supported). In the LaTeX code one can then specify how the PDBF element (currently charts/pivot tables/multiplot charts/sql statements are supported) is created from the raw data with options and an SQL query. Read more in the [documentation](https://ichbinkeinreh.github.io/PDBF/) (which is itself a PDBF document).
 
 PDBF toolkit is written in Java and LaTeX an can therefore be run on Windows/Mac/Linux. PDBF documents are also platform independent and run on any OS with a browser/PDF viewer.
 
@@ -12,8 +12,9 @@ This toolkit is licensed unter the MIT License.
 * [Download the latest version](https://github.com/IchbinkeinReh/PDBF/blob/gh-pages/dist/PDBF.zip?raw=true)
 * Extract zip and change workingdir to extracted folder
 * Adjust config.cfg
-* Try to compile Documentation.tex file with this command:
-    java -jar PDBF.jar Documentation.tex
+* Try to compile Documentation.tex file with this command: java -jar PDBF.jar Documentation.tex
+* You can play around with the minimal.tex file which contains a minimal example of PDBF usage
+* For further information take a look at the [documentation](https://ichbinkeinreh.github.io/PDBF/)
 
 ###Thanks to the authors of:
 * phantomJS (https://github.com/ariya/phantomjs)
