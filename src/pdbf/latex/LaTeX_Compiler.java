@@ -1,7 +1,10 @@
 package pdbf.latex;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -27,7 +30,7 @@ import pdbf.common.VisualizationTypeAdapter;
 
 public class LaTeX_Compiler {
 
-    private static final String[] pathToLaTeXScript = { "texify.exe", "--pdf", "--quiet" };
+    private static String[] pathToLaTeXScript = new String[0];
     private static String OS = System.getProperty("os.name").toLowerCase();
 
     private static ArrayList<Process> processes = new ArrayList<Process>();
@@ -39,6 +42,30 @@ public class LaTeX_Compiler {
     private static Dimension dimOrg;
 
     public static void main(String[] args) {
+	// Read config.
+	try {
+	    FileInputStream fstream = new FileInputStream("config.cfg");
+	    BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+	    String strLine;
+
+	    ArrayList<String> tmp = new ArrayList<String>();
+	    while ((strLine = br.readLine()) != null) {
+		if (!strLine.startsWith("#")) {
+		    tmp.add(strLine);
+		}
+	    }
+	    // remind user to adjust config
+	    if (tmp.get(tmp.size() - 1).equals("DELETE ME")) {
+		System.err.println("Warning: You have to first adjust the config.cfg file before you can use this tool. Exiting...");
+		System.exit(-1);
+	    }
+	    br.close();
+	    pathToLaTeXScript = tmp.toArray(pathToLaTeXScript);
+	} catch (IOException e4) {
+	    e4.printStackTrace();
+	    System.exit(-1);
+	}
+
 	if (OS.contains("win")) {
 	    suffix = "win";
 	} else if (OS.contains("mac")) {
@@ -51,7 +78,7 @@ public class LaTeX_Compiler {
 	}
 
 	if (args.length != 1) {
-	    System.out.println("Usage: Java_Compiler.jar LaTeX_file");
+	    System.out.println("Usage: PDBF.jar LaTeX_file");
 	    System.exit(-1);
 	}
 	String latexPath = args[0];
@@ -65,6 +92,20 @@ public class LaTeX_Compiler {
 
 	ArrayList<String> commands = new ArrayList<String>(Arrays.asList(pathToLaTeXScript));
 	commands.add(latex.getAbsolutePath());
+
+	File fi1 = new File("PDBF.sty").getAbsoluteFile();
+	File fi11 = new File("dummy.png").getAbsoluteFile();
+	File fi2 = new File(latexFolder + File.separator + "PDBF.sty").getAbsoluteFile();
+	File fi22 = new File(latexFolder + File.separator + "dummy.png").getAbsoluteFile();
+	if (!fi1.equals(fi2)) {
+	    try {
+		FileUtils.copyFile(fi1, fi2);
+		FileUtils.copyFile(fi11, fi22);
+	    } catch (IOException e3) {
+		e3.printStackTrace();
+		System.exit(-1);
+	    }
+	}
 
 	System.out.println("Compiling LaTeX (1/2)...");
 	try {
@@ -166,19 +207,21 @@ public class LaTeX_Compiler {
 
 	// Copy images to latex file
 	for (String s : copyfiles) {
-	    File source = new File(s);
-	    String target = latexFolder + File.separator + source.getName();
-	    try {
-		FileUtils.copyFile(source, new File(target));
-	    } catch (IOException e) {
-		e.printStackTrace();
+	    File source = new File(s).getAbsoluteFile();
+	    File target = new File(latexFolder + File.separator + source.getName()).getAbsoluteFile();
+	    if (!source.equals(target)) {
+		try {
+		    FileUtils.copyFile(source, target);
+		} catch (IOException e) {
+		    e.printStackTrace();
+		}
 	    }
 	}
-	
+
 	String preload = "";
 	for (String pre : preloadfiles) {
 	    try {
-		preload += "var " + pre.substring(0, pre.length()-5) + " = " + FileUtils.readFileToString(new File(pre)) + ";\n";
+		preload += "var " + pre.substring(0, pre.length() - 5) + " = " + FileUtils.readFileToString(new File(pre)) + ";\n";
 	    } catch (IOException e) {
 		e.printStackTrace();
 	    }
