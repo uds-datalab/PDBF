@@ -4,7 +4,7 @@ If you change the file extension to PDF and open it with an PDF viewer, you can 
 
 PDBF files are created from LaTeX source code and a relational database. The raw data can either be a SQL statement string, a file with SQL statements, or contained in a database (currently PostgreSQL/MySQL/MariaDB supported). In the LaTeX code you can then specify how the PDBF element (currently charts/pivot tables/multiplot charts/sql statements are supported) is created from the raw data with options and an SQL query. Read more in the [documentation](https://ichbinkeinreh.github.io/PDBF/) (which is itself a PDBF document).
 
-PDBF toolkit is written in Java and LaTeX and can therefore be run on Windows/Mac/Linux. PDBF documents are also platform independent and run on any OS with a browser/PDF viewer.
+PDBF toolkit is written in Java and LaTeX and can be used to compile documents on Windows (we are currently working to extend this to Mac and Linux). PDBF documents are also platform independent and run on any desktop OS (Windows, Linux, Mac) with a browser/PDF viewer.
 
 This toolkit is licensed unter the MIT License.
 
@@ -13,6 +13,7 @@ This toolkit is licensed unter the MIT License.
 * Extract zip and change workingdir to extracted folder
 * Adjust config.cfg
 * Try to compile Documentation.tex file with this command: java -jar PDBF.jar Documentation.tex
+* Open Documentation.html, this is the final output of the compilation process, if you rename it to ".pdf" it is also a valid pdf-document
 * You can play around with the minimal.tex file which contains a minimal example of PDBF usage
 * For further information take a look at the [documentation](https://ichbinkeinreh.github.io/PDBF/)
 
