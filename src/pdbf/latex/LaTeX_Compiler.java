@@ -50,7 +50,8 @@ public class LaTeX_Compiler {
 
 	    ArrayList<String> tmp = new ArrayList<String>();
 	    while ((strLine = br.readLine()) != null) {
-		if (!strLine.startsWith("#")) {
+		strLine = strLine.trim();
+		if (!strLine.startsWith("#") && !strLine.equals("")) {
 		    tmp.add(strLine);
 		}
 	    }
