@@ -3,14 +3,16 @@
 \NeedsTeXFormat{LaTeX2e}
 \AtEndOfPackage{\ProvidesPackage{PDBF}
              [\filedate\space\space\space\space\fileversion\space\space\space\space(Patrick Bender)]}
-%\RequirePackage{zref-savepos}
-%\RequirePackage{zref-abspage}
-%\RequirePackage{zref-user}
-\RequirePackage[savepos,totpages,titleref,dotfill,counter,user]{zref}
+\RequirePackage{zref-savepos}
+\RequirePackage{zref-abspage}
+\RequirePackage{zref-user}
 \RequirePackage{xcolor}
 \RequirePackage{graphicx}
 \RequirePackage{xstring}
 \RequirePackage{xparse}
+
+% Needed because we need to adjust xref table after injecting html and currently we want to keep it simple. Could be omitted later if adjusting xref streams is implemented.
+\pdfobjcompresslevel=0
 
 \newcounter{visual}
 \newcounter{overlay}
