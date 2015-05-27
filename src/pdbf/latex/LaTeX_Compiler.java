@@ -321,7 +321,6 @@ public class LaTeX_Compiler {
     private static void processChart(Overlay o) {
 	Chart c = (Chart) o.type;
 	cleanupfiles.add("out/web/" + o.name + ".html");
-	cleanupfiles.add("" + o.name + ".png");
 	cleanupfiles.add("" + o.name + ".json");
 	preloadfiles.add("" + o.name + ".json");
 	copyfiles.add("" + o.name + ".png");
