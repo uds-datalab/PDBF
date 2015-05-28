@@ -82,7 +82,14 @@ public class LaTeX_Compiler {
 	    System.out.println("Usage: PDBF.jar LaTeX_file");
 	    System.exit(-1);
 	}
+	
 	String latexPath = args[0];
+	
+	if (!latexPath.endsWith(".tex")) {
+	    System.err.println("Error: Specified file has the wrong extension. Only .tex is supported!");
+	    System.exit(-1);
+	}
+	
 	File latex = new File(latexPath);
 	if (!latex.exists()) {
 	    System.err.println("Error: LaTeX file does not exist!");
@@ -115,7 +122,8 @@ public class LaTeX_Compiler {
 	    Process p = pb.start();
 	    p.waitFor();
 	} catch (Exception e) {
-	    e.printStackTrace();
+	    System.err.println("Error: LaTeX compilation failed! Reason: \n" + e.getMessage());
+	    System.exit(-1);
 	}
 
 	// Read JSON
@@ -240,7 +248,8 @@ public class LaTeX_Compiler {
 	    Process p = pb.start();
 	    p.waitFor();
 	} catch (Exception e) {
-	    e.printStackTrace();
+	    System.err.println("Error: LaTeX compilation failed! Reason: \n" + e.getMessage());
+	    System.exit(-1);
 	}
 
 	// Remove database entries from config

@@ -68,38 +68,13 @@ public class HTML_Compiler {
 	    sb.replace(b, e, "" + (x + offset));
 
 	    FileUtils.writeStringToFile(new File(outfile), sb.toString(), StandardCharsets.ISO_8859_1);
+	    
+	    //Delete static pdf to avoid confusion
+	    new File(basename + ".pdf").delete();
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
 
     }
-
-    // TODO: htmlentities problem
-    // function load() {
-    // var pageSource = new XMLSerializer().serializeToString(document);
-    // var begin = pageSource.indexOf("%PDF-");
-    // var end = pageSource.lastIndexOf("%%EOF");
-    // pdfstring = pageSource.substring(begin, end+5);
-    //
-    // var entities = [
-    // ['apos', '\''],
-    // ['amp', '&'],
-    // ['lt', '<'],
-    // ['gt', '>'],
-    // ['quot', '\"']
-    // ];
-    //
-    // for (var i = 0, max = entities.length; i < max; ++i)
-    // pdfstring = pdfstring.replace(new RegExp('&'+entities[i][0]+';', 'g'),
-    // entities[i][1]);
-    //
-    // var bla = pdfstring.split("\n");
-    // for (var i=0; i<bla.length; ++i) {
-    // if (bla[i].indexOf("&") != -1 && bla[i].indexOf(";") != -1)
-    // console.log(bla[i]);
-    // }
-    //
-    // PDFViewerApplication.open(strToUTF8Arr(pdfstring), 0);
-    // }
 
 }
