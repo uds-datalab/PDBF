@@ -9,7 +9,7 @@ PDBF toolkit is written in Java and LaTeX and can be used to compile documents o
 This toolkit is licensed unter the MIT License.
 
 ##Getting started
-* [Download the latest version](https://github.com/IchbinkeinReh/PDBF/blob/gh-pages/dist/PDBF.zip?raw=true)
+* [Download the latest version](https://github.com/uds-datalab/PDBF/archive/gh-pages.zip)
 * Extract zip and change workingdir to extracted folder
 * Adjust config.cfg
 * Try to compile Documentation.tex file with this command: java -jar PDBF.jar Documentation.tex
