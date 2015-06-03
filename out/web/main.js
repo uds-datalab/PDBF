@@ -74,7 +74,7 @@ function display(json, page, phantomJS) {
 					containerOver.setAttribute('style', 'position:fixed; z-index:-1; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;');
 					containerOver.id = json.name + "Big";
 					containerOver.className = "centerhv";
-					buildContainerMultiplotChartBig(json, containerOver, true);
+					buildContainerChartBig(json, containerOver, true);
 				}
 				containerOver.style.visibility = 'visible';
 				containerOver.style['z-index'] = 9;
@@ -198,12 +198,12 @@ function buildContainerChartBig(json, containerOver, initial) {
 		json.chart = c3.generate(optionsBig);
 	};
 
-	json.jsonBig = jQuery.extend(true, {}, json);
-	var chartdataCpy = getChartData(json);
-	json.resultBig = chartdataCpy.res;
 	var viewerContainer = document.getElementById("viewerContainer");
 	var tip = "Tip: Scroll to zoom the graph. Click and drag to pan the graph.<br/>";
 	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip, [ json ], updateData, 'graph', true);
+	json.jsonBig = jQuery.extend(true, {}, json);
+	var chartdataCpy = getChartData(json);
+	json.resultBig = chartdataCpy.res;
 	var containerContent = ref.containerContent;
 	var containerControl = ref.containerControl;
 	var containerOptions = ref.options;
@@ -257,6 +257,8 @@ function buildContainerChartBig(json, containerOver, initial) {
 		json.chart = c3.generate(optionsBig);
 		containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
 	}
+	
+	containerOver.updateData = updateData;
 }
 
 function buildContainerChart(container, json, zoomFactor, style, containerOver) {
@@ -288,6 +290,10 @@ function buildContainerChart(container, json, zoomFactor, style, containerOver) 
 function buildContainerPivotBig(json, containerOver, initial) {
 	var basetextsize = 8;
 
+	var viewerContainer = document.getElementById("viewerContainer");
+	var tip = "Tip: Drag and drop attributes to the row/column area. <br/>Move the cursor over the result cells to see more detailed results for min and max aggregator.<br/>";
+	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip, [ json ], updateData, 'pivot table', false);
+	
 	var updateData = function() {
 		json.type.I.queryB = ref.editor.getValue();
 		// save pivot table settings (aggr, aggrAtt, renderer)
@@ -310,9 +316,6 @@ function buildContainerPivotBig(json, containerOver, initial) {
 		}, true);
 	};
 
-	var viewerContainer = document.getElementById("viewerContainer");
-	var tip = "Tip: Drag and drop attributes to the row/column area. <br/>Move the cursor over the result cells to see more detailed results for min and max aggregator.<br/>";
-	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip, [ json ], updateData, 'pivot table', false);
 	var containerContent = ref.containerContent;
 	var containerControl = ref.containerControl;
 	var containerOptions = ref.options;
@@ -354,6 +357,8 @@ function buildContainerPivotBig(json, containerOver, initial) {
 	containerOver.update = function() {
 		containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
 	}
+	
+	containerOver.updateData = updateData;
 }
 
 function buildContainerPivot(container, json, zoomFactor, style, containerOver) {
@@ -398,6 +403,10 @@ function buildContainerPivot(container, json, zoomFactor, style, containerOver) 
 function buildContainerTableBig(json, containerOver) {
 	var basetextsize = 8;
 
+	var viewerContainer = document.getElementById("viewerContainer");
+	var tip = 'Tip: Click on the attributes to change the sorting.';
+	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip, [ json ], update, 'table', false);
+	
 	var update = function() {
 		json.jsonBig.type.I.queryB = ref.editor.getValue();
 		var err;
@@ -432,9 +441,6 @@ function buildContainerTableBig(json, containerOver) {
 		alert(err);
 	}
 
-	var viewerContainer = document.getElementById("viewerContainer");
-	var tip = 'Tip: Click on the attributes to change the sorting.';
-	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip, [ json ], update, 'table', false);
 	var containerContent = ref.containerContent;
 	var containerOptions = ref.options;
 	var error = ref.error;
@@ -445,6 +451,8 @@ function buildContainerTableBig(json, containerOver) {
 	containerOver.update = function() {
 		containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
 	}
+	
+	containerOver.updateData = update;
 }
 
 function buildContainerMultiplotChart(container, json, zoomFactor, style, containerOver) {
@@ -938,39 +946,6 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 	defaultChartOptions.noyticks = false;
 }
 
-function buildContainerMultiplotChartBig(json, containerOver, initial) {
-	// TODO: maybe handle this different
-	var xValues;
-	try {
-		xValues = JSON.parse(json.type.I.xValues);
-	} catch (e) {
-		alert("Parsing of xValues for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.xValues);
-	}
-	var yValues;
-	try {
-		yValues = JSON.parse(json.type.I.yValues);
-	} catch (e) {
-		alert("Parsing of yValues for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.yValues);
-	}
-
-	var queryBackup = json.type.I.query;
-	var queryBackupB = json.type.I.queryB;
-	var cellquery = json.type.I.query;
-	var yFirst = json.type.I.yFirst;
-	if (yFirst) {
-		cellquery = cellquery.replace("?", yValues[0]);
-		cellquery = cellquery.replace("?", xValues[0]);
-	} else {
-		cellquery = cellquery.replace("?", xValues[0]);
-		cellquery = cellquery.replace("?", yValues[0]);
-	}
-	json.type.I.query = cellquery;
-	json.type.I.queryB = cellquery;
-	buildContainerChartBig(json, containerOver, true);
-	json.type.I.query = queryBackup;
-	json.type.I.queryB = queryBackupB;
-}
-
 function print(text) {
 	outputElm.innerHTML = text.replace(/\n/g, '<br>');
 }
@@ -1258,12 +1233,12 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 	var json = jsonArr[0]; // pass by reference
 	var containerChart = document.createElement('div');
 	if (fixed) {
-		containerChart.setAttribute('style', 'width:50%; height:80%; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; padding:2%; background:white; margin:1%; display: inline-block; vertical-align:top; white-space: normal;');
+		containerChart.setAttribute('style', 'width:58%; height:80%; -moz-border-radius: 1%; -webkit-border-radius: 1%; border-radius: 1%; padding:2%; background:white; margin:1%; display: inline-block; vertical-align:top; white-space: normal;');
 	} else {
-		containerChart.setAttribute('style', '-moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; padding:2%; background:white; margin:1%; display: inline-block; vertical-align:top; white-space: normal;');
+		containerChart.setAttribute('style', '-moz-border-radius: 1%; -webkit-border-radius: 1%; border-radius: 1%; padding:2%; background:white; margin:1%; display: inline-block; vertical-align:top; white-space: normal;');
 	}
 	var containerControl = document.createElement('div');
-	containerControl.setAttribute('style', 'width:40%; height:80%; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; padding:2%; background:white; margin:1%; display: inline-block; text-align: left; white-space: normal;');
+	containerControl.setAttribute('style', 'width:30%; height:80%; -moz-border-radius: 1%; -webkit-border-radius: 1%; border-radius: 1%; padding:2%; background:white; margin:1%; display: inline-block; text-align: left; white-space: normal;');
 
 	var header = document.createElement('span');
 	header.innerHTML = 'SQL Query for ' + f + ':<br />Tip: Press CTRL-Space for autocomplete';
@@ -1289,8 +1264,6 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 		}
 		switch (json.type.C) {
 		case "pdbf.common.MultiplotChart":
-			buildContainerMultiplotChartBig(json, containerOver, true);
-			break;
 		case "pdbf.common.Chart":
 			buildContainerChartBig(json, containerOver, true);
 			break;
@@ -1339,7 +1312,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 		containerChartSub.setAttribute('style', 'width:100%; height:100%; z-index:9999');
 		containerChart.appendChild(containerChartSub);
 	}
-
+	
 	var containerCloseAndTip = document.createElement('div');
 	containerCloseAndTip.setAttribute('style', 'display: inline-block; margin-right: 30px;');
 	containerOver.appendChild(containerCloseAndTip);
@@ -1420,6 +1393,85 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 	});
 	editor.setValue(json.type.I.query);
 	editor.on('blur', update);
+	
+	if (json.type.C == 'pdbf.common.MultiplotChart') {
+		var xValues;
+		try {
+			xValues = JSON.parse(json.type.I.xValues);
+		} catch (e) {
+			alert("Parsing of xValues for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.xValues);
+		}
+		var yValues;
+		try {
+			yValues = JSON.parse(json.type.I.yValues);
+		} catch (e) {
+			alert("Parsing of yValues for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.yValues);
+		}
+		
+		var multiControl = document.createElement('div');
+		multiControl.innerHTML = '<u style="display:inline-block; margin-bottom:7px;">Multiplot Control:</u><br />';
+		var selectX = document.createElement('select');
+		selectX.setAttribute('style', 'display:inline-block; margin-bottom:3px;');
+		for (var x = 0; x < json.type.I.xCount; ++x) {
+			var option = document.createElement('option');
+			option.innerHTML = xValues[x];
+			selectX.appendChild(option);
+		}
+		multiControl.appendChild(selectX);
+		var br = document.createElement('br');
+		multiControl.appendChild(br);
+		var selectY = document.createElement('select');
+		selectY.setAttribute('style', 'display:inline-block; margin-bottom:3px;');
+		for (var y = 0; y < json.type.I.yCount; ++y) {
+			var option = document.createElement('option');
+			option.innerHTML = yValues[y];
+			selectY.appendChild(option);
+		}
+		multiControl.appendChild(selectY);
+		
+		containerControl.appendChild(multiControl);
+		
+		var selectArr = [];
+		for (var x = 0; x < json.type.I.xCount; ++x) {
+			selectArr[xValues[x]] = [];
+			for (var y = 0; y < json.type.I.yCount; ++y) {
+				var cellquery = json.type.I.query;
+				var yFirst = json.type.I.yFirst;
+				if (yFirst) {
+					cellquery = cellquery.replace("?", yValues[y]);
+					cellquery = cellquery.replace("?", xValues[x]);
+				} else {
+					cellquery = cellquery.replace("?", xValues[x]);
+					cellquery = cellquery.replace("?", yValues[y]);
+				}
+				selectArr[xValues[x]][yValues[y]] = cellquery;
+			}
+		}
+		
+		$(selectX).change(function(){
+			var x = $(selectX).val();
+			var y = $(selectY).val();
+			json.type.I.query = selectArr[x][y];
+			json.type.I.queryB = selectArr[x][y];
+		    editor.setValue(json.type.I.query);
+		    containerOver.updateData();
+		});
+		
+		$(selectY).change(function(){
+			var x = $(selectX).val();
+			var y = $(selectY).val();
+		    json.type.I.query = selectArr[x][y];
+		    json.type.I.queryB = selectArr[x][y];
+		    editor.setValue(json.type.I.query);
+		    containerOver.updateData();
+		});
+		
+		var x = $(selectX).val();
+		var y = $(selectY).val();
+	    json.type.I.query = selectArr[x][y];
+	    json.type.I.queryB = selectArr[x][y];
+	    editor.setValue(json.type.I.query);
+	}
 
 	fixOverlaySize();
 	var ref = {
@@ -1582,15 +1634,6 @@ function getFullscreenDiv() {
 		this.style.opacity = 0.5;
 	});
 	return fullscreen;
-}
-
-/*
- * Does not work for queries with multiple statements Does not work for
- * subqueries Does not work for multiple occurences of ROWNUM() in one query
- */
-var rownumcount = false;
-alasql.fn.ROWNUM = function() {
-	rownumcount = true;
 }
 
 function GRUBBS_FILTER(arr, alpha) {
@@ -1853,11 +1896,5 @@ function signaturePlot(valuesArr) {
 
 function alasqlQuery(q) {
 	var results = alasql(q);
-	if (rownumcount) {
-		results.forEach(function(d, idx) {
-			d['ROWNUM()'] = idx
-		});
-		rownumcount = false;
-	}
 	return results;
 }
