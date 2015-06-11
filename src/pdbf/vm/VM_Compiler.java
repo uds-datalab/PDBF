@@ -13,15 +13,64 @@ public class VM_Compiler {
 	System.out.println("Compiling VM...");
 
 	try {
-	    StringBuilder sb = new StringBuilder(FileUtils.readFileToString(new File("DOS.vdi"), StandardCharsets.ISO_8859_1));
-	    String replace = "%PDF-1.5\n1 0 obj\nstream\n<head><meta charset=UTF-8><script>";
+	    StringBuilder sb = new StringBuilder(FileUtils.readFileToString(new File("PDbF.ova"), StandardCharsets.ISO_8859_1));
+	    String replace = "%PDF-1.5\n%.ovf\0\n1 0 obj\nstream\n<head><meta charset=UTF-8><script>";
 	    sb.replace(0, replace.length(), replace);
-	    String vm = sb.toString();
+	    
+	    //Fix tar
+	    int checksum = 0;
+	    sb.setCharAt(148, ' ');
+	    sb.setCharAt(149, ' ');
+	    sb.setCharAt(150, ' ');
+	    sb.setCharAt(151, ' ');
+	    sb.setCharAt(152, ' ');
+	    sb.setCharAt(153, ' ');
+	    sb.setCharAt(154, ' ');
+	    sb.setCharAt(155, ' ');
+	    for (int i = 0; i < 512; ++i) {
+		checksum += sb.charAt(i);
+	    }
+	    //six digit octal number with leading zeroes
+	    String chk = Integer.toOctalString(checksum);
+	    sb.replace(148, 155, "0000000");
+	    sb.replace(155-chk.length(), 155, chk);
+	    sb.setCharAt(155, '\0');
+	    
+	    //Add new file to tar
+	    String n = "UNUSED\0" + sb.substring(7, 513);
+	    int von = sb.length();
+	    sb.append(n);
 	    
 	    String removeFromHTML = "%PDF-1.5\n%<!DOCTYPE html><html dir=\"ltr\" mozdisallowselectionprint moznomarginboxes>" + "<head><meta charset=\"utf-8\"><!--\n1337 0 obj\nstream";
 	    String addToHTML = "</script>";
 	    String html = FileUtils.readFileToString(new File("minimal.html"), StandardCharsets.ISO_8859_1).substring(removeFromHTML.length());
 	    html = addToHTML + html;
+	    
+	    //Fix tar
+	    sb.replace(von+124, von+136, "00000000000\0");
+	    String si = Integer.toOctalString(html.length());
+	    sb.replace(von+135-si.length(), von+135, si);
+	    
+	    checksum = 0;
+	    sb.setCharAt(von+148, ' ');
+	    sb.setCharAt(von+149, ' ');
+	    sb.setCharAt(von+150, ' ');
+	    sb.setCharAt(von+151, ' ');
+	    sb.setCharAt(von+152, ' ');
+	    sb.setCharAt(von+153, ' ');
+	    sb.setCharAt(von+154, ' ');
+	    sb.setCharAt(von+155, ' ');
+	    for (int i = 0; i < 512; ++i) {
+		checksum += sb.charAt(von+i);
+	    }
+	    //six digit octal number with leading zeroes
+	    chk = Integer.toOctalString(checksum);
+	    sb.replace(von+148, von+155, "0000000");
+	    sb.replace(von+155-chk.length(), von+155, chk);
+	    sb.setCharAt(von+155, '\0');
+	    
+	    String vm = sb.toString();
+	    
 	    sb.append(html);
 
 	    // Fix xref
@@ -48,7 +97,7 @@ public class VM_Compiler {
 	    x = Integer.parseInt(sb.substring(b, e));
 	    sb.replace(b, e, "" + (x + offset));
 
-	    FileUtils.writeStringToFile(new File("out/web/test.html"), sb.toString(), StandardCharsets.ISO_8859_1);
+	    FileUtils.writeStringToFile(new File("out/web/test.ova"), sb.toString(), StandardCharsets.ISO_8859_1);
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
