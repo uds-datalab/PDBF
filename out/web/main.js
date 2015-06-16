@@ -257,7 +257,7 @@ function buildContainerChartBig(json, containerOver, initial) {
 		json.chart = c3.generate(optionsBig);
 		containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
 	}
-	
+
 	containerOver.updateData = updateData;
 }
 
@@ -293,7 +293,7 @@ function buildContainerPivotBig(json, containerOver, initial) {
 	var viewerContainer = document.getElementById("viewerContainer");
 	var tip = "Tip: Drag and drop attributes to the row/column area. <br/>Move the cursor over the result cells to see more detailed results for min and max aggregator.<br/>";
 	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip, [ json ], updateData, 'pivot table', false);
-	
+
 	var updateData = function() {
 		json.type.I.queryB = ref.editor.getValue();
 		// save pivot table settings (aggr, aggrAtt, renderer)
@@ -357,7 +357,7 @@ function buildContainerPivotBig(json, containerOver, initial) {
 	containerOver.update = function() {
 		containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
 	}
-	
+
 	containerOver.updateData = updateData;
 }
 
@@ -406,7 +406,7 @@ function buildContainerTableBig(json, containerOver) {
 	var viewerContainer = document.getElementById("viewerContainer");
 	var tip = 'Tip: Click on the attributes to change the sorting.';
 	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip, [ json ], update, 'table', false);
-	
+
 	var update = function() {
 		json.jsonBig.type.I.queryB = ref.editor.getValue();
 		var err;
@@ -451,7 +451,7 @@ function buildContainerTableBig(json, containerOver) {
 	containerOver.update = function() {
 		containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
 	}
-	
+
 	containerOver.updateData = update;
 }
 
@@ -1312,7 +1312,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 		containerChartSub.setAttribute('style', 'width:100%; height:100%; z-index:9999');
 		containerChart.appendChild(containerChartSub);
 	}
-	
+
 	var containerCloseAndTip = document.createElement('div');
 	containerCloseAndTip.setAttribute('style', 'display: inline-block; margin-right: 30px;');
 	containerOver.appendChild(containerCloseAndTip);
@@ -1393,7 +1393,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 	});
 	editor.setValue(json.type.I.query);
 	editor.on('blur', update);
-	
+
 	if (json.type.C == 'pdbf.common.MultiplotChart') {
 		var xValues;
 		try {
@@ -1407,7 +1407,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 		} catch (e) {
 			alert("Parsing of yValues for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.yValues);
 		}
-		
+
 		var multiControl = document.createElement('div');
 		multiControl.innerHTML = '<u style="display:inline-block; margin-bottom:7px;">Multiplot Control:</u><br />';
 		var selectX = document.createElement('select');
@@ -1428,9 +1428,9 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 			selectY.appendChild(option);
 		}
 		multiControl.appendChild(selectY);
-		
+
 		containerControl.appendChild(multiControl);
-		
+
 		var selectArr = [];
 		for (var x = 0; x < json.type.I.xCount; ++x) {
 			selectArr[xValues[x]] = [];
@@ -1447,30 +1447,30 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 				selectArr[xValues[x]][yValues[y]] = cellquery;
 			}
 		}
-		
-		$(selectX).change(function(){
+
+		$(selectX).change(function() {
 			var x = $(selectX).val();
 			var y = $(selectY).val();
 			json.type.I.query = selectArr[x][y];
 			json.type.I.queryB = selectArr[x][y];
-		    editor.setValue(json.type.I.query);
-		    containerOver.updateData();
+			editor.setValue(json.type.I.query);
+			containerOver.updateData();
 		});
-		
-		$(selectY).change(function(){
+
+		$(selectY).change(function() {
 			var x = $(selectX).val();
 			var y = $(selectY).val();
-		    json.type.I.query = selectArr[x][y];
-		    json.type.I.queryB = selectArr[x][y];
-		    editor.setValue(json.type.I.query);
-		    containerOver.updateData();
+			json.type.I.query = selectArr[x][y];
+			json.type.I.queryB = selectArr[x][y];
+			editor.setValue(json.type.I.query);
+			containerOver.updateData();
 		});
-		
+
 		var x = $(selectX).val();
 		var y = $(selectY).val();
-	    json.type.I.query = selectArr[x][y];
-	    json.type.I.queryB = selectArr[x][y];
-	    editor.setValue(json.type.I.query);
+		json.type.I.query = selectArr[x][y];
+		json.type.I.queryB = selectArr[x][y];
+		editor.setValue(json.type.I.query);
 	}
 
 	fixOverlaySize();
@@ -1512,7 +1512,7 @@ function getChartData(json) {
 		};
 	}
 	var columns = [];
-	for (key in results[0]) {
+	for (var key in results[0]) {
 		columns[columns.length] = key;
 	}
 
@@ -1857,7 +1857,7 @@ function signaturePlot(valuesArr) {
 		for (var i = 0; i < runtime_count; ++i) {
 			var cur = runtimes[i][aname];
 			means[i] = cur;
-			var ci = [cur, cur];
+			var ci = [ cur, cur ];
 			if (min_int == undefined || ci[0] < min_int[0]) {
 				min = i;
 				min_int = ci;

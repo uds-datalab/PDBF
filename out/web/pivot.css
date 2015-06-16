@@ -2,7 +2,7 @@ table.innerTable {
     border-collapse: collapse;
 }
 table.innerTable td, table.innerTable th {
-    border: 0.1em solid #CDCDCD;
+    border: 0.2em solid #CDCDCD;
     padding: 0.1em;
     line-height: 1.0;
 }

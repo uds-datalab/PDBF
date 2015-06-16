@@ -4598,7 +4598,7 @@
     };
     c3_chart_internal_fn.getXAxisClipY = function () {
         var $$ = this;
-        return $$.getAxisClipY(!$$.config.axis_rotated);
+        return $$.getAxisClipY(!$$.config.axis_rotated) - this.config.completeScale*10;
     };
     c3_chart_internal_fn.getYAxisClipX = function () {
         var $$ = this;
@@ -4617,7 +4617,7 @@
     };
     c3_chart_internal_fn.getAxisClipHeight = function (forHorizontal) {
         // less than 20 is not enough to show the axis label 'outer' without legend
-        return ((forHorizontal ? this.margin.bottom : (this.margin.top + this.height)) + 20) + this.config.completeScale*10;;
+        return ((forHorizontal ? this.margin.bottom : (this.margin.top + this.height)) + 20) + this.config.completeScale*20;
     };
     c3_chart_internal_fn.getXAxisClipWidth = function () {
         var $$ = this;

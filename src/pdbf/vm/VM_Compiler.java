@@ -12,8 +12,15 @@ public class VM_Compiler {
     public static void main(String[] args) {
 	System.out.println("Compiling VM...");
 
+	String a = new File(args[0]).getName();
+	if (!a.toUpperCase().endsWith(".HTML")) {
+	    System.err.println("Error: Only .HTML files are supported!");
+	    System.exit(-1);
+	}
+	String basename = args[0].substring(0, args[0].length() - 5);
+	
 	try {
-	    StringBuilder sb = new StringBuilder(FileUtils.readFileToString(new File("PDbF.ova"), StandardCharsets.ISO_8859_1));
+	    StringBuilder sb = new StringBuilder(FileUtils.readFileToString(new File("Space Invaders.ova"), StandardCharsets.ISO_8859_1));
 	    String replace = "%PDF-1.5\n%.ovf\0\n1 0 obj\nstream\n<head><meta charset=UTF-8><script>";
 	    sb.replace(0, replace.length(), replace);
 	    
@@ -43,7 +50,7 @@ public class VM_Compiler {
 	    
 	    String removeFromHTML = "%PDF-1.5\n%<!DOCTYPE html><html dir=\"ltr\" mozdisallowselectionprint moznomarginboxes>" + "<head><meta charset=\"utf-8\"><!--\n1337 0 obj\nstream";
 	    String addToHTML = "</script>";
-	    String html = FileUtils.readFileToString(new File("minimal.html"), StandardCharsets.ISO_8859_1).substring(removeFromHTML.length());
+	    String html = FileUtils.readFileToString(new File(args[0]), StandardCharsets.ISO_8859_1).substring(removeFromHTML.length());
 	    html = addToHTML + html;
 	    
 	    //Fix tar
@@ -97,7 +104,7 @@ public class VM_Compiler {
 	    x = Integer.parseInt(sb.substring(b, e));
 	    sb.replace(b, e, "" + (x + offset));
 
-	    FileUtils.writeStringToFile(new File("out/web/test.ova"), sb.toString(), StandardCharsets.ISO_8859_1);
+	    FileUtils.writeStringToFile(new File(basename + ".ova"), sb.toString(), StandardCharsets.ISO_8859_1);
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
