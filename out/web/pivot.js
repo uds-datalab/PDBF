@@ -180,7 +180,7 @@
 				return function(data, rowKey, colKey) {
 					return {
 					isArray : false,
-					label : (this.isArray ? ("95% confidence interval of minimum " + attr) : ("Min. of " + attr)),
+					label : ("Min. of " + attr),
 					data : data,
 					special : true,
 					vals : [],
@@ -191,6 +191,7 @@
 						if (Array.isArray(record[attr])) {
 							this.vals[this.vals.length] = record;
 							this.isArray = true;
+							this.label = ("Conf. interval of minimum " + attr);
 						} else {
 							var x;
 							x = parseFloat(record[attr]);
@@ -310,7 +311,7 @@
 				return function(data, rowKey, colKey) {
 					return {
 					isArray : false,
-					label : (this.isArray ? ("95% confidence interval of maximum " + attr) : ("Min. of " + attr)),
+					label : ("Max. of " + attr),
 					data : data,
 					special : true,
 					vals : [],
@@ -321,6 +322,7 @@
 						if (Array.isArray(record[attr])) {
 							this.vals[this.vals.length] = record;
 							this.isArray = true;
+							this.label = ("Conf. interval of maximum " + attr);
 						} else {
 							var x;
 							x = parseFloat(record[attr]);

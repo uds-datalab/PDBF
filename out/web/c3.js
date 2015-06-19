@@ -2686,7 +2686,7 @@
         if ($$.config.noyticks) {
         	return ($$.config.innerTickSize+2.0)*$$.config.completeScale;
         }
-        return $$.axis.getMaxTickWidth(id, withoutRecompute) + (position.isInner ? 1 : 2)*$$.config.completeScale + ($$.config.innerTickSize+3)*$$.config.completeScale;
+        return $$.axis.getMaxTickWidth(id, withoutRecompute) + (position.isInner ? 1 : 16)*$$.config.completeScale + ($$.config.innerTickSize+3)*$$.config.completeScale;
     };
     c3_chart_internal_fn.getHorizontalAxisHeight = function (axisId) {
         var $$ = this, config = $$.config, h = (config.innerTickSize+1.5)*config.completeScale;
@@ -2706,7 +2706,7 @@
         if (config.noxticks) {
         	return (config.innerTickSize+2.0)*config.completeScale;
         }
-        return h + ($$.axis.getLabelPositionById(axisId).isInner ? 0 : 10) + (axisId === 'y2' ? -10 : 0) + 
+        return h + ($$.axis.getLabelPositionById(axisId).isInner ? 0 : 11*$$.config.completeScale) + (axisId === 'y2' ? -10 : 0) + 
         (config.lengend_show ? 2*config.completeScale : 0); //padding legend
     };
 
@@ -4394,7 +4394,7 @@
         if (forHorizontal) {
             return position.isLeft ? "0.3em" : position.isRight ? "-0.3em" : "0";
         } else {
-            return position.isTop ? "-0.3em" : position.isBottom ? "0.3em" : "0";
+            return position.isTop ? "-1.5em" : position.isBottom ? "0.3em" : "0";
         }
     };
     Axis.prototype.textAnchorForAxisLabel = function textAnchorForAxisLabel(forHorizontal, position) {
@@ -4426,9 +4426,9 @@
         var $$ = this.owner, config = $$.config,
             position = this.getXAxisLabelPosition();
         if (config.axis_rotated) {
-            return position.isInner ? "1.0em" : -25 - this.getMaxTickWidth('x');
+            return position.isInner ? "1.0em" : -25*$$.config.completeScale - this.getMaxTickWidth('x');
         } else {
-            return position.isInner ? "-0.3em" : config.axis_x_height ? config.axis_x_height - 10 : "3em";
+            return position.isInner ? "-0.3em" : config.axis_x_height ? config.axis_x_height - 10*$$.config.completeScale : "2.7em";
         }
     };
     Axis.prototype.dyForYAxisLabel = function dyForYAxisLabel() {
@@ -4437,7 +4437,7 @@
         if ($$.config.axis_rotated) {
             return position.isInner ? "-0.3em" : "3em";
         } else {
-            return position.isInner ? "1.0em" : -10 - ($$.config.axis_y_inner ? 0 : (this.getMaxTickWidth('y') + 10));
+            return position.isInner ? "1.0em" : -13*$$.config.completeScale - ($$.config.axis_y_inner ? 0 : (this.getMaxTickWidth('y')));
         }
     };
     Axis.prototype.dyForY2AxisLabel = function dyForY2AxisLabel() {
@@ -4446,7 +4446,7 @@
         if ($$.config.axis_rotated) {
             return position.isInner ? "1.0em" : "-2.2em";
         } else {
-            return position.isInner ? "-0.3em" : 15 + ($$.config.axis_y2_inner ? 0 : (this.getMaxTickWidth('y2') + 15));
+            return position.isInner ? "-0.3em" : 13*$$.config.completeScale + ($$.config.axis_y2_inner ? 0 : (this.getMaxTickWidth('y2')));
         }
     };
     Axis.prototype.textAnchorForXAxisLabel = function textAnchorForXAxisLabel() {
