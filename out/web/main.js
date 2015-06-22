@@ -290,13 +290,9 @@ function buildContainerChart(container, json, zoomFactor, style, containerOver) 
 function buildContainerPivotBig(json, containerOver, initial) {
 	var basetextsize = 8;
 
-	var viewerContainer = document.getElementById("viewerContainer");
-	var tip = "Tip: Drag and drop attributes to the row/column area. <br/>Move the cursor over the result cells to see more detailed results for min and max aggregator.<br/>";
-	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip, [ json ], updateData, 'pivot table', false);
-
 	var updateData = function() {
 		json.type.I.queryB = ref.editor.getValue();
-		// save pivot table settings (aggr, aggrAtt, renderer)
+		//TODO: save pivot table settings (aggr, aggrAtt, renderer)
 		var r = getPivotTableData(json, true);
 		json.resultBig = r.res;
 		if (r.error != undefined) {
@@ -315,6 +311,10 @@ function buildContainerPivotBig(json, containerOver, initial) {
 			aggregator : aggr
 		}, true);
 	};
+	
+	var viewerContainer = document.getElementById("viewerContainer");
+	var tip = "Tip: Drag and drop attributes to the row/column area. <br/>Move the cursor over the result cells to see more detailed results for min and max aggregator.<br/>";
+	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip, [ json ], updateData, 'pivot table', false);
 
 	var containerContent = ref.containerContent;
 	var containerControl = ref.containerControl;
@@ -403,10 +403,6 @@ function buildContainerPivot(container, json, zoomFactor, style, containerOver) 
 function buildContainerTableBig(json, containerOver) {
 	var basetextsize = 8;
 
-	var viewerContainer = document.getElementById("viewerContainer");
-	var tip = 'Tip: Click on the attributes to change the sorting.';
-	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip, [ json ], update, 'table', false);
-
 	var update = function() {
 		json.jsonBig.type.I.queryB = ref.editor.getValue();
 		var err;
@@ -427,6 +423,10 @@ function buildContainerTableBig(json, containerOver) {
 			getTableFromResults(results, containerContent);
 		}
 	};
+	
+	var viewerContainer = document.getElementById("viewerContainer");
+	var tip = 'Tip: Click on the attributes to change the sorting.';
+	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip, [ json ], update, 'table', false);
 
 	json.jsonBig = jQuery.extend(true, {}, json);
 
@@ -1793,7 +1793,7 @@ function signaturePlot(valuesArr) {
 	keys[keys.length] = "x";
 	var runtimes = values.json;
 
-	if (Array.isArray(runtimes[0])) {
+	if (Array.isArray(runtimes[0][aname])) {
 		var runtime_count = runtimes.length;
 		var means = [];
 		var min;

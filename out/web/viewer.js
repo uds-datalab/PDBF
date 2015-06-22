@@ -6839,9 +6839,6 @@ window.addEventListener('keydown', function keydown(evt) {
           HandTool.toggle();
         }
         break;
-      case 82: // 'r'
-        PDFViewerApplication.rotatePages(90);
-        break;
     }
   }
 
@@ -6854,10 +6851,6 @@ window.addEventListener('keydown', function keydown(evt) {
         }
         PDFViewerApplication.page--;
         handled = true;
-        break;
-
-      case 82: // 'r'
-        PDFViewerApplication.rotatePages(-90);
         break;
     }
   }

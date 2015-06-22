@@ -21,6 +21,10 @@ table.innerTable tr th:last-child {
     border-right: 0;
 }
 
+.hasTooltip {
+	cursor: pointer;
+}
+
 .hasTooltip + span {
 	visibility: hidden;
 	background-color: white;
