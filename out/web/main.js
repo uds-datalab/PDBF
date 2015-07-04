@@ -115,12 +115,18 @@ function display(json, page, phantomJS) {
 		container.setAttribute('style', style);
 		buildContainerChart(container, json, zoomFactor, style, containerOver);
 		break;
+	case "pdbf.common.DataText":
+		if (phantomJS) {
+			var text = buildDataText(container, json, zoomFactor, style, containerOver);
+			if (text != undefined) {
+				json.text = text;
+			}
+		}
 	case "pdbf.common.Text":
 		var containerOver = document.getElementById(json.name + "Big");
 		if (containerOver != null) {
 			containerOver.update();
 		}
-
 		container.addEventListener("click", function() {
 			if (containerOver == null) {
 				containerOver = document.createElement('div');
@@ -141,7 +147,6 @@ function display(json, page, phantomJS) {
 		if (containerOver != null) {
 			containerOver.update();
 		}
-
 		if (!phantomJS) {
 			var fullscreen = getFullscreenDiv();
 			container.appendChild(fullscreen);
@@ -287,12 +292,48 @@ function buildContainerChart(container, json, zoomFactor, style, containerOver) 
 	c3.generate(options);
 }
 
+function buildDataText(container, json, zoomFactor, style, containerOver) {
+	var results;
+	try {
+		results = alasqlQuery(json.type.I.query);
+	} catch (e) {
+		alert(e.message);
+		return;
+	}
+	var error;
+	if (results.length == 0) {
+		alert("Query \"" + json.type.I.query + "\" returns empty result!");
+		return;
+	}
+	if (results[0] instanceof Array) {
+		alert("Query \"" + json.type.I.query + "\" contains multiple statements!");
+		return;
+	}
+	var c = 0;
+	for (var key in results[0]) {
+		c++;
+	}
+	var tmp = "";
+	for (var r in results) {
+		if (c > 1) {
+			tmp += "(";
+		}
+		for (var key in results[r]) {
+			tmp += results[r][key] + ", ";
+		}
+		if (c > 1) {
+			tmp += "), ";
+		}
+	}
+	return tmp.substring(0, tmp.length - 2);
+}
+
 function buildContainerPivotBig(json, containerOver, initial) {
 	var basetextsize = 8;
 
 	var updateData = function() {
 		json.type.I.queryB = ref.editor.getValue();
-		//TODO: save pivot table settings (aggr, aggrAtt, renderer)
+		// TODO: save pivot table settings (aggr, aggrAtt, renderer)
 		var r = getPivotTableData(json, true);
 		json.resultBig = r.res;
 		if (r.error != undefined) {
@@ -311,7 +352,7 @@ function buildContainerPivotBig(json, containerOver, initial) {
 			aggregator : aggr
 		}, true);
 	};
-	
+
 	var viewerContainer = document.getElementById("viewerContainer");
 	var tip = "Tip: Drag and drop attributes to the row/column area. <br/>Move the cursor over the result cells to see more detailed results for min and max aggregator.<br/>";
 	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip, [ json ], updateData, 'pivot table', false);
@@ -423,7 +464,7 @@ function buildContainerTableBig(json, containerOver) {
 			getTableFromResults(results, containerContent);
 		}
 	};
-	
+
 	var viewerContainer = document.getElementById("viewerContainer");
 	var tip = 'Tip: Click on the attributes to change the sorting.';
 	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip, [ json ], update, 'table', false);
@@ -978,7 +1019,7 @@ function execute(commands) {
 
 function tableCreate(res, table) {
 	var columns = [];
-	for (key in res[0]) {
+	for (var key in res[0]) {
 		columns[columns.length] = {
 		data : key,
 		title : key
@@ -1268,6 +1309,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 			buildContainerChartBig(json, containerOver, true);
 			break;
 		case "pdbf.common.Text":
+		case "pdbf.common.DataText":
 			buildContainerTableBig(json, containerOver);
 			break;
 		case "pdbf.common.Pivot":
@@ -1512,7 +1554,7 @@ function getChartData(json) {
 		};
 	}
 	var columns = [];
-	for (var key in results[0]) {
+	for ( var key in results[0]) {
 		columns[columns.length] = key;
 	}
 

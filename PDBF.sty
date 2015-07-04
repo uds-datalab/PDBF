@@ -16,6 +16,8 @@
 
 \newcounter{visual}
 \newcounter{overlay}
+\stepcounter{visual}
+\stepcounter{overlay}
 
 \newwrite\tempfile
 \immediate\openout\tempfile=config.json
@@ -127,8 +129,6 @@
 	\StrSubstitute{#2}{"}{\@backslashchar"}[\pdbf@query]%
 	\StrSubstitute{#3}{"}{\@backslashchar"}[\pdbf@queryB]%
 	{\fontsize{5pt}{1sp}\selectfont%
-		\stepcounter{visual}%
-		\stepcounter{overlay}%
 		\setlength\tabcolsep{1sp}%
 		% Place Image
 		\begin{tabular}{lll}%
@@ -191,6 +191,8 @@
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\@charrb}%
 		\immediate\write\tempfile{\space\space\space\space\@charrb}%
 		\immediate\write\tempfile{\@charrb}%
+		\stepcounter{visual}%
+		\stepcounter{overlay}%
 	}%
 	\relax
 }
@@ -207,14 +209,12 @@
 {\pdbf@chart[#1]{#3}{\IfValueTF{#2}{#2}{#3}}{MultiplotChart}}%
 }
 
-\def\pdbf@sqlmult#1#2{%
-	\edef\pdbf@fontsave{\f@size}%
-	{\fontsize{5pt}{1sp}\selectfont%
-		\stepcounter{visual}%
-		\stepcounter{overlay}%
+\def\pdbf@sqlmult#1#2#3{%
+\edef\pdbf@fontsave{\f@size}%
+{\fontsize{5pt}{1sp}\selectfont%
 		\setlength\tabcolsep{1sp}%
 		\begin{tabular}[t]{lll}%
-		\pdbf@save{Overlay\arabic{visual}1}&{\color{blue} \fontsize{\pdbf@fontsave}{1sp}\selectfont #1 }&\\%
+		\pdbf@save{Overlay\arabic{visual}1}&{\color{blue} \fontsize{\pdbf@fontsave}{1sp}\selectfont#1}&\\%
 		&&\zsavepos{Overlay\arabic{visual}2}\\%
 		\end{tabular}%
 		% Write part of config.json
@@ -227,7 +227,7 @@
 		\fi%
 		\immediate\write\tempfile{\space\space\space\space"name": "Overlay\arabic{visual}",}%
 		\immediate\write\tempfile{\space\space\space\space"type": \@charlb}%
-		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.common.Text",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "#3",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"logScale": \pdbfLogscale,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xUnitName": "\pdbf@xunitname",}%
@@ -270,15 +270,28 @@
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\@charrb}%
 		\immediate\write\tempfile{\space\space\space\space\@charrb}%
 		\immediate\write\tempfile{\@charrb}%
-	}%
+		\stepcounter{visual}%
+		\stepcounter{overlay}%
+}%
 }
 
 \NewDocumentCommand\sql{o m}{%
-{\pdbf@sqlmult{\IfValueTF{#1}{#1}{#2}}{#2}}%
+{\pdbf@sqlmult{\IfValueTF{#1}{#1}{#2}}{#2}{pdbf.common.Text}}%
+}
+
+\def\pdbf@csxdefaux#1{%
+    \protected@write\@mainaux{}{%
+       \string\expandafter\string\gdef
+        \string\csname\space pdbf@Overlay\arabic{visual}\string\endcsname{#1}%
+    }%
+}
+
+\NewDocumentCommand\datatext{m}{%
+{\expandafter\ifx\csname pdbf@Overlay\arabic{visual}\endcsname\relax\pdbf@csxdefaux{}\else\expandafter\pdbf@csxdefaux{\csname pdbf@Overlay\arabic{visual}\endcsname}\fi%
+\pdbf@sqlmult{\csname pdbf@Overlay\arabic{visual}\endcsname}{#1}{pdbf.common.DataText}}%
 }
 	
 \def\dbSQLText#1{%
-	\stepcounter{overlay}%
 	\StrSubstitute{#1}{"}{\@backslashchar"}[\pdbf@value]%
 	\ifnum \value{overlay} > 1%
 		\immediate\write\tempfile{,\@charlb}%
@@ -294,10 +307,10 @@
 	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\@charrb}%
 	\immediate\write\tempfile{\space\space\space\space\@charrb}%
 	\immediate\write\tempfile{\@charrb}%
+	\stepcounter{overlay}%
 }
 
 \def\dbSQLFile#1{%
-	\stepcounter{overlay}%
 	\StrSubstitute{#1}{"}{\@backslashchar"}[\pdbf@value]%
 	\ifnum \value{overlay} > 1%
 		\immediate\write\tempfile{,\@charlb}%
@@ -313,10 +326,10 @@
 	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\@charrb}%
 	\immediate\write\tempfile{\space\space\space\space\@charrb}%
 	\immediate\write\tempfile{\@charrb}%
+	\stepcounter{overlay}%
 }
 
 \def\dbSQLJDBC#1#2#3#4{%
-	\stepcounter{overlay}%
 	\StrSubstitute{#1}{"}{\@backslashchar"}[\pdbf@valueA]%
 	\StrSubstitute{#2}{"}{\@backslashchar"}[\pdbf@valueB]%
 	\StrSubstitute{#3}{"}{\@backslashchar"}[\pdbf@valueC]%
@@ -338,6 +351,7 @@
 	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\@charrb}%
 	\immediate\write\tempfile{\space\space\space\space\@charrb}%
 	\immediate\write\tempfile{\@charrb}%
+	\stepcounter{overlay}%
 }
 
 \endinput

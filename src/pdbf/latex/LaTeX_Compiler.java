@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import pdbf.common.Chart;
+import pdbf.common.DataText;
 import pdbf.common.Database;
 import pdbf.common.Dimension;
 import pdbf.common.Overlay;
@@ -37,6 +38,7 @@ public class LaTeX_Compiler {
     private static ArrayList<String> cleanupfiles = new ArrayList<String>();
     private static ArrayList<String> copyfiles = new ArrayList<String>();
     private static ArrayList<String> preloadfiles = new ArrayList<String>();
+    private static ArrayList<String> datatextfiles = new ArrayList<String>();
     private static Gson gson;
     private static String suffix;
     private static Dimension dimOrg;
@@ -141,8 +143,8 @@ public class LaTeX_Compiler {
 	    dimOrg = gson.fromJson(json2, Dimension.class);
 	    for (int i = 0; i < overlays.length; ++i) {
 		Visualization v = overlays[i].type;
-		if (v instanceof Text) {
-		    Text t = (Text) overlays[i].type;
+		if (v instanceof Text || v instanceof DataText) {
+		    Visualization t = overlays[i].type;
 		    t.x1 = t.x1 / dimOrg.width;
 		    t.x2 = t.x2 / dimOrg.width;
 		    t.y1 = (t.y1 + 65536 * t.fontsize) / dimOrg.height;
@@ -204,6 +206,9 @@ public class LaTeX_Compiler {
 	    if (overlays[i].type instanceof Chart) {
 		processChart(overlays[i]);
 	    }
+	    if (overlays[i].type instanceof DataText) {
+		processDataChart(overlays[i]);
+	    }
 	}
 
 	for (Process p : processes) {
@@ -237,6 +242,20 @@ public class LaTeX_Compiler {
 	}
 	try {
 	    FileUtils.writeStringToFile(new File("preload"), preload);
+	} catch (IOException e2) {
+	    e2.printStackTrace();
+	}
+	
+	String aux = "";
+	for (String data : datatextfiles) {
+	    try {
+		aux += "\\expandafter\\gdef\\csname pdbf@" + data.substring(0, data.length()-5) + "\\endcsname{" + FileUtils.readFileToString(new File(data)) + "}\n";
+	    } catch (IOException e) {
+		e.printStackTrace();
+	    }
+	}
+	try {
+	    FileUtils.writeStringToFile(new File(latexPath.substring(0, latexPath.length()-4) + ".aux"), aux, true);
 	} catch (IOException e2) {
 	    e2.printStackTrace();
 	}
@@ -345,6 +364,32 @@ public class LaTeX_Compiler {
 	}
 	try {
 	    ProcessBuilder pb = new ProcessBuilder("external-tools/phantomjs-" + suffix, "external-tools/capture.js", "out/web/" + o.name + ".html");
+	    pb.inheritIO();
+	    Process p = pb.start();
+	    processes.add(p);
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
+    }
+    
+    private static void processDataChart(Overlay o) {
+	DataText c = (DataText) o.type;
+	cleanupfiles.add("out/web/" + o.name + ".html");
+	cleanupfiles.add("" + o.name + ".data");
+	datatextfiles.add("" + o.name + ".data");
+	copyfiles.add("" + o.name + ".png");
+	try {
+	    Dimension dim = new Dimension(dimOrg.width * c.quality, dimOrg.height * c.quality);
+	    String viewer;
+	    String viewerHEAD = FileUtils.readFileToString(new File("out/web/templateHEADimages.html"), Tools.utf8);
+	    String viewerTAIL = FileUtils.readFileToString(new File("out/web/templateTAILimages.html"), Tools.utf8);
+	    viewer = viewerHEAD + "dim_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(dim)) + "\";\r\n" + "json_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(o)) + "\";\r\n" + "db_base64 = \"" + Tools.encodeFileToBase64Binary(new File("db.sql")) + "\";\r\n" + "dbjson_base64 = \"" + Tools.escapeQuotes(new File("db.json")) + "\";\r\n" + viewerTAIL;
+	    FileUtils.writeStringToFile(new File("out/web/" + o.name + ".html"), viewer, Tools.utf8);
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
+	try {
+	    ProcessBuilder pb = new ProcessBuilder("external-tools/phantomjs-" + suffix, "external-tools/captureData.js", "out/web/" + o.name + ".html");
 	    pb.inheritIO();
 	    Process p = pb.start();
 	    processes.add(p);
