@@ -208,8 +208,8 @@ PDBF uses AlaSQL as database engine. For all available features of the database 
 \verb|\dbSQLText{sqlQueryString}| \\
 \verb|\dbSQLFile{fileWithSqlQueries}| \\
 \verb|\dbSQLJDBC{jdbcConnectionURL}{user}{password}{commaSeperatedListOfTableNames}| \\
-\textbf{Note:} jdbcConnectionURL consist of jdbc followed by the name of the dbms (currently only postgresql and mysql are supported) followed by the url of the dbms followed by the database name (e.g. jdbc:postgresql://localhost:5432/postgres).\\
-\textbf{Note:} jdbcConnectionURL, user, and password are not stored in the output document.
+\textbf{Note:} jdbcConnectionURL consist of jdbc followed by the name of the dbms (only postgresql and mysql are currently supported) followed by the url of the dbms followed by the database name (e.g. jdbc:postgresql://localhost:5432/postgres).\\
+\textbf{Note:} jdbcConnectionURL, user, and password are not stored in the output documents.
 
 \newpage
 \section{PDBF elements}
@@ -300,47 +300,47 @@ Common options\\[4pt]
 {JSON-String}
 {\texttt{\{\}} (which means empty object)}
 
-\option %TODO: not yet implemented
-{logscale}
-{If set, the y axis uses log scale. Can also be redefined globally (\texttt{pdbfLogscale}).}
-{\texttt{true} or \texttt{false}}
-{\texttt{false}}
-
-\option %TODO: not yet implemented
-{overlap}
-{Unused.}
-{\texttt{TODO: ...}}
-{\texttt{TODO: ...}}
-
-\option %TODO: not yet implemented
-{legendpos}
-{Sets the position of the legend of the chart.}
-{\texttt{TODO: ...}}
-{\texttt{TODO: ...}}
-
-\option %TODO: not yet implemented
-{includeZero}
-{Set the minimum of the range of the y-axis to zero.}
-{\texttt{true} or \texttt{false}}
-{\texttt{false}}
-
-\option %TODO: not yet implemented
-{drawPoints}
-{Whether to show each point in line.}
-{\texttt{true} or \texttt{false}}
-{\texttt{false}}
-
-\option %TODO: not yet implemented
-{fillGraph}
-{Whether to fill the area below the graph.}
-{\texttt{true} or \texttt{false}}
-{\texttt{false}}
-
-\option %TODO: not yet implemented
-{showRangeSelector}
-{Whether to show a range selector for the x-axis below the chart.}
-{\texttt{true} or \texttt{false}}
-{\texttt{false}}
+%\option %TODO: not yet implemented
+%{logscale}
+%{If set, the y axis uses log scale. Can also be redefined globally (\texttt{pdbfLogscale}).}
+%{\texttt{true} or \texttt{false}}
+%{\texttt{false}}
+%
+%\option %TODO: not yet implemented
+%{overlap}
+%{Unused.}
+%{\texttt{TODO: ...}}
+%{\texttt{TODO: ...}}
+%
+%\option %TODO: not yet implemented
+%{legendpos}
+%{Sets the position of the legend of the chart.}
+%{\texttt{TODO: ...}}
+%{\texttt{TODO: ...}}
+%
+%\option %TODO: not yet implemented
+%{includeZero}
+%{Set the minimum of the range of the y-axis to zero.}
+%{\texttt{true} or \texttt{false}}
+%{\texttt{false}}
+%
+%\option %TODO: not yet implemented
+%{drawPoints}
+%{Whether to show each point in line.}
+%{\texttt{true} or \texttt{false}}
+%{\texttt{false}}
+%
+%\option %TODO: not yet implemented
+%{fillGraph}
+%{Whether to fill the area below the graph.}
+%{\texttt{true} or \texttt{false}}
+%{\texttt{false}}
+%
+%\option %TODO: not yet implemented
+%{showRangeSelector}
+%{Whether to show a range selector for the x-axis below the chart.}
+%{\texttt{true} or \texttt{false}}
+%{\texttt{false}}
 
 \newpage
 \subsection{Multiplot Chart}
@@ -497,7 +497,6 @@ Common options\\[4pt]
 {JavaScript array of strings (e.g. ["a", "b", "c"]). The name of attributes have to be present in the result of the sql query for the overlay and page}
 {\texttt{[]} (which means empty array)}
 
-\newpage
 \subsection{Sql}
 Example:\\[3pt]
 \sql{SELECT * FROM test;}\\[3pt]
@@ -506,6 +505,31 @@ Example:\\[3pt]
 \verb|\sql[textForPage]{queryForOverlay}| \\
 \textbf{Note:} if \verb|textForPage| is omitted the \verb|queryForOverlay| is used as text for the page.\\[8pt]
 
+\noindent Options: \\[3pt]
+
+\option
+{color}
+{The textcolor of the displayed text.}
+{\texttt{white}, \texttt{black}, \texttt{red}, \texttt{green}, \texttt{blue}, \texttt{cyan}, \texttt{magenta}, \texttt{yellow} or xcolor syntax (see \href{http://mirror.unicorncloud.org/CTAN/macros/latex/contrib/xcolor/xcolor.pdf}{here}). Can also be redefined globally (\texttt{pdbfDynamicTextColor})}
+{\texttt{blue}}
+
+\subsection{DataText}
+Produce text from sql-statements.\\[3pt]
+Example:\\[3pt]
+The table ``test'' contains \dataText{SELECT COUNT(*) FROM test;} tuples.\\
+The table ``test'' contains the following tuples: \dataText{SELECT * FROM test;}.\\[3pt]
+%
+\noindent Macros: \\[3pt]
+\verb|\dataText{query}| \\[8pt]
+
+\noindent Options: \\[3pt]
+
+\option
+{color}
+{The textcolor of the displayed text.}
+{\texttt{white}, \texttt{black}, \texttt{red}, \texttt{green}, \texttt{blue}, \texttt{cyan}, \texttt{magenta}, \texttt{yellow} or xcolor syntax (see \href{http://mirror.unicorncloud.org/CTAN/macros/latex/contrib/xcolor/xcolor.pdf}{here}). Can also be redefined globally (\texttt{pdbfDynamicTextColor})}
+{\texttt{blue}}
+
 \section{F.A.Q.}
 \begin{itemize}
 \item Q.: The overlay is not on the right position.\\
@@ -513,7 +537,7 @@ A.: Most likely you use pages with different sizes in your document. This is cur
 \item Q.: I get \verb|Error: paperwidth value missing! Did you forgot to specify the| \\ \verb|papersize via the geometry package?| when compiling my document.\\
 A.: You need to explicitly specify the papersize of your document via the geometry package (e.g. \verb|\usepackage[letterpaper]{geometry}|)
 \item Q.: I get \verb|\unhbox \voidb@x \bgroup \let \unhbox \voidb@x \setbox \@tempboxa \hbox| \verb|{u\global \mathchardef \accent@spacefactor \spacefactor }\accent 127 u\egroup| \newline \verb|\spacefactor \accent@spacefactor| or a similar string in a error message.\\
-A.: Chances are high that you use the \verb|\usepackage[utf8]{inputenc}| package or a similar package. These are not fully compatible with PDBF. If you really have to use the utf8 package then you cant use special characters inside PDBF commands.
+A.: Chances are high that you use the \verb|\usepackage[utf8]{inputenc}| package or a similar package. These are not fully compatible with PDBF. If you really have to use the utf8 package then you cant use special characters inside options and queries of the PDBF package.
 \end{itemize}
 
 \end{document}

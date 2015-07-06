@@ -128,52 +128,8 @@ public class LaTeX_Compiler {
 	    System.exit(-1);
 	}
 
-	// Read JSON
-	GsonBuilder builder = new GsonBuilder();
-	builder.disableHtmlEscaping().serializeNulls();
-	builder.registerTypeAdapter(Visualization.class, new VisualizationTypeAdapter());
-	builder.registerTypeAdapter(Alasql.class, new Alasql());
-	builder.registerTypeAdapter(Table.class, new Table());
-	gson = builder.create();
-	Overlay[] overlays = null;
-	try {
-	    String json = FileUtils.readFileToString(new File("config.json"), Tools.utf8);
-	    overlays = gson.fromJson(json, Overlay[].class);
-	    String json2 = FileUtils.readFileToString(new File("dim.json"), Tools.utf8);
-	    dimOrg = gson.fromJson(json2, Dimension.class);
-	    for (int i = 0; i < overlays.length; ++i) {
-		Visualization v = overlays[i].type;
-		if (v instanceof Text || v instanceof DataText) {
-		    Visualization t = overlays[i].type;
-		    t.x1 = t.x1 / dimOrg.width;
-		    t.x2 = t.x2 / dimOrg.width;
-		    t.y1 = (t.y1 + 65536 * t.fontsize) / dimOrg.height;
-		    t.y2 = t.y2 / dimOrg.height;
-		} else if (v instanceof Chart) {
-		    Chart c = (Chart) overlays[i].type;
-		    c.x1 = c.x1 / dimOrg.width;
-		    c.x2 = c.x2 / dimOrg.width;
-		    c.y1 = c.y1 / dimOrg.height;
-		    c.y2 = c.y2 / dimOrg.height;
-		}
-
-		if (!(v instanceof Database)) {
-		    v.zoom = v.fontsize / 12.0 * v.zoom;
-		    if (v.aggregationattributeBig.equals("")) {
-			v.aggregationattributeBig = v.aggregationattribute;
-		    }
-		    if (v.aggregationBig.equals("")) {
-			v.aggregationBig = v.aggregation;
-		    }
-		}
-	    }
-	} catch (Exception e) {
-	    e.printStackTrace();
-	}
-	if (overlays == null) {
-	    System.err.println("Error: Deserialization failed!");
-	    System.exit(-1);
-	}
+	Overlay[] overlays = readJSONconfig();
+	
 	// Split
 	File f = new File("db.sql");
 	File f2 = new File("db.json");
@@ -270,6 +226,8 @@ public class LaTeX_Compiler {
 	    System.err.println("Error: LaTeX compilation failed! Reason: \n" + e.getMessage());
 	    System.exit(-1);
 	}
+	
+	overlays = readJSONconfig();
 
 	// Remove database entries from config
 	ArrayList<Overlay> olist = new ArrayList<Overlay>(Arrays.asList(overlays));
@@ -291,6 +249,56 @@ public class LaTeX_Compiler {
 	for (String s : cleanupfiles) {
 	    new File(s).delete();
 	}
+    }
+
+    private static Overlay[] readJSONconfig() {
+	// Read JSON
+	GsonBuilder builder = new GsonBuilder();
+	builder.disableHtmlEscaping().serializeNulls();
+	builder.registerTypeAdapter(Visualization.class, new VisualizationTypeAdapter());
+	builder.registerTypeAdapter(Alasql.class, new Alasql());
+	builder.registerTypeAdapter(Table.class, new Table());
+	gson = builder.create();
+	Overlay[] overlays = null;
+	try {
+	    String json = FileUtils.readFileToString(new File("config.json"), Tools.utf8);
+	    overlays = gson.fromJson(json, Overlay[].class);
+	    String json2 = FileUtils.readFileToString(new File("dim.json"), Tools.utf8);
+	    dimOrg = gson.fromJson(json2, Dimension.class);
+	    for (int i = 0; i < overlays.length; ++i) {
+		Visualization v = overlays[i].type;
+		if (v instanceof Text || v instanceof DataText) {
+		    Visualization t = overlays[i].type;
+		    t.x1 = t.x1 / dimOrg.width;
+		    t.x2 = t.x2 / dimOrg.width;
+		    t.y1 = (t.y1 + 65536 * t.fontsize) / dimOrg.height;
+		    t.y2 = t.y2 / dimOrg.height;
+		} else if (v instanceof Chart) {
+		    Chart c = (Chart) overlays[i].type;
+		    c.x1 = c.x1 / dimOrg.width;
+		    c.x2 = c.x2 / dimOrg.width;
+		    c.y1 = c.y1 / dimOrg.height;
+		    c.y2 = c.y2 / dimOrg.height;
+		}
+
+		if (!(v instanceof Database)) {
+		    v.zoom = v.fontsize / 12.0 * v.zoom;
+		    if (v.aggregationattributeBig.equals("")) {
+			v.aggregationattributeBig = v.aggregationattribute;
+		    }
+		    if (v.aggregationBig.equals("")) {
+			v.aggregationBig = v.aggregation;
+		    }
+		}
+	    }
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
+	if (overlays == null) {
+	    System.err.println("Error: Deserialization failed!");
+	    System.exit(-1);
+	}
+	return overlays;
     }
 
     private static void processDatabase(Overlay overlay) {

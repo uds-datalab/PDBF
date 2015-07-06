@@ -321,11 +321,15 @@ function buildDataText(container, json, zoomFactor, style, containerOver) {
 		for (var key in results[r]) {
 			tmp += results[r][key] + ", ";
 		}
+		tmp = tmp.substring(0, tmp.length - 2);
 		if (c > 1) {
 			tmp += "), ";
 		}
 	}
-	return tmp.substring(0, tmp.length - 2);
+	if (c > 1) {
+		tmp = tmp.substring(0, tmp.length - 2);
+	}
+	return tmp;
 }
 
 function buildContainerPivotBig(json, containerOver, initial) {

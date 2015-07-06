@@ -11,9 +11,6 @@
 \RequirePackage{xstring}
 \RequirePackage{xparse}
 
-% Needed because we need to adjust xref table after injecting html and currently we want to keep it simple. Could be omitted later if adjusting xref streams is implemented.
-\pdfobjcompresslevel=0
-
 \newcounter{visual}
 \newcounter{overlay}
 \stepcounter{visual}
@@ -24,6 +21,10 @@
 \immediate\write\tempfile{[}
 
 \AtBeginDocument{
+	% Next line is needed because we need to adjust xref table after injecting html and currently we want to keep it simple. 
+	% Could be omitted if reading of xref streams is implemented later on.
+	\pdfobjcompresslevel=0
+
 	\newlength{\emptylen} 
 	\settowidth{\emptylen}{} 
 	
@@ -46,6 +47,13 @@
 	\immediate\write\tempfile{]}
 	\immediate\closeout\tempfile
 }
+
+%Text
+\define@key{pdbf}{color}{\def\pdbfDynamicTextColor{#1}}
+\def\pdbfDynamicTextColor{blue}
+
+%Linking
+\define@key{pdbf}{linkName}{\def\pdbf@linkName{#1}}
 
 %Common
 \define@key{pdbf}{width}{\def\pdbf@width{#1}}
@@ -209,12 +217,22 @@
 {\pdbf@chart[#1]{#3}{\IfValueTF{#2}{#2}{#3}}{MultiplotChart}}%
 }
 
+\NewDocumentCommand\pdbfLink{o}{%
+%sourceLinkName
+%targetLinkName
+%value
+%label
+%
+% What the heck do we do with pivot tables? let user assign highlight box position? Extra pass which opens browser, where the user then can create the links. 
+% Also multiplotCharts...
+}
+
 \def\pdbf@sqlmult#1#2#3{%
 \edef\pdbf@fontsave{\f@size}%
 {\fontsize{5pt}{1sp}\selectfont%
 		\setlength\tabcolsep{1sp}%
 		\begin{tabular}[t]{lll}%
-		\pdbf@save{Overlay\arabic{visual}1}&{\color{blue} \fontsize{\pdbf@fontsave}{1sp}\selectfont#1}&\\%
+		\pdbf@save{Overlay\arabic{visual}1}&{\color{\pdbfDynamicTextColor} \fontsize{\pdbf@fontsave}{1sp}\selectfont#1}&\\%
 		&&\zsavepos{Overlay\arabic{visual}2}\\%
 		\end{tabular}%
 		% Write part of config.json
@@ -286,7 +304,7 @@
     }%
 }
 
-\NewDocumentCommand\datatext{m}{%
+\NewDocumentCommand\dataText{m}{%
 {\expandafter\ifx\csname pdbf@Overlay\arabic{visual}\endcsname\relax\pdbf@csxdefaux{}\else\expandafter\pdbf@csxdefaux{\csname pdbf@Overlay\arabic{visual}\endcsname}\fi%
 \pdbf@sqlmult{\csname pdbf@Overlay\arabic{visual}\endcsname}{#1}{pdbf.common.DataText}}%
 }
