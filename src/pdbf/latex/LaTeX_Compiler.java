@@ -42,6 +42,8 @@ public class LaTeX_Compiler {
     private static Gson gson;
     private static String suffix;
     private static Dimension dimOrg;
+    
+    private static String latexFolder;
 
     public static void main(String[] args) {
 	// Read config.
@@ -98,7 +100,7 @@ public class LaTeX_Compiler {
 	    System.exit(-1);
 	}
 
-	String latexFolder = latex.getAbsoluteFile().getParent();
+	latexFolder = latex.getAbsoluteFile().getParent();
 
 	ArrayList<String> commands = new ArrayList<String>(Arrays.asList(pathToLaTeXScript));
 	commands.add(latex.getAbsolutePath());
@@ -211,6 +213,8 @@ public class LaTeX_Compiler {
 	    }
 	}
 	try {
+	    String nm = new File(latexPath).getName();
+	    FileUtils.writeStringToFile(new File(nm.substring(0, nm.length()-4) + ".aux"), aux, true);
 	    FileUtils.writeStringToFile(new File(latexPath.substring(0, latexPath.length()-4) + ".aux"), aux, true);
 	} catch (IOException e2) {
 	    e2.printStackTrace();
@@ -311,7 +315,11 @@ public class LaTeX_Compiler {
 		FileUtils.writeStringToFile(f, db.value1 + System.lineSeparator(), Tools.utf8, true);
 		break;
 	    case 2:
-		String in = FileUtils.readFileToString(new File(db.value1), Tools.utf8);
+		File inF = new File(db.value1);
+		if (!inF.isAbsolute()) {
+		    inF = new File(latexFolder + File.separator + db.value1);
+		}
+		String in = FileUtils.readFileToString(inF, Tools.utf8);
 		FileUtils.writeStringToFile(f, in + System.lineSeparator(), Tools.utf8, true);
 		break;
 	    case 3:
