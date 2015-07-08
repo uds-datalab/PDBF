@@ -457,15 +457,22 @@ function buildContainerTableBig(json, containerOver) {
 		} catch (e) {
 			err = e.message;
 		}
+		
+		if (err == undefined) {
+			try {
+				getTableFromResults(results, containerContent);
+			} catch (e) {
+				err = e.message;
+			}
+		}
 
 		if (err != undefined) {
-			error.innerHTML = 'Query status: ' + err;
+			error.innerHTML = 'Query status: Error! ' + err;
 			containerOptions.style.visibility = 'hidden';
 			containerContent.innerHTML = '';
 		} else {
 			error.innerHTML = 'Query status: OK';
 			containerOptions.style.visibility = 'visible';
-			getTableFromResults(results, containerContent);
 		}
 	};
 
@@ -1033,6 +1040,7 @@ function tableCreate(res, table) {
 	$(table).dataTable({
 	data : res,
 	columns : columns,
+	destroy: true
 	});
 }
 
@@ -1262,8 +1270,14 @@ function getChartOptions(json, zoomFactor, values, chart) {
 	}
 
 	if (values.json != undefined && isNaN(values.json[0][values.x]) && (options == undefined || options.axis == undefined || options.axis.x == undefined || options.axis.x.type == undefined)) {
-		options.axis.x.type = "timeseries";
+		if (isValidDate(values.json[0][values.x])) {
+			options.axis.x.type = "timeseries";
+		}
+		else {
+			options.axis.x.type = "category";
+		}
 	}
+	
 
 	// add scoped css
 	var css = document.createElement('style');
