@@ -8,6 +8,8 @@ function fixOverlaySize() {
 	}
 }
 
+var namedContainers = [];
+
 // Performance measurement functions
 var tictime;
 if (!window.performance || !performance.now) {
@@ -57,7 +59,7 @@ function display(json, page, phantomJS) {
 		style = "position: absolute; width:" + (json.type.I.x2 - json.type.I.x1 + 0.001) * 100 + "%; height:" + (json.type.I.y1 - json.type.I.y2 + 0.001) * 100 + "%; left:" + json.type.I.x1 * 100 + "%; bottom:" + (json.type.I.y2 - 0.001) * 100 + "%;";
 	}
 	page.appendChild(container);
-
+	
 	switch (json.type.C) {
 	case "pdbf.common.MultiplotChart":
 		var containerOver = document.getElementById(json.name + "Big");
@@ -86,6 +88,9 @@ function display(json, page, phantomJS) {
 		}
 		container.setAttribute('style', style);
 		buildContainerMultiplotChart(container, json, zoomFactor, style, containerOver);
+		if (json.type.I.name != null && json.type.I.name != "") {
+			namedContainers[json.type.I.name] = {type: "MultiplotChart", elem: undefined}; //TODO:
+		}
 		break;
 	case "pdbf.common.Chart":
 		var containerOver = document.getElementById(json.name + "Big");
@@ -114,6 +119,9 @@ function display(json, page, phantomJS) {
 		}
 		container.setAttribute('style', style);
 		buildContainerChart(container, json, zoomFactor, style, containerOver);
+		if (json.type.I.name != null && json.type.I.name != "") {
+			namedContainers[json.type.I.name] = {type: "Chart", elem: json.chartInPage, opt: json.options};
+		}
 		break;
 	case "pdbf.common.DataText":
 		if (phantomJS) {
@@ -121,6 +129,46 @@ function display(json, page, phantomJS) {
 			if (text != undefined) {
 				json.text = text;
 			}
+		}
+		if (json.type.I.linkTo != null && json.type.I.linkTo != "") {
+			container.addEventListener("mouseover", function() {
+				var o = namedContainers[json.type.I.linkTo];
+				if (o == undefined) {
+					alert("Error! There is no element with name \""+json.type.I.linkTo+"\"");
+				}
+				switch (o.type) {
+				case "Chart":
+					o.elem.xgrids([
+					   {value: json.type.I.linkSelector, text: json.type.I.linkLabel}
+				    ]);
+					break;
+				case "MultiplotChart":
+				case "Pivot":
+				default:
+					alert("Error! linkTo currently only supports chart elements.")
+					break;
+				}
+			});
+			container.addEventListener("mouseout", function() {
+				var o = namedContainers[json.type.I.linkTo];
+				if (o == undefined) {
+					alert("Error! There is no element with name \""+json.type.I.linkTo+"\"");
+				}
+				switch (o.type) {
+				case "Chart":
+					var t = [];
+					if (o.opt.grid != undefined && o.opt.grid.x != undefined && o.opt.grid.x.lines != undefined) {
+						t = o.opt.grid.x.lines;
+					}
+					o.elem.xgrids(t);
+					break;
+				case "MultiplotChart":
+				case "Pivot":
+				default:
+					alert("Error! linkTo currently only supports chart elements.")
+					break;
+				}
+			});
 		}
 	case "pdbf.common.Text":
 		var containerOver = document.getElementById(json.name + "Big");
@@ -165,6 +213,9 @@ function display(json, page, phantomJS) {
 		}
 		container.setAttribute('style', style);
 		buildContainerPivot(container, json, zoomFactor, style, containerOver);
+		if (json.type.I.name != null && json.type.I.name != "") {
+			namedContainers[json.type.I.name] = {type: "Pivot", elem: undefined}; //TODO:
+		}
 		break;
 	default:
 		alert("Unknown type: " + json.type.C);
@@ -183,7 +234,7 @@ function buildContainerChartBig(json, containerOver, initial) {
 		json.chartdataBig = getChartData(json.jsonBig);
 		json.resultBig = json.chartdataBig.res;
 		if (json.chartdataBig.error != undefined) {
-			error.innerHTML = 'Query status: ' + json.chartdataBig.error;
+			error.innerHTML = 'Query status: Error! ' + json.chartdataBig.error;
 			containerOptions.style.visibility = 'hidden';
 		} else {
 			error.innerHTML = 'Query status: OK';
@@ -220,7 +271,7 @@ function buildContainerChartBig(json, containerOver, initial) {
 		}
 	} else {
 		if (chartdataCpy.error != undefined) {
-			error.innerHTML = 'Query status: ' + chartdataCpy.error;
+			error.innerHTML = 'Query status: Error!' + chartdataCpy.error;
 			containerOptions.style.visibility = 'hidden';
 		} else {
 			error.innerHTML = 'Query status: OK';
@@ -288,8 +339,8 @@ function buildContainerChart(container, json, zoomFactor, style, containerOver) 
 	container.setAttribute('style', style);
 
 	var options = getChartOptions(json, zoomFactor, chartdata, chart);
-
-	c3.generate(options);
+	json.options = options;
+	json.chartInPage = c3.generate(options);
 }
 
 function buildDataText(container, json, zoomFactor, style, containerOver) {
@@ -341,7 +392,7 @@ function buildContainerPivotBig(json, containerOver, initial) {
 		var r = getPivotTableData(json, true);
 		json.resultBig = r.res;
 		if (r.error != undefined) {
-			error.innerHTML = 'Query status: ' + r.error;
+			error.innerHTML = 'Query status: Error! ' + r.error;
 			containerOptions.style.visibility = 'hidden';
 		} else {
 			error.innerHTML = 'Query status: OK';
@@ -377,7 +428,7 @@ function buildContainerPivotBig(json, containerOver, initial) {
 		}
 	} else {
 		if (r.error != undefined) {
-			error.innerHTML = 'Query status: ' + r.error;
+			error.innerHTML = 'Query status: Error! ' + r.error;
 			containerOptions.style.visibility = 'hidden';
 		} else {
 			error.innerHTML = 'Query status: OK';

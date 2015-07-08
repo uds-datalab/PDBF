@@ -51,6 +51,12 @@ public abstract class Visualization {
     public double zoom;
     public double quality;
     public double fontsize;
+    public String name;
+    
+    //DataText
+    public String linkTo;
+    public String linkSelector;
+    public String linkLabel;
     
     public String chartType;
 }

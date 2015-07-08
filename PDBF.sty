@@ -51,11 +51,16 @@
 %Text
 \define@key{pdbf}{color}{\def\pdbfDynamicTextColor{#1}}
 \def\pdbfDynamicTextColor{blue}
-
-%Linking
-\define@key{pdbf}{linkName}{\def\pdbf@linkName{#1}}
+\define@key{pdbf}{linkTo}{\def\pdbf@linkTo{#1}}
+\def\pdbf@linkTo{}
+\define@key{pdbf}{linkSelector}{\def\pdbf@linkSelector{#1}}
+\def\pdbf@linkSelector{}
+\define@key{pdbf}{linkLabel}{\def\pdbf@linkLabel{#1}}
+\def\pdbf@linkLabel{}
 
 %Common
+\define@key{pdbf}{name}{\def\pdbf@name{#1}}
+\def\pdbf@name{}
 \define@key{pdbf}{width}{\def\pdbf@width{#1}}
 \define@key{pdbf}{height}{\def\pdbf@height{#1}}
 \def\pdbf@xunitname{}
@@ -158,6 +163,7 @@
 		\immediate\write\tempfile{\space\space\space\space"type": \@charlb}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.common.#4",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"name": "\pdbf@name",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"logScale": \pdbfLogscale,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xUnitName": "\pdbf@xunitname",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yUnitName": "\pdbf@yunitname",}%
@@ -217,17 +223,8 @@
 {\pdbf@chart[#1]{#3}{\IfValueTF{#2}{#2}{#3}}{MultiplotChart}}%
 }
 
-\NewDocumentCommand\pdbfLink{o}{%
-%sourceLinkName
-%targetLinkName
-%value
-%label
-%
-% What the heck do we do with pivot tables? let user assign highlight box position? Extra pass which opens browser, where the user then can create the links. 
-% Also multiplotCharts...
-}
-
-\def\pdbf@sqlmult#1#2#3{%
+\def\pdbf@sqlmult#1#2#3#4{%
+\setkeys{pdbf}{#4}%
 \edef\pdbf@fontsave{\f@size}%
 {\fontsize{5pt}{1sp}\selectfont%
 		\setlength\tabcolsep{1sp}%
@@ -247,6 +244,9 @@
 		\immediate\write\tempfile{\space\space\space\space"type": \@charlb}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "#3",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"linkTo": "\pdbf@linkTo",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"linkSelector": "\pdbf@linkSelector",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"linkLabel": "\pdbf@linkLabel",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"logScale": \pdbfLogscale,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xUnitName": "\pdbf@xunitname",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yUnitName": "\pdbf@yunitname",}%
@@ -293,8 +293,8 @@
 }%
 }
 
-\NewDocumentCommand\sql{o m}{%
-{\pdbf@sqlmult{\IfValueTF{#1}{#1}{#2}}{#2}{pdbf.common.Text}}%
+\NewDocumentCommand\sql{O{} o m}{%
+{\pdbf@sqlmult{\IfValueTF{#2}{#2}{#3}}{#3}{pdbf.common.Text}{#1}}%
 }
 
 \def\pdbf@csxdefaux#1{%
@@ -304,9 +304,9 @@
     }%
 }
 
-\NewDocumentCommand\dataText{m}{%
+\NewDocumentCommand\dataText{O{} m}{%
 {\expandafter\ifx\csname pdbf@Overlay\arabic{visual}\endcsname\relax\pdbf@csxdefaux{}\else\expandafter\pdbf@csxdefaux{\csname pdbf@Overlay\arabic{visual}\endcsname}\fi%
-\pdbf@sqlmult{\csname pdbf@Overlay\arabic{visual}\endcsname}{#1}{pdbf.common.DataText}}%
+\pdbf@sqlmult{\csname pdbf@Overlay\arabic{visual}\endcsname}{#2}{pdbf.common.DataText}{#1}}%
 }
 	
 \def\dbSQLText#1{%

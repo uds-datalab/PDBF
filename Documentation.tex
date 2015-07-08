@@ -250,8 +250,12 @@ Currently there are four different PDBF elements: charts, pivot tables, multiplo
 \textbf{Note:} The first column of the query result is used for the x-Axis, all other columns are used for y-Axis.\\[8pt] 
 \noindent Options:\\[3pt]
 %
-Common options\\[4pt]
-%
+\option
+{name}
+{Sets the name of this element. This is only useful for linking Elements. See DataText.}
+{String}
+{\texttt{undefined}}
+
 \option
 {width}
 {Sets the width of the chart.}
@@ -502,7 +506,7 @@ Example:\\[3pt]
 \sql{SELECT * FROM test;}\\[3pt]
 %
 \noindent Macros: \\[3pt]
-\verb|\sql[textForPage]{queryForOverlay}| \\
+\verb|\sql[options][textForPage]{queryForOverlay}| \\
 \textbf{Note:} if \verb|textForPage| is omitted the \verb|queryForOverlay| is used as text for the page.\\[8pt]
 
 \noindent Options: \\[3pt]
@@ -520,7 +524,7 @@ The table ``test'' contains \dataText{SELECT COUNT(*) FROM test;} tuples.\\
 The table ``test'' contains the following tuples: \dataText{SELECT * FROM test;}.\\[3pt]
 %
 \noindent Macros: \\[3pt]
-\verb|\dataText{query}| \\[8pt]
+\verb|\dataText[options]{query}| \\[8pt]
 
 \noindent Options: \\[3pt]
 
@@ -529,6 +533,24 @@ The table ``test'' contains the following tuples: \dataText{SELECT * FROM test;}
 {The textcolor of the displayed text.}
 {\texttt{white}, \texttt{black}, \texttt{red}, \texttt{green}, \texttt{blue}, \texttt{cyan}, \texttt{magenta}, \texttt{yellow} or xcolor syntax (see \href{http://mirror.unicorncloud.org/CTAN/macros/latex/contrib/xcolor/xcolor.pdf}{here}). Can also be redefined globally (\texttt{pdbfDynamicTextColor})}
 {\texttt{blue}}
+
+\option
+{linkTo}
+{When this option is set then this DataText and the element with name equal to the value of \texttt{linkTo} are linked. When the cursor is moved above the DataText then in the linked element the specified \texttt{linkSelector} specifies which part of the element is highlighted and annotated with the value of \texttt{linkLabel}.}
+{String which value is the name of some other element. \textbf{Currently only chart elements can be used for \texttt{linkTo}.}}
+{\texttt{undefined}}
+
+\option
+{linkSelector}
+{The selector that specifies which part of the \texttt{linkTo} element is highlighted.}
+{\texttt{Number}, \texttt{Date} or \texttt{String} depending on the type of the \texttt{linkTo} element. For charts the type depends on the datatype of the xAxis and the value specifies which part of the xAxis is highlighted.}
+{\texttt{undefined}}
+
+\option
+{linkLabel}
+{The text that is displayed near the highlighted area.}
+{String}
+{\texttt{undefined}}
 
 \section{F.A.Q.}
 \begin{itemize}
