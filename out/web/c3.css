@@ -65,6 +65,22 @@
 
 /*-- Axis --*/
 /*-- Grid --*/
+.c3-xgrid-line line {
+  stroke: #f00 !important;
+}
+
+.c3-xgrid-line text {
+  fill: #f00 !important;
+}
+
+.c3-ygrid-line line {
+  stroke: #f00 !important;
+}
+
+.c3-ygrid-line text {
+  fill: #f00 !important;
+}
+
 .c3-grid line {
   stroke: #aaa; }
 

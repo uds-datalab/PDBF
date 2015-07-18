@@ -138,9 +138,7 @@ function display(json, page, phantomJS) {
 				}
 				switch (o.type) {
 				case "Chart":
-					o.elem.xgrids([
-					   {value: json.type.I.linkSelector, text: json.type.I.linkLabel}
-				    ]);
+					o.elem.xgrids.add([{value: json.type.I.linkSelector, text: json.type.I.linkLabel}]);
 					break;
 				case "MultiplotChart":
 				case "Pivot":
@@ -156,11 +154,7 @@ function display(json, page, phantomJS) {
 				}
 				switch (o.type) {
 				case "Chart":
-					var t = [];
-					if (o.opt.grid != undefined && o.opt.grid.x != undefined && o.opt.grid.x.lines != undefined) {
-						t = o.opt.grid.x.lines;
-					}
-					o.elem.xgrids(t);
+					o.elem.xgrids.remove({value: json.type.I.linkSelector});
 					break;
 				case "MultiplotChart":
 				case "Pivot":
