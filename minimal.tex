@@ -1,4 +1,4 @@
-\documentclass[10pt]{minimal}
+\documentclass[10pt]{article}
 \usepackage{PDBF}
 \usepackage[a4paper]{geometry}
 
@@ -15,5 +15,6 @@ The following points are linked to the chart below: \dataText[linkTo=testname, l
 \chart[width=\textwidth, height=0.45\textwidth, chartType=bar]{SELECT * FROM test;}\\[3pt]
 \chart[width=\textwidth, height=0.45\textwidth, chartType=signatureplot]{SELECT b FROM test;}\\[3pt]
 \multiplotChart[width=\textwidth, height=0.9\textwidth, xCount=2, yCount=2, yValues={["b", "b*2"]}, xValues={["a > 2", "a <= 2"]}, yFirst]{SELECT a,? FROM test WHERE ?;}\\[3pt]
-\pivotTable[width=\textwidth, height=0.5\textwidth, rows={["a"]}, aggregationattribute=b]{SELECT * FROM test;}
+\pivotTable[width=\textwidth, height=0.5\textwidth, rows={["a"]}, aggregationattribute=b]{SELECT * FROM test;}\\[3pt]
+\dataTable[verticalLines=i, horizontalLinesHeader=b hh, horizontalLinesBody=i]{SELECT * FROM test;}\\[3pt]
 \end{document}

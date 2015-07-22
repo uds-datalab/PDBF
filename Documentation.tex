@@ -1,4 +1,4 @@
-\documentclass[11pt]{scrartcl}
+\documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage{PDBF}
 \usepackage{wrapfig}
@@ -105,6 +105,7 @@ graphicx\\
 xstring\\
 xparse\\
 geometry\\
+array\\
 
 \noindent Furthermore it is needed that your \LaTeX\relax document uses the geometry package to specify the page size.\\
 
@@ -501,7 +502,8 @@ Currently there are four different PDBF elements: charts, pivot tables, multiplo
 {JavaScript array of strings (e.g. ["a", "b", "c"]). The name of attributes have to be present in the result of the sql query for the overlay and page}
 {\texttt{[]} (which means empty array)}
 
-\subsection{Sql}
+\subsection{SQL}
+Clickable SQL-statements\\[3pt]
 Example:\\[3pt]
 \sql{SELECT * FROM test;}\\[3pt]
 %
@@ -518,7 +520,7 @@ Example:\\[3pt]
 {\texttt{blue}}
 
 \subsection{DataText}
-Produce text from sql-statements.\\[3pt]
+Write text that is the result of a SQL-statement.\\[3pt]
 Example:\\[3pt]
 The table ``test'' contains \dataText{SELECT COUNT(*) FROM test;} tuples.\\
 The table ``test'' contains the following tuples: \dataText{SELECT * FROM test;}.\\[3pt]
@@ -551,6 +553,40 @@ The table ``test'' contains the following tuples: \dataText{SELECT * FROM test;}
 {The text that is displayed near the highlighted area.}
 {String}
 {\texttt{undefined}}
+
+\subsection{DataTable}
+Write a \LaTeX\space table that is the result of a SQL-statement.\\[3pt]
+Example:\\[3pt]
+\dataTable{SELECT * FROM test;}\\[5pt]
+%
+\noindent Macros: \\[3pt]
+\verb|\dataTable[options]{query}| \\[8pt]
+
+\noindent Options: \\[3pt]
+
+\option
+{color}
+{The textcolor of the displayed text.}
+{\texttt{white}, \texttt{black}, \texttt{red}, \texttt{green}, \texttt{blue}, \texttt{cyan}, \texttt{magenta}, \texttt{yellow} or xcolor syntax (see \href{http://mirror.unicorncloud.org/CTAN/macros/latex/contrib/xcolor/xcolor.pdf}{here}). Can also be redefined globally (\texttt{pdbfDynamicTextColor})}
+{\texttt{blue}}
+
+\option
+{verticalLines}
+{Specifies the vertical lines for the table.}
+{\texttt{a} for all, \texttt{i} for inner, \texttt{o} for outer, \texttt{n} for none, or you can use the default tabular syntax (e.g. \texttt{|l|c|r|})}
+{\texttt{a}}
+
+\option
+{horizontalLinesHeader}
+{Specifies the horizontal lines for the table header.}
+{\texttt{a} for all, \texttt{i} for inner, \texttt{o} for outer, \texttt{n} for none, or you can specify a custom pattern that is repeatedly applied with the following format: h means line, b means no line, the space character delimits format specifiers. E.g. ``hh b'' means: double line followed by no line followed by double line followed by no line ... and so on}
+{\texttt{a}}
+
+\option
+{horizontalLinesBody}
+{Specifies the horizontal lines for the table body, excluding the border above the first tuple, which is controlled by horizontalLinesHeader.}
+{\texttt{a} for all, \texttt{i} for inner, \texttt{o} for outer, \texttt{n} for none, or you can specify a custom pattern that is repeatedly applied with the following format: h means line, b means no line, the space character delimits format specifiers. E.g. ``hh b'' means: double line followed by no line followed by double line followed by no line ... and so on}
+{\texttt{a}}
 
 \section{F.A.Q.}
 \begin{itemize}

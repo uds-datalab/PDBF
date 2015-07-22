@@ -10,6 +10,7 @@
 \RequirePackage{graphicx}
 \RequirePackage{xstring}
 \RequirePackage{xparse}
+\RequirePackage{array}
 
 \newcounter{visual}
 \newcounter{overlay}
@@ -48,7 +49,7 @@
 	\immediate\closeout\tempfile
 }
 
-%Text
+%DataText
 \define@key{pdbf}{color}{\def\pdbfDynamicTextColor{#1}}
 \def\pdbfDynamicTextColor{blue}
 \define@key{pdbf}{linkTo}{\def\pdbf@linkTo{#1}}
@@ -57,6 +58,14 @@
 \def\pdbf@linkSelector{}
 \define@key{pdbf}{linkLabel}{\def\pdbf@linkLabel{#1}}
 \def\pdbf@linkLabel{}
+
+%DataTable
+\define@key{pdbf}{verticalLines}{\def\pdbf@verticalLines{#1}}
+\def\pdbf@verticalLines{a}
+\define@key{pdbf}{horizontalLinesHeader}{\def\pdbf@horizontalLinesHeader{#1}}
+\def\pdbf@horizontalLinesHeader{a}
+\define@key{pdbf}{horizontalLinesBody}{\def\pdbf@horizontalLinesBody{#1}}
+\def\pdbf@horizontalLinesBody{a}
 
 %Common
 \define@key{pdbf}{name}{\def\pdbf@name{#1}}
@@ -144,7 +153,7 @@
 	{\fontsize{5pt}{1sp}\selectfont%
 		\setlength\tabcolsep{1sp}%
 		% Place Image
-		\begin{tabular}{lll}%
+		\begin{tabular}{ccc}%
 		\pdbf@save{Overlay\arabic{visual}1}&&\\%
 		\IfFileExists{Overlay\arabic{visual}.png}{%
 	    		&\includegraphics[width=\pdbf@width, height=\pdbf@height]{Overlay\arabic{visual}.png}&\\%
@@ -164,6 +173,12 @@
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.common.#4",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"name": "\pdbf@name",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"linkTo": "\pdbf@linkTo",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"linkSelector": "\pdbf@linkSelector",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"linkLabel": "\pdbf@linkLabel",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"verticalLines": "\pdbf@verticalLines",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"horizontalLinesHeader": "\pdbf@horizontalLinesHeader",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"horizontalLinesBody": "\pdbf@horizontalLinesBody",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"logScale": \pdbfLogscale,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xUnitName": "\pdbf@xunitname",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yUnitName": "\pdbf@yunitname",}%
@@ -226,10 +241,12 @@
 \def\pdbf@sqlmult#1#2#3#4{%
 \setkeys{pdbf}{#4}%
 \edef\pdbf@fontsave{\f@size}%
+\edef\pdbf@fontskipsave{\the\baselineskip}%
+\edef\pdbf@tabcolsep{\the\tabcolsep}%
 {\fontsize{5pt}{1sp}\selectfont%
 		\setlength\tabcolsep{1sp}%
-		\begin{tabular}[t]{lll}%
-		\pdbf@save{Overlay\arabic{visual}1}&{\color{\pdbfDynamicTextColor} \fontsize{\pdbf@fontsave}{1sp}\selectfont#1}&\\%
+		\begin{tabular}[t]{ccc}%
+		\pdbf@save{Overlay\arabic{visual}1}&{\color{\pdbfDynamicTextColor}\fontsize{\pdbf@fontsave}{\pdbf@fontskipsave}\setlength\tabcolsep{\pdbf@tabcolsep}\selectfont#1}&\\%
 		&&\zsavepos{Overlay\arabic{visual}2}\\%
 		\end{tabular}%
 		% Write part of config.json
@@ -244,9 +261,13 @@
 		\immediate\write\tempfile{\space\space\space\space"type": \@charlb}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "#3",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"name": "\pdbf@name",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"linkTo": "\pdbf@linkTo",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"linkSelector": "\pdbf@linkSelector",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"linkLabel": "\pdbf@linkLabel",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"verticalLines": "\pdbf@verticalLines",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"horizontalLinesHeader": "\pdbf@horizontalLinesHeader",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"horizontalLinesBody": "\pdbf@horizontalLinesBody",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"logScale": \pdbfLogscale,}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xUnitName": "\pdbf@xunitname",}%
 		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yUnitName": "\pdbf@yunitname",}%
@@ -300,13 +321,18 @@
 \def\pdbf@csxdefaux#1{%
     \protected@write\@mainaux{}{%
        \string\expandafter\string\gdef
-        \string\csname\space pdbf@Overlay\arabic{visual}\string\endcsname{#1}%
+        \string\csname\space pdbf@Overlay\arabic{visual}\string\endcsname{\expandafter\detokenize\expandafter\expandafter\expandafter{#1}}%
     }%
 }
 
 \NewDocumentCommand\dataText{O{} m}{%
-{\expandafter\ifx\csname pdbf@Overlay\arabic{visual}\endcsname\relax\pdbf@csxdefaux{}\else\expandafter\pdbf@csxdefaux{\csname pdbf@Overlay\arabic{visual}\endcsname}\fi%
+{\expandafter\ifx\csname pdbf@Overlay\arabic{visual}\endcsname\relax\pdbf@csxdefaux{}\else\pdbf@csxdefaux{\csname pdbf@Overlay\arabic{visual}\endcsname}\fi%
 \pdbf@sqlmult{\csname pdbf@Overlay\arabic{visual}\endcsname}{#2}{pdbf.common.DataText}{#1}}%
+}
+
+\NewDocumentCommand\dataTable{O{} m}{%
+{\expandafter\ifx\csname pdbf@Overlay\arabic{visual}\endcsname\relax\pdbf@csxdefaux{}\else\pdbf@csxdefaux{\csname pdbf@Overlay\arabic{visual}\endcsname}\fi%
+\pdbf@sqlmult{\csname pdbf@Overlay\arabic{visual}\endcsname}{#2}{pdbf.common.DataTable}{#1}}%
 }
 	
 \def\dbSQLText#1{%

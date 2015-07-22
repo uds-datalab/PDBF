@@ -1062,7 +1062,7 @@
             onresized: function () {},
             oninit: function () {},
             onrendered: function () {},
-            transition_duration: 350,
+            transition_duration: 0,
             data_x: undefined,
             data_xs: {},
             data_xFormat: '%Y-%m-%d',

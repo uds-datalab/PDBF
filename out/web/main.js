@@ -14,7 +14,7 @@ var namedContainers = [];
 var tictime;
 if (!window.performance || !performance.now) {
 	window.performance = {
-		now : Date.now
+		now: Date.now
 	}
 }
 function tic() {/* tictime = performance.now() */
@@ -60,167 +60,197 @@ function display(json, page, phantomJS) {
 	}
 	page.appendChild(container);
 	
+	var containerOver = document.getElementById(json.name + "Big");
+	// if (containerOver != null) {
+	// containerOver.update();
+	// } TODO: reenable if textsize of overlays can be changed
+	
 	switch (json.type.C) {
-	case "pdbf.common.MultiplotChart":
-		var containerOver = document.getElementById(json.name + "Big");
-		if (containerOver != null) {
-			containerOver.update();
-		}
-
-		if (!phantomJS) {
-			var fullscreen = getFullscreenDiv();
-			container.appendChild(fullscreen);
-			fullscreen.addEventListener("click", function() {
-				if (containerOver == null) {
-					containerOver = document.createElement('div');
-					containerOver.setAttribute('style', 'position:fixed; z-index:-1; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;');
-					containerOver.id = json.name + "Big";
-					containerOver.className = "centerhv";
-					buildContainerChartBig(json, containerOver, true);
-				}
-				containerOver.style.visibility = 'visible';
-				containerOver.style['z-index'] = 9;
-				containerOver.style.opacity = 1;
-				$("svg").css('display', 'none');
-				$("svg").css('height');
-				$("svg").css('display', 'initial');// HACK for redraw of SVG
-			});
-		}
-		container.setAttribute('style', style);
-		buildContainerMultiplotChart(container, json, zoomFactor, style, containerOver);
-		if (json.type.I.name != null && json.type.I.name != "") {
-			namedContainers[json.type.I.name] = {type: "MultiplotChart", elem: undefined}; //TODO:
-		}
-		break;
-	case "pdbf.common.Chart":
-		var containerOver = document.getElementById(json.name + "Big");
-		if (containerOver != null) {
-			containerOver.update();
-		}
-
-		if (!phantomJS) {
-			var fullscreen = getFullscreenDiv();
-			container.appendChild(fullscreen);
-			fullscreen.addEventListener("click", function() {
-				if (containerOver == null) {
-					containerOver = document.createElement('div');
-					containerOver.setAttribute('style', 'position:fixed; z-index:-1; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;');
-					containerOver.id = json.name + "Big";
-					containerOver.className = "centerhv";
-					buildContainerChartBig(json, containerOver, true);
-				}
-				containerOver.style.visibility = 'visible';
-				containerOver.style['z-index'] = 9;
-				containerOver.style.opacity = 1;
-				$("svg").css('display', 'none');
-				$("svg").css('height');
-				$("svg").css('display', 'initial');// HACK for redraw of SVG
-			});
-		}
-		container.setAttribute('style', style);
-		buildContainerChart(container, json, zoomFactor, style, containerOver);
-		if (json.type.I.name != null && json.type.I.name != "") {
-			namedContainers[json.type.I.name] = {type: "Chart", elem: json.chartInPage, opt: json.options};
-		}
-		break;
-	case "pdbf.common.DataText":
-		if (phantomJS) {
-			var text = buildDataText(container, json, zoomFactor, style, containerOver);
-			if (text != undefined) {
-				json.text = text;
+		case "pdbf.common.MultiplotChart":
+			if (!phantomJS) {
+				var fullscreen = getFullscreenDiv();
+				container.appendChild(fullscreen);
+				fullscreen.addEventListener("click", function() {
+					if (containerOver == null) {
+						containerOver = document.createElement('div');
+						containerOver.setAttribute('style', 'position:fixed; z-index:-1; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;');
+						containerOver.id = json.name + "Big";
+						containerOver.className = "centerhv";
+						buildContainerChartBig(json, containerOver, true);
+					}
+					containerOver.style.visibility = 'visible';
+					containerOver.style['z-index'] = 9;
+					containerOver.style.opacity = 1;
+					$("svg").css('display', 'none');
+					$("svg").css('height');
+					$("svg").css('display', 'initial');// HACK for redraw of
+					// SVG
+				});
 			}
-		}
-		if (json.type.I.linkTo != null && json.type.I.linkTo != "") {
-			container.addEventListener("mouseover", function() {
-				var o = namedContainers[json.type.I.linkTo];
-				if (o == undefined) {
-					alert("Error! There is no element with name \""+json.type.I.linkTo+"\"");
-				}
-				switch (o.type) {
-				case "Chart":
-					o.elem.xgrids.add([{value: json.type.I.linkSelector, text: json.type.I.linkLabel}]);
-					break;
-				case "MultiplotChart":
-				case "Pivot":
-				default:
-					alert("Error! linkTo currently only supports chart elements.")
-					break;
-				}
-			});
-			container.addEventListener("mouseout", function() {
-				var o = namedContainers[json.type.I.linkTo];
-				if (o == undefined) {
-					alert("Error! There is no element with name \""+json.type.I.linkTo+"\"");
-				}
-				switch (o.type) {
-				case "Chart":
-					o.elem.xgrids.remove({value: json.type.I.linkSelector});
-					break;
-				case "MultiplotChart":
-				case "Pivot":
-				default:
-					alert("Error! linkTo currently only supports chart elements.")
-					break;
-				}
-			});
-		}
-	case "pdbf.common.Text":
-		var containerOver = document.getElementById(json.name + "Big");
-		if (containerOver != null) {
-			containerOver.update();
-		}
-		container.addEventListener("click", function() {
-			if (containerOver == null) {
-				containerOver = document.createElement('div');
-				containerOver.setAttribute('style', 'position:fixed; z-index:-1; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;');
-				containerOver.id = json.name + "Big";
-				containerOver.className = "centerhv";
-				buildContainerTableBig(json, containerOver);
+			container.setAttribute('style', style);
+			buildContainerMultiplotChart(container, json, zoomFactor, style, containerOver);
+			if (json.type.I.name != null && json.type.I.name != "") {
+				namedContainers[json.type.I.name] = {
+					type: "MultiplotChart",
+					elem: undefined
+				}; // TODO:
 			}
-			containerOver.style.visibility = 'visible';
-			containerOver.style['z-index'] = 9;
-			containerOver.style.opacity = 1;
-		});
-		style += 'cursor: pointer;';
-		container.setAttribute('style', style);
-		break;
-	case "pdbf.common.Pivot":
-		var containerOver = document.getElementById(json.name + "Big");
-		if (containerOver != null) {
-			containerOver.update();
-		}
-		if (!phantomJS) {
-			var fullscreen = getFullscreenDiv();
-			container.appendChild(fullscreen);
-			fullscreen.addEventListener("click", function() {
-				if (containerOver == null) {
-					containerOver = document.createElement('div');
-					containerOver.setAttribute('style', 'position:fixed; z-index:-1; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;');
-					containerOver.id = json.name + "Big";
-					containerOver.className = "centerhv";
-					buildContainerPivotBig(json, containerOver, true);
+			break;
+		case "pdbf.common.Chart":
+			if (!phantomJS) {
+				var fullscreen = getFullscreenDiv();
+				container.appendChild(fullscreen);
+				fullscreen.addEventListener("click", function() {
+					if (containerOver == null) {
+						containerOver = document.createElement('div');
+						containerOver.setAttribute('style', 'position:fixed; z-index:-1; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;');
+						containerOver.id = json.name + "Big";
+						containerOver.className = "centerhv";
+						buildContainerChartBig(json, containerOver, true);
+					}
+					containerOver.style.visibility = 'visible';
+					containerOver.style['z-index'] = 9;
+					containerOver.style.opacity = 1;
+					$("svg").css('display', 'none');
+					$("svg").css('height');
+					$("svg").css('display', 'initial');// HACK for redraw of
+					// SVG
+				});
+			}
+			container.setAttribute('style', style);
+			buildContainerChart(container, json, zoomFactor, style, containerOver);
+			if (json.type.I.name != null && json.type.I.name != "") {
+				namedContainers[json.type.I.name] = {
+					type: "Chart",
+					elem: json.chartInPage,
+					opt: json.options
+				};
+			}
+			break;
+		case "pdbf.common.DataTable":
+			if (phantomJS) {
+				var text = buildDataTable(container, json, zoomFactor, style, containerOver);
+				if (text != undefined) {
+					json.text = text;
 				}
-				containerOver.style.visibility = 'visible';
-				containerOver.style['z-index'] = 9;
-				containerOver.style.opacity = 1;
-			});
-		}
-		container.setAttribute('style', style);
-		buildContainerPivot(container, json, zoomFactor, style, containerOver);
-		if (json.type.I.name != null && json.type.I.name != "") {
-			namedContainers[json.type.I.name] = {type: "Pivot", elem: undefined}; //TODO:
-		}
-		break;
-	default:
-		alert("Unknown type: " + json.type.C);
-		break;
+			}
+			if (!phantomJS) {
+				container.addEventListener("click", function() {
+					if (containerOver == null) {
+						containerOver = document.createElement('div');
+						containerOver.setAttribute('style', 'position:fixed; z-index:-1; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;');
+						containerOver.id = json.name + "Big";
+						containerOver.className = "centerhv";
+						buildContainerTableBig(json, containerOver);
+					}
+					containerOver.style.visibility = 'visible';
+					containerOver.style['z-index'] = 9;
+					containerOver.style.opacity = 1;
+				});
+			}
+			style += 'cursor: pointer;';
+			container.setAttribute('style', style);
+			break;
+		case "pdbf.common.DataText":
+			if (phantomJS) {
+				var text = buildDataText(container, json, zoomFactor, style, containerOver);
+				if (text != undefined) {
+					json.text = text;
+				}
+			}
+			if (json.type.I.linkTo != null && json.type.I.linkTo != "") {
+				container.addEventListener("mouseover", function() {
+					var o = namedContainers[json.type.I.linkTo];
+					if (o == undefined) {
+						alert("Error! There is no element with name \"" + json.type.I.linkTo + "\"");
+					}
+					switch (o.type) {
+						case "Chart":
+							o.elem.xgrids.add([ {
+								value: json.type.I.linkSelector,
+								text: json.type.I.linkLabel
+							} ]);
+							break;
+						case "MultiplotChart":
+						case "Pivot":
+						default:
+							alert("Error! linkTo currently only supports chart elements.")
+							break;
+					}
+				});
+				container.addEventListener("mouseout", function() {
+					var o = namedContainers[json.type.I.linkTo];
+					if (o == undefined) {
+						alert("Error! There is no element with name \"" + json.type.I.linkTo + "\"");
+					}
+					switch (o.type) {
+						case "Chart":
+							o.elem.xgrids.remove({
+								value: json.type.I.linkSelector
+							});
+							break;
+						case "MultiplotChart":
+						case "Pivot":
+						default:
+							alert("Error! linkTo currently only supports chart elements.")
+							break;
+					}
+				});
+			}
+		case "pdbf.common.Text":
+			if (!phantomJS) {
+				container.addEventListener("click", function() {
+					if (containerOver == null) {
+						containerOver = document.createElement('div');
+						containerOver.setAttribute('style', 'position:fixed; z-index:-1; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;');
+						containerOver.id = json.name + "Big";
+						containerOver.className = "centerhv";
+						buildContainerTableBig(json, containerOver);
+					}
+					containerOver.style.visibility = 'visible';
+					containerOver.style['z-index'] = 9;
+					containerOver.style.opacity = 1;
+				});
+			}
+			style += 'cursor: pointer;';
+			container.setAttribute('style', style);
+			break;
+		case "pdbf.common.Pivot":
+			if (!phantomJS) {
+				var fullscreen = getFullscreenDiv();
+				container.appendChild(fullscreen);
+				fullscreen.addEventListener("click", function() {
+					if (containerOver == null) {
+						containerOver = document.createElement('div');
+						containerOver.setAttribute('style', 'position:fixed; z-index:-1; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;');
+						containerOver.id = json.name + "Big";
+						containerOver.className = "centerhv";
+						buildContainerPivotBig(json, containerOver, true);
+					}
+					containerOver.style.visibility = 'visible';
+					containerOver.style['z-index'] = 9;
+					containerOver.style.opacity = 1;
+				});
+			}
+			container.setAttribute('style', style);
+			buildContainerPivot(container, json, zoomFactor, style, containerOver);
+			if (json.type.I.name != null && json.type.I.name != "") {
+				namedContainers[json.type.I.name] = {
+					type: "Pivot",
+					elem: undefined
+				}; // TODO:
+			}
+			break;
+		default:
+			alert("Unknown type: " + json.type.C);
+			break;
 	}
 	toc("Display time for " + json.name);
 }
 
 function buildContainerChartBig(json, containerOver, initial) {
 	var basetextsize = 8;
-
+	
 	var updateData = function() {
 		json.jsonBig.type.I.xUnitName = '';
 		json.jsonBig.type.I.yUnitName = '';
@@ -243,11 +273,11 @@ function buildContainerChartBig(json, containerOver, initial) {
 		// json.jsonBig.type.I.drawPoints = drawPoints.checked;
 		// json.jsonBig.type.I.fillGraph = fillGraph.checked;
 		// json.jsonBig.type.I.showRangeSelector = showRangeSelector.checked;
-
+		
 		var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor, json.chartdataBig.values, containerContent);
 		json.chart = c3.generate(optionsBig);
 	};
-
+	
 	var viewerContainer = document.getElementById("viewerContainer");
 	var tip = "Tip: Scroll to zoom the graph. Click and drag to pan the graph.<br/>";
 	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip, [ json ], updateData, 'graph', true);
@@ -258,7 +288,7 @@ function buildContainerChartBig(json, containerOver, initial) {
 	var containerControl = ref.containerControl;
 	var containerOptions = ref.options;
 	var error = ref.error;
-
+	
 	if (initial) {
 		if (chartdataCpy.error != undefined) {
 			alert(json.name + "Big reports error:\n" + chartdataCpy.error);
@@ -272,7 +302,7 @@ function buildContainerChartBig(json, containerOver, initial) {
 			containerOptions.style.visibility = 'visible';
 		}
 	}
-
+	
 	/*
 	 * var logScale = getCheckbox('LogScale', containerOptions);
 	 * logScale.addEventListener('change', update); logScale.checked =
@@ -296,12 +326,12 @@ function buildContainerChartBig(json, containerOver, initial) {
 	 */
 
 	var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor, chartdataCpy.values, containerContent);
-
+	
 	json.chart = c3.generate(optionsBig);
 	json.chartdataBig = chartdataCpy;
-
+	
 	containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
-
+	
 	containerOver.update = function() {
 		var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor, json.chartdataBig.values, containerContent);
 		json.chart = c3.generate(optionsBig);
@@ -315,7 +345,7 @@ function buildContainerChart(container, json, zoomFactor, style, containerOver) 
 	var chart = document.createElement('div');
 	chart.setAttribute('style', 'width:100%; height:100%;');
 	container.appendChild(chart);
-
+	
 	var chartdata;
 	if (json.result == undefined) {
 		chartdata = getChartData(json);
@@ -328,10 +358,10 @@ function buildContainerChart(container, json, zoomFactor, style, containerOver) 
 	} else {
 		chartdata = json.result;
 	}
-
+	
 	style = "background: white; font-size: " + (zoomFactor * 10) + "pt; " + style;
 	container.setAttribute('style', style);
-
+	
 	var options = getChartOptions(json, zoomFactor, chartdata, chart);
 	json.options = options;
 	json.chartInPage = c3.generate(options);
@@ -355,18 +385,28 @@ function buildDataText(container, json, zoomFactor, style, containerOver) {
 		return;
 	}
 	var c = 0;
-	for (var key in results[0]) {
+	for ( var key in results[0]) {
 		c++;
 	}
+	
+	if (c == 0) {
+		alert("Query \"" + json.type.I.query + "\" returns no columns!");
+		return;
+	}
+	
 	var tmp = "";
-	for (var r in results) {
+	for ( var r in results) {
 		if (c > 1) {
 			tmp += "(";
 		}
-		for (var key in results[r]) {
+		var trunc = false;
+		for ( var key in results[r]) {
 			tmp += results[r][key] + ", ";
+			trunc = true;
 		}
-		tmp = tmp.substring(0, tmp.length - 2);
+		if (trunc) {
+			tmp = tmp.substring(0, tmp.length - 2);
+		}
 		if (c > 1) {
 			tmp += "), ";
 		}
@@ -377,9 +417,164 @@ function buildDataText(container, json, zoomFactor, style, containerOver) {
 	return tmp;
 }
 
+function buildDataTable(container, json, zoomFactor, style, containerOver) {
+	var results;
+	try {
+		results = alasqlQuery(json.type.I.query);
+	} catch (e) {
+		alert(e.message);
+		return;
+	}
+	var error;
+	if (results.length == 0) {
+		alert("Query \"" + json.type.I.query + "\" returns empty result!");
+		return;
+	}
+	if (results[0] instanceof Array) {
+		alert("Query \"" + json.type.I.query + "\" contains multiple statements!");
+		return;
+	}
+	
+	var vmode = json.type.I.verticalLines.trim();
+	var hmodeh = json.type.I.horizontalLinesHeader.trim();
+	var hmode = json.type.I.horizontalLinesBody.trim();
+	
+	var count = 0;
+	for ( var key in results[0]) {
+		++count;
+	}
+	
+	if (count === 0) {
+		alert("Query \"" + json.type.I.query + "\" returns no columns!");
+		return;
+	}
+	
+	// vertical lines
+	var c = 0;
+	var tmp = "\\begin{tabular}[t]{";
+	if (vmode === "a" || vmode === "o" || vmode === "i" || vmode === "n") {
+		for ( var key in results[0]) {
+			if (vmode === "n") {
+				tmp += "c";
+			} else if (c === 0) {
+				if (vmode === "a" || vmode === "o") {
+					tmp += "|c";
+				} else {
+					tmp += "c";
+				}
+			} else {
+				if (vmode === "a" || vmode === "i") {
+					tmp += "|c";
+				} else {
+					tmp += "c";
+				}
+			}
+			++c;
+		}
+		if (vmode === "a" || vmode === "o") {
+			tmp += "|}";
+		} else {
+			tmp += "}";
+		}
+	} else {
+		tmp += vmode + "}";
+	}
+	
+	// header
+	if (hmodeh === "a" || hmodeh === "o" || hmodeh === "i" || hmodeh === "n") {
+		if (hmodeh === "a" || hmodeh === "o") {
+			tmp += "\\firsthline ";
+		}
+	} else {
+		var pattern = hmodeh.split(" ");
+		if (pattern.length != 2) {
+			alert("Format string is too short! Must contain exactly 2 format specifications. Format string was: " + hmodeh);
+			return;
+		}
+		var first = pattern[0].split('');
+		var firsth = true;
+		for (var i = 0; i < first.length; ++i) {
+			switch (first[i]) {
+				case 'h':
+					if (firsth) {
+						tmp += "\\firsthline";
+						firsth = false;
+					} else {
+						tmp += "\\hline"
+					}
+					break;
+				case 'b':
+					break;
+				default:
+					alert("Unknown format character found! Format string was: " + hmodeh);
+					return;
+			}
+		}
+		tmp += " ";
+	}
+	for ( var key in results[0]) {
+		tmp += "\\textbf{" + key + "}&";
+	}
+	tmp = tmp.substring(0, tmp.length - 1) + "\\\\";
+	if (hmodeh === "a" || hmodeh === "o" || hmodeh === "i" || hmodeh === "n") {
+		if (hmodeh === "a" || hmodeh === "i") {
+			tmp += "\\hline ";
+		}
+	} else {
+		var pattern = hmodeh.split(" ");
+		var second = pattern[1].split('');
+		for (var i = 0; i < second.length; ++i) {
+			switch (second[i]) {
+				case 'h':
+					tmp += "\\hline";
+					break;
+				case 'b':
+					break;
+				default:
+					alert("Unknown format character found! Format string was: " + hmodeh);
+					return;
+			}
+		}
+		tmp += " ";
+	}
+	
+	// body
+	var pattern = hmode.split(" ");
+	var i = 0;
+	c = 0;
+	for ( var r in results) {
+		for ( var key in results[r]) {
+			tmp += results[r][key] + "&";
+		}
+		tmp = tmp.substring(0, tmp.length - 1) + "\\\\";
+		if (hmode === "a" || (hmode === "i" && c !== results.length - 1) || (hmode === "o" && c === results.length - 1)) {
+			tmp += "\\hline ";
+		} else if (hmode !== "a" && hmode !== "i" && hmode !== "o" && hmode !== "n") {
+			var format = pattern[i++ % pattern.length].split('');
+			for (var j = 0; j < format.length; ++j) {
+				switch (format[j]) {
+					case 'h':
+						tmp += "\\hline";
+						break;
+					case 'b':
+						break;
+					default:
+						alert("Unknown format character found! Format string was: " + hmodeh);
+						return;
+				}
+			}
+			tmp += " ";
+		}
+		++c;
+	}
+	tmp += "\\end{tabular}";
+	
+	return tmp;
+}
+
 function buildContainerPivotBig(json, containerOver, initial) {
 	var basetextsize = 8;
-
+	
 	var updateData = function() {
 		json.type.I.queryB = ref.editor.getValue();
 		// TODO: save pivot table settings (aggr, aggrAtt, renderer)
@@ -392,27 +587,27 @@ function buildContainerPivotBig(json, containerOver, initial) {
 			error.innerHTML = 'Query status: OK';
 			containerOptions.style.visibility = 'visible';
 		}
-
+		
 		var aggr = r.aggr;
 		var aggrName = r.aggrName;
 		var aggrAtt = r.aggrAttribute;
-
+		
 		$(containerContent).pivotUI(r.res, {
-			aggregator : aggr
+			aggregator: aggr
 		}, true);
 	};
-
+	
 	var viewerContainer = document.getElementById("viewerContainer");
 	var tip = "Tip: Drag and drop attributes to the row/column area. <br/>Move the cursor over the result cells to see more detailed results for min and max aggregator.<br/>";
 	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip, [ json ], updateData, 'pivot table', false);
-
+	
 	var containerContent = ref.containerContent;
 	var containerControl = ref.containerControl;
 	var containerOptions = ref.options;
 	var editor = ref.editor;
 	var error = ref.error;
 	editor.setValue(json.type.I.queryB);
-
+	
 	var r = getPivotTableData(json, true);
 	json.resultBig = r.res;
 	if (initial) {
@@ -429,21 +624,21 @@ function buildContainerPivotBig(json, containerOver, initial) {
 			containerOptions.style.visibility = 'visible';
 		}
 	}
-
+	
 	var aggrName = r.aggrName;
 	var aggrAtt = r.aggrAttribute;
 	var aggr = $.pivotUtilities.aggregators[aggrName]([ aggrAtt ]);
-
+	
 	$(containerContent).pivotUI(r.res, {
-	rows : r.rows,
-	cols : r.cols,
-	aggregator : aggr,
-	vals : [ aggrAtt ],
-	aggregatorName : aggrName
+		rows: r.rows,
+		cols: r.cols,
+		aggregator: aggr,
+		vals: [ aggrAtt ],
+		aggregatorName: aggrName
 	});
-
+	
 	containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
-
+	
 	containerOver.update = function() {
 		containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
 	}
@@ -456,7 +651,7 @@ function buildContainerPivot(container, json, zoomFactor, style, containerOver) 
 	chart.setAttribute('style', 'width:100%; height:100%;');
 	container.appendChild(chart);
 	container.setAttribute('style', style + "background: white;");
-
+	
 	var r;
 	if (json.result == undefined) {
 		r = getPivotTableData(json, false);
@@ -468,7 +663,7 @@ function buildContainerPivot(container, json, zoomFactor, style, containerOver) 
 	} else {
 		r = json.result;
 	}
-
+	
 	var aggrName = r.aggrName;
 	var aggrAtt = r.aggrAttribute;
 	if ($.pivotUtilities.aggregators[aggrName] == undefined) {
@@ -482,17 +677,17 @@ function buildContainerPivot(container, json, zoomFactor, style, containerOver) 
 		}
 	}
 	$(chart).pivot(r.res, {
-	rows : r.rows,
-	cols : r.cols,
-	aggregator : aggr,
-	unused : unused
+		rows: r.rows,
+		cols: r.cols,
+		aggregator: aggr,
+		unused: unused
 	});
 	container.getElementsByClassName("pvtTable")[0].setAttribute('style', 'width: 100%; height: 100%; font-size: ' + zoomFactor * 12 + 'pt;');
 }
 
 function buildContainerTableBig(json, containerOver) {
 	var basetextsize = 8;
-
+	
 	var update = function() {
 		json.jsonBig.type.I.queryB = ref.editor.getValue();
 		var err;
@@ -510,7 +705,7 @@ function buildContainerTableBig(json, containerOver) {
 				err = e.message;
 			}
 		}
-
+		
 		if (err != undefined) {
 			error.innerHTML = 'Query status: Error! ' + err;
 			containerOptions.style.visibility = 'hidden';
@@ -520,13 +715,13 @@ function buildContainerTableBig(json, containerOver) {
 			containerOptions.style.visibility = 'visible';
 		}
 	};
-
+	
 	var viewerContainer = document.getElementById("viewerContainer");
 	var tip = 'Tip: Click on the attributes to change the sorting.';
 	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip, [ json ], update, 'table', false);
-
+	
 	json.jsonBig = jQuery.extend(true, {}, json);
-
+	
 	var err;
 	try {
 		var results = alasqlQuery(json.jsonBig.type.I.queryB);
@@ -537,14 +732,14 @@ function buildContainerTableBig(json, containerOver) {
 	if (err != undefined) {
 		alert(err);
 	}
-
+	
 	var containerContent = ref.containerContent;
 	var containerOptions = ref.options;
 	var error = ref.error;
 	ref.editor.setValue(json.type.I.queryB);
-
+	
 	getTableFromResults(results, containerContent);
-
+	
 	containerOver.update = function() {
 		containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
 	}
@@ -553,7 +748,7 @@ function buildContainerTableBig(json, containerOver) {
 }
 
 function buildContainerMultiplotChart(container, json, zoomFactor, style, containerOver) {
-
+	
 	function getLeft(cur, json, td) {
 		var ret;
 		var div = document.createElement('div');
@@ -574,7 +769,7 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 		}
 		return ret;
 	}
-
+	
 	function getRight(cur, json, td) {
 		var ret;
 		var div = document.createElement('div');
@@ -595,7 +790,7 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 		}
 		return ret;
 	}
-
+	
 	function getTop(cur, json, td) {
 		var ret;
 		if (typeof cur == 'string' || cur instanceof String) {
@@ -613,7 +808,7 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 		td.setAttribute('style', 'height: 1.5em; width: ' + w + 'px;');
 		return ret;
 	}
-
+	
 	function getBottom(cur, json, td) {
 		var ret;
 		if (typeof cur == 'string' || cur instanceof String) {
@@ -631,84 +826,84 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 		td.setAttribute('style', 'height: 1.5em; width: ' + w + 'px;');
 		return ret;
 	}
-
+	
 	style = "background: white;" + style;
 	container.setAttribute('style', style);
-
+	
 	var overlay = container;
 	var xCount = json.type.I.xCount;
 	var yCount = json.type.I.yCount;
-
+	
 	var leftArr;
 	try {
 		leftArr = JSON.parse(json.type.I.leftArr);
 	} catch (e) {
 		alert("Parsing of leftArr for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.leftArr);
 	}
-
+	
 	var rightArr;
 	try {
 		rightArr = JSON.parse(json.type.I.rightArr);
 	} catch (e) {
 		alert("Parsing of rightArr for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.rightArr);
 	}
-
+	
 	var topArr;
 	try {
 		topArr = JSON.parse(json.type.I.topArr);
 	} catch (e) {
 		alert("Parsing of topArr for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.topArr);
 	}
-
+	
 	var bottomArr;
 	try {
 		bottomArr = JSON.parse(json.type.I.bottomArr);
 	} catch (e) {
 		alert("Parsing of bottomArr for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.bottomArr);
 	}
-
+	
 	var xValues;
 	try {
 		xValues = JSON.parse(json.type.I.xValues);
 	} catch (e) {
 		alert("Parsing of xValues for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.xValues);
 	}
-
+	
 	var yValues;
 	try {
 		yValues = JSON.parse(json.type.I.yValues);
 	} catch (e) {
 		alert("Parsing of yValues for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.yValues);
 	}
-
+	
 	var queryBackup = json.type.I.query;
 	var yFirst = json.type.I.yFirst;
 	var forceXequal = json.type.I.forceXequal;
 	var forceYequal = json.type.I.forceYequal;
-
+	
 	if (xValues.length != xCount) {
 		alert("Length of xValues array does not match xCount!\nxValues has length " + xCount.length + " but xCount is " + xCount);
 	}
 	if (yValues.length != yCount) {
 		alert("Length of yValues array does not match yCount!\nyValues has length " + yCount.length + " but yCount is " + yCount);
 	}
-
+	
 	if (((queryBackup.match(/\?/g) || []).length) != 2) {
 		alert("Query for multiplot must contain exactly 2 occurrences of \"?\"\nQuery was: " + queryBackup);
 	}
-
+	
 	if (leftArr.length == 0) {
 		leftArr = [ {
-		text : json.type.I.yUnitName,
-		c : yCount
+			text: json.type.I.yUnitName,
+			c: yCount
 		} ];
 	}
 	if (rightArr.length == 0) {
 		rightArr = [];
 		for (var i = 0; i < yValues.length; ++i) {
 			rightArr[rightArr.length] = {
-			text : yValues[i],
-			c : 1
+				text: yValues[i],
+				c: 1
 			};
 		}
 	}
@@ -716,18 +911,18 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 		topArr = [];
 		for (var i = 0; i < xValues.length; ++i) {
 			topArr[topArr.length] = {
-			text : xValues[i],
-			c : 1
+				text: xValues[i],
+				c: 1
 			};
 		}
 	}
 	if (bottomArr.length == 0) {
 		bottomArr = [ {
-		text : json.type.I.xUnitName,
-		c : xCount
+			text: json.type.I.xUnitName,
+			c: xCount
 		} ];
 	}
-
+	
 	// TODO: right now only labels of one line height are supported!
 	var fontbasesize = 13;
 	var left = leftArr.length != 0 ? fontbasesize * zoomFactor * 1.6 : 0;
@@ -741,28 +936,28 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 	inner.setAttribute('style', 'height: 100%; width: 100%; border-collapse: collapse; text-align:center; font-size: ' + fontbasesize * zoomFactor + 'px; font-weight: bold;');
 	overlay.appendChild(inner);
 	inner.className = 'multiplot';
-
+	
 	var css = document.createElement('style');
 	css.setAttribute('scoped', 'scoped');
 	overlay.appendChild(css);
 	css.innerHTML = '.multiplot td {padding:0;} .c3-tooltip td {padding:0.3em;}';
-
+	
 	var overlaywidth = $(overlay).width();
 	var overlayheight = $(overlay).height();
-
+	
 	var nextLeft = 0;
 	var nextRight = 0;
-
+	
 	var h = Math.floor((overlayheight - top - bottom - legend - 1) / yCount);
 	var w = Math.floor((overlaywidth - left - right - 1) / xCount);
 	var style = 'width: ' + w + 'px;' + 'height: ' + h + 'px;';
-
+	
 	var yExtent;
 	var xExtent = [];
-
+	
 	var legendItems = [];
 	var colors = {};
-
+	
 	// Calculate size of axis labels
 	var div = document.createElement('div');
 	div.setAttribute('style', style);
@@ -778,12 +973,12 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 	json.type.I.query = cellquery;
 	defaultChartOptions.noyticks = true;
 	defaultChartOptions.noxticks = true;
-
+	
 	var chartdata;
 	if (json.result == undefined) {
 		json.result = [];
 	}
-
+	
 	var chartdata = getChartData(json);
 	if (chartdata.error != undefined) {
 		alert(json.name + " has error:\n" + chartdata.error);
@@ -796,7 +991,7 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 	var pl = chart.pl();
 	var pb = chart.pb();
 	overlay.removeChild(div);
-
+	
 	var div = document.createElement('div');
 	div.setAttribute('style', style);
 	overlay.appendChild(div);
@@ -811,7 +1006,7 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 	json.type.I.query = cellquery;
 	defaultChartOptions.noyticks = false;
 	defaultChartOptions.noxticks = false;
-
+	
 	if (json.result[0] == undefined) {
 		chartdata = getChartData(json);
 		if (chartdata.error != undefined) {
@@ -822,7 +1017,7 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 	} else {
 		chartdata = json.result[0];
 	}
-
+	
 	var options = getChartOptions(json, zoomFactor, chartdata, div);
 	delete options.axis.y.label;
 	delete options.axis.x.label;
@@ -832,10 +1027,10 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 	var pb = chart.pb() - pb;
 	overlay.removeChild(div);
 	// /////////////////////////////
-
+	
 	var h = Math.floor((overlayheight - top - bottom - legend - pb - 1) / yCount);
 	var w = Math.floor((overlaywidth - left - right - pl - 1) / xCount);
-
+	
 	if (top != 0) {
 		var tr = document.createElement('tr');
 		inner.appendChild(tr);
@@ -876,7 +1071,7 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 			tr.appendChild(td);
 			var cellInner = document.createElement('div');
 			td.appendChild(cellInner);
-
+			
 			var cellquery = queryBackup;
 			if (yFirst) {
 				cellquery = cellquery.replace("?", yValues[y]);
@@ -886,7 +1081,7 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 				cellquery = cellquery.replace("?", yValues[y]);
 			}
 			json.type.I.query = cellquery;
-
+			
 			if (x % xCount != 0) {
 				defaultChartOptions.noyticks = true;
 				var style = 'width: ' + w + 'px;';
@@ -903,7 +1098,7 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 			}
 			cellInner.setAttribute('style', style);
 			td.setAttribute('style', style);
-
+			
 			var chartdata;
 			if (json.result[x + y * yCount] == undefined) {
 				chartdata = getChartData(json);
@@ -916,15 +1111,15 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 				chartdata = json.result[x + y * yCount];
 			}
 			var options = getChartOptions(json, zoomFactor, chartdata, cellInner);
-
+			
 			if (forceYequal) {
 				if (x != 0) {
 					// replace y extent
 					options.axis.y.min = yExtent[0];
 					options.axis.y.max = yExtent[1];
 					options.axis.y.padding = {
-					top : 0,
-					bottom : 0
+						top: 0,
+						bottom: 0
 					};
 				}
 			}
@@ -934,19 +1129,19 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 					options.axis.x.min = xExtent[x][0];
 					options.axis.x.max = xExtent[x][1];
 					options.axis.x.padding = {
-					left : 0,
-					right : 0
+						left: 0,
+						right: 0
 					};
 				}
 			}
-
+			
 			delete options.axis.y.label;
 			delete options.axis.x.label;
 			options.legend.show = false;
-
+			
 			var chart = c3.generate(options);
 			charts[charts.length] = chart;
-
+			
 			if (legend != 0) {
 				var a = options.data.keys.value;
 				for (var i = 1; i < a.length; ++i) {
@@ -956,7 +1151,7 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 					}
 				}
 			}
-
+			
 			if (forceYequal) {
 				if (x == 0) {
 					// save y extent
@@ -998,7 +1193,7 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 			tr.appendChild(td);
 		}
 	}
-
+	
 	if (legend != 0) {
 		var tr = document.createElement('tr');
 		inner.appendChild(tr);
@@ -1006,12 +1201,12 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 			var td = document.createElement('td');
 			tr.appendChild(td);
 		}
-
+		
 		var td = document.createElement('td');
 		tr.appendChild(td);
 		td.setAttribute('style', 'height: 1.5em; width: ' + w + 'px;');
 		td.setAttribute('colspan', cur.c);
-
+		
 		d3.select(td).insert('div', '.chart').attr('class', 'legend').selectAll('span').data(legendItems).enter().append('span').attr('data-id', function(id) {
 			return id;
 		}).html(function(id) {
@@ -1031,13 +1226,13 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 				c.toggle(id);
 			});
 		});
-
+		
 		if (right != 0) {
 			var td = document.createElement('td');
 			tr.appendChild(td);
 		}
 	}
-
+	
 	json.type.I.query = queryBackup;
 	defaultChartOptions.noxticks = false;
 	defaultChartOptions.noyticks = false;
@@ -1063,7 +1258,7 @@ function execute(commands) {
 		tic();
 		var results = alasqlQuery(commands);
 		toc("Executing SQL");
-
+		
 		tic();
 		getTableFromResults(results, outputElm);
 		toc("Displaying results");
@@ -1075,17 +1270,17 @@ function execute(commands) {
 
 function tableCreate(res, table) {
 	var columns = [];
-	for (var key in res[0]) {
+	for ( var key in res[0]) {
 		columns[columns.length] = {
-		data : key,
-		title : key
+			data: key,
+			title: key
 		};
 	}
-
+	
 	$(table).dataTable({
-	data : res,
-	columns : columns,
-	destroy: true
+		data: res,
+		columns: columns,
+		destroy: true
 	});
 }
 
@@ -1093,7 +1288,7 @@ function getTableFromResults(results, container) {
 	while (container.firstChild) {
 		container.removeChild(container.firstChild);
 	}
-
+	
 	if (typeof (results) == 'number') {
 		var span = document.createElement('span');
 		span.innerHTML = '<u><b>Result for Query</b></u>:';
@@ -1172,48 +1367,49 @@ function execEditorContents() {
 // var debugmode = 0;
 window.addEventListener('keydown', function keydown(evt) {
 	switch (evt.keyCode) {
-	case 27: // 27 == 'ESC'
-		var tmp = document.getElementsByClassName("centerhv");
-		for (var i = 0; i < tmp.length; ++i) {
-			setTimeout(function(o) {
-				o.style.visibility = 'hidden';
-			}, 500, tmp[i]);
-			tmp[i].style.opacity = 0;
-		}
-		break;
-	// case 81: //81 == 'Q'
-	// list = document.getElementsByClassName("overlay");
-	// if (debugmode == 3) {
-	// for (var i=list.length-1; i>=0; --i) {
-	// list[i].setAttribute('class', 'overlay');
-	// }
-	// debugmode = 0;
-	// } else if (debugmode == 0) {
-	// for (var i=list.length-1; i>=0; --i) {
-	// list[i].setAttribute('class', 'overlay debug');
-	// }
-	// debugmode = 1;
-	// } else if (debugmode == 1) {
-	// for (var i=list.length-1; i>=0; --i) {
-	// if (list[i].children.length > 0) {
-	// list[i].children[0].setAttribute('class', 'hide');
-	// list[i].setAttribute('style', list[i].getAttribute('style').substring(18,
-	// list[i].getAttribute('style').length));
-	// }
-	// }
-	// debugmode = 2;
-	// } else {
-	// for (var i=list.length-1; i>=0; --i) {
-	// if (list[i].children.length > 0) {
-	// list[i].children[0].setAttribute('class', '');
-	// list[i].setAttribute('style', 'background: white;' +
-	// list[i].getAttribute('style'));
-	// }
-	// list[i].setAttribute('class', 'overlay hide');
-	// }
-	// debugmode = 3;
-	// }
-	// break;
+		case 27: // 27 == 'ESC'
+			var tmp = document.getElementsByClassName("centerhv");
+			for (var i = 0; i < tmp.length; ++i) {
+				setTimeout(function(o) {
+					o.style.visibility = 'hidden';
+				}, 500, tmp[i]);
+				tmp[i].style.opacity = 0;
+			}
+			break;
+		// case 81: //81 == 'Q'
+		// list = document.getElementsByClassName("overlay");
+		// if (debugmode == 3) {
+		// for (var i=list.length-1; i>=0; --i) {
+		// list[i].setAttribute('class', 'overlay');
+		// }
+		// debugmode = 0;
+		// } else if (debugmode == 0) {
+		// for (var i=list.length-1; i>=0; --i) {
+		// list[i].setAttribute('class', 'overlay debug');
+		// }
+		// debugmode = 1;
+		// } else if (debugmode == 1) {
+		// for (var i=list.length-1; i>=0; --i) {
+		// if (list[i].children.length > 0) {
+		// list[i].children[0].setAttribute('class', 'hide');
+		// list[i].setAttribute('style',
+		// list[i].getAttribute('style').substring(18,
+		// list[i].getAttribute('style').length));
+		// }
+		// }
+		// debugmode = 2;
+		// } else {
+		// for (var i=list.length-1; i>=0; --i) {
+		// if (list[i].children.length > 0) {
+		// list[i].children[0].setAttribute('class', '');
+		// list[i].setAttribute('style', 'background: white;' +
+		// list[i].getAttribute('style'));
+		// }
+		// list[i].setAttribute('class', 'overlay hide');
+		// }
+		// debugmode = 3;
+		// }
+		// break;
 	}
 });
 
@@ -1228,108 +1424,106 @@ function addClickCloseHandler(elem, o) {
 }
 
 var defaultChartOptions = {
-noxticks : false,
-noyticks : false,
-legend : {
-	show : true
-}
+	noxticks: false,
+	noyticks: false,
+	legend: {
+		show: true
+	}
 };
 
 function getChartOptions(json, zoomFactor, values, chart) {
 	var options = {
-	bindto : chart,
-	data : values,
-	size : {
-	width : $(chart).width(),
-	height : $(chart).height()
-	},
-	axis : {
-	x : {
-	label : json.type.I.xUnitName,
-	tick : {
-		fit : false,
-	},
-	},
-	y : {
-	label : json.type.I.yUnitName,
-	tick : {
-		fit : false,
-	}
-	},
-	y2 : {
-		tick : {
-			fit : false,
+		bindto: chart,
+		data: values,
+		size: {
+			width: $(chart).width(),
+			height: $(chart).height()
+		},
+		axis: {
+			x: {
+				label: json.type.I.xUnitName,
+				tick: {
+					fit: false,
+				},
+			},
+			y: {
+				label: json.type.I.yUnitName,
+				tick: {
+					fit: false,
+				}
+			},
+			y2: {
+				tick: {
+					fit: false,
+				}
+			}
+		},
+		zoom: {
+			enabled: true,
+			rescale: true
+		},
+		point: {
+			show: false
+		},
+		completeScale: zoomFactor * 1.45,
+		onresize: function() {
 		}
-	}
-	},
-	zoom : {
-	enabled : true,
-	rescale : true
-	},
-	point : {
-		show : false
-	},
-	completeScale : zoomFactor * 1.45,
-	onresize : function() {
-	}
 	};
-
+	
 	jQuery.extend(true, options, defaultChartOptions);
-
+	
 	try {
 		var addOpt = JSON.parse(json.type.I.options);
 	} catch (e) {
 		alert('Parsing of options for ' + json.name + ' failed. \nDid you forgot to enclose every field and value by ", or did your TeX program replace " by \'\'?\nRemember that the correct JSON String syntax is: "key": "value"\n JSON String was:\n' + json.type.I.options);
 	}
 	jQuery.extend(true, options, addOpt);
-
+	
 	if (options.axis.x.label == '')
 		delete options.axis.x.label;
 	if (options.axis.y.label == '')
 		delete options.axis.y.label;
-
+	
 	switch (json.type.I.chartType) {
-	case 'Line':
-	case 'line':
-		break;
-	case 'Bar':
-	case 'bar':
-		options.data.type = 'bar';
-		break;
-	case 'SignaturePlot':
-	case 'signatureplot':
-		try {
-			options.data = signaturePlot([ options.data ]);
-			options.axis.x.tick.format = function(x) {
-				return '' + (Math.round(x * 10000) / 100) + '%';
-			};
-			options.axis.y.tick.format = function(y) {
-				return '' + (Math.round(y * 10000) / 100) + '%';
-			};
-		} catch (e) {
-			alert(e);
-		}
-		break;
-	default:
-		alert('Unknown chart type. Type was: "' + json.type.I.chartType + '"');
+		case 'Line':
+		case 'line':
+			break;
+		case 'Bar':
+		case 'bar':
+			options.data.type = 'bar';
+			break;
+		case 'SignaturePlot':
+		case 'signatureplot':
+			try {
+				options.data = signaturePlot([ options.data ]);
+				options.axis.x.tick.format = function(x) {
+					return '' + (Math.round(x * 10000) / 100) + '%';
+				};
+				options.axis.y.tick.format = function(y) {
+					return '' + (Math.round(y * 10000) / 100) + '%';
+				};
+			} catch (e) {
+				alert(e);
+			}
+			break;
+		default:
+			alert('Unknown chart type. Type was: "' + json.type.I.chartType + '"');
 	}
-
+	
 	if (values.json != undefined && isNaN(values.json[0][values.x]) && (options == undefined || options.axis == undefined || options.axis.x == undefined || options.axis.x.type == undefined)) {
 		if (isValidDate(values.json[0][values.x])) {
 			options.axis.x.type = "timeseries";
-		}
-		else {
+		} else {
 			options.axis.x.type = "category";
 		}
 	}
 	
-
 	// add scoped css
 	var css = document.createElement('style');
 	css.setAttribute('scoped', 'scoped');
 	$(chart).parent().append(css);
 	css.innerHTML = '																' + '.c3-line {																	' + ' stroke-width: ' + (zoomFactor) + 'px; }										' + '																			' + '.c3-circle._expanded_ {													' + ' stroke-width: ' + (zoomFactor) + 'px;											' + ' stroke: white; }															' + '																			' + '.c3-selected-circle {														' + ' fill: white;																' + ' stroke-width: ' + (2 * zoomFactor) + 'px; }										' + '																			' + '.c3-target.c3-focused path.c3-line, .c3-target.c3-focused path.c3-step {	' + ' stroke-width: ' + (2 * zoomFactor) + 'px; }										' + '																			' + '.c3-legend-background {													' + ' opacity: 0.75;															' + ' fill: white;																' + ' stroke: lightgray;														' + ' stroke-width: ' + (zoomFactor) + '; }											';
-
+	
 	return options;
 }
 
@@ -1343,18 +1537,18 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 	}
 	var containerControl = document.createElement('div');
 	containerControl.setAttribute('style', 'width:30%; height:80%; -moz-border-radius: 1%; -webkit-border-radius: 1%; border-radius: 1%; padding:2%; background:white; margin:1%; display: inline-block; text-align: left; white-space: normal;');
-
+	
 	var header = document.createElement('span');
 	header.innerHTML = 'SQL Query for ' + f + ':<br />Tip: Press CTRL-Space for autocomplete';
 	containerControl.appendChild(header);
-
+	
 	var textareaWrapper = document.createElement('div');
 	containerControl.appendChild(textareaWrapper);
 	textareaWrapper.setAttribute('style', 'border: 1px solid black; margin-top: 3px; margin-bottom: 3px;');
-
+	
 	var textarea = document.createElement('textarea');
 	textareaWrapper.appendChild(textarea);
-
+	
 	var def = document.createElement('input');
 	def.type = 'button';
 	def.value = 'Restore Default';
@@ -1362,37 +1556,38 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 	def.addEventListener('click', function() {
 		delete json.jsonBig;
 		json.jsonBig = jQuery.extend(true, {}, json);
-
+		
 		while (containerOver.firstChild) {
 			containerOver.removeChild(containerOver.firstChild);
 		}
 		switch (json.type.C) {
-		case "pdbf.common.MultiplotChart":
-		case "pdbf.common.Chart":
-			buildContainerChartBig(json, containerOver, true);
-			break;
-		case "pdbf.common.Text":
-		case "pdbf.common.DataText":
-			buildContainerTableBig(json, containerOver);
-			break;
-		case "pdbf.common.Pivot":
-			buildContainerPivotBig(json, containerOver, true);
-			break;
+			case "pdbf.common.MultiplotChart":
+			case "pdbf.common.Chart":
+				buildContainerChartBig(json, containerOver, true);
+				break;
+			case "pdbf.common.Text":
+			case "pdbf.common.DataText":
+			case "pdbf.common.DataTable":
+				buildContainerTableBig(json, containerOver);
+				break;
+			case "pdbf.common.Pivot":
+				buildContainerPivotBig(json, containerOver, true);
+				break;
 		}
 	});
 	containerControl.appendChild(def);
-
+	
 	containerControl.appendChild(getSpacer());
-
+	
 	var error = document.createElement('span');
 	containerControl.appendChild(error);
 	error.innerHTML = 'Query status: OK';
-
+	
 	containerControl.appendChild(getSpacer());
-
+	
 	var options = document.createElement('div');
 	containerControl.appendChild(options);
-
+	
 	var download = document.createElement('input');
 	download.type = 'button';
 	download.value = 'Download query result as CSV';
@@ -1401,45 +1596,45 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 		var cols = [];
 		for (key in json.resultBig[0]) {
 			cols[cols.length] = {
-				columnid : key
+				columnid: key
 			};
 		}
 		alasql.into.CSV('result.csv', {
-			headers : true
+			headers: true
 		}, json.resultBig, cols);
 	});
 	options.appendChild(download);
 	options.appendChild(getSpacer());
 	options.appendChild(getSpacer());
-
+	
 	if (fixed) {
 		var containerChartSub = document.createElement('div');
 		containerChartSub.setAttribute('style', 'width:100%; height:100%; z-index:9999');
 		containerChart.appendChild(containerChartSub);
 	}
-
+	
 	var containerCloseAndTip = document.createElement('div');
 	containerCloseAndTip.setAttribute('style', 'display: inline-block; margin-right: 30px;');
 	containerOver.appendChild(containerCloseAndTip);
-
+	
 	var containerClose = document.createElement('div');
 	containerClose.innerHTML = "<b>Click here to close this window (or press Escape)</b>";
 	containerClose.setAttribute('style', 'margin-bottom:5px;');
 	addClickCloseHandler(containerClose, containerOver);
 	containerCloseAndTip.appendChild(containerClose);
-
+	
 	var containerTip = document.createElement('div');
 	containerTip.innerHTML = tip;
 	containerCloseAndTip.appendChild(containerTip);
-
+	
 	var containerSwitch = document.createElement('div');
 	containerSwitch.setAttribute('style', 'margin-bottom:5px; display: inline-block; vertical-align:top;');
 	containerOver.appendChild(containerSwitch);
-
+	
 	var containerLabel = document.createElement('span');
 	containerLabel.innerHTML = 'Switch representation:<br />';
 	containerSwitch.appendChild(containerLabel);
-
+	
 	if (json.type.C != 'pdbf.common.Pivot') {
 		var buttonChart = document.createElement('input');
 		buttonChart.type = 'button';
@@ -1453,7 +1648,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 		});
 		containerSwitch.appendChild(buttonChart);
 	}
-
+	
 	var buttonPivot = document.createElement('input');
 	buttonPivot.type = 'button';
 	buttonPivot.value = 'Pivot Table';
@@ -1465,7 +1660,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 		buildContainerPivotBig(json, containerOver, false);
 	});
 	containerSwitch.appendChild(buttonPivot);
-
+	
 	var buttonTable = document.createElement('input');
 	buttonTable.type = 'button';
 	buttonTable.value = 'Table';
@@ -1477,28 +1672,28 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 		buildContainerTableBig(json, containerOver);
 	});
 	containerSwitch.appendChild(buttonTable);
-
+	
 	var center = document.createElement('center');
 	center.appendChild(containerControl);
 	center.appendChild(containerChart);
 	containerOver.appendChild(center);
 	viewerContainer.appendChild(containerOver);
-
+	
 	var editor = CodeMirror.fromTextArea(textarea, {
-	mode : "text/x-sql",
-	indentWithTabs : true,
-	smartIndent : true,
-	lineNumbers : true,
-	lineWrapping : true,
-	matchBrackets : true,
-	viewportMargin : Infinity,
-	extraKeys : {
-		"Ctrl-Space" : "autocomplete"
-	}
+		mode: "text/x-sql",
+		indentWithTabs: true,
+		smartIndent: true,
+		lineNumbers: true,
+		lineWrapping: true,
+		matchBrackets: true,
+		viewportMargin: Infinity,
+		extraKeys: {
+			"Ctrl-Space": "autocomplete"
+		}
 	});
 	editor.setValue(json.type.I.query);
 	editor.on('blur', update);
-
+	
 	if (json.type.C == 'pdbf.common.MultiplotChart') {
 		var xValues;
 		try {
@@ -1512,7 +1707,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 		} catch (e) {
 			alert("Parsing of yValues for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.yValues);
 		}
-
+		
 		var multiControl = document.createElement('div');
 		multiControl.innerHTML = '<u style="display:inline-block; margin-bottom:7px;">Multiplot Control:</u><br />';
 		var selectX = document.createElement('select');
@@ -1533,9 +1728,9 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 			selectY.appendChild(option);
 		}
 		multiControl.appendChild(selectY);
-
+		
 		containerControl.appendChild(multiControl);
-
+		
 		var selectArr = [];
 		for (var x = 0; x < json.type.I.xCount; ++x) {
 			selectArr[xValues[x]] = [];
@@ -1552,7 +1747,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 				selectArr[xValues[x]][yValues[y]] = cellquery;
 			}
 		}
-
+		
 		$(selectX).change(function() {
 			var x = $(selectX).val();
 			var y = $(selectY).val();
@@ -1561,7 +1756,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 			editor.setValue(json.type.I.query);
 			containerOver.updateData();
 		});
-
+		
 		$(selectY).change(function() {
 			var x = $(selectX).val();
 			var y = $(selectY).val();
@@ -1570,23 +1765,23 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 			editor.setValue(json.type.I.query);
 			containerOver.updateData();
 		});
-
+		
 		var x = $(selectX).val();
 		var y = $(selectY).val();
 		json.type.I.query = selectArr[x][y];
 		json.type.I.queryB = selectArr[x][y];
 		editor.setValue(json.type.I.query);
 	}
-
+	
 	fixOverlaySize();
 	var ref = {
-	containerContent : fixed ? containerChartSub : containerChart,
-	containerOver : containerOver,
-	containerControl : containerControl,
-	containerChart : containerChart,
-	editor : editor,
-	error : error,
-	options : options
+		containerContent: fixed ? containerChartSub : containerChart,
+		containerOver: containerOver,
+		containerControl: containerControl,
+		containerChart: containerChart,
+		editor: editor,
+		error: error,
+		options: options
 	};
 	return ref;
 }
@@ -1601,26 +1796,26 @@ function getChartData(json) {
 		results = alasqlQuery(json.type.I.query);
 	} catch (e) {
 		return {
-			error : e.message
+			error: e.message
 		};
 	}
 	var error;
 	if (results.length == 0) {
 		return {
-			error : "Query \"" + json.type.I.query + "\" returns empty result!"
+			error: "Query \"" + json.type.I.query + "\" returns empty result!"
 		};
-
+		
 	}
 	if (results[0] instanceof Array) {
 		return {
-			error : "Query \"" + json.type.I.query + "\" contains multiple statements!"
+			error: "Query \"" + json.type.I.query + "\" contains multiple statements!"
 		};
 	}
 	var columns = [];
 	for ( var key in results[0]) {
 		columns[columns.length] = key;
 	}
-
+	
 	/*
 	 * TODO: check if parsing is necessary var curmain = results[0]; var count =
 	 * -1; for (key in curmain) { ++count; // Try to parse as Number var next =
@@ -1641,15 +1836,15 @@ function getChartData(json) {
 	 * key + ' cannot be used in a chart. Must be of type date or number!' }; } }
 	 */
 	return {
-	values : {
-	x : columns[0],
-	json : results,
-	keys : {
-		value : columns
-	}
-	},
-	error : error,
-	res : results
+		values: {
+			x: columns[0],
+			json: results,
+			keys: {
+				value: columns
+			}
+		},
+		error: error,
+		res: results
 	};
 }
 
@@ -1660,71 +1855,71 @@ function getPivotTableData(json, isBig) {
 		results = alasqlQuery(isBig ? json.type.I.queryB : json.type.I.query);
 	} catch (e) {
 		return {
-			error : e.message
+			error: e.message
 		};
 	}
 	if (results.length == 0) {
 		return {
-			error : "Query of " + (isBig ? json.name + 'Big' : json.name) + "returns empty result!\nQuery was: \"" + (isBig ? json.type.I.queryB : json.type.I.query) + "\""
+			error: "Query of " + (isBig ? json.name + 'Big' : json.name) + "returns empty result!\nQuery was: \"" + (isBig ? json.type.I.queryB : json.type.I.query) + "\""
 		};
 	}
 	if (results[0] instanceof Array) {
 		return {
-			error : "Query of " + (isBig ? json.name + 'Big' : json.name) + "returns multiple statements!\nQuery was: \"" + (isBig ? json.type.I.queryB : json.type.I.query) + "\""
+			error: "Query of " + (isBig ? json.name + 'Big' : json.name) + "returns multiple statements!\nQuery was: \"" + (isBig ? json.type.I.queryB : json.type.I.query) + "\""
 		};
 	}
 	try {
 		var rows = JSON.parse(json.type.I.rows);
 	} catch (e) {
 		return {
-			error : 'Parsing of rows for ' + (isBig ? json.name + 'Big' : json.name) + ' failed. \nDid you forgot to enclose every row by ", or did you TeX program replace " by \'\'?\n JSON String was:\n' + json.type.I.rows
+			error: 'Parsing of rows for ' + (isBig ? json.name + 'Big' : json.name) + ' failed. \nDid you forgot to enclose every row by ", or did you TeX program replace " by \'\'?\n JSON String was:\n' + json.type.I.rows
 		};
 	}
 	try {
 		var cols = JSON.parse(json.type.I.cols);
 	} catch (e) {
 		return {
-			error : 'Parsing of cols for ' + (isBig ? json.name + 'Big' : json.name) + ' failed. \nDid you forgot to enclose every col by ", or did you TeX program replace " by \'\'?\n JSON String was:\n' + json.type.I.cols
+			error: 'Parsing of cols for ' + (isBig ? json.name + 'Big' : json.name) + ' failed. \nDid you forgot to enclose every col by ", or did you TeX program replace " by \'\'?\n JSON String was:\n' + json.type.I.cols
 		};
 	}
 	for (var i = 0; i < rows.length; ++i) {
 		if (results[0][rows[i]] == undefined) {
 			return {
-				error : 'Rows attribute "' + rows[i] + '" for ' + (isBig ? json.name + 'Big' : json.name) + ' does not exist!'
+				error: 'Rows attribute "' + rows[i] + '" for ' + (isBig ? json.name + 'Big' : json.name) + ' does not exist!'
 			};
 		}
 	}
 	for (var i = 0; i < cols.length; ++i) {
 		if (results[0][cols[i]] == undefined) {
 			return {
-				error : 'Cols attribute "' + cols[i] + '" for ' + (isBig ? json.name + 'Big' : json.name) + ' does not exist!'
+				error: 'Cols attribute "' + cols[i] + '" for ' + (isBig ? json.name + 'Big' : json.name) + ' does not exist!'
 			};
 		}
 	}
-
+	
 	var aggrAttribute = (isBig ? json.type.I.aggregationattributeBig : json.type.I.aggregationattribute);
 	if (aggrAttribute != '' && results[0][aggrAttribute] == undefined) {
 		return {
-			error : 'Aggregation attribute "' + aggrAttribute + '" for ' + (isBig ? json.name + 'Big' : json.name) + ' does not exist!'
+			error: 'Aggregation attribute "' + aggrAttribute + '" for ' + (isBig ? json.name + 'Big' : json.name) + ' does not exist!'
 		};
 	}
-
+	
 	var aggrName = (isBig ? json.type.I.aggregationBig : json.type.I.aggregation);
 	try {
 		var aggr = $.pivotUtilities.aggregators[aggrName]([ aggrAttribute ]);
 	} catch (e) {
 		return {
-			error : 'Aggregation function ' + aggrName + ' does not exist!'
+			error: 'Aggregation function ' + aggrName + ' does not exist!'
 		};
 	}
-
+	
 	return {
-	rows : rows,
-	cols : cols,
-	res : results,
-	error : error,
-	aggrAttribute : aggrAttribute,
-	aggrName : aggrName
+		rows: rows,
+		cols: cols,
+		res: results,
+		error: error,
+		aggrAttribute: aggrAttribute,
+		aggrName: aggrName
 	};
 }
 
@@ -1834,19 +2029,19 @@ function T_TEST(arr1, arr2, alpha) {
 	}
 	if (arr1 == arr2)
 		return true;
-
+	
 	var m1 = jStat.mean(arr1);
 	var m2 = jStat.mean(arr2);
 	var n1 = arr1.length;
 	var n2 = arr2.length;
 	var s1 = jStat.stdev(arr1, true);
 	var s2 = jStat.stdev(arr2, true);
-
+	
 	var sp = Math.sqrt(((n1 - 1) * (s1 * s1) + (n2 - 1) * (s2 * s2)) / (n1 + n2 - 2));
 	var t = Math.abs((m1 - m2) / (sp * Math.sqrt(1 / n1 + 1 / n2)));
 	var df = n1 + n2 - 2;
 	var p = 2 - jStat.studentt.cdf(t, df) * 2;
-
+	
 	return p >= alpha;
 }
 alasql.fn.T_TEST = T_TEST;
@@ -1863,21 +2058,21 @@ function WELCH_TEST(arr1, arr2, alpha) {
 	}
 	if (arr1 == arr2)
 		return true;
-
+	
 	var m1 = jStat.mean(arr1);
 	var m2 = jStat.mean(arr2);
 	var n1 = arr1.length;
 	var n2 = arr2.length;
 	var s1 = jStat.stdev(arr1, true);
 	var s2 = jStat.stdev(arr2, true);
-
+	
 	var s1s1n1 = s1 * s1 / n1;
 	var s2s2n2 = s2 * s2 / n2;
-
+	
 	var t = Math.abs((m1 - m2) / Math.sqrt(s1s1n1 + s2s2n2));
 	var df = ((s1s1n1 + s2s2n2) * (s1s1n1 + s2s2n2)) / (((s1s1n1 * s1s1n1) / (n1 - 1)) + ((s2s2n2 * s2s2n2) / (n2 - 1)));
 	var p = 2 - jStat.studentt.cdf(t, df) * 2;
-
+	
 	return p >= alpha;
 }
 alasql.fn.WELCH_TEST = WELCH_TEST;
@@ -1897,13 +2092,13 @@ function signaturePlot(valuesArr) {
 	var aname = keys[0];
 	keys[keys.length] = "x";
 	var runtimes = values.json;
-
+	
 	if (Array.isArray(runtimes[0][aname])) {
 		var runtime_count = runtimes.length;
 		var means = [];
 		var min;
 		var min_int;
-
+		
 		// calculate mean of each experiment, search minimum of conf. int. lower
 		// bounds
 		for (var i = 0; i < runtime_count; ++i) {
@@ -1915,9 +2110,9 @@ function signaturePlot(valuesArr) {
 				min_int = ci;
 			}
 		}
-
+		
 		var distance = []; // distance from best experiment
-
+		
 		for (var i = 0; i < runtime_count; ++i) {
 			// for t_bests the distance is set to 0
 			if (alasql.fn.WELCH_TEST(runtimes[min][aname], runtimes[i][aname])) {
@@ -1929,25 +2124,25 @@ function signaturePlot(valuesArr) {
 				}
 			}
 		}
-
+		
 		var slowDown = [];
 		distance.forEach(function(v, i) {
 			slowDown[i] = (distance[i] + min_int[1]) / min_int[1] - 1.0;
-
+			
 		});
-
+		
 		slowDown.sort(function(a, b) {
 			return a - b;
 		});
-
+		
 		var res = [];
 		slowDown.forEach(function(v, i) {
 			res[i] = {
-				x : i / (runtime_count - 1)
+				x: i / (runtime_count - 1)
 			};
 			res[i][aname] = slowDown[i];
 		});
-
+		
 		values.json = res;
 		values.finished = true;
 		return values;
@@ -1956,7 +2151,7 @@ function signaturePlot(valuesArr) {
 		var means = [];
 		var min;
 		var min_int;
-
+		
 		// calculate mean of each experiment, search minimum of conf. int. lower
 		// bounds
 		for (var i = 0; i < runtime_count; ++i) {
@@ -1968,31 +2163,31 @@ function signaturePlot(valuesArr) {
 				min_int = ci;
 			}
 		}
-
+		
 		var distance = []; // distance from best experiment
-
+		
 		for (var i = 0; i < runtime_count; ++i) {
 			distance[i] = means[i] - min_int[1];
 		}
-
+		
 		var slowDown = [];
 		distance.forEach(function(v, i) {
 			slowDown[i] = (distance[i] + min_int[1]) / min_int[1] - 1.0;
-
+			
 		});
-
+		
 		slowDown.sort(function(a, b) {
 			return a - b;
 		});
-
+		
 		var res = [];
 		slowDown.forEach(function(v, i) {
 			res[i] = {
-				x : i / (runtime_count - 1)
+				x: i / (runtime_count - 1)
 			};
 			res[i][aname] = slowDown[i];
 		});
-
+		
 		values.json = res;
 		values.finished = true;
 		return values;

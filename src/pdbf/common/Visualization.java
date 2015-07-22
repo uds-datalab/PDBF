@@ -58,5 +58,11 @@ public abstract class Visualization {
     public String linkSelector;
     public String linkLabel;
     
+    //Chart
     public String chartType;
+    
+    //DataTable
+    public String verticalLines;
+    public String horizontalLinesHeader;
+    public String horizontalLinesBody;
 }

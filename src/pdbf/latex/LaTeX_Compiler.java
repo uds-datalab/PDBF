@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import pdbf.common.Chart;
+import pdbf.common.DataTable;
 import pdbf.common.DataText;
 import pdbf.common.Database;
 import pdbf.common.Dimension;
@@ -38,7 +39,7 @@ public class LaTeX_Compiler {
     private static ArrayList<String> cleanupfiles = new ArrayList<String>();
     private static ArrayList<String> copyfiles = new ArrayList<String>();
     private static ArrayList<String> preloadfiles = new ArrayList<String>();
-    private static ArrayList<String> datatextfiles = new ArrayList<String>();
+    private static ArrayList<String> dataFiles = new ArrayList<String>();
     private static Gson gson;
     private static String suffix;
     private static Dimension dimOrg;
@@ -163,9 +164,10 @@ public class LaTeX_Compiler {
 	for (int i = 0; i < overlays.length; ++i) {
 	    if (overlays[i].type instanceof Chart) {
 		processChart(overlays[i]);
-	    }
-	    if (overlays[i].type instanceof DataText) {
-		processDataChart(overlays[i]);
+	    } else if (overlays[i].type instanceof DataText) {
+		processData(overlays[i]);
+	    } else if (overlays[i].type instanceof DataTable) {
+		processData(overlays[i]);
 	    }
 	}
 
@@ -205,7 +207,7 @@ public class LaTeX_Compiler {
 	}
 	
 	String aux = "";
-	for (String data : datatextfiles) {
+	for (String data : dataFiles) {
 	    try {
 		aux += "\\expandafter\\gdef\\csname pdbf@" + data.substring(0, data.length()-5) + "\\endcsname{" + FileUtils.readFileToString(new File(data)) + "}\n";
 	    } catch (IOException e) {
@@ -271,7 +273,7 @@ public class LaTeX_Compiler {
 	    dimOrg = gson.fromJson(json2, Dimension.class);
 	    for (int i = 0; i < overlays.length; ++i) {
 		Visualization v = overlays[i].type;
-		if (v instanceof Text || v instanceof DataText) {
+		if (v instanceof Text || v instanceof DataText || v instanceof DataTable) {
 		    Visualization t = overlays[i].type;
 		    t.x1 = t.x1 / dimOrg.width;
 		    t.x2 = t.x2 / dimOrg.width;
@@ -388,11 +390,11 @@ public class LaTeX_Compiler {
 	}
     }
     
-    private static void processDataChart(Overlay o) {
-	DataText c = (DataText) o.type;
+    private static void processData(Overlay o) {
+	Visualization c = (Visualization)o.type;
 	cleanupfiles.add("out/web/" + o.name + ".html");
 	cleanupfiles.add("" + o.name + ".data");
-	datatextfiles.add("" + o.name + ".data");
+	dataFiles.add("" + o.name + ".data");
 	copyfiles.add("" + o.name + ".png");
 	try {
 	    Dimension dim = new Dimension(dimOrg.width * c.quality, dimOrg.height * c.quality);
