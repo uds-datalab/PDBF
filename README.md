@@ -1,4 +1,6 @@
 #PDBF - A Toolkit for Creating Janiform Data Documents
+Version 1.0, Released 03.08.2015
+
 PDBF documents are a hybrid format. They are a valid PDF and a valid HTML page at the same time. 
 If you change the file extension to PDF and open it with an PDF viewer, you can see the static part of the document. If you change the file extension to HTML and open it with a Browser (currently Chrome/Firefox/Safari/IE 10 supported), you can see the dynamic part of the document. For example, if the static version contains an image of a chart which displays some data, then the dynamic version contains the actual raw data used to render the chart and renders the chart when opening the document. The advantage is that you can open the chart in an overlay view by clicking on the enlarge symbol at the upper left corner and then start to change parameters of the chart. For example you can remove filtering functions that are applied to the raw data or change confidence levels to other values an see the results of these changes directly in the chart. 
 
