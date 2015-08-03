@@ -8,15 +8,16 @@ PDBF files are created from LaTeX source code and a relational database. The raw
 
 PDBF toolkit is written in Java and LaTeX and can be used to compile documents on Windows, Mac and Linux. PDBF documents are also platform independent and run on any desktop OS (Windows, Linux, Mac) with a browser/PDF viewer.
 
-This toolkit is licensed unter the MIT License.
+This toolkit is licensed unter the MIT License (see [here](https://github.com/uds-datalab/PDBF/blob/gh-pages/LICENSE.md))
 
 ##Getting started
+* Make sure you have a Java Runtime (version >= 1.7) installed
 * [Download the latest version](https://github.com/uds-datalab/PDBF/archive/gh-pages.zip)
 * Extract zip and change workingdir to extracted folder
 * Adjust config.cfg
 * Try to compile Documentation.tex file with this command: java -jar PDBF.jar Documentation.tex
 * Open Documentation.html, this is the final output of the compilation process, if you rename it to ".pdf" it is also a valid pdf-document
-* You can play around with the minimal.tex file which contains a minimal example of PDBF usage
+* You can play around with the Minimal.tex file which contains a minimal example of PDBF usage
 * For further information take a look at the [documentation](http://uds-datalab.github.io/PDBF/)
 
 ###Thanks to the authors of:
