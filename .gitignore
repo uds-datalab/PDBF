@@ -1,7 +1,7 @@
 /
-out/web/viewerAlasql.html
+data/viewerAlasql.html
 /
-out/web/viewerSqlite.html
+data/viewerSqlite.html
 db.sql
 config.json
 dim.json
@@ -60,3 +60,6 @@ minimal.html
 /main.blg
 /TODO
 /db.json
+/presentation.nav
+/presentation.snm
+/presentation.toc

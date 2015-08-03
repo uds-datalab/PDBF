@@ -88,6 +88,15 @@ public class LaTeX_Compiler {
 	    System.exit(-1);
 	}
 	
+	if (args[0].equalsIgnoreCase("--version")) {
+	    System.out.println("PDBF Version 1.0\nhttps://github.com/uds-datalab/PDBF");
+	    System.exit(0);
+	}
+	if (args[0].equalsIgnoreCase("--help")) {
+	    System.out.println("Usage: PDBF.jar LaTeX_file\nFor further help visit: https://github.com/uds-datalab/PDBF");
+	    System.exit(0);
+	}
+	
 	String latexPath = args[0];
 	
 	if (!latexPath.endsWith(".tex")) {
@@ -366,22 +375,22 @@ public class LaTeX_Compiler {
 
     private static void processChart(Overlay o) {
 	Chart c = (Chart) o.type;
-	cleanupfiles.add("out/web/" + o.name + ".html");
+	cleanupfiles.add("data/" + o.name + ".html");
 	cleanupfiles.add("" + o.name + ".json");
 	preloadfiles.add("" + o.name + ".json");
 	copyfiles.add("" + o.name + ".png");
 	try {
 	    Dimension dim = new Dimension(dimOrg.width * c.quality, dimOrg.height * c.quality);
 	    String viewer;
-	    String viewerHEAD = FileUtils.readFileToString(new File("out/web/templateHEADimages.html"), Tools.utf8);
-	    String viewerTAIL = FileUtils.readFileToString(new File("out/web/templateTAILimages.html"), Tools.utf8);
+	    String viewerHEAD = FileUtils.readFileToString(new File("data/templateHEADimages.html"), Tools.utf8);
+	    String viewerTAIL = FileUtils.readFileToString(new File("data/templateTAILimages.html"), Tools.utf8);
 	    viewer = viewerHEAD + "dim_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(dim)) + "\";\r\n" + "json_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(o)) + "\";\r\n" + "db_base64 = \"" + Tools.encodeFileToBase64Binary(new File("db.sql")) + "\";\r\n" + "dbjson_base64 = \"" + Tools.escapeQuotes(new File("db.json")) + "\";\r\n" + viewerTAIL;
-	    FileUtils.writeStringToFile(new File("out/web/" + o.name + ".html"), viewer, Tools.utf8);
+	    FileUtils.writeStringToFile(new File("data/" + o.name + ".html"), viewer, Tools.utf8);
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
 	try {
-	    ProcessBuilder pb = new ProcessBuilder("external-tools/phantomjs-" + suffix, "external-tools/capture.js", "out/web/" + o.name + ".html");
+	    ProcessBuilder pb = new ProcessBuilder("external-tools/phantomjs-" + suffix, "external-tools/capture.js", "data/" + o.name + ".html");
 	    pb.inheritIO();
 	    Process p = pb.start();
 	    processes.add(p);
@@ -392,22 +401,22 @@ public class LaTeX_Compiler {
     
     private static void processData(Overlay o) {
 	Visualization c = (Visualization)o.type;
-	cleanupfiles.add("out/web/" + o.name + ".html");
+	cleanupfiles.add("data/" + o.name + ".html");
 	cleanupfiles.add("" + o.name + ".data");
 	dataFiles.add("" + o.name + ".data");
 	copyfiles.add("" + o.name + ".png");
 	try {
 	    Dimension dim = new Dimension(dimOrg.width * c.quality, dimOrg.height * c.quality);
 	    String viewer;
-	    String viewerHEAD = FileUtils.readFileToString(new File("out/web/templateHEADimages.html"), Tools.utf8);
-	    String viewerTAIL = FileUtils.readFileToString(new File("out/web/templateTAILimages.html"), Tools.utf8);
+	    String viewerHEAD = FileUtils.readFileToString(new File("data/templateHEADimages.html"), Tools.utf8);
+	    String viewerTAIL = FileUtils.readFileToString(new File("data/templateTAILimages.html"), Tools.utf8);
 	    viewer = viewerHEAD + "dim_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(dim)) + "\";\r\n" + "json_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(o)) + "\";\r\n" + "db_base64 = \"" + Tools.encodeFileToBase64Binary(new File("db.sql")) + "\";\r\n" + "dbjson_base64 = \"" + Tools.escapeQuotes(new File("db.json")) + "\";\r\n" + viewerTAIL;
-	    FileUtils.writeStringToFile(new File("out/web/" + o.name + ".html"), viewer, Tools.utf8);
+	    FileUtils.writeStringToFile(new File("data/" + o.name + ".html"), viewer, Tools.utf8);
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
 	try {
-	    ProcessBuilder pb = new ProcessBuilder("external-tools/phantomjs-" + suffix, "external-tools/captureData.js", "out/web/" + o.name + ".html");
+	    ProcessBuilder pb = new ProcessBuilder("external-tools/phantomjs-" + suffix, "external-tools/captureData.js", "data/" + o.name + ".html");
 	    pb.inheritIO();
 	    Process p = pb.start();
 	    processes.add(p);
