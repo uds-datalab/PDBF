@@ -35,15 +35,17 @@ function isValidDate(d) {
 }
 
 function getCheckbox(labelname, containerControl) {
-	var label = document.createElement('label');
-	var span = document.createElement('span');
-	span.innerHTML = ' ' + labelname + '<br />';
+	var div = document.createElement('div');
 	var checkbox = document.createElement('input');
-	checkbox.setAttribute('style', 'position:relative; top:2px;');
-	label.appendChild(checkbox);
-	label.appendChild(span);
 	checkbox.type = 'checkbox';
-	containerControl.appendChild(label);
+	checkbox.setAttribute('style', 'position:relative; top:2px;');
+	checkbox.setAttribute('id', labelname);
+	var label = document.createElement('label');
+	label.setAttribute('for', labelname);
+	label.innerHTML = ' ' + labelname;
+	div.appendChild(checkbox);
+	div.appendChild(label);
+	containerControl.appendChild(div);
 	return checkbox;
 }
 
@@ -269,12 +271,15 @@ function buildContainerChartBig(json, containerOver, initial) {
 	};
 	var update = function() {
 		// json.jsonBig.type.I.logScale = logScale.checked;
-		// json.jsonBig.type.I.includeZero = includeZero.checked;
-		// json.jsonBig.type.I.drawPoints = drawPoints.checked;
-		// json.jsonBig.type.I.fillGraph = fillGraph.checked;
-		// json.jsonBig.type.I.showRangeSelector = showRangeSelector.checked;
+		json.jsonBig.type.I.includeZero = includeZero.checked;
+		if (json.type.I.chartType == 'Line' || json.type.I.chartType == 'line') {
+			json.jsonBig.type.I.drawPoints = drawPoints.checked;
+			json.jsonBig.type.I.fillGraph = fillGraph.checked;
+		}
+		json.jsonBig.type.I.showRangeSelector = showRangeSelector.checked;
 		
 		var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor, json.chartdataBig.values, containerContent);
+		
 		json.chart = c3.generate(optionsBig);
 	};
 	
@@ -307,27 +312,36 @@ function buildContainerChartBig(json, containerOver, initial) {
 	 * var logScale = getCheckbox('LogScale', containerOptions);
 	 * logScale.addEventListener('change', update); logScale.checked =
 	 * json.jsonBig.type.I.logScale;
-	 * 
-	 * var includeZero = getCheckbox('IncludeZero', containerOptions);
-	 * includeZero.addEventListener('change', update); includeZero.checked =
-	 * json.jsonBig.type.I.includeZero;
-	 * 
-	 * var drawPoints = getCheckbox('DrawPoints', containerOptions);
-	 * drawPoints.addEventListener('change', update); drawPoints.checked =
-	 * json.jsonBig.type.I.drawPoints;
-	 * 
-	 * var fillGraph = getCheckbox('FillGraph', containerOptions);
-	 * fillGraph.addEventListener('change', update); fillGraph.checked =
-	 * json.jsonBig.type.I.fillGraph;
-	 * 
-	 * var showRangeSelector = getCheckbox('ShowRangeSelector',
-	 * containerOptions); showRangeSelector.addEventListener('change', update);
-	 * showRangeSelector.checked = json.jsonBig.type.I.showRangeSelector;
 	 */
 
+	json.jsonBig.type.I.showRangeSelector = true;
+	
+	var includeZero = getCheckbox('IncludeZero', containerOptions);
+	includeZero.addEventListener('change', update);
+	includeZero.checked = json.jsonBig.type.I.includeZero;
+	
+	if (json.jsonBig.type.I.chartType == 'Line' || json.jsonBig.type.I.chartType == 'line') {
+		var fillGraph = getCheckbox('FillGraph', containerOptions);
+		fillGraph.addEventListener('change', update);
+		fillGraph.checked = json.jsonBig.type.I.fillGraph;
+		
+		var drawPoints = getCheckbox('DrawPoints', containerOptions);
+		drawPoints.addEventListener('change', update);
+		drawPoints.checked = json.jsonBig.type.I.drawPoints;
+	}
+	
+	var showRangeSelector = getCheckbox('ShowRangeSelector', containerOptions);
+	showRangeSelector.addEventListener('change', update);
+	showRangeSelector.checked = json.jsonBig.type.I.showRangeSelector;
+	
 	var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor, chartdataCpy.values, containerContent);
 	
-	json.chart = c3.generate(optionsBig);
+	if (json.jsonBig.type.I.fillGraph == true) {
+		json.chart = c3.generate(optionsBig).transform('area');
+	} else {
+		json.chart = c3.generate(optionsBig);
+	}
+	
 	json.chartdataBig = chartdataCpy;
 	
 	containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
@@ -1450,11 +1464,15 @@ function getChartOptions(json, zoomFactor, values, chart) {
 				label: json.type.I.yUnitName,
 				tick: {
 					fit: false,
+				},
+				padding: {
+					top: 0,
+					bottom: 0
 				}
 			},
 			y2: {
 				tick: {
-					fit: false,
+					fit: false
 				}
 			}
 		},
@@ -1463,7 +1481,10 @@ function getChartOptions(json, zoomFactor, values, chart) {
 			rescale: true
 		},
 		point: {
-			show: false
+			show: json.type.I.drawPoints
+		},
+		subchart: {
+			show: json.type.I.showRangeSelector
 		},
 		completeScale: zoomFactor * 1.45,
 		onresize: function() {
@@ -1484,9 +1505,18 @@ function getChartOptions(json, zoomFactor, values, chart) {
 	if (options.axis.y.label == '')
 		delete options.axis.y.label;
 	
+	if (json.type.I.includeZero) {
+		options.axis.y.min = 0;
+	}
+	
 	switch (json.type.I.chartType) {
 		case 'Line':
 		case 'line':
+			if (json.type.I.fillGraph) {
+				options.data.type = 'area';
+			} else {
+				options.data.type = 'line';
+			}
 			break;
 		case 'Bar':
 		case 'bar':
