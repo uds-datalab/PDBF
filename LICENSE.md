@@ -1,4 +1,4 @@
-This toolkit itself is licensed under the MIT License:
+This toolkit and any later version are licensed under the MIT License:
 The MIT License (MIT)
 
 Copyright (c) 2015 Chair of Information Systems Group, Saarland University, Germany; Jens Dittrich and Patrick Bender

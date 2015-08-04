@@ -109,7 +109,7 @@ array\\
 
 \noindent Furthermore it is needed that your \LaTeX\relax document uses the geometry package to specify the page size.\\
 
-\noindent \textbf{Warning:} There are problems with inputenc UTF8 package. If you really have to use the inputenc UTF8 package then you cant use non-ASCII characters inside queries.
+\noindent \textbf{Warning:} There are problems with \textbf{inputenc UTF8} and the \textbf{pgfpages}. If you really have to use the inputenc UTF8 package then you cant use non-ASCII characters inside queries. The pgfpages package is incompatible to this package (Its fixable but requires additional effort). 
 
 \section{SQL queries for PDBF elements}
 PDBF uses AlaSQL as database engine. For all available features of the database visit \url{https://github.com/agershun/alasql}. Some functionality might not yet be available because we currently use not the latest version.\\[4pt]
