@@ -33,7 +33,7 @@ import pdbf.common.VisualizationTypeAdapter;
 public class LaTeX_Compiler {
 
     private static String[] pathToLaTeXScript = new String[0];
-    private static String OS = System.getProperty("os.name").toLowerCase();
+    public static String OS = System.getProperty("os.name").toLowerCase();
 
     private static ArrayList<Process> processes = new ArrayList<Process>();
     private static ArrayList<String> cleanupfiles = new ArrayList<String>();
@@ -41,7 +41,7 @@ public class LaTeX_Compiler {
     private static ArrayList<String> preloadfiles = new ArrayList<String>();
     private static ArrayList<String> dataFiles = new ArrayList<String>();
     private static Gson gson;
-    private static String suffix;
+    public static String suffix;
     private static Dimension dimOrg;
     
     private static String latexFolder;
@@ -70,31 +70,6 @@ public class LaTeX_Compiler {
 	} catch (IOException e4) {
 	    e4.printStackTrace();
 	    System.exit(-1);
-	}
-
-	if (OS.contains("win")) {
-	    suffix = "win";
-	} else if (OS.contains("mac")) {
-	    suffix = "mac";
-	} else if (OS.contains("nix") || OS.contains("nux") || OS.contains("aix")) {
-	    suffix = "unix";
-	} else {
-	    System.err.println("Sorry, your operating system is not supported!");
-	    System.exit(-1);
-	}
-
-	if (args.length != 1) {
-	    System.out.println("Usage: PDBF.jar LaTeX_file");
-	    System.exit(-1);
-	}
-	
-	if (args[0].equalsIgnoreCase("--version")) {
-	    System.out.println("PDBF Version 1.0\nhttps://github.com/uds-datalab/PDBF");
-	    System.exit(0);
-	}
-	if (args[0].equalsIgnoreCase("--help")) {
-	    System.out.println("Usage: PDBF.jar LaTeX_file\nFor further help visit: https://github.com/uds-datalab/PDBF");
-	    System.exit(0);
 	}
 	
 	String latexPath = args[0];

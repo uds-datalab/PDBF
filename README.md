@@ -1,10 +1,11 @@
 #PDBF - A Toolkit for Creating Janiform Data Documents
-Version 1.0, Released 03.08.2015
+Version 1.0.1
 
-PDBF documents are a hybrid format. They are a valid PDF and a valid HTML page at the same time. 
-If you change the file extension to PDF and open it with an PDF viewer, you can see the static part of the document. If you change the file extension to HTML and open it with a Browser (currently Chrome/Firefox/Safari/IE 10 supported), you can see the dynamic part of the document. For example, if the static version contains an image of a chart which displays some data, then the dynamic version contains the actual raw data used to render the chart and renders the chart when opening the document. The advantage is that you can open the chart in an overlay view by clicking on the enlarge symbol at the upper left corner and then start to change parameters of the chart. For example you can remove filtering functions that are applied to the raw data or change confidence levels to other values an see the results of these changes directly in the chart. 
+PDBF documents are a hybrid format. They are a valid PDF and a valid HTML page at the same time. You can now optionally add an VirtualBox OVA file with a complete operating system to the PDBF document. Yes, this means that the resulting file is a valid PDF, HTML, and OVA file at the same time. If you change the file extension to PDF and open it with an PDF viewer, you can see the static part of the document. If you change the file extension to HTML and open it with a Browser (currently Chrome/Firefox/Safari/IE 10 supported), you can see the dynamic part of the document. And if an ova file is attached you can also change the file extension to OVA and install and run the attached operating system.
+The difference between the PDF and the HTML version is that the PDF version contains static version of all PDBF elements, whereas the HTML version is dynamic. For example you can zoom into graphs, temporarly remove dataseries from the graph, inspect and change the underling query of the PDBF element and see the result of the change directly in the browser.
+This approach works completely offline. No internet connection is required, neither at compile time, nor at viewing time.
 
-PDBF files are created from LaTeX source code and a relational database. The raw data can either be a SQL statement string, a file with SQL statements, or contained in a database (currently PostgreSQL/MySQL/MariaDB supported). In the LaTeX code you can then specify how the PDBF element (currently charts/pivot tables/multiplot charts/sql statements/data text/data tables are supported) is created from the raw data with options and an SQL query. Read more in the [documentation](http://uds-datalab.github.io/PDBF/) (which is itself a PDBF document).
+PDBF files are created from LaTeX source code and a relational database. The raw data can either be a SQL statement string, a file with SQL statements, or contained in a database (currently PostgreSQL/MySQL/MariaDB supported). In the LaTeX code you can then specify how the PDBF element (currently charts/pivot tables/multiplot charts/sql statements are supported) is created from the raw data with options and an SQL query. Read more in the [documentation](http://uds-datalab.github.io/PDBF/), which is itself is a PDBF document.
 
 PDBF toolkit is written in Java and LaTeX and can be used to compile documents on Windows, Mac and Linux. PDBF documents are also platform independent and run on any desktop OS (Windows, Linux, Mac) with a browser/PDF viewer.
 
@@ -20,6 +21,7 @@ This toolkit is licensed unter the MIT License (see [here](https://github.com/ud
 * Adjust config.cfg
 * Try to compile Documentation.tex file with this command: java -jar PDBF.jar Documentation.tex
 * Open Documentation.html, this is the final output of the compilation process, if you rename it to ".pdf" it is also a valid pdf-document
+* Optionally you can attach the VLDB-Invaders.ova VirtualBox image to the compiled PDBF file with this command: java -jar PDBF.jar  --vm Documentation.html VLDB-Invaders.ova
 * You can play around with the Minimal.tex file which contains a minimal example of PDBF usage
 * For further information take a look at the [documentation](http://uds-datalab.github.io/PDBF/)
 

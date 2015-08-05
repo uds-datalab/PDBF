@@ -61,19 +61,27 @@ Default:& #4\\
 
 \begin{document}
 \maketitle
+\noindent \textbf{For PDBF \input{VERSION.md}}
 
 \section{Abstract}
-PDBF documents are a hybrid format. They are a valid PDF and a valid HTML page at the same time. 
-If you change the file extension to PDF and open it with an PDF viewer, you can see the static part of the document. If you change the file extension to HTML and open it with a Browser (currently Chrome/Firefox/Safari/IE 10 supported), you can see the dynamic part of the document. For example, if the static version contains an image of a chart which displays some data, then the dynamic version contains the actual raw data used to render the chart and renders the chart when opening the document. The advantage is that you can open the chart in an overlay view by clicking on the enlarge symbol at the upper left corner and then start to change parameters of the chart. For example you can remove filtering functions that are applied to the raw data or change confidence levels to other values an see the results of these changes directly in the chart. \\
+PDBF documents are a hybrid format. They are a valid PDF and a valid HTML page at the same time. You can now optionally add an VirtualBox OVA file with a complete operating system to the PDBF document. Yes, this means that the resulting file is a valid PDF, HTML, and OVA file at the same time. If you change the file extension to PDF and open it with an PDF viewer, you can see the static part of the document. If you change the file extension to HTML and open it with a Browser (currently Chrome/Firefox/Safari/IE 10 supported), you can see the dynamic part of the document. And if an ova file is attached you can also change the file extension to OVA and install and run the attached operating system.\\
+The difference between the PDF and the HTML version is that the PDF version contains static version of all PDBF elements, whereas the HTML version is dynamic. For example you can zoom into graphs, temporarly remove dataseries from the graph, inspect and change the underling query of the PDBF element and see the result of the change directly in the browser.\\
+This approach works completely offline. No internet connection is required, neither at compile time, nor at viewing time.
 
-\noindent PDBF files are created from LaTeX source code and a relational database. The raw data can either be a SQL statement string, a file with SQL statements, or contained in a database (currently PostgreSQL/MySQL/MariaDB supported). In the LaTeX code you can then specify how the PDBF element (currently charts/pivot tables/multiplot charts/sql statements are supported) is created from the raw data with options and an SQL query. Read more in the [documentation](http://uds-datalab.github.io/PDBF/) (which is itself a PDBF document).\\
+\noindent PDBF files are created from LaTeX source code and a relational database. The raw data can either be a SQL statement string, a file with SQL statements, or contained in a database (currently PostgreSQL/MySQL/MariaDB supported). In the LaTeX code you can then specify how the PDBF element (currently charts/pivot tables/multiplot charts/sql statements are supported) is created from the raw data with options and an SQL query. Read more in the \href{http://uds-datalab.github.io/PDBF/}{documentation}, which is itself is a PDBF document.\\
 
 \noindent PDBF toolkit is written in Java and LaTeX and can be used to compile documents on Windows, Mac and Linux. PDBF documents are also platform independent and run on any desktop OS (Windows, Linux, Mac) with a browser/PDF viewer.\\
 
-\noindent This toolkit is licensed unter the MIT License.\\
+\noindent A \href{https://infosys.uni-saarland.de/publications/p1972-dittrich.pdf}{demo paper} of our tool is appearing at \href{http://www.vldb.org/2015/}{VLDB 2015}. 
+
+\section{License}
+\noindent This toolkit is licensed unter the MIT License. See LICENSE.md file.\\
 
 \newpage
-\noindent Thanks to the authors of:\\
+\tableofcontents
+\newpage
+
+\section{Thanks to}
 phantomJS (\url{https://github.com/ariya/phantomjs})\\
 Apache Commons IO (\url{http://commons.apache.org/proper/commons-io/})\\
 Apache Commons Codec (\url{http://commons.apache.org/proper/commons-codec/})\\
@@ -93,23 +101,28 @@ jStat (\url{https://github.com/jstat/jstat})\\
 pivottable (\url{https://github.com/nicolaskruchten/pivottable})\\
 PDF.js (\url{https://github.com/mozilla/pdf.js})\\
 google-closure-compiler (\url{https://github.com/google/closure-compiler})\\
-\newpage
-\tableofcontents
-\newpage
+
+\section{How to use the PDBF compiler}
+Right now there are only two modes: \\[4pt]
+-- The standart mode which compiles a tex file into the hybrid PDBF format:\\
+\verb|java -jar PDBF.jar LaTeX_file| \\[2pt]
+-- The VM mode which attaches a VirtualBox .ova file to an existing PDBF:\\
+\verb|java -jar PDBF.jar --vm PDBF_File.html VM_File.ova|
 
 \section{Requirements}
-These \LaTeX\relax packages are required for PDBF documents:\\
-zref\\
-xcolor\\
-graphicx\\
-xstring\\
-xparse\\
-geometry\\
-array\\
-
+These \LaTeX\relax packages are required for PDBF documents:
+\begin{itemize}
+\item \verb|zref|
+\item \verb|xcolor|
+\item \verb|graphicx|
+\item \verb|xstring|
+\item \verb|xparse|
+\item \verb|geometry|
+\item \verb|array|
+\end{itemize}
 \noindent Furthermore it is needed that your \LaTeX\relax document uses the geometry package to specify the page size.\\
 
-\noindent \textbf{Warning:} There are problems with \textbf{inputenc UTF8} and the \textbf{pgfpages}. If you really have to use the inputenc UTF8 package then you cant use non-ASCII characters inside queries. The pgfpages package is incompatible to this package (Its fixable but requires additional effort). 
+\noindent \textbf{Warning:} There are problems with \textbf{inputenc UTF8} and \textbf{pgfpages}. If you really have to use the inputenc UTF8 package then you cant use non-ASCII characters inside queries. The pgfpages package is incompatible to this package (Its fixable but requires additional effort). 
 
 \section{SQL queries for PDBF elements}
 PDBF uses AlaSQL as database engine. For all available features of the database visit \url{https://github.com/agershun/alasql}. Some functionality might not yet be available because we currently use not the latest version.\\[4pt]
@@ -204,18 +217,16 @@ PDBF uses AlaSQL as database engine. For all available features of the database 
 {Number $>$ 0 AND Number $<$ 1}
 {\texttt{0.05}}\\[3pt]
 %
-\section{Sql data sources}
+\section{SQL data sources}
 \noindent Macros: \\[3pt]
 \verb|\dbSQLText{sqlQueryString}| \\
-\verb|\dbSQLFile{fileWithSqlQueries}| \\
+\verb|\dbSQLFile{fileWithSQLQueries}| \\
 \verb|\dbSQLJDBC{jdbcConnectionURL}{user}{password}{commaSeperatedListOfTableNames}| \\
 \textbf{Note:} jdbcConnectionURL consist of jdbc followed by the name of the dbms (only postgresql and mysql are currently supported) followed by the url of the dbms followed by the database name (e.g. jdbc:postgresql://localhost:5432/postgres).\\
-\textbf{Note:} jdbcConnectionURL, user, and password are not stored in the output documents.
+\textbf{Note:} jdbcConnectionURL, user, and password are not stored in the output documents.\\[4pt]
+\textbf{WARNING:} \verb|\dbSQLText| and \verb|\dbSQLFile| are currently horribly, even for medium sized (more than 100 tuples) amounts of data. Use \verb|\dbSQLJDBC| instead.
 
-\newpage
 \section{PDBF elements}
-Currently there are four different PDBF elements: charts, pivot tables, multiplot charts, and sql statements.
-
 \subsection{Chart}
 \begin{figure}[h!]%
 \hspace{-218pt}Examples:\\
@@ -245,6 +256,7 @@ Currently there are four different PDBF elements: charts, pivot tables, multiplo
 %    \end{minipage}
 \end{figure}
 
+\newpage
 \noindent Macros: \\[3pt]
 \verb|\chart[options][queryForOverlay]{queryForPage}| \\
 \textbf{Note:} if \verb|queryForOverlay| is omitted the \verb|queryForPage| is used for the overlay.\\
@@ -305,6 +317,30 @@ Currently there are four different PDBF elements: charts, pivot tables, multiplo
 {JSON-String}
 {\texttt{\{\}} (which means empty object)}
 
+\option
+{includeZero}
+{Set the minimum of the range of the y-axis to zero.}
+{\texttt{true} or \texttt{false}}
+{\texttt{false}}
+
+\option
+{drawPoints}
+{Whether to show each point in line.}
+{\texttt{true} or \texttt{false}}
+{\texttt{false}}
+
+\option
+{fillGraph}
+{Whether to fill the area below the graph.}
+{\texttt{true} or \texttt{false}}
+{\texttt{false}}
+
+\option
+{showRangeSelector}
+{Whether to show a range selector for the x-axis below the chart.}
+{\texttt{true} or \texttt{false}}
+{\texttt{false} for in-page chart, \texttt{true} for overlay chart}
+
 %\option %TODO: not yet implemented
 %{logscale}
 %{If set, the y axis uses log scale. Can also be redefined globally (\texttt{pdbfLogscale}).}
@@ -323,31 +359,7 @@ Currently there are four different PDBF elements: charts, pivot tables, multiplo
 %{\texttt{TODO: ...}}
 %{\texttt{TODO: ...}}
 %
-%\option %TODO: not yet implemented
-%{includeZero}
-%{Set the minimum of the range of the y-axis to zero.}
-%{\texttt{true} or \texttt{false}}
-%{\texttt{false}}
-%
-%\option %TODO: not yet implemented
-%{drawPoints}
-%{Whether to show each point in line.}
-%{\texttt{true} or \texttt{false}}
-%{\texttt{false}}
-%
-%\option %TODO: not yet implemented
-%{fillGraph}
-%{Whether to fill the area below the graph.}
-%{\texttt{true} or \texttt{false}}
-%{\texttt{false}}
-%
-%\option %TODO: not yet implemented
-%{showRangeSelector}
-%{Whether to show a range selector for the x-axis below the chart.}
-%{\texttt{true} or \texttt{false}}
-%{\texttt{false}}
 
-\newpage
 \subsection{Multiplot Chart}
 \begin{figure}[h!]%
     Example:\\
@@ -590,8 +602,8 @@ Example:\\[3pt]
 
 \section{F.A.Q.}
 \begin{itemize}
-\item Q.: The overlay is not on the right position.\\
-A.: Most likely you use pages with different sizes in your document. This is currently not supported by PBDF 
+\item Q.: The overlay is not on the right position!\\
+A.: Most likely you use pages with different sizes in your document or you use the pgfpages package. This is currently not supported by PBDF 
 \item Q.: I get \verb|Error: paperwidth value missing! Did you forgot to specify the| \\ \verb|papersize via the geometry package?| when compiling my document.\\
 A.: You need to explicitly specify the papersize of your document via the geometry package (e.g. \verb|\usepackage[letterpaper]{geometry}|)
 \item Q.: I get \verb|\unhbox \voidb@x \bgroup \let \unhbox \voidb@x \setbox \@tempboxa \hbox| \verb|{u\global \mathchardef \accent@spacefactor \spacefactor }\accent 127 u\egroup| \newline \verb|\spacefactor \accent@spacefactor| or a similar string in a error message.\\
