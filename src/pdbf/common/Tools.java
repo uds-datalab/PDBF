@@ -27,8 +27,9 @@ public class Tools {
 	return Base64.encodeBase64String(string.getBytes(utf8));
     }
     
-    public static String escapeQuotes(File file) throws IOException {
+    public static String escapeSpecialChars(File file) throws IOException {
 	String tmp = FileUtils.readFileToString(file);
+	tmp = tmp.replace("\\", "\\\\");
 	tmp = tmp.replace("\"", "\\\"");
 	return tmp;
     }

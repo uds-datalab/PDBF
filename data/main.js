@@ -1540,7 +1540,7 @@ function getChartOptions(json, zoomFactor, values, chart) {
 			alert('Unknown chart type. Type was: "' + json.type.I.chartType + '"');
 	}
 	
-	if (values.json != undefined && isNaN(values.json[0][values.x]) && (options == undefined || options.axis == undefined || options.axis.x == undefined || options.axis.x.type == undefined)) {
+	if (values.json != undefined && (isNaN(values.json[0][values.x]) || values.json[0][values.x] == "") && (options == undefined || options.axis == undefined || options.axis.x == undefined || options.axis.x.type == undefined)) {
 		if (isValidDate(values.json[0][values.x])) {
 			options.axis.x.type = "timeseries";
 		} else {
