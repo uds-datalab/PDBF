@@ -1,0 +1,401 @@
+\def\filedate{2015/02/23}
+\def\fileversion{1.0}
+\NeedsTeXFormat{LaTeX2e}
+\AtEndOfPackage{\ProvidesPackage{PDBF}
+             [\filedate\space\space\space\space\fileversion\space\space\space\space(Patrick Bender)]}
+\RequirePackage{zref-savepos}
+\RequirePackage{zref-abspage}
+\RequirePackage{zref-user}
+\RequirePackage{xcolor}
+\RequirePackage{graphicx}
+\RequirePackage{xstring}
+\RequirePackage{xparse}
+\RequirePackage{array}
+
+\newcounter{visual}
+\newcounter{overlay}
+\stepcounter{visual}
+\stepcounter{overlay}
+
+\newwrite\tempfile
+\immediate\openout\tempfile=config.json
+\immediate\write\tempfile{[}
+
+\AtBeginDocument{
+	% Next line is needed because we need to adjust xref table after injecting html and currently we want to keep it simple. 
+	% Could be omitted if reading of xref streams is implemented later on.
+	\pdfobjcompresslevel=0
+
+	\newlength{\emptylen} 
+	\settowidth{\emptylen}{} 
+	
+	\ifdim\emptylen=\paperwidth
+	  \errmessage{^^J ^^J Error: paperwidth value missing! Did you forgot to specify the papersize via the geometry package? ^^J}%
+	\fi
+	
+	\ifdim\emptylen=\paperheight
+	  \errmessage{^^J ^^J Error: paperheight value missing! Did you forgot to specify the papersize via the geometry package? ^^J}%
+	\fi
+	
+	\newwrite\temp
+	\immediate\openout\temp=dim.json
+	\immediate\write\temp{\@charlb "width": "\number\paperwidth",}
+	\immediate\write\temp{"height": "\number\paperheight" \@charrb}
+	\immediate\closeout\temp
+}
+
+\AtEndDocument{
+	\immediate\write\tempfile{]}
+	\immediate\closeout\tempfile
+}
+
+%DataText
+\define@key{pdbf}{color}{\def\pdbfDynamicTextColor{#1}}
+\def\pdbfDynamicTextColor{blue}
+\define@key{pdbf}{linkTo}{\def\pdbf@linkTo{#1}}
+\def\pdbf@linkTo{}
+\define@key{pdbf}{linkSelector}{\def\pdbf@linkSelector{#1}}
+\def\pdbf@linkSelector{}
+\define@key{pdbf}{linkLabel}{\def\pdbf@linkLabel{#1}}
+\def\pdbf@linkLabel{}
+
+%DataTable
+\define@key{pdbf}{verticalLines}{\def\pdbf@verticalLines{#1}}
+\def\pdbf@verticalLines{a}
+\define@key{pdbf}{horizontalLinesHeader}{\def\pdbf@horizontalLinesHeader{#1}}
+\def\pdbf@horizontalLinesHeader{a}
+\define@key{pdbf}{horizontalLinesBody}{\def\pdbf@horizontalLinesBody{#1}}
+\def\pdbf@horizontalLinesBody{a}
+
+%Common
+\define@key{pdbf}{name}{\def\pdbf@name{#1}}
+\def\pdbf@name{}
+\define@key{pdbf}{width}{\def\pdbf@width{#1}}
+\define@key{pdbf}{height}{\def\pdbf@height{#1}}
+\def\pdbf@xunitname{}
+\define@key{pdbf}{xunit}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@xunitname]}
+\def\pdbf@yunitname{}
+\define@key{pdbf}{yunit}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@yunitname]}
+\def\pdbf@options{{}}
+\define@key{pdbf}{options}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@opt]\def\pdbf@options{{\pdbf@opt}}}
+\def\pdbfQuality{1.0}
+\define@key{pdbf}{quality}{\def\pdbfQuality{#1}}
+\def\pdbfScale{1.0}
+\define@key{pdbf}{scale}{\def\pdbfScale{#1}}
+\def\pdbf@chartType{Line}
+\define@key{pdbf}{chartType}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@chartType]}
+
+%LineChart und BarChart
+\def\pdbfLogscale{false}
+\define@key{pdbf}{logscale}[true]{\def\pdbfLogscale{#1}}
+\def\pdbfLegendpos{topright}
+\define@key{pdbf}{legendpos}{\def\pdbfLegendpos{#1}}
+
+%BarChart
+\def\pdbf@overlap{-1}
+\define@key{pdbf}{overlap}[2]{\def\pdbf@overlap{#1}}
+
+%Pivot
+\def\pdbf@rows{[]}
+\define@key{pdbf}{rows}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@rows]}
+\def\pdbf@cols{[]}
+\define@key{pdbf}{cols}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@cols]}
+\def\pdbf@aggregation{Minimum}
+\define@key{pdbf}{aggregation}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@aggregation]}
+\def\pdbf@aggregationattribute{}
+\define@key{pdbf}{aggregationattribute}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@aggregationattribute]}
+\def\pdbf@aggregationBig{}
+\define@key{pdbf}{aggregationBig}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@aggregationBig]}
+\def\pdbf@aggregationattributeBig{}
+\define@key{pdbf}{aggregationattributeBig}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@aggregationattributeBig]}
+
+%Multiplot
+\def\pdbf@xCount{0}
+\define@key{pdbf}{xCount}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@xCount]}
+\def\pdbf@yCount{0}
+\define@key{pdbf}{yCount}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@yCount]}
+\def\pdbf@leftArr{[]}
+\define@key{pdbf}{leftArr}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@leftArr]}
+\def\pdbf@rightArr{[]}
+\define@key{pdbf}{rightArr}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@rightArr]}
+\def\pdbf@topArr{[]}
+\define@key{pdbf}{topArr}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@topArr]}
+\def\pdbf@bottomArr{[]}
+\define@key{pdbf}{bottomArr}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@bottomArr]}
+\def\pdbf@xValues{}
+\define@key{pdbf}{xValues}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@xValues]}
+\def\pdbf@yValues{}
+\define@key{pdbf}{yValues}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@yValues]}
+\def\pdbf@yFirst{false}
+\define@key{pdbf}{yFirst}[true]{\def\pdbf@yFirst{#1}}
+\def\pdbf@forceXequal{false}
+\define@key{pdbf}{forceXequal}[true]{\def\pdbf@forceXequal{#1}}
+\def\pdbf@forceYequal{false}
+\define@key{pdbf}{forceYequal}[true]{\def\pdbf@forceYequal{#1}}
+
+\zref@addprops{savepos}{abspage}
+
+\DeclareRobustCommand\pdbf@save[1]{%
+      \zsavepos{#1}%
+}
+
+\def\pdbf@chart[#1]#2#3#4{%
+	\edef\pdbf@fontsave{\f@size}%
+	\setkeys{pdbf}{#1}%
+	\ifdefined \pdbf@width \else%
+  		\errmessage{^^J ^^J Error: width value missing! ^^J}%
+	\fi%
+	\ifdefined \pdbf@height \else%
+		\errmessage{^^J ^^J Error: height value missing! ^^J}%
+	\fi%
+	\StrSubstitute{#2}{"}{\@backslashchar"}[\pdbf@query]%
+	\StrSubstitute{#3}{"}{\@backslashchar"}[\pdbf@queryB]%
+	{\fontsize{5pt}{1sp}\selectfont%
+		\setlength\tabcolsep{1sp}%
+		% Place Image
+		\begin{tabular}{ccc}%
+		\pdbf@save{Overlay\arabic{visual}1}&&\\%
+		\IfFileExists{Overlay\arabic{visual}.png}{%
+	    		&\includegraphics[width=\pdbf@width, height=\pdbf@height]{Overlay\arabic{visual}.png}&\\%
+		}{%
+	    		&\includegraphics[width=\pdbf@width, height=\pdbf@height, draft]{dummy.png}&\\%
+		}%
+		&&\zsavepos{Overlay\arabic{visual}2}\\%
+		\end{tabular}%
+		% Write part of config.json
+		\ifnum \value{overlay} > 1%
+			\immediate\write\tempfile{,\@charlb}%
+		\else%
+			\immediate\write\tempfile{\@charlb}%
+		\fi%
+		\immediate\write\tempfile{\space\space\space\space"name": "Overlay\arabic{visual}",}%
+		\immediate\write\tempfile{\space\space\space\space"type": \@charlb}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.common.#4",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"name": "\pdbf@name",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"linkTo": "\pdbf@linkTo",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"linkSelector": "\pdbf@linkSelector",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"linkLabel": "\pdbf@linkLabel",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"verticalLines": "\pdbf@verticalLines",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"horizontalLinesHeader": "\pdbf@horizontalLinesHeader",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"horizontalLinesBody": "\pdbf@horizontalLinesBody",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"logScale": \pdbfLogscale,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xUnitName": "\pdbf@xunitname",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yUnitName": "\pdbf@yunitname",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"query": "\pdbf@query",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"queryB": "\pdbf@queryB",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"options": "\pdbf@options",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"quality": \pdbfQuality,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"zoom": \pdbfScale,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"overlap": \pdbf@overlap,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"legendpos": "\pdbfLegendpos",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"includeZero": false,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"drawPoints": false,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"fillGraph": fillGraph,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"showRangeSelector": false,}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregation": "\pdbf@aggregation",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationattribute": "\pdbf@aggregationattribute",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationBig": "\pdbf@aggregationBig",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationattributeBig": "\pdbf@aggregationattributeBig",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xCount": \pdbf@xCount,}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yCount": \pdbf@yCount,}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"leftArr": "\pdbf@leftArr",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"rightArr": "\pdbf@rightArr",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"topArr": "\pdbf@topArr",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"bottomArr": "\pdbf@bottomArr",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xValues": "\pdbf@xValues",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yValues": "\pdbf@yValues",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yFirst": \pdbf@yFirst,}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"forceXequal": \pdbf@forceXequal,}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"forceYequal": \pdbf@forceYequal,}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"cols": "\pdbf@cols",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"rows": "\pdbf@rows",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"chartType": "\pdbf@chartType",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x1": \zposx{Overlay\arabic{visual}1},}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x2": \zposx{Overlay\arabic{visual}2},}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y1": \zposy{Overlay\arabic{visual}1},}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y2": \zposy{Overlay\arabic{visual}2},}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"fontsize": \pdbf@fontsave,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"page": \zref@extract{Overlay\arabic{visual}1}{abspage}}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\@charrb}%
+		\immediate\write\tempfile{\space\space\space\space\@charrb}%
+		\immediate\write\tempfile{\@charrb}%
+		\stepcounter{visual}%
+		\stepcounter{overlay}%
+	}%
+	\relax
+}
+
+\NewDocumentCommand\chart{O{} o m}{%
+{\pdbf@chart[#1]{#3}{\IfValueTF{#2}{#2}{#3}}{Chart}}%
+}
+
+\NewDocumentCommand\pivotTable{O{} o m}{%
+{\pdbf@chart[#1]{#3}{\IfValueTF{#2}{#2}{#3}}{Pivot}}%
+}
+
+\NewDocumentCommand\multiplotChart{O{} o m}{%
+{\pdbf@chart[#1]{#3}{\IfValueTF{#2}{#2}{#3}}{MultiplotChart}}%
+}
+
+\def\pdbf@sqlmult#1#2#3#4{%
+\setkeys{pdbf}{#4}%
+\edef\pdbf@fontsave{\f@size}%
+\edef\pdbf@fontskipsave{\the\baselineskip}%
+\edef\pdbf@tabcolsep{\the\tabcolsep}%
+{\fontsize{5pt}{1sp}\selectfont%
+		\setlength\tabcolsep{1sp}%
+		\begin{tabular}[t]{ccc}%
+		\pdbf@save{Overlay\arabic{visual}1}&{\color{\pdbfDynamicTextColor}\fontsize{\pdbf@fontsave}{\pdbf@fontskipsave}\setlength\tabcolsep{\pdbf@tabcolsep}\selectfont#1}&\\%
+		&&\zsavepos{Overlay\arabic{visual}2}\\%
+		\end{tabular}%
+		% Write part of config.json
+		\StrSubstitute{#2}{"}{\@backslashchar"}[\pdbf@query]%
+		\StrSubstitute{#2}{"}{\@backslashchar"}[\pdbf@queryB]%
+		\ifnum \value{overlay} > 1%
+			\immediate\write\tempfile{,\@charlb}%
+		\else%
+			\immediate\write\tempfile{\@charlb}%
+		\fi%
+		\immediate\write\tempfile{\space\space\space\space"name": "Overlay\arabic{visual}",}%
+		\immediate\write\tempfile{\space\space\space\space"type": \@charlb}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "#3",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"name": "\pdbf@name",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"linkTo": "\pdbf@linkTo",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"linkSelector": "\pdbf@linkSelector",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"linkLabel": "\pdbf@linkLabel",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"verticalLines": "\pdbf@verticalLines",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"horizontalLinesHeader": "\pdbf@horizontalLinesHeader",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"horizontalLinesBody": "\pdbf@horizontalLinesBody",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"logScale": \pdbfLogscale,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xUnitName": "\pdbf@xunitname",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yUnitName": "\pdbf@yunitname",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"query": "\pdbf@query",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"queryB": "\pdbf@queryB",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"options": "\pdbf@options",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"quality": \pdbfQuality,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"zoom": \pdbfScale,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"overlap": \pdbf@overlap,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"legendpos": "\pdbfLegendpos",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"includeZero": false,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"drawPoints": false,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"fillGraph": fillGraph,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"showRangeSelector": false,}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregation": "\pdbf@aggregation",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationattribute": "\pdbf@aggregationattribute",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationBig": "\pdbf@aggregationBig",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationattributeBig": "\pdbf@aggregationattributeBig",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xCount": \pdbf@xCount,}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yCount": \pdbf@yCount,}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"leftArr": "\pdbf@leftArr",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"rightArr": "\pdbf@rightArr",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"topArr": "\pdbf@topArr",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"bottomArr": "\pdbf@bottomArr",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"xValues": "\pdbf@xValues",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yValues": "\pdbf@yValues",}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"yFirst": \pdbf@yFirst,}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"forceXequal": \pdbf@forceXequal,}% 
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"forceYequal": \pdbf@forceYequal,}%  
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"cols": "\pdbf@cols",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"rows": "\pdbf@rows",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"chartType": "\pdbf@chartType",}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x1": \zposx{Overlay\arabic{visual}1},}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"x2": \zposx{Overlay\arabic{visual}2},}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y1": \zposy{Overlay\arabic{visual}1},}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"y2": \zposy{Overlay\arabic{visual}2},}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"fontsize": \pdbf@fontsave,}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"page": \zref@extract{Overlay\arabic{visual}1}{abspage}}%
+		\immediate\write\tempfile{\space\space\space\space\space\space\space\space\@charrb}%
+		\immediate\write\tempfile{\space\space\space\space\@charrb}%
+		\immediate\write\tempfile{\@charrb}%
+		\stepcounter{visual}%
+		\stepcounter{overlay}%
+}%
+}
+
+\NewDocumentCommand\sql{O{} o m}{%
+{\pdbf@sqlmult{\IfValueTF{#2}{#2}{#3}}{#3}{pdbf.common.Text}{#1}}%
+}
+
+\def\pdbf@csxdefaux#1{%
+    \protected@write\@mainaux{}{%
+       \string\expandafter\string\gdef
+        \string\csname\space pdbf@Overlay\arabic{visual}\string\endcsname{\expandafter\detokenize\expandafter\expandafter\expandafter{#1}}%
+    }%
+}
+
+\NewDocumentCommand\dataText{O{} m}{%
+{\expandafter\ifx\csname pdbf@Overlay\arabic{visual}\endcsname\relax\pdbf@csxdefaux{}\else\pdbf@csxdefaux{\csname pdbf@Overlay\arabic{visual}\endcsname}\fi%
+\pdbf@sqlmult{\csname pdbf@Overlay\arabic{visual}\endcsname}{#2}{pdbf.common.DataText}{#1}}%
+}
+
+\NewDocumentCommand\dataTable{O{} m}{%
+{\expandafter\ifx\csname pdbf@Overlay\arabic{visual}\endcsname\relax\pdbf@csxdefaux{}\else\pdbf@csxdefaux{\csname pdbf@Overlay\arabic{visual}\endcsname}\fi%
+\pdbf@sqlmult{\csname pdbf@Overlay\arabic{visual}\endcsname}{#2}{pdbf.common.DataTable}{#1}}%
+}
+	
+\def\dbSQLText#1{%
+	\StrSubstitute{#1}{"}{\@backslashchar"}[\pdbf@value]%
+	\ifnum \value{overlay} > 1%
+		\immediate\write\tempfile{,\@charlb}%
+	\else%
+		\immediate\write\tempfile{\@charlb}%
+	\fi%
+	\immediate\write\tempfile{\space\space\space\space"name": "Database",}%
+	\immediate\write\tempfile{\space\space\space\space"type": \@charlb}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.common.Database",}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"type": 1,}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"value1": "\pdbf@value"}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\@charrb}%
+	\immediate\write\tempfile{\space\space\space\space\@charrb}%
+	\immediate\write\tempfile{\@charrb}%
+	\stepcounter{overlay}%
+}
+
+\def\dbSQLFile#1{%
+	\StrSubstitute{#1}{"}{\@backslashchar"}[\pdbf@value]%
+	\ifnum \value{overlay} > 1%
+		\immediate\write\tempfile{,\@charlb}%
+	\else%
+		\immediate\write\tempfile{\@charlb}%
+	\fi%
+	\immediate\write\tempfile{\space\space\space\space"name": "Database",}%
+	\immediate\write\tempfile{\space\space\space\space"type": \@charlb}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.common.Database",}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"type": 2,}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"value1": "\pdbf@value"}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\@charrb}%
+	\immediate\write\tempfile{\space\space\space\space\@charrb}%
+	\immediate\write\tempfile{\@charrb}%
+	\stepcounter{overlay}%
+}
+
+\def\dbSQLJDBC#1#2#3#4{%
+	\StrSubstitute{#1}{"}{\@backslashchar"}[\pdbf@valueA]%
+	\StrSubstitute{#2}{"}{\@backslashchar"}[\pdbf@valueB]%
+	\StrSubstitute{#3}{"}{\@backslashchar"}[\pdbf@valueC]%
+	\StrSubstitute{#4}{"}{\@backslashchar"}[\pdbf@valueD]%
+	\ifnum \value{overlay} > 1%
+		\immediate\write\tempfile{,\@charlb}%
+	\else%
+		\immediate\write\tempfile{\@charlb}%
+	\fi%
+	\immediate\write\tempfile{\space\space\space\space"name": "Database",}%
+	\immediate\write\tempfile{\space\space\space\space"type": \@charlb}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.common.Database",}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"type": 3,}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"value1": "\pdbf@valueA",}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"value2": "\pdbf@valueB",}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"value3": "\pdbf@valueC",}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"value4": "\pdbf@valueD"}%
+	\immediate\write\tempfile{\space\space\space\space\space\space\space\space\@charrb}%
+	\immediate\write\tempfile{\space\space\space\space\@charrb}%
+	\immediate\write\tempfile{\@charrb}%
+	\stepcounter{overlay}%
+}
+
+\endinput

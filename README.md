@@ -19,10 +19,10 @@ This toolkit is licensed unter the MIT License (see [here](https://github.com/ud
 * [Download the latest version](https://github.com/uds-datalab/PDBF/archive/gh-pages.zip)
 * Extract zip and change workingdir to extracted folder
 * Adjust config.cfg
-* Try to compile Documentation.tex file with this command: java -jar PDBF.jar Documentation.tex
-* Open Documentation.html, this is the final output of the compilation process, if you rename it to ".pdf" it is also a valid pdf-document
-* Optionally you can attach the VLDB-Invaders.ova VirtualBox image to the compiled PDBF file with this command: java -jar PDBF.jar  --vm Documentation.html VLDB-Invaders.ova
-* You can play around with the Minimal.tex file which contains a minimal example of PDBF usage
+* Try to compile pdbf-doc.tex file with this command: java -jar pdbf.jar pdbf-doc.tex
+* Open pdbf-doc.html, this is the final output of the compilation process, if you rename it to ".pdf" it is also a valid pdf-document
+* Optionally you can attach the vldb-Invaders.ova VirtualBox image to the compiled PDBF file with this command: java -jar pdbf.jar  --vm pdbf-doc.html vldb-Invaders.ova
+* You can play around with the minimal.tex file which contains a minimal example of PDBF usage
 * For further information take a look at the [documentation](http://uds-datalab.github.io/PDBF/)
 
 ##Thanks to the authors of:

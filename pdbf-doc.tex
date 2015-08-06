@@ -1,0 +1,613 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{pdbf}
+\usepackage{wrapfig}
+\usepackage[hidelinks]{hyperref}
+\usepackage[a4paper,vmargin={20mm,40mm},hmargin={20mm,20mm}]{geometry}
+
+\title{PDBF Documentation}
+\author{
+ Patrick Bender\\
+  \texttt{s9pabend@stud.uni-saarland.de}
+}
+\date{\today{}, Saarbrücken}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  urlcolor=blue!70!black
+}
+
+\makeatletter
+\def\@maketitle{%
+  \vspace*{-\topskip}%
+  \begingroup\centering%
+  \let \footnote \thanks
+  \hrule height \z@%
+    {\LARGE \@title \par}%
+    \vskip 1.5em 
+    {\large
+      \lineskip .5em 
+      \begin{tabular}[t]{c}%
+        \@author
+      \end{tabular}\par}%
+    \vskip 1em 
+    {\large \@date}%
+  \par\endgroup%
+  \vskip 1.5em%
+}
+\makeatother
+
+\urlstyle{rm}
+
+\def\a{5cm}
+\def\b{10.5cm}
+
+\def\option#1#2#3#4{%
+\noindent \begin{tabular}{|p{\a}|p{\b}|}
+\hline
+\textbf{#1} & \\
+\hline
+Desc.: & #2 \\
+\hline
+Argument: & #3\\
+\hline
+Default:& #4\\
+\hline
+\end{tabular} \\[4pt]%
+}
+
+\dbSQLText{CREATE TABLE test(a int, b int); INSERT INTO test VALUES(1, 10); INSERT INTO test VALUES(2, 100); INSERT INTO test VALUES(3, 120); INSERT INTO test VALUES(4, 100);}
+
+\begin{document}
+\maketitle
+\noindent \textbf{For PDBF \input{VERSION.md}}
+
+\section{Abstract}
+PDBF documents are a hybrid format. They are a valid PDF and a valid HTML page at the same time. You can now optionally add an VirtualBox OVA file with a complete operating system to the PDBF document. Yes, this means that the resulting file is a valid PDF, HTML, and OVA file at the same time. If you change the file extension to PDF and open it with an PDF viewer, you can see the static part of the document. If you change the file extension to HTML and open it with a Browser (currently Chrome/Firefox/Safari/IE 10 supported), you can see the dynamic part of the document. And if an ova file is attached you can also change the file extension to OVA and install and run the attached operating system.\\
+The difference between the PDF and the HTML version is that the PDF version contains static version of all PDBF elements, whereas the HTML version is dynamic. For example you can zoom into graphs, temporarly remove dataseries from the graph, inspect and change the underling query of the PDBF element and see the result of the change directly in the browser.\\
+This approach works completely offline. No internet connection is required, neither at compile time, nor at viewing time.
+
+\noindent PDBF files are created from LaTeX source code and a relational database. The raw data can either be a SQL statement string, a file with SQL statements, or contained in a database (currently PostgreSQL/MySQL/MariaDB supported). In the LaTeX code you can then specify how the PDBF element (currently charts/pivot tables/multiplot charts/sql statements are supported) is created from the raw data with options and an SQL query. Read more in the \href{http://uds-datalab.github.io/PDBF/}{documentation}, which is itself is a PDBF document.\\
+
+\noindent PDBF toolkit is written in Java and LaTeX and can be used to compile documents on Windows, Mac and Linux. PDBF documents are also platform independent and run on any desktop OS (Windows, Linux, Mac) with a browser/PDF viewer.\\
+
+\noindent A \href{https://infosys.uni-saarland.de/publications/p1972-dittrich.pdf}{demo paper} of our tool is appearing at \href{http://www.vldb.org/2015/}{VLDB 2015}. 
+
+\section{License}
+\noindent This toolkit is licensed unter the MIT License. See LICENSE.md file.\\
+
+\newpage
+\tableofcontents
+\newpage
+
+\section{Thanks to}
+phantomJS (\url{https://github.com/ariya/phantomjs})\\
+Apache Commons IO (\url{http://commons.apache.org/proper/commons-io/})\\
+Apache Commons Codec (\url{http://commons.apache.org/proper/commons-codec/})\\
+google-gson (\url{https://github.com/google/gson})\\
+postgreSQL JDBC Driver (\url{https://jdbc.postgresql.org/})\\
+MariaDB JDBC Driver (\url{https://mariadb.com/kb/en/mariadb/about-the-mariadb-java-client/})\\
+AlaSQL (\url{https://github.com/agershun/alasql})\\
+C3 (\url{https://github.com/masayuki0812/c3})\\
+D3 (\url{https://github.com/mbostock/d3})\\
+Codemirror (\url{https://github.com/codemirror/codemirror})\\
+google-diff-match-patch (\url{https://code.google.com/p/google-diff-match-patch/})\\
+explorercanvas (\url{https://code.google.com/p/explorercanvas/})\\
+DataTables (\url{https://github.com/DataTables/DataTables})\\
+jQuery (\url{https://github.com/jquery/jquery})\\
+jQuery-UI (\url{https://github.com/jquery/jquery-ui})\\
+jStat (\url{https://github.com/jstat/jstat})\\
+pivottable (\url{https://github.com/nicolaskruchten/pivottable})\\
+PDF.js (\url{https://github.com/mozilla/pdf.js})\\
+google-closure-compiler (\url{https://github.com/google/closure-compiler})\\
+
+\section{How to use the PDBF compiler}
+Right now there are only two modes: \\[4pt]
+-- The standart mode which compiles a tex file into the hybrid PDBF format:\\
+\verb|java -jar PDBF.jar LaTeX_file| \\[2pt]
+-- The VM mode which attaches a VirtualBox .ova file to an existing PDBF:\\
+\verb|java -jar PDBF.jar --vm PDBF_File.html VM_File.ova|
+
+\section{Requirements}
+These \LaTeX\relax packages are required for PDBF documents:
+\begin{itemize}
+\item \verb|zref|
+\item \verb|xcolor|
+\item \verb|graphicx|
+\item \verb|xstring|
+\item \verb|xparse|
+\item \verb|geometry|
+\item \verb|array|
+\end{itemize}
+\noindent Furthermore it is needed that your \LaTeX\relax document uses the geometry package to specify the page size.\\
+
+\noindent \textbf{Warning:} There are problems with \textbf{inputenc UTF8} and \textbf{pgfpages}. If you really have to use the inputenc UTF8 package then you cant use non-ASCII characters inside queries. The pgfpages package is incompatible to this package (Its fixable but requires additional effort). 
+
+\section{SQL queries for PDBF elements}
+PDBF uses AlaSQL as database engine. For all available features of the database visit \url{https://github.com/agershun/alasql}. Some functionality might not yet be available because we currently use not the latest version.\\[4pt]
+\textbf{Note:} Mostly sql syntax is standart sql, but for example attributes with spaces in their name have to be sourrounded by square brackets. E.g. SELECT attribute AS [attribute with spaces] FROM test;\\
+
+\noindent We extended AlaSQL with the following statistical sql functions:\\[5pt]
+\verb|GRUBBS_FILTER(arr, alpha)|: \\
+\indent Desc.: Filters an array of values with a \href{http://en.wikipedia.org/wiki/Grubbs'_test_for_outliers}{grubbs test}\\
+\indent Returns the filtered array.\\[3pt]
+\indent \option
+{arr}
+{Array on which the operation is performed.}
+{JavaScript array}
+{No default value. Value must always be set!}
+\indent \option
+{alpha}
+{significance level}
+{Number $>$ 0 AND Number $<$ 1}
+{\texttt{0.05}}\\[3pt]
+%
+\verb|MEAN(arr)|: \\
+\indent Desc.: Calculates the \href{http://en.wikipedia.org/wiki/Arithmetic_mean}{arithmetic mean} of an array of values.\\
+\indent Returns the arithmetic mean of the array.\\[3pt]
+\indent \option
+{arr}
+{Array on which the operation is performed.}
+{JavaScript array}
+{No default value. Value must always be set!}\\[3pt]
+%
+\verb|STDDEV_SAMP(arr)|: \\
+\indent Desc.: Calculates the \href{http://en.wikipedia.org/wiki/Standard_deviation}{ sample standard deviation} of an array of values.\\
+\indent Returns the sample standard deviation of the array.\\[3pt]
+\indent \option
+{arr}
+{Array on which the operation is performed.}
+{JavaScript array}
+{No default value. Value must always be set!}\\[3pt]
+%
+\verb|MARGIN_OF_ERROR(arr, alpha)|: \\
+\indent Desc.: Calculates the \href{http://en.wikipedia.org/wiki/Margin_of_error}{margin of error} of an array of values.\\
+\indent Returns the margin of error of the array.\\[3pt]
+\indent \option
+{arr}
+{Array on which the operation is performed.}
+{JavaScript array}
+{No default value. Value must always be set!}
+\indent \option
+{alpha}
+{significance level}
+{Number $>$ 0 AND Number $<$ 1}
+{\texttt{0.05}}\\[3pt]
+%
+\verb|CONF_INT(arr, alpha)|: \\
+\indent Desc.: Calculates the \href{http://en.wikipedia.org/wiki/Confidence_interval}{confidence interval} of an array.\\
+\indent Returns the confidence interval of the array.\\[3pt]
+\indent \option
+{arr}
+{Array on which the operation is performed.}
+{JavaScript array}
+{No default value. Value must always be set!}
+\indent \option
+{alpha}
+{significance level}
+{Number $>$ 0 AND Number $<$ 1}
+{\texttt{0.05}}\\[3pt]
+%
+\verb|T_TEST(arr1, arr2, alpha)|: \\
+\indent Desc.: Performs a \href{http://en.wikipedia.org/wiki/Student's_t-test}{Student's t-test} on two arrays.\\
+\indent Returns true if they are indistinguishable, and returns false otherwise.\\[3pt]
+\indent \option
+{arr1, arr2}
+{Arrays on which the operation is performed.}
+{JavaScript array}
+{No default value. Value must always be set!}
+\indent \option
+{alpha}
+{significance level}
+{Number $>$ 0 AND Number $<$ 1}
+{\texttt{0.05}}\\[3pt]
+%
+\verb|WELCH_TEST(arr1, arr2, alpha)|:\\
+\indent Desc.: Performs a \href{http://en.wikipedia.org/wiki/Welch's_t_test}{Welch's t-test} on two arrays.\\
+\indent Returns true if they are indistinguishable, and returns false otherwise.\\[3pt]
+\indent \option
+{arr1, arr2}
+{Arrays on which the operation is performed.}
+{JavaScript array}
+{No default value. Value must always be set!}
+\indent \option
+{alpha}
+{significance level}
+{Number $>$ 0 AND Number $<$ 1}
+{\texttt{0.05}}\\[3pt]
+%
+\section{SQL data sources}
+\noindent Macros: \\[3pt]
+\verb|\dbSQLText{sqlQueryString}| \\
+\verb|\dbSQLFile{fileWithSQLQueries}| \\
+\verb|\dbSQLJDBC{jdbcConnectionURL}{user}{password}{commaSeperatedListOfTableNames}| \\
+\textbf{Note:} jdbcConnectionURL consist of jdbc followed by the name of the dbms (only postgresql and mysql are currently supported) followed by the url of the dbms followed by the database name (e.g. jdbc:postgresql://localhost:5432/postgres).\\
+\textbf{Note:} jdbcConnectionURL, user, and password are not stored in the output documents.\\[4pt]
+\textbf{WARNING:} \verb|\dbSQLText| and \verb|\dbSQLFile| are currently horribly, even for medium sized (more than 100 tuples) amounts of data. Use \verb|\dbSQLJDBC| instead.
+
+\section{PDBF elements}
+\subsection{Chart}
+\begin{figure}[h!]%
+\hspace{-218pt}Examples:\\
+    \centering
+    \begin{minipage}{.48\textwidth}
+    \chart[width=\textwidth, height=0.6\textwidth, chartType=line]{SELECT * FROM test;}
+    \caption{Line Chart}
+    \end{minipage}
+    \hspace{11pt}
+    \begin{minipage}{.48\textwidth}
+    \chart[width=\textwidth, height=0.6\textwidth, chartType=bar]{SELECT * FROM test;}
+    \caption{Bar Chart}
+    \end{minipage} \\[8pt]
+    
+    \begin{minipage}{1.0\textwidth}
+    \chart[width=\textwidth, height=0.36\textwidth, chartType=signatureplot]{SELECT b FROM test;}
+    \caption{Signatureplot Chart}
+    \end{minipage}
+%    \begin{minipage}{.48\textwidth}
+%    \chart[width=\textwidth, height=0.8\textwidth, chartType=signatureplot]{SELECT * FROM test;}
+%    \caption{Signatureplot Chart}
+%    \end{minipage}
+%    \hspace{11pt}
+%    \begin{minipage}{.48\textwidth}
+%    \chart[width=\textwidth, height=0.8\textwidth, chartType=Line, xunit=Date, yunit={Runtime [in sec]}, options={"strokeWidth": 0, "drawPoints": true, "pointSize": 3, "highlightCircleSize": 4, "xRangePad": 10}]{SELECT date, runtimeA AS [engine A], runtimeB AS [engine B] FROM data2;}
+%    \caption{Multi-column Dot Chart}
+%    \end{minipage}
+\end{figure}
+
+\newpage
+\noindent Macros: \\[3pt]
+\verb|\chart[options][queryForOverlay]{queryForPage}| \\
+\textbf{Note:} if \verb|queryForOverlay| is omitted the \verb|queryForPage| is used for the overlay.\\
+\textbf{Note:} The first column of the query result is used for the x-Axis, all other columns are used for y-Axis.\\[8pt] 
+\noindent Options:\\[3pt]
+%
+\option
+{name}
+{Sets the name of this element. This is only useful for linking Elements. See DataText.}
+{String}
+{\texttt{undefined}}
+
+\option
+{width}
+{Sets the width of the chart.}
+{\LaTeX~length}
+{No default value. Value must always be set!}
+
+\option
+{height}
+{Sets the height of the chart.}
+{\LaTeX~length}
+{No default value. Value must always be set!}
+
+\option
+{quality}
+{Sets the quality for the image version of the chart in the pdf. 1.0 corresponds roughly to 120 pixels per inch. Can also be redefined globally (\texttt{pdbfQuality}).}
+{Number $>$ 0}
+{\texttt{1.0}}
+
+\option
+{scale}
+{Scales the size of the chart. 1.0 corresponds roughly to font-size that is currently choosen in \LaTeX. Can also be redefined globally (\texttt{pdbfScale}).}
+{Number $>$ 0}
+{\texttt{1.0}}
+
+\option
+{chartType}
+{Sets the type of the chart.}
+{\texttt{line} or \texttt{bar} or \texttt{signatureplot}}
+{\texttt{line}}
+
+\option
+{xunit}
+{Sets the a label for the x-axis.}
+{String}
+{\texttt{""} (which means hide)}
+
+\option
+{yunit}
+{Sets the a label for the y-axis.}
+{String}
+{\texttt{""} (which means hide)}
+
+\option
+{options}
+{Sets options that are directly passed to the c3 chart library (\href{http://c3js.org/reference.html}{$\rightarrow$ Documentation}). You need to wrap the JSON-String with \texttt{\{\}} if you want to use \texttt{[} or \texttt{]} or \texttt{,}.}
+{JSON-String}
+{\texttt{\{\}} (which means empty object)}
+
+\option
+{includeZero}
+{Set the minimum of the range of the y-axis to zero.}
+{\texttt{true} or \texttt{false}}
+{\texttt{false}}
+
+\option
+{drawPoints}
+{Whether to show each point in line.}
+{\texttt{true} or \texttt{false}}
+{\texttt{false}}
+
+\option
+{fillGraph}
+{Whether to fill the area below the graph.}
+{\texttt{true} or \texttt{false}}
+{\texttt{false}}
+
+\option
+{showRangeSelector}
+{Whether to show a range selector for the x-axis below the chart.}
+{\texttt{true} or \texttt{false}}
+{\texttt{false} for in-page chart, \texttt{true} for overlay chart}
+
+%\option %TODO: not yet implemented
+%{logscale}
+%{If set, the y axis uses log scale. Can also be redefined globally (\texttt{pdbfLogscale}).}
+%{\texttt{true} or \texttt{false}}
+%{\texttt{false}}
+%
+%\option %TODO: not yet implemented
+%{overlap}
+%{Unused.}
+%{\texttt{TODO: ...}}
+%{\texttt{TODO: ...}}
+%
+%\option %TODO: not yet implemented
+%{legendpos}
+%{Sets the position of the legend of the chart.}
+%{\texttt{TODO: ...}}
+%{\texttt{TODO: ...}}
+%
+
+\subsection{Multiplot Chart}
+\begin{figure}[h!]%
+    Example:\\
+    \multiplotChart[width=\textwidth, height=0.5\textwidth, xCount=2, yCount=2, yValues={["b", "b*2"]}, xValues={["a > 2", "a <= 2"]}, yFirst]{SELECT a,? FROM test WHERE ?;}
+    \caption{Multiplot Line Chart}
+\end{figure}
+
+\noindent Macros: \\[3pt]
+\verb|\multiplotChart[options][queryForOverlay]{queryForPage}| \\
+\textbf{Note:} If \verb|queryForOverlay| is omitted the \verb|queryForPage| is used for the overlay\\
+\textbf{Note:} Both \verb|queryForOverlay| and \verb|queryForPage| must contain exactly two occurences of the ? character. These are later replaced with values from the xValues/yValues option.\\[8pt]
+\noindent Options: \\[3pt]
+%
+\textbf{Note:} For multiplot charts all options of chart are also valid options.\\[4pt]
+%
+\option
+{xCount}
+{Sets number of columns.}
+{Number $>$ 0}
+{No default value. Value must always be set!}
+
+\option
+{yCount}
+{Sets number of rows.}
+{Number $>$ 0}
+{No default value. Value must always be set!}
+
+\option
+{leftArr}
+{Sets the labels for the left side.}
+{Either a JavaScript array of Strings where each string corresponds to exactly one row (e.g \{"row1", "row2"\}) or a JavaScript array of Objects with a c property which corresponds to the number of rows this text should span and a text property which corresponds to the text-string.}
+{If this option is not set, then the value of the xunit option is used spanning over the whole site.}
+
+\option
+{rightArr}
+{Sets the labels for the right side.}
+{Either a JavaScript array of Strings where each string corresponds to exactly one row (e.g \{"row1", "row2"\}) or a JavaScript array of Objects with a c property which corresponds to the number of rows this text should span and a text property which corresponds to the text-string.}
+{If this option is not set, then the value that is used for the query in this row is used.}
+
+\option
+{bottomArr}
+{Sets the labels for the bottom side.}
+{Either a JavaScript array of Strings where each string corresponds to exactly one column (e.g \{"column1", "column2"\}) or a JavaScript array of Objects with a c property which corresponds to the number of columns this text should span and a text property which corresponds to the text-string.}
+{If this option is not set, then the value of the yunit option is used spanning over the whole site.}
+
+\option
+{topArr}
+{Sets the labels for the top side.}
+{Either a JavaScript array of Strings where each string corresponds to exactly one column (e.g \{"column1", "column2"\}) or a JavaScript array of Objects with a c property which corresponds to the number of columns this text should span and a text property which corresponds to the text-string.}
+{If this option is not set, then the value that is used for the query in this column is used.}
+
+\option
+{xValues}
+{The values that replace the first ? character in the query. If yFirst is set, they replace the second ? character in the query instead.}
+{A JavaScript array that has as much entries as the xCount options value}
+{No default value. Value must always be set!}
+
+\option
+{yValues}
+{The values that replace the second ? character in the query. If yFirst is set, they replace the first ? character in the query instead.}
+{A JavaScript array that has as much entries as the yCount options value}
+{No default value. Value must always be set!}
+
+\option
+{yFirst}
+{If this option is set, then first ? character is replaced with values from yValues option and second ? character is replaced with values from xValues. If this option is not set, then first ? character is replaced with values from xValues option and second ? character is replaced with values from yValues.}
+{\texttt{true} or \texttt{false}}
+{\texttt{false}}
+
+\option
+{forceXequal}
+{If this option is set, then all columns have the same x-axis range as the uppermost chart. If this option is not set, then all charts have individual x-axis ranges.}
+{\texttt{true} or \texttt{false}}
+{\texttt{false}}
+
+\option
+{forceYequal}
+{If this option is set, then all rows have the same y-axis range as the leftmost chart. If this option is not set, then all charts have individual y-axis ranges.}
+{\texttt{true} or \texttt{false}}
+{\texttt{false}}
+
+\newpage
+\subsection{Pivot Table}
+\begin{figure}[h!]%
+    Example:\\
+    \pivotTable[width=\textwidth, height=0.5\textwidth, rows={["a"]}, aggregationattribute=b]{SELECT * FROM test;}
+    \caption{Pivot Table}
+\end{figure}
+
+\noindent Macros: \\[3pt]
+\verb|\pivotTable[options][queryForOverlay]{queryForPage}| \\
+\textbf{Note:} if \verb|queryForOverlay| is omitted the \verb|queryForPage| is used for the overlay\\[8pt]
+\noindent Options: \\[3pt]
+%
+\option
+{width}
+{Sets the width of the chart.}
+{\LaTeX~length}
+{No default value. Value must always be set!}
+
+\option
+{height}
+{Sets the height of the chart.}
+{\LaTeX~length}
+{No default value. Value must always be set!}
+
+\option
+{quality}
+{Sets the quality for the image version of the chart in the pdf. 1.0 corresponds roughly to 120 pixels per inch. Can also be redefined globally (\texttt{pdbfQuality}).}
+{Number $>$ 0}
+{\texttt{1.0}}
+
+\option
+{scale}
+{Scales the size of the chart. 1.0 corresponds roughly to font-size that is currently choosen in \LaTeX. Can also be redefined globally (\texttt{pdbfScale}).}
+{Number $>$ 0}
+{\texttt{1.0}}
+
+\option
+{aggregation}
+{Sets the aggregation function for the page.}
+{\texttt{Count} or \texttt{Count Unique Values} or \texttt{List Unique Values} or \texttt{Sum} or \texttt{Integer Sum} or \texttt{Average} or \texttt{Minimum} or \texttt{Maximum} or \texttt{Sum over Sum} or \texttt{80\% Upper Bound} or \texttt{80\% Lower Bound} or \texttt{Sum as Fraction of Total} or \texttt{Sum as Fraction of Rows} or \texttt{Sum as Fraction of Columns} or \texttt{Count as Fraction of Total} or \texttt{Count as Fraction of Rows} or \texttt{Count as Fraction of Columns}}
+{\texttt{Minimum}}
+
+\option
+{aggregationBig}
+{Sets the aggregation function for the overlay.}
+{\texttt{Count} or \texttt{Count Unique Values} or \texttt{List Unique Values} or \texttt{Sum} or \texttt{Integer Sum} or \texttt{Average} or \texttt{Minimum} or \texttt{Maximum} or \texttt{Sum over Sum} or \texttt{80\% Upper Bound} or \texttt{80\% Lower Bound} or \texttt{Sum as Fraction of Total} or \texttt{Sum as Fraction of Rows} or \texttt{Sum as Fraction of Columns} or \texttt{Count as Fraction of Total} or \texttt{Count as Fraction of Rows} or \texttt{Count as Fraction of Columns}}
+{If this option is not set, then the value of the aggregation option is used}
+
+\option
+{aggregationattribute}
+{Sets the attribute for the aggregation function in the page.}
+{The name of an attribute that is present in the result of the sql query for the page}
+{No default value. Value must always be set!}
+
+\option
+{aggregationattributeBig}
+{Sets the attribute for the aggregation function in the overlay.}
+{The name of an attribute that is present in the result of the sql query for the overlay}
+{If this option is not set, then the value of the aggregationattribute option is used}
+
+\option
+{cols}
+{The attributes for the columns in the pivot table.}
+{JavaScript array of strings (e.g. ["a", "b", "c"]). The name of attributes have to be present in the result of the sql query for the overlay and page}
+{\texttt{[]} (which means empty array)}
+
+\option
+{rows}
+{The attributes for the rows in the pivot table.}
+{JavaScript array of strings (e.g. ["a", "b", "c"]). The name of attributes have to be present in the result of the sql query for the overlay and page}
+{\texttt{[]} (which means empty array)}
+
+\subsection{SQL}
+Clickable SQL-statements\\[3pt]
+Example:\\[3pt]
+\sql{SELECT * FROM test;}\\[3pt]
+%
+\noindent Macros: \\[3pt]
+\verb|\sql[options][textForPage]{queryForOverlay}| \\
+\textbf{Note:} if \verb|textForPage| is omitted the \verb|queryForOverlay| is used as text for the page.\\[8pt]
+
+\noindent Options: \\[3pt]
+
+\option
+{color}
+{The textcolor of the displayed text.}
+{\texttt{white}, \texttt{black}, \texttt{red}, \texttt{green}, \texttt{blue}, \texttt{cyan}, \texttt{magenta}, \texttt{yellow} or xcolor syntax (see \href{http://mirror.unicorncloud.org/CTAN/macros/latex/contrib/xcolor/xcolor.pdf}{here}). Can also be redefined globally (\texttt{pdbfDynamicTextColor})}
+{\texttt{blue}}
+
+\subsection{DataText}
+Write text that is the result of a SQL-statement.\\[3pt]
+Example:\\[3pt]
+The table ``test'' contains \dataText{SELECT COUNT(*) FROM test;} tuples.\\
+The table ``test'' contains the following tuples: \dataText{SELECT * FROM test;}.\\[3pt]
+%
+\noindent Macros: \\[3pt]
+\verb|\dataText[options]{query}| \\[8pt]
+
+\noindent Options: \\[3pt]
+
+\option
+{color}
+{The textcolor of the displayed text.}
+{\texttt{white}, \texttt{black}, \texttt{red}, \texttt{green}, \texttt{blue}, \texttt{cyan}, \texttt{magenta}, \texttt{yellow} or xcolor syntax (see \href{http://mirror.unicorncloud.org/CTAN/macros/latex/contrib/xcolor/xcolor.pdf}{here}). Can also be redefined globally (\texttt{pdbfDynamicTextColor})}
+{\texttt{blue}}
+
+\option
+{linkTo}
+{When this option is set then this DataText and the element with name equal to the value of \texttt{linkTo} are linked. When the cursor is moved above the DataText then in the linked element the specified \texttt{linkSelector} specifies which part of the element is highlighted and annotated with the value of \texttt{linkLabel}.}
+{String which value is the name of some other element. \textbf{Currently only chart elements can be used for \texttt{linkTo}.}}
+{\texttt{undefined}}
+
+\option
+{linkSelector}
+{The selector that specifies which part of the \texttt{linkTo} element is highlighted.}
+{\texttt{Number}, \texttt{Date} or \texttt{String} depending on the type of the \texttt{linkTo} element. For charts the type depends on the datatype of the xAxis and the value specifies which part of the xAxis is highlighted.}
+{\texttt{undefined}}
+
+\option
+{linkLabel}
+{The text that is displayed near the highlighted area.}
+{String}
+{\texttt{undefined}}
+
+\subsection{DataTable}
+Write a \LaTeX\space table that is the result of a SQL-statement.\\[3pt]
+Example:\\[3pt]
+\dataTable{SELECT * FROM test;}\\[5pt]
+%
+\noindent Macros: \\[3pt]
+\verb|\dataTable[options]{query}| \\[8pt]
+
+\noindent Options: \\[3pt]
+
+\option
+{color}
+{The textcolor of the displayed text.}
+{\texttt{white}, \texttt{black}, \texttt{red}, \texttt{green}, \texttt{blue}, \texttt{cyan}, \texttt{magenta}, \texttt{yellow} or xcolor syntax (see \href{http://mirror.unicorncloud.org/CTAN/macros/latex/contrib/xcolor/xcolor.pdf}{here}). Can also be redefined globally (\texttt{pdbfDynamicTextColor})}
+{\texttt{blue}}
+
+\option
+{verticalLines}
+{Specifies the vertical lines for the table.}
+{\texttt{a} for all, \texttt{i} for inner, \texttt{o} for outer, \texttt{n} for none, or you can use the default tabular syntax (e.g. \texttt{|l|c|r|})}
+{\texttt{a}}
+
+\option
+{horizontalLinesHeader}
+{Specifies the horizontal lines for the table header.}
+{\texttt{a} for all, \texttt{i} for inner, \texttt{o} for outer, \texttt{n} for none, or you can specify a custom pattern that is repeatedly applied with the following format: h means line, b means no line, the space character delimits format specifiers. E.g. ``hh b'' means: double line followed by no line followed by double line followed by no line ... and so on}
+{\texttt{a}}
+
+\option
+{horizontalLinesBody}
+{Specifies the horizontal lines for the table body, excluding the border above the first tuple, which is controlled by horizontalLinesHeader.}
+{\texttt{a} for all, \texttt{i} for inner, \texttt{o} for outer, \texttt{n} for none, or you can specify a custom pattern that is repeatedly applied with the following format: h means line, b means no line, the space character delimits format specifiers. E.g. ``hh b'' means: double line followed by no line followed by double line followed by no line ... and so on}
+{\texttt{a}}
+
+\section{F.A.Q.}
+\begin{itemize}
+\item Q.: The overlay is not on the right position!\\
+A.: Most likely you use pages with different sizes in your document or you use the pgfpages package. This is currently not supported by PBDF 
+\item Q.: I get \verb|Error: paperwidth value missing! Did you forgot to specify the| \\ \verb|papersize via the geometry package?| when compiling my document.\\
+A.: You need to explicitly specify the papersize of your document via the geometry package (e.g. \verb|\usepackage[letterpaper]{geometry}|)
+\item Q.: I get \verb|\unhbox \voidb@x \bgroup \let \unhbox \voidb@x \setbox \@tempboxa \hbox| \verb|{u\global \mathchardef \accent@spacefactor \spacefactor }\accent 127 u\egroup| \newline \verb|\spacefactor \accent@spacefactor| or a similar string in a error message.\\
+A.: Chances are high that you use the \verb|\usepackage[utf8]{inputenc}| package or a similar package. These are not fully compatible with PDBF. If you really have to use the utf8 package then you cant use special characters inside options and queries of the PDBF package.
+\end{itemize}
+
+\end{document}

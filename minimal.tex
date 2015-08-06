@@ -1,0 +1,20 @@
+\documentclass[10pt]{article}
+\usepackage{pdbf}
+\usepackage[a4paper]{geometry}
+
+\dbSQLText{CREATE TABLE test(a int, b int); INSERT INTO test VALUES(1, 10); INSERT INTO test VALUES(2, 100); INSERT INTO test VALUES(3, 120); INSERT INTO test VALUES(4, 100);}
+%\dbSQLFile{somedb.sql}
+%\dbSQLJDBC{jdbc:postgresql://localhost:5432/postgres}{postgres}{test}{testtable}%
+
+\begin{document}
+\noindent
+\sql{SELECT * FROM test;}\\[3pt]
+The table ``test'' contains \dataText{SELECT COUNT(*) FROM test;} tuples.\\[3pt]
+The following points are linked to the chart below: \dataText[linkTo=testname, linkSelector=2, linkLabel=Value at 2]{SELECT * FROM test WHERE a=2;}, \dataText[linkTo=testname, linkSelector=3, linkLabel=Value at 3]{SELECT * FROM test WHERE a=3;}.\\[3pt]
+\chart[width=\textwidth, height=0.45\textwidth, chartType=line, name=testname]{SELECT * FROM test;}\\[3pt]
+\chart[width=\textwidth, height=0.45\textwidth, chartType=bar]{SELECT * FROM test;}\\[3pt]
+\chart[width=\textwidth, height=0.45\textwidth, chartType=signatureplot]{SELECT b FROM test;}\\[3pt]
+\multiplotChart[width=\textwidth, height=0.9\textwidth, xCount=2, yCount=2, yValues={["b", "b*2"]}, xValues={["a > 2", "a <= 2"]}, yFirst]{SELECT a,? FROM test WHERE ?;}\\[3pt]
+\pivotTable[width=\textwidth, height=0.5\textwidth, rows={["a"]}, aggregationattribute=b]{SELECT * FROM test;}\\[3pt]
+\dataTable[verticalLines=i, horizontalLinesHeader=b hh, horizontalLinesBody=i]{SELECT * FROM test;}\\[3pt]
+\end{document}
