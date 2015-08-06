@@ -2,9 +2,9 @@
 data/viewerAlasql.html
 /
 data/viewerSqlite.html
-db.sql
-config.json
-dim.json
+pdbf-db.sql
+pdbf-config.json
+pdbf-dim.json
 *.aux
 *.log
 *.out
@@ -44,8 +44,8 @@ Overlay15.png
 .project
 .classpath
 .settings/
-.git//db.json
-/preload
+.git//pdbf-db.json
+/pdbf-preload
 /Overlay2.json
 /Overlay1.json
 /testdata/
@@ -59,7 +59,7 @@ minimal.html
 /main.bbl
 /main.blg
 /TODO
-/db.json
+/pdbf-db.json
 /presentation.nav
 /presentation.snm
 /presentation.toc

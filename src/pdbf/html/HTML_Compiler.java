@@ -34,8 +34,8 @@ public class HTML_Compiler {
 			+ "<script src=\"compatibility.js\"></script>" + "<script src=\"l10n.js\"></script>" + "<script src=\"../build/pdf.js\"></script>" + "<script src=\"../build/pdf.worker.js\"></script>" + "<script src=\"viewer.js\"></script>";
 	    }
 	    String all = FileUtils.readFileToString(new File("data/all"), Tools.utf8);
-	    String preload = FileUtils.readFileToString(new File("preload"));
-	    viewer = viewerHEAD + "pdf_base64 = \"" + Tools.encodeFileToBase64Binary(new File(pdfname)) + "\";\r\n" + "db_base64 = \"" + Tools.encodeFileToBase64Binary(new File("db.sql")) + "\";\r\n" + "json_base64 = \"" + Tools.encodeFileToBase64Binary(new File("config.json")) + "\";\r\n" + "dbjson_base64 = \"" + Tools.escapeSpecialChars(new File("db.json")) + "\";\r\n" + preload + "\r\n" + (CompleteRun_HTML.includeRes ? (all + "\r\n") : ("")) + add + viewerTAIL;
+	    String preload = FileUtils.readFileToString(new File("pdbf-preload"));
+	    viewer = viewerHEAD + "pdf_base64 = \"" + Tools.encodeFileToBase64Binary(new File(pdfname)) + "\";\r\n" + "db_base64 = \"" + Tools.encodeFileToBase64Binary(new File("pdbf-db.sql")) + "\";\r\n" + "json_base64 = \"" + Tools.encodeFileToBase64Binary(new File("pdbf-config.json")) + "\";\r\n" + "dbjson_base64 = \"" + Tools.escapeSpecialChars(new File("pdbf-db.json")) + "\";\r\n" + preload + "\r\n" + (CompleteRun_HTML.includeRes ? (all + "\r\n") : ("")) + add + viewerTAIL;
 	    //TODO: use here also script instead of comment
 	    String insert1 = "%<!DOCTYPE html><html dir=\"ltr\" mozdisallowselectionprint moznomarginboxes>" + "<head><meta charset=\"utf-8\"><!--\n";
 	    String insert2 = "1337 0 obj\n" + "stream\n" + "-->\n" + viewer + "<!--\n" + "endstream\n" + "endobj\n";

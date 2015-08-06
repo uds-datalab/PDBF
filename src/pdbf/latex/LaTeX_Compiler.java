@@ -118,17 +118,17 @@ public class LaTeX_Compiler {
 	Overlay[] overlays = readJSONconfig();
 	
 	// Split
-	File f = new File("db.sql");
-	File f2 = new File("db.json");
+	File f = new File("pdbf-db.sql");
+	File f2 = new File("pdbf-db.json");
 	if (f.exists()) {
 	    if (!f.delete()) {
-		System.out.println("db.sql could not be deleted! Exiting...");
+		System.out.println("pdbf-db.sql could not be deleted! Exiting...");
 		System.exit(-1);
 	    }
 	}
 	if (f2.exists()) {
 	    if (!f2.delete()) {
-		System.out.println("db.json could not be deleted! Exiting...");
+		System.out.println("pdbf-db.json could not be deleted! Exiting...");
 		System.exit(-1);
 	    }
 	}
@@ -185,7 +185,7 @@ public class LaTeX_Compiler {
 	    }
 	}
 	try {
-	    FileUtils.writeStringToFile(new File("preload"), preload);
+	    FileUtils.writeStringToFile(new File("pdbf-preload"), preload);
 	} catch (IOException e2) {
 	    e2.printStackTrace();
 	}
@@ -230,7 +230,7 @@ public class LaTeX_Compiler {
 	overlays = olist.toArray(overlays);
 	try {
 	    String json = gson.toJson(overlays);
-	    FileUtils.writeStringToFile(new File("config.json"), json, Tools.utf8);
+	    FileUtils.writeStringToFile(new File("pdbf-config.json"), json, Tools.utf8);
 	} catch (IOException e1) {
 	    e1.printStackTrace();
 	}
@@ -251,9 +251,9 @@ public class LaTeX_Compiler {
 	gson = builder.create();
 	Overlay[] overlays = null;
 	try {
-	    String json = FileUtils.readFileToString(new File("config.json"), Tools.utf8);
+	    String json = FileUtils.readFileToString(new File("pdbf-config.json"), Tools.utf8);
 	    overlays = gson.fromJson(json, Overlay[].class);
-	    String json2 = FileUtils.readFileToString(new File("dim.json"), Tools.utf8);
+	    String json2 = FileUtils.readFileToString(new File("pdbf-dim.json"), Tools.utf8);
 	    dimOrg = gson.fromJson(json2, Dimension.class);
 	    for (int i = 0; i < overlays.length; ++i) {
 		Visualization v = overlays[i].type;
@@ -294,8 +294,8 @@ public class LaTeX_Compiler {
     private static void processDatabase(Overlay overlay) {
 	try {
 	    Database db = (Database) overlay.type;
-	    File f = new File("db.sql");
-	    File f2 = new File("db.json");
+	    File f = new File("pdbf-db.sql");
+	    File f2 = new File("pdbf-db.json");
 	    switch (db.type) {
 	    case 1:
 		FileUtils.writeStringToFile(f, db.value1 + System.lineSeparator(), Tools.utf8, true);
@@ -359,7 +359,7 @@ public class LaTeX_Compiler {
 	    String viewer;
 	    String viewerHEAD = FileUtils.readFileToString(new File("data/template-head-images.html"), Tools.utf8);
 	    String viewerTAIL = FileUtils.readFileToString(new File("data/template-tail-images.html"), Tools.utf8);
-	    viewer = viewerHEAD + "dim_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(dim)) + "\";\r\n" + "json_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(o)) + "\";\r\n" + "db_base64 = \"" + Tools.encodeFileToBase64Binary(new File("db.sql")) + "\";\r\n" + "dbjson_base64 = \"" + Tools.escapeSpecialChars(new File("db.json")) + "\";\r\n" + viewerTAIL;
+	    viewer = viewerHEAD + "dim_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(dim)) + "\";\r\n" + "json_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(o)) + "\";\r\n" + "db_base64 = \"" + Tools.encodeFileToBase64Binary(new File("pdbf-db.sql")) + "\";\r\n" + "dbjson_base64 = \"" + Tools.escapeSpecialChars(new File("pdbf-db.json")) + "\";\r\n" + viewerTAIL;
 	    FileUtils.writeStringToFile(new File("data/" + o.name + ".html"), viewer, Tools.utf8);
 	} catch (Exception e) {
 	    e.printStackTrace();
@@ -383,9 +383,9 @@ public class LaTeX_Compiler {
 	try {
 	    Dimension dim = new Dimension(dimOrg.width * c.quality, dimOrg.height * c.quality);
 	    String viewer;
-	    String viewerHEAD = FileUtils.readFileToString(new File("data/templateHEADimages.html"), Tools.utf8);
-	    String viewerTAIL = FileUtils.readFileToString(new File("data/templateTAILimages.html"), Tools.utf8);
-	    viewer = viewerHEAD + "dim_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(dim)) + "\";\r\n" + "json_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(o)) + "\";\r\n" + "db_base64 = \"" + Tools.encodeFileToBase64Binary(new File("db.sql")) + "\";\r\n" + "dbjson_base64 = \"" + Tools.escapeSpecialChars(new File("db.json")) + "\";\r\n" + viewerTAIL;
+	    String viewerHEAD = FileUtils.readFileToString(new File("data/template-head-images.html"), Tools.utf8);
+	    String viewerTAIL = FileUtils.readFileToString(new File("data/template-tail-images.html"), Tools.utf8);
+	    viewer = viewerHEAD + "dim_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(dim)) + "\";\r\n" + "json_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(o)) + "\";\r\n" + "db_base64 = \"" + Tools.encodeFileToBase64Binary(new File("pdbf-db.sql")) + "\";\r\n" + "dbjson_base64 = \"" + Tools.escapeSpecialChars(new File("pdbf-db.json")) + "\";\r\n" + viewerTAIL;
 	    FileUtils.writeStringToFile(new File("data/" + o.name + ".html"), viewer, Tools.utf8);
 	} catch (Exception e) {
 	    e.printStackTrace();

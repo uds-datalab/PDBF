@@ -18,7 +18,7 @@
 \stepcounter{overlay}
 
 \newwrite\tempfile
-\immediate\openout\tempfile=config.json
+\immediate\openout\tempfile=pdbf-config.json
 \immediate\write\tempfile{[}
 
 \AtBeginDocument{
@@ -38,7 +38,7 @@
 	\fi
 	
 	\newwrite\temp
-	\immediate\openout\temp=dim.json
+	\immediate\openout\temp=pdbf-dim.json
 	\immediate\write\temp{\@charlb "width": "\number\paperwidth",}
 	\immediate\write\temp{"height": "\number\paperheight" \@charrb}
 	\immediate\closeout\temp
@@ -162,7 +162,7 @@
 		}%
 		&&\zsavepos{Overlay\arabic{visual}2}\\%
 		\end{tabular}%
-		% Write part of config.json
+		% Write part of pdbf-config.json
 		\ifnum \value{overlay} > 1%
 			\immediate\write\tempfile{,\@charlb}%
 		\else%
@@ -249,7 +249,7 @@
 		\pdbf@save{Overlay\arabic{visual}1}&{\color{\pdbfDynamicTextColor}\fontsize{\pdbf@fontsave}{\pdbf@fontskipsave}\setlength\tabcolsep{\pdbf@tabcolsep}\selectfont#1}&\\%
 		&&\zsavepos{Overlay\arabic{visual}2}\\%
 		\end{tabular}%
-		% Write part of config.json
+		% Write part of pdbf-config.json
 		\StrSubstitute{#2}{"}{\@backslashchar"}[\pdbf@query]%
 		\StrSubstitute{#2}{"}{\@backslashchar"}[\pdbf@queryB]%
 		\ifnum \value{overlay} > 1%

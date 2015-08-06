@@ -21,7 +21,7 @@ public class CreateLargeDB {
 	    for (int i = 0; i < 50000; ++i) {
 		sb.append("INSERT INTO pgtest VALUES ("+i+","+r.nextInt(1000)+", "+r.nextInt()+", '"+r.nextInt()+"', '"+r.nextInt()+"');");
 	    }
-	    FileUtils.writeStringToFile(new File("db.sql"), sb.toString(), Tools.utf8);
+	    FileUtils.writeStringToFile(new File("testdb.sql"), sb.toString(), Tools.utf8);
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}

@@ -52,12 +52,12 @@ public class CompleteRun_HTML {
 	LaTeX_Compiler.main(args);
 	HTML_Compiler.main(args);
 
-	new File("dim.json").delete();
-	new File("config.json").delete();
-	new File("db.sql").delete();
-	new File("db.json").delete();
+	new File("pdbf-dim.json").delete();
+	new File("pdbf-config.json").delete();
+	new File("pdbf-db.sql").delete();
+	new File("pdbf-db.json").delete();
 	new File("null.png").delete();
-	new File("preload").delete();
+	new File("pdbf-preload").delete();
 
 	System.out.println("Finished!");
 	System.out.println("Took " + (System.currentTimeMillis() - begin) + "ms");

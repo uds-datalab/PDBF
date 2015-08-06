@@ -3,7 +3,7 @@ function alert(e) {
 	throw new Error(e);
 }
 
-// Load dim.json
+// Load pdbf-dim.json
 var json;
 json = JSON.parse(UTF8ArrToStr(base64DecToArr(dim_base64)));
 tmpw = json.width / 655 / 60;
@@ -25,7 +25,7 @@ if (tmp != "") {
 	alasql(tmp);
 }
 
-// Load config.json
+// Load pdbf-config.json
 json = JSON.parse(UTF8ArrToStr(base64DecToArr(json_base64)));
 var width = (json.type.I.x2 - json.type.I.x1);
 var height = (json.type.I.y1 - json.type.I.y2);

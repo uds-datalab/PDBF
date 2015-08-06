@@ -36,7 +36,7 @@ var init = true;
 
 $(window).resize(fixOverlaySize);
 
-// Load config.json
+// Load pdbf-config.json
 var json = JSON.parse(UTF8ArrToStr(base64DecToArr(json_base64)));
 var pageOverlays = [];
 for (var i = 0; i < json.length; ++i) {
