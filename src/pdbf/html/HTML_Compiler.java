@@ -23,8 +23,8 @@ public class HTML_Compiler {
 
 	try {
 	    String viewer;
-	    String viewerHEAD = FileUtils.readFileToString(new File("data/templateHEADalasql.html"), Tools.utf8);
-	    String viewerTAIL = FileUtils.readFileToString(new File("data/templateTAILalasql.html"), Tools.utf8);
+	    String viewerHEAD = FileUtils.readFileToString(new File("data/template-head-alasql.html"), Tools.utf8);
+	    String viewerTAIL = FileUtils.readFileToString(new File("data/template-tail-alasql.html"), Tools.utf8);
 	    String add;
 	    if (CompleteRun_HTML.includeRes) {
 		add = "</script>";

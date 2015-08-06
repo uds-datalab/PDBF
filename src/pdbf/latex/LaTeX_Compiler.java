@@ -357,8 +357,8 @@ public class LaTeX_Compiler {
 	try {
 	    Dimension dim = new Dimension(dimOrg.width * c.quality, dimOrg.height * c.quality);
 	    String viewer;
-	    String viewerHEAD = FileUtils.readFileToString(new File("data/templateHEADimages.html"), Tools.utf8);
-	    String viewerTAIL = FileUtils.readFileToString(new File("data/templateTAILimages.html"), Tools.utf8);
+	    String viewerHEAD = FileUtils.readFileToString(new File("data/template-head-images.html"), Tools.utf8);
+	    String viewerTAIL = FileUtils.readFileToString(new File("data/template-tail-images.html"), Tools.utf8);
 	    viewer = viewerHEAD + "dim_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(dim)) + "\";\r\n" + "json_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(o)) + "\";\r\n" + "db_base64 = \"" + Tools.encodeFileToBase64Binary(new File("db.sql")) + "\";\r\n" + "dbjson_base64 = \"" + Tools.escapeSpecialChars(new File("db.json")) + "\";\r\n" + viewerTAIL;
 	    FileUtils.writeStringToFile(new File("data/" + o.name + ".html"), viewer, Tools.utf8);
 	} catch (Exception e) {
