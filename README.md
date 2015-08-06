@@ -21,7 +21,7 @@ This toolkit is licensed unter the MIT License (see [here](https://github.com/ud
 * Adjust config.cfg
 * Try to compile pdbf-doc.tex file with this command: java -jar pdbf.jar pdbf-doc.tex
 * Open pdbf-doc.html, this is the final output of the compilation process, if you rename it to ".pdf" it is also a valid pdf-document
-* Optionally you can attach the vldb-Invaders.ova VirtualBox image to the compiled PDBF file with this command: java -jar pdbf.jar  --vm pdbf-doc.html vldb-Invaders.ova
+* Optionally you can attach the vldb-Invaders.ova (Space invaders clone) or dsl.ova (Damn small linux) VirtualBox image to the compiled PDBF file with this command: java -jar pdbf.jar  --vm pdbf-doc.html vldb-Invaders.ova
 * You can play around with the minimal.tex file which contains a minimal example of PDBF usage
 * For further information take a look at the [documentation](http://uds-datalab.github.io/PDBF/)
 
