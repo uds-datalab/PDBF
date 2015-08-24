@@ -947,7 +947,7 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 	var legend = options.legend.show ? fontbasesize * zoomFactor * 1.6 : 0;
 	var inner = document.createElement('table');
 	var charts = [];
-	inner.setAttribute('style', 'height: 100%; width: 100%; border-collapse: collapse; text-align:center; font-size: ' + fontbasesize * zoomFactor + 'px; font-weight: bold;');
+	inner.setAttribute('style', 'height: 100%; width: 100%; border-collapse: collapse; text-align:center; font-size: ' + fontbasesize * zoomFactor + 'px;');
 	overlay.appendChild(inner);
 	inner.className = 'multiplot';
 	
