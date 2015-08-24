@@ -620,7 +620,7 @@ function buildContainerPivotBig(json, containerOver, initial) {
 	var containerOptions = ref.options;
 	var editor = ref.editor;
 	var error = ref.error;
-	editor.setValue(json.type.I.queryB);
+	editor.setValue(alasql.pretty(json.type.I.queryB, true));
 	
 	var r = getPivotTableData(json, true);
 	json.resultBig = r.res;
@@ -750,7 +750,7 @@ function buildContainerTableBig(json, containerOver) {
 	var containerContent = ref.containerContent;
 	var containerOptions = ref.options;
 	var error = ref.error;
-	ref.editor.setValue(json.type.I.queryB);
+	ref.editor.setValue(alasql.pretty(json.type.I.queryB, true));
 	
 	getTableFromResults(results, containerContent);
 	
@@ -1721,7 +1721,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 			"Ctrl-Space": "autocomplete"
 		}
 	});
-	editor.setValue(json.type.I.query);
+	editor.setValue(alasql.pretty(json.type.I.query, true));
 	editor.on('blur', update);
 	
 	if (json.type.C == 'pdbf.common.MultiplotChart') {
@@ -1783,7 +1783,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 			var y = $(selectY).val();
 			json.type.I.query = selectArr[x][y];
 			json.type.I.queryB = selectArr[x][y];
-			editor.setValue(json.type.I.query);
+			editor.setValue(alasql.pretty(json.type.I.query, true));
 			containerOver.updateData();
 		});
 		
@@ -1792,7 +1792,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 			var y = $(selectY).val();
 			json.type.I.query = selectArr[x][y];
 			json.type.I.queryB = selectArr[x][y];
-			editor.setValue(json.type.I.query);
+			editor.setValue(alasql.pretty(json.type.I.query, true));
 			containerOver.updateData();
 		});
 		
@@ -1800,7 +1800,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 		var y = $(selectY).val();
 		json.type.I.query = selectArr[x][y];
 		json.type.I.queryB = selectArr[x][y];
-		editor.setValue(json.type.I.query);
+		editor.setValue(alasql.pretty(json.type.I.query, true));
 	}
 	
 	fixOverlaySize();
