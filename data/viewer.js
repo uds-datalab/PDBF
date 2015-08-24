@@ -6372,9 +6372,6 @@ function webViewerInitialized() {
   document.getElementById('print').addEventListener('click',
     SecondaryToolbar.printClick.bind(SecondaryToolbar));
 
-  document.getElementById('download').addEventListener('click',
-    SecondaryToolbar.downloadClick.bind(SecondaryToolbar));
-
 //TODO:	
 //	pageSource = document.documentElement.outerHTML;
 //	begin = pageSource.indexOf("%PDF-");
@@ -6722,16 +6719,6 @@ window.addEventListener('keydown', function keydown(evt) {
           });
           handled = false;
         }
-        break;
-    }
-  }
-
-  // CTRL or META without shift
-  if (cmd === 1 || cmd === 8) {
-    switch (evt.keyCode) {
-      case 83: // s
-        PDFViewerApplication.download();
-        handled = true;
         break;
     }
   }
