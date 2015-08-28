@@ -1,5 +1,5 @@
 #PDBF - A Toolkit for Creating Janiform Data Documents
-Version 1.0.1
+Version 1.0.2
 
 PDBF documents are a hybrid format. They are a valid PDF and a valid HTML page at the same time. You can now optionally add an VirtualBox OVA file with a complete operating system to the PDBF document. Yes, this means that the resulting file is a valid PDF, HTML, and OVA file at the same time. If you change the file extension to PDF and open it with an PDF viewer, you can see the static part of the document. If you change the file extension to HTML and open it with a Browser (currently Chrome/Firefox/Safari/IE 10 supported), you can see the dynamic part of the document. And if an ova file is attached you can also change the file extension to OVA and install and run the attached operating system.
 The difference between the PDF and the HTML version is that the PDF version contains static version of all PDBF elements, whereas the HTML version is dynamic. For example you can zoom into graphs, temporarly remove dataseries from the graph, inspect and change the underling query of the PDBF element and see the result of the change directly in the browser.
