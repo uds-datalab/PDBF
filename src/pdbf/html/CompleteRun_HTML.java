@@ -24,7 +24,7 @@ public class CompleteRun_HTML {
 	    System.exit(-1);
 	}
 
-	if (args[0].equalsIgnoreCase("--help") || args.length > 3 || args.length < 1) {
+	if (args.length > 3 || args.length < 1 || args[0].equalsIgnoreCase("--help")) {
 	    System.out.println("Usage:\tjava -jar PDBF.jar LaTeX_file\nOR\n\tjava -jar PDBF.jar --vm  PDBF_File.html VM_File.ova\nFor further help visit: https://github.com/uds-datalab/PDBF");
 	    System.exit(0);
 	}
