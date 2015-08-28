@@ -225,7 +225,7 @@ PDBF uses AlaSQL as database engine. For all available features of the database 
 \verb|\dbSQLJDBC{jdbcConnectionURL}{user}{password}{commaSeperatedListOfTableNames}| \\
 \textbf{Note:} jdbcConnectionURL consist of jdbc followed by the name of the dbms (only postgresql and mysql are currently supported) followed by the url of the dbms followed by the database name (e.g. jdbc:postgresql://localhost:5432/postgres).\\
 \textbf{Note:} jdbcConnectionURL, user, and password are not stored in the output documents.\\[4pt]
-\textbf{WARNING:} \verb|\dbSQLText| and \verb|\dbSQLFile| are currently horribly, even for medium sized (more than 100 tuples) amounts of data. Use \verb|\dbSQLJDBC| instead.
+\textbf{WARNING:} \verb|\dbSQLText| and \verb|\dbSQLFile| are currently horribly slow, even for medium sized (more than 100 tuples) amounts of data. Use \verb|\dbSQLJDBC| instead.
 
 \section{PDBF elements}
 \subsection{Chart}

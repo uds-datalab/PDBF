@@ -11,12 +11,11 @@ function fixOverlaySize() {
 var namedContainers = [];
 
 // Performance measurement functions
-var tictime;
-if (!window.performance || !performance.now) {
-	window.performance = {
-		now: Date.now
-	}
-}
+// var tictime;
+/*
+ * if (!window.performance || !performance.now) { window.performance = { now:
+ * Date.now } }
+ */
 function tic() {/* tictime = performance.now() */
 }
 function toc(msg) {
@@ -93,8 +92,8 @@ function display(json, page, phantomJS) {
 			buildContainerMultiplotChart(container, json, zoomFactor, style, containerOver);
 			if (json.type.I.name != null && json.type.I.name != "") {
 				namedContainers[json.type.I.name] = {
-					type: "MultiplotChart",
-					elem: undefined
+					type : "MultiplotChart",
+					elem : undefined
 				}; // TODO:
 			}
 			break;
@@ -123,9 +122,9 @@ function display(json, page, phantomJS) {
 			buildContainerChart(container, json, zoomFactor, style, containerOver);
 			if (json.type.I.name != null && json.type.I.name != "") {
 				namedContainers[json.type.I.name] = {
-					type: "Chart",
-					elem: json.chartInPage,
-					opt: json.options
+					type : "Chart",
+					elem : json.chartInPage,
+					opt : json.options
 				};
 			}
 			break;
@@ -169,8 +168,8 @@ function display(json, page, phantomJS) {
 					switch (o.type) {
 						case "Chart":
 							o.elem.xgrids.add([ {
-								value: json.type.I.linkSelector,
-								text: json.type.I.linkLabel
+								value : json.type.I.linkSelector,
+								text : json.type.I.linkLabel
 							} ]);
 							break;
 						case "MultiplotChart":
@@ -188,7 +187,7 @@ function display(json, page, phantomJS) {
 					switch (o.type) {
 						case "Chart":
 							o.elem.xgrids.remove({
-								value: json.type.I.linkSelector
+								value : json.type.I.linkSelector
 							});
 							break;
 						case "MultiplotChart":
@@ -238,8 +237,8 @@ function display(json, page, phantomJS) {
 			buildContainerPivot(container, json, zoomFactor, style, containerOver);
 			if (json.type.I.name != null && json.type.I.name != "") {
 				namedContainers[json.type.I.name] = {
-					type: "Pivot",
-					elem: undefined
+					type : "Pivot",
+					elem : undefined
 				}; // TODO:
 			}
 			break;
@@ -270,7 +269,20 @@ function buildContainerChartBig(json, containerOver, initial) {
 		json.chart = c3.generate(optionsBig);
 	};
 	var update = function() {
-		// json.jsonBig.type.I.logScale = logScale.checked;
+		if (logScale.checked == false && json.jsonBig.type.I.logScale != logScale.checked) {
+			//TODO: quick and dirty hack to fix logscale
+			json.chartdataBig = getChartData(json.jsonBig);
+			json.resultBig = json.chartdataBig.res;
+			if (json.chartdataBig.error != undefined) {
+				error.innerHTML = 'Query status: Error! ' + json.chartdataBig.error;
+				containerOptions.style.visibility = 'hidden';
+			} else {
+				error.innerHTML = 'Query status: OK';
+				containerOptions.style.visibility = 'visible';
+			}
+		}
+		
+		json.jsonBig.type.I.logScale = logScale.checked;
 		json.jsonBig.type.I.includeZero = includeZero.checked;
 		if (json.type.I.chartType == 'Line' || json.type.I.chartType == 'line') {
 			json.jsonBig.type.I.drawPoints = drawPoints.checked;
@@ -279,6 +291,47 @@ function buildContainerChartBig(json, containerOver, initial) {
 		json.jsonBig.type.I.showRangeSelector = showRangeSelector.checked;
 		
 		var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor, json.chartdataBig.values, containerContent);
+		
+		// logscale
+		if (json.jsonBig.type.I.logScale == true) {
+			var logscale = json.chart.data();
+			for (var series = 0; series < logscale.length; ++series) {
+				var logscaleValues = logscale[series]['values'];
+				for (var i = 0; i < logscaleValues.length; i++) {
+					var logId = logscaleValues[i]['id'];
+					var logVal = logscaleValues[i]['value'];
+					
+					json.jsonBig.type.I.logScale = logScale.checked;
+					
+					optionsBig.data['json'][i][logId] = Math.log(logVal) / Math.LN10;
+					optionsBig.axis.y.tick.format = function(d) {
+						return Math.pow(10, d).toFixed(2);
+					};
+					
+					if (logVal < 0) {
+						json.jsonBig.type.I.includeZero = optionsBig.axis.y.min;
+						includeZero.checked = false;
+					}
+					if (includeZero.checked == true) {
+						json.jsonBig.type.I.includeZero = '0';
+						optionsBig.axis.y.min = '0';
+					} else if (optionsBig.axis.y.min != undefined && isInt(optionsBig.axis.y.min) && includeZero.checked == false) {
+						json.jsonBig.type.I.includeZero = optionsBig.axis.y.min;
+					}
+				}
+			}
+		} 
+		
+		if (logScale.checked) {
+			includeZero.disabled = true;
+		} else {
+			includeZero.disabled = false;
+		}
+		if (includeZero.checked) {
+			logScale.disabled = true;
+		} else {
+			logScale.disabled = false;
+		}
 		
 		json.chart = c3.generate(optionsBig);
 	};
@@ -308,12 +361,10 @@ function buildContainerChartBig(json, containerOver, initial) {
 		}
 	}
 	
-	/*
-	 * var logScale = getCheckbox('LogScale', containerOptions);
-	 * logScale.addEventListener('change', update); logScale.checked =
-	 * json.jsonBig.type.I.logScale;
-	 */
-
+	var logScale = getCheckbox('LogScale (Y-Axis)', containerOptions);
+	logScale.addEventListener('change', update);
+	logScale.checked = json.jsonBig.type.I.logScale;
+	
 	json.jsonBig.type.I.showRangeSelector = true;
 	
 	var includeZero = getCheckbox('IncludeZero', containerOptions);
@@ -336,11 +387,7 @@ function buildContainerChartBig(json, containerOver, initial) {
 	
 	var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor, chartdataCpy.values, containerContent);
 	
-	if (json.jsonBig.type.I.fillGraph == true) {
-		json.chart = c3.generate(optionsBig).transform('area');
-	} else {
-		json.chart = c3.generate(optionsBig);
-	}
+	json.chart = c3.generate(optionsBig);
 	
 	json.chartdataBig = chartdataCpy;
 	
@@ -350,8 +397,8 @@ function buildContainerChartBig(json, containerOver, initial) {
 		var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor, json.chartdataBig.values, containerContent);
 		json.chart = c3.generate(optionsBig);
 		containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
-	}
-
+	};
+	
 	containerOver.updateData = updateData;
 }
 
@@ -607,7 +654,7 @@ function buildContainerPivotBig(json, containerOver, initial) {
 		var aggrAtt = r.aggrAttribute;
 		
 		$(containerContent).pivotUI(r.res, {
-			aggregator: aggr
+			aggregator : aggr
 		}, true);
 	};
 	
@@ -620,7 +667,7 @@ function buildContainerPivotBig(json, containerOver, initial) {
 	var containerOptions = ref.options;
 	var editor = ref.editor;
 	var error = ref.error;
-	editor.setValue(alasql.pretty(json.type.I.queryB, true));
+	editor.setValue(prettifySQL(json.type.I.queryB));
 	
 	var r = getPivotTableData(json, true);
 	json.resultBig = r.res;
@@ -644,19 +691,19 @@ function buildContainerPivotBig(json, containerOver, initial) {
 	var aggr = $.pivotUtilities.aggregators[aggrName]([ aggrAtt ]);
 	
 	$(containerContent).pivotUI(r.res, {
-		rows: r.rows,
-		cols: r.cols,
-		aggregator: aggr,
-		vals: [ aggrAtt ],
-		aggregatorName: aggrName
+		rows : r.rows,
+		cols : r.cols,
+		aggregator : aggr,
+		vals : [ aggrAtt ],
+		aggregatorName : aggrName
 	});
 	
 	containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
 	
 	containerOver.update = function() {
 		containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
-	}
-
+	};
+	
 	containerOver.updateData = updateData;
 }
 
@@ -691,10 +738,10 @@ function buildContainerPivot(container, json, zoomFactor, style, containerOver) 
 		}
 	}
 	$(chart).pivot(r.res, {
-		rows: r.rows,
-		cols: r.cols,
-		aggregator: aggr,
-		unused: unused
+		rows : r.rows,
+		cols : r.cols,
+		aggregator : aggr,
+		unused : unused
 	});
 	container.getElementsByClassName("pvtTable")[0].setAttribute('style', 'width: 100%; height: 100%; font-size: ' + zoomFactor * 12 + 'pt;');
 }
@@ -750,14 +797,14 @@ function buildContainerTableBig(json, containerOver) {
 	var containerContent = ref.containerContent;
 	var containerOptions = ref.options;
 	var error = ref.error;
-	ref.editor.setValue(alasql.pretty(json.type.I.queryB, true));
+	ref.editor.setValue(prettifySQL(json.type.I.queryB));
 	
 	getTableFromResults(results, containerContent);
 	
 	containerOver.update = function() {
 		containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
-	}
-
+	};
+	
 	containerOver.updateData = update;
 }
 
@@ -908,16 +955,16 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 	
 	if (leftArr.length == 0) {
 		leftArr = [ {
-			text: json.type.I.yUnitName,
-			c: yCount
+			text : json.type.I.yUnitName,
+			c : yCount
 		} ];
 	}
 	if (rightArr.length == 0) {
 		rightArr = [];
 		for (var i = 0; i < yValues.length; ++i) {
 			rightArr[rightArr.length] = {
-				text: yValues[i],
-				c: 1
+				text : yValues[i],
+				c : 1
 			};
 		}
 	}
@@ -925,15 +972,15 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 		topArr = [];
 		for (var i = 0; i < xValues.length; ++i) {
 			topArr[topArr.length] = {
-				text: xValues[i],
-				c: 1
+				text : xValues[i],
+				c : 1
 			};
 		}
 	}
 	if (bottomArr.length == 0) {
 		bottomArr = [ {
-			text: json.type.I.xUnitName,
-			c: xCount
+			text : json.type.I.xUnitName,
+			c : xCount
 		} ];
 	}
 	
@@ -1132,8 +1179,8 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 					options.axis.y.min = yExtent[0];
 					options.axis.y.max = yExtent[1];
 					options.axis.y.padding = {
-						top: 0,
-						bottom: 0
+						top : 0,
+						bottom : 0
 					};
 				}
 			}
@@ -1143,8 +1190,8 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 					options.axis.x.min = xExtent[x][0];
 					options.axis.x.max = xExtent[x][1];
 					options.axis.x.padding = {
-						left: 0,
-						right: 0
+						left : 0,
+						right : 0
 					};
 				}
 			}
@@ -1286,15 +1333,15 @@ function tableCreate(res, table) {
 	var columns = [];
 	for ( var key in res[0]) {
 		columns[columns.length] = {
-			data: key,
-			title: key
+			data : key,
+			title : key
 		};
 	}
 	
 	$(table).dataTable({
-		data: res,
-		columns: columns,
-		destroy: true
+		data : res,
+		columns : columns,
+		destroy : true
 	});
 }
 
@@ -1305,7 +1352,8 @@ function getTableFromResults(results, container) {
 	
 	if (typeof (results) == 'number') {
 		var span = document.createElement('span');
-		span.innerHTML = '<u><b>Result for Query</b></u>:';
+		span.setAttribute('style', 'text-decoration: underline; font-weight: bold;');
+		span.innerHTML = 'Result for Query:';
 		container.appendChild(span);
 		container.appendChild(getSpacer());
 		var span = document.createElement('span');
@@ -1315,7 +1363,8 @@ function getTableFromResults(results, container) {
 		for (var i = 0; i < results.length; ++i) {
 			if (typeof (results[i]) == 'number') {
 				var span = document.createElement('span');
-				span.innerHTML = '<u><b>Result for Query' + (i + 1) + '</b></u>:';
+				span.setAttribute('style', 'text-decoration: underline; font-weight: bold;');
+				span.innerHTML = 'Result for Query' + (i + 1) + ':';
 				container.appendChild(span);
 				container.appendChild(getSpacer());
 				var span = document.createElement('span');
@@ -1324,7 +1373,8 @@ function getTableFromResults(results, container) {
 				container.appendChild(getSpacer());
 			} else if (results[i] instanceof Array) {
 				var span = document.createElement('span');
-				span.innerHTML = '<u><b>Result for Query' + (i + 1) + '</b></u>:';
+				span.setAttribute('style', 'text-decoration: underline; font-weight: bold;');
+				span.innerHTML = 'Result for Query' + (i + 1) + ':';
 				container.appendChild(span);
 				container.appendChild(getSpacer());
 				if (results[i].length > 0) {
@@ -1343,7 +1393,8 @@ function getTableFromResults(results, container) {
 				}
 			} else {
 				var span = document.createElement('span');
-				span.innerHTML = '<u><b>Result for Query</b></u>:';
+				span.setAttribute('style', 'text-decoration: underline; font-weight: bold;');
+				span.innerHTML = 'Result for Query:';
 				container.appendChild(span);
 				container.appendChild(getSpacer());
 				var table = document.createElement('table');
@@ -1362,7 +1413,8 @@ function getTableFromResults(results, container) {
 				container.removeChild(container.firstChild);
 			}
 			var span = document.createElement('span');
-			span.innerHTML = '<u><b>Result for Query</b></u>:<br/>No rows returned.';
+			span.setAttribute('style', 'text-decoration: underline; font-weight: bold;');
+			span.innerHTML = 'Result for Query:<br/>No rows returned.';
 			container.appendChild(span);
 			return;
 		}
@@ -1390,40 +1442,6 @@ window.addEventListener('keydown', function keydown(evt) {
 				tmp[i].style.opacity = 0;
 			}
 			break;
-		// case 81: //81 == 'Q'
-		// list = document.getElementsByClassName("overlay");
-		// if (debugmode == 3) {
-		// for (var i=list.length-1; i>=0; --i) {
-		// list[i].setAttribute('class', 'overlay');
-		// }
-		// debugmode = 0;
-		// } else if (debugmode == 0) {
-		// for (var i=list.length-1; i>=0; --i) {
-		// list[i].setAttribute('class', 'overlay debug');
-		// }
-		// debugmode = 1;
-		// } else if (debugmode == 1) {
-		// for (var i=list.length-1; i>=0; --i) {
-		// if (list[i].children.length > 0) {
-		// list[i].children[0].setAttribute('class', 'hide');
-		// list[i].setAttribute('style',
-		// list[i].getAttribute('style').substring(18,
-		// list[i].getAttribute('style').length));
-		// }
-		// }
-		// debugmode = 2;
-		// } else {
-		// for (var i=list.length-1; i>=0; --i) {
-		// if (list[i].children.length > 0) {
-		// list[i].children[0].setAttribute('class', '');
-		// list[i].setAttribute('style', 'background: white;' +
-		// list[i].getAttribute('style'));
-		// }
-		// list[i].setAttribute('class', 'overlay hide');
-		// }
-		// debugmode = 3;
-		// }
-		// break;
 	}
 });
 
@@ -1438,56 +1456,63 @@ function addClickCloseHandler(elem, o) {
 }
 
 var defaultChartOptions = {
-	noxticks: false,
-	noyticks: false,
-	legend: {
-		show: true
+	noxticks : false,
+	noyticks : false,
+	legend : {
+		show : true
 	}
 };
 
 function getChartOptions(json, zoomFactor, values, chart) {
 	var options = {
-		bindto: chart,
-		data: values,
-		size: {
-			width: $(chart).width(),
-			height: $(chart).height()
+		bindto : chart,
+		data : values,
+		size : {
+			width : $(chart).width(),
+			height : $(chart).height()
 		},
-		axis: {
-			x: {
-				label: json.type.I.xUnitName,
-				tick: {
-					fit: false,
+		padding : {
+			top : 15
+		},
+		axis : {
+			x : {
+				label : json.type.I.xUnitName,
+				tick : {
+					fit : false
 				},
 			},
-			y: {
-				label: json.type.I.yUnitName,
-				tick: {
-					fit: false,
+			y : {
+				label : json.type.I.yUnitName,
+				tick : {
+					fit : false
 				},
-				padding: {
-					top: 0,
-					bottom: 0
+				padding : {
+					top : 5,
+					bottom : 0
 				}
 			},
-			y2: {
-				tick: {
-					fit: false
+			y2 : {
+				tick : {
+					fit : false
 				}
 			}
 		},
-		zoom: {
-			enabled: true,
-			rescale: true
+		zoom : {
+			enabled : true,
+			rescale : true
 		},
-		point: {
-			show: json.type.I.drawPoints
+		point : {
+			show : json.type.I.drawPoints
 		},
-		subchart: {
-			show: json.type.I.showRangeSelector
+		subchart : {
+			show : json.type.I.showRangeSelector
 		},
-		completeScale: zoomFactor * 1.45,
-		onresize: function() {
+		completeScale : zoomFactor * 1.45,
+		onresize : function() {
+			this.api.resize({
+				height : $(this.bound).height(),
+				width : $(this.bound).width()
+			});
 		}
 	};
 	
@@ -1552,7 +1577,28 @@ function getChartOptions(json, zoomFactor, values, chart) {
 	var css = document.createElement('style');
 	css.setAttribute('scoped', 'scoped');
 	$(chart).parent().append(css);
-	css.innerHTML = '																' + '.c3-line {																	' + ' stroke-width: ' + (zoomFactor) + 'px; }										' + '																			' + '.c3-circle._expanded_ {													' + ' stroke-width: ' + (zoomFactor) + 'px;											' + ' stroke: white; }															' + '																			' + '.c3-selected-circle {														' + ' fill: white;																' + ' stroke-width: ' + (2 * zoomFactor) + 'px; }										' + '																			' + '.c3-target.c3-focused path.c3-line, .c3-target.c3-focused path.c3-step {	' + ' stroke-width: ' + (2 * zoomFactor) + 'px; }										' + '																			' + '.c3-legend-background {													' + ' opacity: 0.75;															' + ' fill: white;																' + ' stroke: lightgray;														' + ' stroke-width: ' + (zoomFactor) + '; }											';
+	var cssText;
+	cssText += '.c3-line {																	'
+	cssText += 'stroke-width: ' + (zoomFactor) + 'px; 										'
+	cssText += '}																			'
+	cssText += '.c3-circle._expanded_ {														'
+	cssText += ' 	stroke-width: ' + (zoomFactor) + 'px;									'
+	cssText += ' 	stroke: white; 															'
+	cssText += ' }																			'
+	cssText += ' .c3-selected-circle {														'
+	cssText += ' 	fill: white;															'
+	cssText += ' 	stroke-width: ' + (2 * zoomFactor) + 'px; 								'
+	cssText += ' }																			'
+	cssText += ' .c3-target.c3-focused path.c3-line, .c3-target.c3-focused path.c3-step {	'
+	cssText += '	 stroke-width: ' + (2 * zoomFactor) + 'px; 								'
+	cssText += ' }																			'
+	cssText += ' .c3-legend-background {													'
+	cssText += '	 opacity: 0.75;															'
+	cssText += ' 	 fill: white;															'
+	cssText += ' 	 stroke: lightgray;														'
+	cssText += ' 	 stroke-width: ' + (zoomFactor) + '; 									'
+	cssText += ' }																			';
+	css.innerHTML = cssText;
 	
 	return options;
 }
@@ -1561,15 +1607,29 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 	var json = jsonArr[0]; // pass by reference
 	var containerChart = document.createElement('div');
 	if (fixed) {
-		containerChart.setAttribute('style', 'width:58%; height:80%; -moz-border-radius: 1%; -webkit-border-radius: 1%; border-radius: 1%; padding:2%; background:white; margin:1%; display: inline-block; vertical-align:top; white-space: normal;');
+		containerChart.setAttribute('style', 'width:58%; height:85.5%; -moz-border-radius: 1%; -webkit-border-radius: 1%; border-radius: 1%; padding:2%; background:white; margin:1%; margin-top:2em; display: inline-block; vertical-align:top; white-space: normal;');
 	} else {
-		containerChart.setAttribute('style', '-moz-border-radius: 1%; -webkit-border-radius: 1%; border-radius: 1%; padding:2%; background:white; margin:1%; display: inline-block; vertical-align:top; white-space: normal;');
+		containerChart.setAttribute('style', '-moz-border-radius: 1%; -webkit-border-radius: 1%; border-radius: 1%; padding:2%; background:white; margin:1%; margin-top:2em; display: inline-block; vertical-align:top; white-space: normal;');
 	}
 	var containerControl = document.createElement('div');
-	containerControl.setAttribute('style', 'width:30%; height:80%; -moz-border-radius: 1%; -webkit-border-radius: 1%; border-radius: 1%; padding:2%; background:white; margin:1%; display: inline-block; text-align: left; white-space: normal;');
+	containerControl.setAttribute('style', 'width:30%; height:85.5%; -moz-border-radius: 1%; -webkit-border-radius: 1%; border-radius: 1%; padding:2%; background:white; margin:1%; margin-top:2em; display: inline-block; text-align: left; white-space: normal;');
+	
+	var containerSwitch = document.createElement('div');
+	containerSwitch.setAttribute('style', 'margin-bottom:5px; display: inline-block; vertical-align:top;');
+	containerControl.appendChild(containerSwitch);
+	
+	containerControl.appendChild(getSpacer());
+	containerControl.appendChild(getSpacer());
+	
+	var containerTip = document.createElement('div');
+	containerTip.setAttribute('style', 'font-weight: bold;');
+	containerTip.innerHTML = tip;
+	containerControl.appendChild(containerTip);
+	
+	containerControl.appendChild(getSpacer());
 	
 	var header = document.createElement('span');
-	header.innerHTML = 'SQL Query for ' + f + ':<br />Tip: Press CTRL-Space for autocomplete';
+	header.innerHTML = '<span style="text-decoration:underline;">SQL Query for ' + f + ':</span><br />Tip: Press CTRL-Space for autocomplete';
 	containerControl.appendChild(header);
 	
 	var textareaWrapper = document.createElement('div');
@@ -1608,6 +1668,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 	containerControl.appendChild(def);
 	
 	containerControl.appendChild(getSpacer());
+	containerControl.appendChild(getSpacer());
 	
 	var error = document.createElement('span');
 	containerControl.appendChild(error);
@@ -1624,13 +1685,13 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 	download.setAttribute('style', 'font-size:inherit;');
 	download.addEventListener('click', function() {
 		var cols = [];
-		for (key in json.resultBig[0]) {
+		for ( var key in json.resultBig[0]) {
 			cols[cols.length] = {
-				columnid: key
+				columnid : key
 			};
 		}
 		alasql.into.CSV('result.csv', {
-			headers: true
+			headers : true
 		}, json.resultBig, cols);
 	});
 	options.appendChild(download);
@@ -1639,27 +1700,15 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 	
 	if (fixed) {
 		var containerChartSub = document.createElement('div');
-		containerChartSub.setAttribute('style', 'width:100%; height:100%; z-index:9999');
+		containerChartSub.setAttribute('style', 'width:100%; height:100%; max-height:100%; z-index:9999');
 		containerChart.appendChild(containerChartSub);
 	}
 	
-	var containerCloseAndTip = document.createElement('div');
-	containerCloseAndTip.setAttribute('style', 'display: inline-block; margin-right: 30px;');
-	containerOver.appendChild(containerCloseAndTip);
-	
 	var containerClose = document.createElement('div');
-	containerClose.innerHTML = "<b>Click here to close this window (or press Escape)</b>";
-	containerClose.setAttribute('style', 'margin-bottom:5px;');
+	containerClose.innerHTML = 'Click here to close this window (or press Escape) [X]';
+	containerClose.setAttribute('style', 'float:right; cursor: pointer; font-weight: bold;');
 	addClickCloseHandler(containerClose, containerOver);
-	containerCloseAndTip.appendChild(containerClose);
-	
-	var containerTip = document.createElement('div');
-	containerTip.innerHTML = tip;
-	containerCloseAndTip.appendChild(containerTip);
-	
-	var containerSwitch = document.createElement('div');
-	containerSwitch.setAttribute('style', 'margin-bottom:5px; display: inline-block; vertical-align:top;');
-	containerOver.appendChild(containerSwitch);
+	containerOver.appendChild(containerClose);
 	
 	var containerLabel = document.createElement('span');
 	containerLabel.innerHTML = 'Switch representation:<br />';
@@ -1677,6 +1726,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 			buildContainerChartBig(json, containerOver, false);
 		});
 		containerSwitch.appendChild(buttonChart);
+		containerSwitch.appendChild(document.createTextNode(' '));
 	}
 	
 	var buttonPivot = document.createElement('input');
@@ -1690,6 +1740,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 		buildContainerPivotBig(json, containerOver, false);
 	});
 	containerSwitch.appendChild(buttonPivot);
+	containerSwitch.appendChild(document.createTextNode(' '));
 	
 	var buttonTable = document.createElement('input');
 	buttonTable.type = 'button';
@@ -1710,18 +1761,18 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 	viewerContainer.appendChild(containerOver);
 	
 	var editor = CodeMirror.fromTextArea(textarea, {
-		mode: "text/x-sql",
-		indentWithTabs: true,
-		smartIndent: true,
-		lineNumbers: true,
-		lineWrapping: true,
-		matchBrackets: true,
-		viewportMargin: Infinity,
-		extraKeys: {
-			"Ctrl-Space": "autocomplete"
+		mode : "text/x-sql",
+		indentWithTabs : true,
+		smartIndent : true,
+		lineNumbers : true,
+		lineWrapping : true,
+		matchBrackets : true,
+		viewportMargin : Infinity,
+		extraKeys : {
+			"Ctrl-Space" : "autocomplete"
 		}
 	});
-	editor.setValue(alasql.pretty(json.type.I.query, true));
+	editor.setValue(prettifySQL(json.type.I.query));
 	editor.on('blur', update);
 	
 	if (json.type.C == 'pdbf.common.MultiplotChart') {
@@ -1739,7 +1790,8 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 		}
 		
 		var multiControl = document.createElement('div');
-		multiControl.innerHTML = '<u style="display:inline-block; margin-bottom:7px;">Multiplot Control:</u><br />';
+		multiControl.setAttribute('style', 'text-decoration: underline; display: inline-block; margin-bottom: 7px;'); 
+		multiControl.innerHTML = 'Multiplot Control:<br />';
 		var selectX = document.createElement('select');
 		selectX.setAttribute('style', 'display:inline-block; margin-bottom:3px;');
 		for (var x = 0; x < json.type.I.xCount; ++x) {
@@ -1783,7 +1835,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 			var y = $(selectY).val();
 			json.type.I.query = selectArr[x][y];
 			json.type.I.queryB = selectArr[x][y];
-			editor.setValue(alasql.pretty(json.type.I.query, true));
+			editor.setValue(prettifySQL(json.type.I.query));
 			containerOver.updateData();
 		});
 		
@@ -1792,7 +1844,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 			var y = $(selectY).val();
 			json.type.I.query = selectArr[x][y];
 			json.type.I.queryB = selectArr[x][y];
-			editor.setValue(alasql.pretty(json.type.I.query, true));
+			editor.setValue(prettifySQL(json.type.I.query));
 			containerOver.updateData();
 		});
 		
@@ -1800,18 +1852,18 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 		var y = $(selectY).val();
 		json.type.I.query = selectArr[x][y];
 		json.type.I.queryB = selectArr[x][y];
-		editor.setValue(alasql.pretty(json.type.I.query, true));
+		editor.setValue(prettifySQL(json.type.I.query));
 	}
 	
 	fixOverlaySize();
 	var ref = {
-		containerContent: fixed ? containerChartSub : containerChart,
-		containerOver: containerOver,
-		containerControl: containerControl,
-		containerChart: containerChart,
-		editor: editor,
-		error: error,
-		options: options
+		containerContent : fixed ? containerChartSub : containerChart,
+		containerOver : containerOver,
+		containerControl : containerControl,
+		containerChart : containerChart,
+		editor : editor,
+		error : error,
+		options : options
 	};
 	return ref;
 }
@@ -1826,19 +1878,19 @@ function getChartData(json) {
 		results = alasqlQuery(json.type.I.query);
 	} catch (e) {
 		return {
-			error: e.message
+			error : e.message
 		};
 	}
 	var error;
 	if (results.length == 0) {
 		return {
-			error: "Query \"" + json.type.I.query + "\" returns empty result!"
+			error : "Query \"" + json.type.I.query + "\" returns empty result!"
 		};
 		
 	}
 	if (results[0] instanceof Array) {
 		return {
-			error: "Query \"" + json.type.I.query + "\" contains multiple statements!"
+			error : "Query \"" + json.type.I.query + "\" contains multiple statements!"
 		};
 	}
 	var columns = [];
@@ -1846,35 +1898,16 @@ function getChartData(json) {
 		columns[columns.length] = key;
 	}
 	
-	/*
-	 * TODO: check if parsing is necessary var curmain = results[0]; var count =
-	 * -1; for (key in curmain) { ++count; // Try to parse as Number var next =
-	 * false; for (var i = 0; i < results.length; i++) { if (next) break; var
-	 * cur = results[i]; var val; if (count == 0) { val = []; } else { val =
-	 * values[i]; } var tmp; if (typeof (cur[key]) == "string") { try { tmp =
-	 * Number(cur[key]); } catch (e) { next = true; } } else { tmp = cur[key]; }
-	 * if (!isNaN(tmp)) { val[val.length] = tmp; } else { next = true; }
-	 * values[i] = val; } // Try to parse as Date if (next) { next = false; for
-	 * (var i = 0; i < results.length; i++) { if (next) break; var cur =
-	 * results[i]; var val; if (count == 0) { val = []; } else { val =
-	 * values[i]; } var tmp; if (typeof (cur[key]) == "string") { try { tmp =
-	 * new Date(replaceAll(cur[key], "-", "/")); } catch (e) { next = true; } }
-	 * else { tmp = cur[key]; } if (isValidDate(tmp)) { val[val.length] = tmp; }
-	 * else { next = true; } values[i] = val; } }
-	 * 
-	 * if (next) { // No parsing method found return { error : 'Attribute ' +
-	 * key + ' cannot be used in a chart. Must be of type date or number!' }; } }
-	 */
 	return {
-		values: {
-			x: columns[0],
-			json: results,
-			keys: {
-				value: columns
+		values : {
+			x : columns[0],
+			json : results,
+			keys : {
+				value : columns
 			}
 		},
-		error: error,
-		res: results
+		error : error,
+		res : results
 	};
 }
 
@@ -1885,44 +1918,44 @@ function getPivotTableData(json, isBig) {
 		results = alasqlQuery(isBig ? json.type.I.queryB : json.type.I.query);
 	} catch (e) {
 		return {
-			error: e.message
+			error : e.message
 		};
 	}
 	if (results.length == 0) {
 		return {
-			error: "Query of " + (isBig ? json.name + 'Big' : json.name) + "returns empty result!\nQuery was: \"" + (isBig ? json.type.I.queryB : json.type.I.query) + "\""
+			error : "Query of " + (isBig ? json.name + 'Big' : json.name) + "returns empty result!\nQuery was: \"" + (isBig ? json.type.I.queryB : json.type.I.query) + "\""
 		};
 	}
 	if (results[0] instanceof Array) {
 		return {
-			error: "Query of " + (isBig ? json.name + 'Big' : json.name) + "returns multiple statements!\nQuery was: \"" + (isBig ? json.type.I.queryB : json.type.I.query) + "\""
+			error : "Query of " + (isBig ? json.name + 'Big' : json.name) + "returns multiple statements!\nQuery was: \"" + (isBig ? json.type.I.queryB : json.type.I.query) + "\""
 		};
 	}
 	try {
 		var rows = JSON.parse(json.type.I.rows);
 	} catch (e) {
 		return {
-			error: 'Parsing of rows for ' + (isBig ? json.name + 'Big' : json.name) + ' failed. \nDid you forgot to enclose every row by ", or did you TeX program replace " by \'\'?\n JSON String was:\n' + json.type.I.rows
+			error : 'Parsing of rows for ' + (isBig ? json.name + 'Big' : json.name) + ' failed. \nDid you forgot to enclose every row by ", or did you TeX program replace " by \'\'?\n JSON String was:\n' + json.type.I.rows
 		};
 	}
 	try {
 		var cols = JSON.parse(json.type.I.cols);
 	} catch (e) {
 		return {
-			error: 'Parsing of cols for ' + (isBig ? json.name + 'Big' : json.name) + ' failed. \nDid you forgot to enclose every col by ", or did you TeX program replace " by \'\'?\n JSON String was:\n' + json.type.I.cols
+			error : 'Parsing of cols for ' + (isBig ? json.name + 'Big' : json.name) + ' failed. \nDid you forgot to enclose every col by ", or did you TeX program replace " by \'\'?\n JSON String was:\n' + json.type.I.cols
 		};
 	}
 	for (var i = 0; i < rows.length; ++i) {
 		if (results[0][rows[i]] == undefined) {
 			return {
-				error: 'Rows attribute "' + rows[i] + '" for ' + (isBig ? json.name + 'Big' : json.name) + ' does not exist!'
+				error : 'Rows attribute "' + rows[i] + '" for ' + (isBig ? json.name + 'Big' : json.name) + ' does not exist!'
 			};
 		}
 	}
 	for (var i = 0; i < cols.length; ++i) {
 		if (results[0][cols[i]] == undefined) {
 			return {
-				error: 'Cols attribute "' + cols[i] + '" for ' + (isBig ? json.name + 'Big' : json.name) + ' does not exist!'
+				error : 'Cols attribute "' + cols[i] + '" for ' + (isBig ? json.name + 'Big' : json.name) + ' does not exist!'
 			};
 		}
 	}
@@ -1930,7 +1963,7 @@ function getPivotTableData(json, isBig) {
 	var aggrAttribute = (isBig ? json.type.I.aggregationattributeBig : json.type.I.aggregationattribute);
 	if (aggrAttribute != '' && results[0][aggrAttribute] == undefined) {
 		return {
-			error: 'Aggregation attribute "' + aggrAttribute + '" for ' + (isBig ? json.name + 'Big' : json.name) + ' does not exist!'
+			error : 'Aggregation attribute "' + aggrAttribute + '" for ' + (isBig ? json.name + 'Big' : json.name) + ' does not exist!'
 		};
 	}
 	
@@ -1939,17 +1972,17 @@ function getPivotTableData(json, isBig) {
 		var aggr = $.pivotUtilities.aggregators[aggrName]([ aggrAttribute ]);
 	} catch (e) {
 		return {
-			error: 'Aggregation function ' + aggrName + ' does not exist!'
+			error : 'Aggregation function ' + aggrName + ' does not exist!'
 		};
 	}
 	
 	return {
-		rows: rows,
-		cols: cols,
-		res: results,
-		error: error,
-		aggrAttribute: aggrAttribute,
-		aggrName: aggrName
+		rows : rows,
+		cols : cols,
+		res : results,
+		error : error,
+		aggrAttribute : aggrAttribute,
+		aggrName : aggrName
 	};
 }
 
@@ -2168,7 +2201,7 @@ function signaturePlot(valuesArr) {
 		var res = [];
 		slowDown.forEach(function(v, i) {
 			res[i] = {
-				x: i / (runtime_count - 1)
+				x : i / (runtime_count - 1)
 			};
 			res[i][aname] = slowDown[i];
 		});
@@ -2213,7 +2246,7 @@ function signaturePlot(valuesArr) {
 		var res = [];
 		slowDown.forEach(function(v, i) {
 			res[i] = {
-				x: i / (runtime_count - 1)
+				x : i / (runtime_count - 1)
 			};
 			res[i][aname] = slowDown[i];
 		});
@@ -2227,4 +2260,13 @@ function signaturePlot(valuesArr) {
 function alasqlQuery(q) {
 	var results = alasql(q);
 	return results;
+}
+
+function isInt(x) {
+	   var y = parseInt(x, 10);
+	   return !isNaN(y) && x == y && x.toString() == y.toString();
+	}
+
+function prettifySQL(sql) {
+	return alasql.pretty(sql, true);
 }

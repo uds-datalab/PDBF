@@ -180,6 +180,8 @@
 
         $$.axis = new Axis($$);
 
+        $$.bound = config.bindto;
+        
         if ($$.initPie) { $$.initPie(); }
         if ($$.initBrush) { $$.initBrush(); }
         if ($$.initZoom) { $$.initZoom(); }
@@ -891,7 +893,7 @@
             .attr('width', $$.width)
             .attr('height', $$.height);
         // MEMO: parent div's height will be bigger than svg when <!DOCTYPE html>
-        $$.selectChart.style('max-height', $$.currentHeight + "px");
+        //$$.selectChart.style('max-height', $$.currentHeight + "px");
     };
 
 
@@ -4394,7 +4396,7 @@
         if (forHorizontal) {
             return position.isLeft ? "0.3em" : position.isRight ? "-0.3em" : "0";
         } else {
-            return position.isTop ? "-1.5em" : position.isBottom ? "0.3em" : "0";
+            return position.isTop ? "0.0em" : position.isBottom ? "0.3em" : "0";
         }
     };
     Axis.prototype.textAnchorForAxisLabel = function textAnchorForAxisLabel(forHorizontal, position) {
