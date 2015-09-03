@@ -1,6 +1,10 @@
 #PDBF - A Toolkit for Creating Janiform Data Documents
 Version 1.0.3
 
+##Bugs, Suggestions, Feature requests
+If you encounter bugs, have suggestions, or have a feature request, then please go to the [issue page](https://github.com/uds-datalab/PDBF/issues), open a new issue if necessary and explain your concern.
+
+##Abstract
 PDBF documents are a hybrid format. They are a valid PDF and a valid HTML page at the same time. You can now optionally add an VirtualBox OVA file with a complete operating system to the PDBF document. Yes, this means that the resulting file is a valid PDF, HTML, and OVA file at the same time. If you change the file extension to PDF and open it with an PDF viewer, you can see the static part of the document. If you change the file extension to HTML and open it with a Browser (currently Chrome/Firefox/Safari/IE 10 supported), you can see the dynamic part of the document. And if an ova file is attached you can also change the file extension to OVA and install and run the attached operating system.
 The difference between the PDF and the HTML version is that the PDF version contains static version of all PDBF elements, whereas the HTML version is dynamic. For example you can zoom into graphs, temporarly remove dataseries from the graph, inspect and change the underling query of the PDBF element and see the result of the change directly in the browser.
 This approach works completely offline. No internet connection is required, neither at compile time, nor at viewing time.
@@ -10,9 +14,6 @@ PDBF files are created from LaTeX source code and a relational database. The raw
 PDBF toolkit is written in Java and LaTeX and can be used to compile documents on Windows, Mac and Linux. PDBF documents are also platform independent and run on any desktop OS (Windows, Linux, Mac) with a browser/PDF viewer.
 
 A [demo paper](https://infosys.uni-saarland.de/publications/p1972-dittrich.html) of our tool is appearing at [VLDB 2015](http://www.vldb.org/2015/). 
-
-##Bugs, Suggestions, Feature requests
-If you encounter bugs, have suggestions, or have a feature request, then please go to the [issue page](https://github.com/uds-datalab/PDBF/issues), open a new issue if necessary and explain your concern.
 
 ##License
 This toolkit is licensed unter the MIT License (see [here](https://github.com/uds-datalab/PDBF/blob/gh-pages/LICENSE.md))
