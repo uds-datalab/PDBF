@@ -5269,49 +5269,49 @@ var WebGLUtils = (function WebGLUtilsClosure() {
       { premultipliedalpha: false });
   }
 
-  var smaskVertexShaderCode = '\
-  attribute vec2 a_position;                                    \
-  attribute vec2 a_texCoord;                                    \
-                                                                \
-  uniform vec2 u_resolution;                                    \
-                                                                \
-  varying vec2 v_texCoord;                                      \
-                                                                \
-  void main() {                                                 \
-    vec2 clipSpace = (a_position / u_resolution) * 2.0 - 1.0;   \
-    gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);          \
-                                                                \
-    v_texCoord = a_texCoord;                                    \
-  }                                                             ';
+  var smaskVertexShaderCode = '\n' +
+  'attribute vec2 a_position;                                    \n' +
+  'attribute vec2 a_texCoord;                                    \n' +
+  '                                                              \n' +
+  'uniform vec2 u_resolution;                                    \n' +
+  '                                                              \n' +
+  'varying vec2 v_texCoord;                                      \n' +
+  '                                                              \n' +
+  'void main() {                                                 \n' +
+  '  vec2 clipSpace = (a_position / u_resolution) * 2.0 - 1.0;   \n' +
+  '  gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);          \n' +
+  '                                                              \n' +
+  '  v_texCoord = a_texCoord;                                    \n' +
+  '}                                                             ';
 
-  var smaskFragmentShaderCode = '\
-  precision mediump float;                                      \
-                                                                \
-  uniform vec4 u_backdrop;                                      \
-  uniform int u_subtype;                                        \
-  uniform sampler2D u_image;                                    \
-  uniform sampler2D u_mask;                                     \
-                                                                \
-  varying vec2 v_texCoord;                                      \
-                                                                \
-  void main() {                                                 \
-    vec4 imageColor = texture2D(u_image, v_texCoord);           \
-    vec4 maskColor = texture2D(u_mask, v_texCoord);             \
-    if (u_backdrop.a > 0.0) {                                   \
-      maskColor.rgb = maskColor.rgb * maskColor.a +             \
-                      u_backdrop.rgb * (1.0 - maskColor.a);     \
-    }                                                           \
-    float lum;                                                  \
-    if (u_subtype == 0) {                                       \
-      lum = maskColor.a;                                        \
-    } else {                                                    \
-      lum = maskColor.r * 0.3 + maskColor.g * 0.59 +            \
-            maskColor.b * 0.11;                                 \
-    }                                                           \
-    imageColor.a *= lum;                                        \
-    imageColor.rgb *= imageColor.a;                             \
-    gl_FragColor = imageColor;                                  \
-  }                                                             ';
+  var smaskFragmentShaderCode = '\n' +
+  'precision mediump float;                                      \n' +
+  '                                                              \n' +
+  'uniform vec4 u_backdrop;                                      \n' +
+  'uniform int u_subtype;                                        \n' +
+  'uniform sampler2D u_image;                                    \n' +
+  'uniform sampler2D u_mask;                                     \n' +
+  '                                                              \n' +
+  'varying vec2 v_texCoord;                                      \n' +
+  '                                                              \n' +
+  'void main() {                                                 \n' +
+  '  vec4 imageColor = texture2D(u_image, v_texCoord);           \n' +
+  '  vec4 maskColor = texture2D(u_mask, v_texCoord);             \n' +
+  '  if (u_backdrop.a > 0.0) {                                   \n' +
+  '    maskColor.rgb = maskColor.rgb * maskColor.a +             \n' +
+  '                    u_backdrop.rgb * (1.0 - maskColor.a);     \n' +
+  '  }                                                           \n' +
+  '  float lum;                                                  \n' +
+  '  if (u_subtype == 0) {                                       \n' +
+  '    lum = maskColor.a;                                        \n' +
+  '  } else {                                                    \n' +
+  '    lum = maskColor.r * 0.3 + maskColor.g * 0.59 +            \n' +
+  '          maskColor.b * 0.11;                                 \n' +
+  '  }                                                           \n' +
+  '  imageColor.a *= lum;                                        \n' +
+  '  imageColor.rgb *= imageColor.a;                             \n' +
+  '  gl_FragColor = imageColor;                                  \n' +
+  '}                                                             ';
 
   var smaskCache = null;
 
@@ -5418,32 +5418,32 @@ var WebGLUtils = (function WebGLUtilsClosure() {
     return canvas;
   }
 
-  var figuresVertexShaderCode = '\
-  attribute vec2 a_position;                                    \
-  attribute vec3 a_color;                                       \
-                                                                \
-  uniform vec2 u_resolution;                                    \
-  uniform vec2 u_scale;                                         \
-  uniform vec2 u_offset;                                        \
-                                                                \
-  varying vec4 v_color;                                         \
-                                                                \
-  void main() {                                                 \
-    vec2 position = (a_position + u_offset) * u_scale;          \
-    vec2 clipSpace = (position / u_resolution) * 2.0 - 1.0;     \
-    gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);          \
-                                                                \
-    v_color = vec4(a_color / 255.0, 1.0);                       \
-  }                                                             ';
+  var figuresVertexShaderCode = '\n' +
+  'attribute vec2 a_position;                                    \n' +
+  'attribute vec3 a_color;                                       \n' +
+  '                                                              \n' +
+  'uniform vec2 u_resolution;                                    \n' +
+  'uniform vec2 u_scale;                                         \n' +
+  'uniform vec2 u_offset;                                        \n' +
+  '                                                              \n' +
+  'varying vec4 v_color;                                         \n' +
+  '                                                              \n' +
+  'void main() {                                                 \n' +
+  '  vec2 position = (a_position + u_offset) * u_scale;          \n' +
+  '  vec2 clipSpace = (position / u_resolution) * 2.0 - 1.0;     \n' +
+  '  gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);          \n' +
+  '                                                              \n' +
+  '  v_color = vec4(a_color / 255.0, 1.0);                       \n' +
+  '}                                                             ';
 
-  var figuresFragmentShaderCode = '\
-  precision mediump float;                                      \
-                                                                \
-  varying vec4 v_color;                                         \
-                                                                \
-  void main() {                                                 \
-    gl_FragColor = v_color;                                     \
-  }                                                             ';
+  var figuresFragmentShaderCode = '\n' +
+  'precision mediump float;                                      \n' +
+  '                                                              \n' +
+  'varying vec4 v_color;                                         \n' +
+  '                                                              \n' +
+  'void main() {                                                 \n' +
+  '  gl_FragColor = v_color;                                     \n' +
+  '}                                                             ';
 
   var figuresCache = null;
 

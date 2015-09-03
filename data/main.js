@@ -1629,7 +1629,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 	containerControl.appendChild(getSpacer());
 	
 	var header = document.createElement('span');
-	header.innerHTML = '<span style="text-decoration:underline;">SQL Query for ' + f + ':</span><br />Tip: Press CTRL-Space for autocomplete';
+	header.innerHTML = '<span style="text-decoration:underline;">SQL Query for ' + f + ':</span><br />Tip: Press CTRL-Space for autocomplete.<br />Tip: Click outside of the editor area to execute a query.';
 	containerControl.appendChild(header);
 	
 	var textareaWrapper = document.createElement('div');
