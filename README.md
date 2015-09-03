@@ -11,6 +11,9 @@ PDBF toolkit is written in Java and LaTeX and can be used to compile documents o
 
 A [demo paper](https://infosys.uni-saarland.de/publications/p1972-dittrich.html) of our tool is appearing at [VLDB 2015](http://www.vldb.org/2015/). 
 
+##Bugs, Suggestions, Feature requests
+If you encounter bugs, have suggestions, or have a feature request, then please go to the [issue page](https://github.com/uds-datalab/PDBF/issues), open a new issue if necessary and explain your concern.
+
 ##License
 This toolkit is licensed unter the MIT License (see [here](https://github.com/uds-datalab/PDBF/blob/gh-pages/LICENSE.md))
 
