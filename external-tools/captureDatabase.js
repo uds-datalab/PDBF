@@ -27,8 +27,7 @@ page.open(system.args[1], function() {
 	};
 
 	var data = page.evaluate(function() {
-		return JSON.stringify(alasql.databases);
-		//return LZString.compress(JSON.stringify(alasql.databases));
+		return LZString.compressToBase64(JSON.stringify(alasql.databases));
 	});
 		
 	window.setTimeout(function () {

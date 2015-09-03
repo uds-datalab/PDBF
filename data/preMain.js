@@ -23,7 +23,11 @@ var tmp2 = dbjson_base64;
 toc("Base64 decode time for DB");
 tic();
 if (tmp2 != "") {
-	alasql.databases = JSON.parse(tmp2);
+	if (typeof notCompressed != 'undefined') {
+		alasql.databases = JSON.parse(tmp2);
+	} else {
+		alasql.databases = JSON.parse(LZString.decompressFromBase64(tmp2));
+	}
 }
 if (tmp != "") {
 	alasqlQuery(tmp);

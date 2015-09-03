@@ -426,7 +426,7 @@ public class LaTeX_Compiler {
 	    String viewer;
 	    String viewerHEAD = FileUtils.readFileToString(new File("data/template-head-images.html"), Tools.utf8);
 	    String viewerTAIL = FileUtils.readFileToString(new File("data/template-tail-images.html"), Tools.utf8);
-	    viewer = viewerHEAD + "dim_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(dim)) + "\";\r\n" + "json_base64 = \"eyAidHlwZSIgOiB7ICJJIiA6IHsgIngxIiA6IDEsICJ4MiIgOiAyLCAieTEiIDogMywgInkyIiA6IDQgfSB9IH0=\";\r\n" + "db_base64 = \"" + Tools.encodeFileToBase64Binary(new File("pdbf-db.sql")) + "\";\r\n" + "dbjson_base64 = \"" + Tools.escapeSpecialChars(new File("pdbf-db.json")) + "\";\r\n" + viewerTAIL;
+	    viewer = viewerHEAD + "dim_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(dim)) + "\";\r\n" + "json_base64 = \"eyAidHlwZSIgOiB7ICJJIiA6IHsgIngxIiA6IDEsICJ4MiIgOiAyLCAieTEiIDogMywgInkyIiA6IDQgfSB9IH0=\";\r\n" + "db_base64 = \"" + Tools.encodeFileToBase64Binary(new File("pdbf-db.sql")) + "\";\r\n" + "dbjson_base64 = \"" + Tools.escapeSpecialChars(new File("pdbf-db.json")) + "\";\r\nvar notCompressed = true;\r\n" + viewerTAIL;
 	    FileUtils.writeStringToFile(new File("data/pdbfDatabase.html"), viewer, Tools.utf8);
 	} catch (Exception e) {
 	    e.printStackTrace();

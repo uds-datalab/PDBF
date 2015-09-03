@@ -42,7 +42,7 @@ public class MinifyResources {
 	    String codemirrorCSS = FileUtils.readFileToString(new File("data/codemirror.css"), Tools.utf8);
 	    String c3CSS = FileUtils.readFileToString(new File("data/c3.css"), Tools.utf8);
 	    
-	    String out = pdfworkerJS + base64JS + alasqlJS + "\n" + all + "\n" + codemirrorJS + datatablesJS + lz + "</script><style>" + viewerCSS + pivotCSS + codemirrorCSS + datatablesCSS + c3CSS + "</style>";
+	    String out = lz + pdfworkerJS + base64JS + alasqlJS + "\n" + all + "\n" + codemirrorJS + "\n" + datatablesJS + "</script><style>" + viewerCSS + pivotCSS + codemirrorCSS + datatablesCSS + c3CSS + "</style>";
 	    FileUtils.writeStringToFile(new File("data/all"), out, Tools.utf8, false);
 	} catch (IOException e) {
 	    e.printStackTrace();

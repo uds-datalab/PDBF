@@ -18,7 +18,11 @@ var tmp = UTF8ArrToStr(base64DecToArr(db_base64));
 var tmp2 = dbjson_base64;
 
 if (tmp2 != "") {
-	alasql.databases = JSON.parse(tmp2);
+	if (typeof notCompressed != 'undefined') {
+		alasql.databases = JSON.parse(tmp2);
+	} else {
+		alasql.databases = JSON.parse(LZString.decompressFromBase64(tmp2));
+	}
 }
 
 if (tmp != "") {

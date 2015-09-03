@@ -1472,7 +1472,7 @@ function getChartOptions(json, zoomFactor, values, chart) {
 			height : $(chart).height()
 		},
 		padding : {
-			top : 15
+			top : 1
 		},
 		axis : {
 			x : {
