@@ -1,7 +1,7 @@
 var system = require('system');
 var fs = require('fs');
-if (system.args.length !== 2) {
-	console.log('Usage: ' + system.args[0] + ' webpagefile');
+if (system.args.length !== 3) {
+	console.log('Usage: ' + system.args[0] + ' webpagefile basedir');
 	phantom.exit();
 } 
 
@@ -14,6 +14,8 @@ page.onError = function (msg, trace) {
     });
 	phantom.exit();
 };
+
+fs.changeWorkingDirectory(system.args[2]);
 
 page.open(system.args[1], function() {
 	var size = page.evaluate(function() {

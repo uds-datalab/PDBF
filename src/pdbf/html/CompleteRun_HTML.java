@@ -13,6 +13,8 @@ public class CompleteRun_HTML {
     public static boolean includeRes = true;
     
     public static void main(String[] args) {
+	String baseDir = new File(args[0]).getAbsoluteFile().getParentFile().getPath() + File.separator;
+	
 	if (LaTeX_Compiler.OS.contains("win")) {
 	    LaTeX_Compiler.suffix = "win";
 	} else if (LaTeX_Compiler.OS.contains("mac")) {
@@ -52,12 +54,12 @@ public class CompleteRun_HTML {
 	LaTeX_Compiler.main(args);
 	HTML_Compiler.main(args);
 
-	new File("pdbf-dim.json").delete();
-	new File("pdbf-config.json").delete();
-	new File("pdbf-db.sql").delete();
-	new File("pdbf-db.json").delete();
-	new File("null.png").delete();
-	new File("pdbf-preload").delete();
+	new File(baseDir + "pdbf-dim.json").delete();
+	new File(baseDir + "pdbf-config.json").delete();
+	new File(baseDir + "pdbf-db.sql").delete();
+	new File(baseDir + "pdbf-db.json").delete();
+	new File(baseDir + "null.png").delete();
+	new File(baseDir + "pdbf-preload").delete();
 
 	System.out.println("Finished!");
 	System.out.println("Took " + (System.currentTimeMillis() - begin) + "ms");
