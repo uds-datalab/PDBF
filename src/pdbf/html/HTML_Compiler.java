@@ -32,9 +32,9 @@ public class HTML_Compiler {
 	    if (CompleteRun_HTML.includeRes) {
 		add = "</script>";
 	    } else {
-		add = "</script> <link rel=\"stylesheet\" href=\"viewer.css\"/>" + "<link rel=\"stylesheet\" href=\"pivot.css\"/>" + "<link rel=\"stylesheet\" href=\"codemirror.css\"/>" + "<link rel=\"stylesheet\" href=\"jquery.dataTables.css\"/>" + "<link rel=\"stylesheet\" href=\"c3.css\"/>" + "" + "<script src=\"base64.js\"></script>" + "<script src=\"d3.js\"></script>" + "<script src=\"alasql.js\"></script>" + "<script src=\"codemirror-compressed.js\"></script>"
+		add = "</script> <link rel=\"stylesheet\" href=\"viewer.css\"/>" + "<link rel=\"stylesheet\" href=\"pivot.css\"/>" + "<link rel=\"stylesheet\" href=\"codemirror.css\"/>" + "<link rel=\"stylesheet\" href=\"jquery.dataTables.css\"/>" + "<link rel=\"stylesheet\" href=\"c3.css\"/>" + "<script src=\"lz-string.min.js\"></script>" + "<script src=\"base64.js\"></script>" + "<script src=\"d3.js\"></script>" + "<script src=\"alasql.js\"></script>" + "<script src=\"codemirror-compressed.js\"></script>"
 			+ "<script src=\"c3.js\"></script>" + "<script src=\"excanvas.compiled.js\"></script>" + "<script src=\"diff_match_patch.js\"></script>" + "<script src=\"jquery-1.11.2.min.js\"></script>" + "<script src=\"pivot.js\"></script>" + "<script src=\"jquery-ui-1.9.2.custom.min.js\"></script>" + "<script src=\"jquery.dataTables.js\"></script>" + "<script src=\"main.js\"></script>" + "<script src=\"preMain.js\"></script>" + "<script src=\"jstat.js\"></script>" + ""
-			+ "<script src=\"compatibility.js\"></script>" + "<script src=\"l10n.js\"></script>" + "<script src=\"pdf.js\"></script>" + "<script src=\"pdf.worker.js\"></script>" + "<script src=\"viewer.js\"></script>" + "<script src=\"lz-string.min.js\"></script>";
+			+ "<script src=\"compatibility.js\"></script>" + "<script src=\"l10n.js\"></script>" + "<script src=\"pdf.js\"></script>" + "<script src=\"pdf.worker.js\"></script>" + "<script src=\"viewer.js\"></script>";
 	    }
 	    String all = FileUtils.readFileToString(new File(baseDirData + "all"), Tools.utf8);
 	    String preload = FileUtils.readFileToString(new File(baseDir + "pdbf-preload"));

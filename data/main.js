@@ -1555,7 +1555,7 @@ function getChartOptions(json, zoomFactor, values, chart) {
 					return '' + (Math.round(x * 10000) / 100) + '%';
 				};
 				options.axis.y.tick.format = function(y) {
-					return '' + (Math.round(y * 10000) / 100) + '%';
+					return '' + (Math.round(y * 10000) / 100)  + '%';
 				};
 			} catch (e) {
 				alert(e);
@@ -1565,7 +1565,7 @@ function getChartOptions(json, zoomFactor, values, chart) {
 			alert('Unknown chart type. Type was: "' + json.type.I.chartType + '"');
 	}
 	
-	if (values.json != undefined && (isNaN(values.json[0][values.x]) || values.json[0][values.x] == "") && (options == undefined || options.axis == undefined || options.axis.x == undefined || options.axis.x.type == undefined)) {
+	if (values.json != undefined && (isNaN(values.json[0][values.x])) && (options == undefined || options.axis == undefined || options.axis.x == undefined || options.axis.x.type == undefined)) {
 		if (isValidDate(values.json[0][values.x])) {
 			options.axis.x.type = "timeseries";
 		} else {

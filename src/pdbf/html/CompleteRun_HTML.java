@@ -11,7 +11,7 @@ import pdbf.vm.VM_Compiler;
 
 public class CompleteRun_HTML {
 
-    public static boolean includeRes = true;
+    public static boolean includeRes = false;
     
     public static void main(String[] args) {
 	String baseDir = Tools.getBaseDir();

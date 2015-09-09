@@ -186,7 +186,7 @@ public class LaTeX_Compiler {
 	System.out.println("Generating images...");
 	for (int i = 0; i < overlays.length; ++i) {
 	    if (overlays[i].type instanceof Chart) {
-		processChart(overlays[i]);
+		processVisual(overlays[i]);
 	    } else if (overlays[i].type instanceof DataText) {
 		processData(overlays[i]);
 	    } else if (overlays[i].type instanceof DataTable) {
@@ -390,7 +390,7 @@ public class LaTeX_Compiler {
 	}
     }
 
-    private static void processChart(Overlay o) {
+    private static void processVisual(Overlay o) {
 	Chart c = (Chart) o.type;
 	cleanupfiles.add(baseDirData + o.name + ".html");
 	cleanupfiles.add(baseDir + o.name + ".json");
@@ -421,7 +421,6 @@ public class LaTeX_Compiler {
 	cleanupfiles.add(baseDirData + o.name + ".html");
 	cleanupfiles.add(baseDir + o.name + ".data");
 	dataFiles.add(baseDir + o.name + ".data");
-	copyfiles.add(baseDir + o.name + ".png");
 	try {
 	    Dimension dim = new Dimension(dimOrg.width * c.quality, dimOrg.height * c.quality);
 	    String viewer;
