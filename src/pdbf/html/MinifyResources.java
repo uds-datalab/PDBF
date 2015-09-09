@@ -11,12 +11,15 @@ import pdbf.common.Tools;
 public class MinifyResources {
 	
     public static void main(String[] args) {
-	String command[] = {"java", "-jar", "data/compiler.jar", "data/d3.js", "data/c3.js", 
-		"data/excanvas.compiled.js", "data/diff_match_patch.js",
-		"data/jquery-1.11.2.min.js", "data/pivot.js", "data/jquery-ui-1.9.2.custom.min.js",
-		"data/l10n.js", "data/viewer.js", "data/main.js", "data/preMain.js",
-		"data/compatibility.js", "data/jstat.js", "data/pdf.js", 
-		"--js_output_file", "data/all", "--language_in", "ECMASCRIPT5", "--compilation_level", 
+	String baseDir = new File(args[0]).getAbsoluteFile().getParentFile().getPath() + File.separator;
+	String baseDirData = baseDir + "data" + File.separator;
+	
+	String command[] = {"java", "-jar", baseDirData + "compiler.jar", baseDirData + "d3.js", baseDirData + "c3.js", 
+		baseDirData + "excanvas.compiled.js", baseDirData + "diff_match_patch.js",
+		baseDirData + "jquery-1.11.2.min.js", baseDirData + "pivot.js", baseDirData + "jquery-ui-1.9.2.custom.min.js",
+		baseDirData + "l10n.js", baseDirData + "viewer.js", baseDirData + "main.js", baseDirData + "preMain.js",
+		baseDirData + "compatibility.js", baseDirData + "jstat.js", baseDirData + "pdf.js", 
+		"--js_output_file", baseDirData + "all", "--language_in", "ECMASCRIPT5", "--compilation_level", 
 		"WHITESPACE_ONLY", "--charset", "UTF-8"}; 
 	
 	try {
@@ -29,21 +32,21 @@ public class MinifyResources {
 	}
 	
 	try {
-	    String all = FileUtils.readFileToString(new File("data/all"), Tools.utf8);
-	    String lz = FileUtils.readFileToString(new File("data/lz-string.min.js"), Tools.utf8);
-	    String base64JS = FileUtils.readFileToString(new File("data/base64.js"), Tools.utf8);
-	    String datatablesJS = FileUtils.readFileToString(new File("data/jquery.dataTables.js"), Tools.utf8);
-	    String alasqlJS = FileUtils.readFileToString(new File("data/alasql.js"), Tools.utf8);
-	    String codemirrorJS = FileUtils.readFileToString(new File("data/codemirror-compressed.js"), Tools.utf8);
-	    String pdfworkerJS = FileUtils.readFileToString(new File("data/pdf.worker.js"), Tools.utf8);
-	    String viewerCSS = FileUtils.readFileToString(new File("data/viewer.css"), Tools.utf8);
-	    String pivotCSS = FileUtils.readFileToString(new File("data/pivot.css"), Tools.utf8);
-	    String datatablesCSS = FileUtils.readFileToString(new File("data/jquery.dataTables.css"), Tools.utf8);
-	    String codemirrorCSS = FileUtils.readFileToString(new File("data/codemirror.css"), Tools.utf8);
-	    String c3CSS = FileUtils.readFileToString(new File("data/c3.css"), Tools.utf8);
+	    String all = FileUtils.readFileToString(new File(baseDirData + "all"), Tools.utf8);
+	    String lz = FileUtils.readFileToString(new File(baseDirData + "lz-string.min.js"), Tools.utf8);
+	    String base64JS = FileUtils.readFileToString(new File(baseDirData + "base64.js"), Tools.utf8);
+	    String datatablesJS = FileUtils.readFileToString(new File(baseDirData + "jquery.dataTables.js"), Tools.utf8);
+	    String alasqlJS = FileUtils.readFileToString(new File(baseDirData + "alasql.js"), Tools.utf8);
+	    String codemirrorJS = FileUtils.readFileToString(new File(baseDirData + "codemirror-compressed.js"), Tools.utf8);
+	    String pdfworkerJS = FileUtils.readFileToString(new File(baseDirData + "pdf.worker.js"), Tools.utf8);
+	    String viewerCSS = FileUtils.readFileToString(new File(baseDirData + "viewer.css"), Tools.utf8);
+	    String pivotCSS = FileUtils.readFileToString(new File(baseDirData + "pivot.css"), Tools.utf8);
+	    String datatablesCSS = FileUtils.readFileToString(new File(baseDirData + "jquery.dataTables.css"), Tools.utf8);
+	    String codemirrorCSS = FileUtils.readFileToString(new File(baseDirData + "codemirror.css"), Tools.utf8);
+	    String c3CSS = FileUtils.readFileToString(new File(baseDirData + "c3.css"), Tools.utf8);
 	    
 	    String out = lz + pdfworkerJS + base64JS + alasqlJS + "\n" + all + "\n" + codemirrorJS + "\n" + datatablesJS + "</script><style>" + viewerCSS + pivotCSS + codemirrorCSS + datatablesCSS + c3CSS + "</style>";
-	    FileUtils.writeStringToFile(new File("data/all"), out, Tools.utf8, false);
+	    FileUtils.writeStringToFile(new File(baseDirData + "all"), out, Tools.utf8, false);
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}

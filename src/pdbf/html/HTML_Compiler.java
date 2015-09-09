@@ -13,6 +13,9 @@ public class HTML_Compiler {
     public static DecimalFormat df = new DecimalFormat("0000000000");
 
     public static void main(String[] args) {
+	String baseDir = new File(args[0]).getAbsoluteFile().getParentFile().getPath() + File.separator;
+	String baseDirData = baseDir + "data" + File.separator;
+	
 	System.out.println("Compiling HTML...");
 
 	String a = new File(args[0]).getName();
@@ -23,8 +26,8 @@ public class HTML_Compiler {
 
 	try {
 	    String viewer;
-	    String viewerHEAD = FileUtils.readFileToString(new File("data/template-head-alasql.html"), Tools.utf8);
-	    String viewerTAIL = FileUtils.readFileToString(new File("data/template-tail-alasql.html"), Tools.utf8);
+	    String viewerHEAD = FileUtils.readFileToString(new File(baseDirData + "template-head-alasql.html"), Tools.utf8);
+	    String viewerTAIL = FileUtils.readFileToString(new File(baseDirData + "template-tail-alasql.html"), Tools.utf8);
 	    String add;
 	    if (CompleteRun_HTML.includeRes) {
 		add = "</script>";
@@ -33,13 +36,13 @@ public class HTML_Compiler {
 			+ "<script src=\"c3.js\"></script>" + "<script src=\"excanvas.compiled.js\"></script>" + "<script src=\"diff_match_patch.js\"></script>" + "<script src=\"jquery-1.11.2.min.js\"></script>" + "<script src=\"pivot.js\"></script>" + "<script src=\"jquery-ui-1.9.2.custom.min.js\"></script>" + "<script src=\"jquery.dataTables.js\"></script>" + "<script src=\"main.js\"></script>" + "<script src=\"preMain.js\"></script>" + "<script src=\"jstat.js\"></script>" + ""
 			+ "<script src=\"compatibility.js\"></script>" + "<script src=\"l10n.js\"></script>" + "<script src=\"pdf.js\"></script>" + "<script src=\"pdf.worker.js\"></script>" + "<script src=\"viewer.js\"></script>" + "<script src=\"lz-string.min.js\"></script>";
 	    }
-	    String all = FileUtils.readFileToString(new File("data/all"), Tools.utf8);
-	    String preload = FileUtils.readFileToString(new File("pdbf-preload"));
-	    viewer = viewerHEAD + "pdf_base64 = \"" + Tools.encodeFileToBase64Binary(new File(pdfname)) + "\";\r\n" + "db_base64 = \"\";\r\n" + "json_base64 = \"" + Tools.encodeFileToBase64Binary(new File("pdbf-config.json")) + "\";\r\n" + "dbjson_base64 = \"" + Tools.escapeSpecialChars(new File("pdbf-db.json")) + "\";\r\n" + preload + "\r\n" + (CompleteRun_HTML.includeRes ? (all + "\r\n") : ("")) + add + viewerTAIL;
+	    String all = FileUtils.readFileToString(new File(baseDirData + "all"), Tools.utf8);
+	    String preload = FileUtils.readFileToString(new File(baseDir + "pdbf-preload"));
+	    viewer = viewerHEAD + "pdf_base64 = \"" + Tools.encodeFileToBase64Binary(new File(baseDir + pdfname)) + "\";\r\n" + "db_base64 = \"\";\r\n" + "json_base64 = \"" + Tools.encodeFileToBase64Binary(new File(baseDir + "pdbf-config.json")) + "\";\r\n" + "dbjson_base64 = \"" + Tools.escapeSpecialChars(new File(baseDir + "pdbf-db.json")) + "\";\r\n" + preload + "\r\n" + (CompleteRun_HTML.includeRes ? (all + "\r\n") : ("")) + add + viewerTAIL;
 	    //TODO: use here also script instead of comment
 	    String insert1 = "%<!DOCTYPE html><html dir=\"ltr\" mozdisallowselectionprint moznomarginboxes>" + "<head><meta charset=\"utf-8\"><!--\n";
 	    String insert2 = "1337 0 obj\n" + "stream\n" + "-->\n" + viewer + "<!--\n" + "endstream\n" + "endobj\n";
-	    StringBuilder sb = new StringBuilder(FileUtils.readFileToString(new File(pdfname), StandardCharsets.ISO_8859_1));
+	    StringBuilder sb = new StringBuilder(FileUtils.readFileToString(new File(baseDir + pdfname), StandardCharsets.ISO_8859_1));
 	    int pdfmarker = sb.indexOf("%PDF-");
 	    int pdfmarkerend = sb.indexOf("\n", pdfmarker);
 	    sb.insert(pdfmarkerend + 1, insert2);
@@ -72,7 +75,7 @@ public class HTML_Compiler {
 	    FileUtils.writeStringToFile(new File(outfile), sb.toString(), StandardCharsets.ISO_8859_1);
 	    
 	    //Delete static pdf to avoid confusion
-	    new File(basename + ".pdf").delete();
+	    new File(baseDir + basename + ".pdf").delete();
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
