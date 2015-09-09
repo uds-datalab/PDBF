@@ -3,6 +3,7 @@ package pdbf.common;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 
 import org.apache.commons.codec.binary.Base64;
@@ -39,15 +40,22 @@ public class Tools {
     public static String getBaseDir() {
 	String className = CompleteRun_HTML.class.getName().replace('.', '/');
 	String classJar = CompleteRun_HTML.class.getClass().getResource("/" + className + ".class").toString();
-	String tmp;
+	String tmp = null;
+	
+	try {
+	    tmp = ClassLoader.getSystemClassLoader().getResource(".").toURI().getPath();
+	} catch (URISyntaxException e) {
+	    e.printStackTrace();
+	    System.exit(-1);
+	}
 	
 	//check if we are running from jar or classfiles
 	if (classJar.startsWith("jar:")) {
 	    //jar
-	    tmp = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath()).getAbsoluteFile().getPath() + File.separator;
+	    tmp = new File(tmp).getAbsoluteFile().getPath() + File.separator;
 	} else {
 	    //classfiles
-	    tmp = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath()).getAbsoluteFile().getParentFile().getPath() + File.separator;
+	    tmp = new File(tmp).getAbsoluteFile().getParentFile().getPath() + File.separator;
 	}
 	return tmp;
     }
