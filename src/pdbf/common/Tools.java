@@ -8,6 +8,8 @@ import java.nio.charset.Charset;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 
+import pdbf.html.CompleteRun_HTML;
+
 public class Tools {
 
     public static Charset utf8 = Charset.forName("UTF-8");
@@ -26,7 +28,7 @@ public class Tools {
     public static String encodeStringToBase64Binary(String string) throws UnsupportedEncodingException {
 	return Base64.encodeBase64String(string.getBytes(utf8));
     }
-    
+
     public static String escapeSpecialChars(File file) throws IOException {
 	String tmp = FileUtils.readFileToString(file);
 	tmp = tmp.replace("\\", "\\\\");
@@ -34,4 +36,24 @@ public class Tools {
 	return tmp;
     }
 
+    public static String getBaseDir() {
+	String className = CompleteRun_HTML.class.getName().replace('.', '/');
+	String classJar = CompleteRun_HTML.class.getClass().getResource("/" + className + ".class").toString();
+	String tmp;
+	
+	//check if we are running from jar or classfiles
+	if (classJar.startsWith("jar:")) {
+	    //jar
+	    tmp = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath()).getAbsoluteFile().getPath() + File.separator;
+	} else {
+	    //classfiles
+	    tmp = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath()).getAbsoluteFile().getParentFile().getPath() + File.separator;
+	}
+	return tmp;
+    }
+
+    public static String getBaseDirData() {
+	String tmp = getBaseDir() + "data" + File.separator;
+	return tmp;
+    }
 }

@@ -11,8 +11,7 @@ import pdbf.common.Tools;
 public class MinifyResources {
 	
     public static void main(String[] args) {
-	String baseDir = new File(CompleteRun_HTML.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
-	String baseDirData = baseDir + "data" + File.separator;
+	String baseDirData = Tools.getBaseDirData();
 	
 	String command[] = {"java", "-jar", baseDirData + "compiler.jar", baseDirData + "d3.js", baseDirData + "c3.js", 
 		baseDirData + "excanvas.compiled.js", baseDirData + "diff_match_patch.js",
@@ -27,6 +26,10 @@ public class MinifyResources {
 	    pb.inheritIO();
 	    Process p = pb.start();
 	    p.waitFor();
+	    if (p.exitValue() != 0) {
+		System.err.println("Error! Exiting...");
+		System.exit(-1);
+	    }
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}

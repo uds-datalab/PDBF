@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 
+import pdbf.common.Tools;
 import pdbf.latex.LaTeX_Compiler;
 import pdbf.vm.VM_Compiler;
 
@@ -13,7 +14,7 @@ public class CompleteRun_HTML {
     public static boolean includeRes = true;
     
     public static void main(String[] args) {
-	String baseDir = new File(CompleteRun_HTML.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
+	String baseDir = Tools.getBaseDir();
 	
 	if (LaTeX_Compiler.OS.contains("win")) {
 	    LaTeX_Compiler.suffix = "win";
@@ -54,11 +55,10 @@ public class CompleteRun_HTML {
 	LaTeX_Compiler.main(args);
 	HTML_Compiler.main(args);
 
-	new File(baseDir + "pdbf-dim.json").delete();
-	new File(baseDir + "pdbf-config.json").delete();
+	new File("pdbf-dim.json").delete();
+	new File("pdbf-config.json").delete();
 	new File(baseDir + "pdbf-db.sql").delete();
 	new File(baseDir + "pdbf-db.json").delete();
-	new File(baseDir + "null.png").delete();
 	new File(baseDir + "pdbf-preload").delete();
 
 	System.out.println("Finished!");

@@ -29,7 +29,6 @@ import pdbf.common.Text;
 import pdbf.common.Tools;
 import pdbf.common.Visualization;
 import pdbf.common.VisualizationTypeAdapter;
-import pdbf.html.CompleteRun_HTML;
 
 public class LaTeX_Compiler {
 
@@ -44,10 +43,10 @@ public class LaTeX_Compiler {
     private static Gson gson;
     public static String suffix;
     private static Dimension dimOrg;
-    
+
     private static String baseDir;
     private static String baseDirData;
-    
+
     static {
 	GsonBuilder builder = new GsonBuilder();
 	builder.disableHtmlEscaping().serializeNulls();
@@ -56,13 +55,13 @@ public class LaTeX_Compiler {
 	builder.registerTypeAdapter(Table.class, new Table());
 	gson = builder.create();
     }
-    
+
     private static String latexFolder;
 
     public static void main(String[] args) {
-	baseDir = new File(CompleteRun_HTML.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
-	baseDirData = baseDir + "data" + File.separator;
-	
+	baseDir = Tools.getBaseDir();
+	baseDirData = Tools.getBaseDirData();
+
 	// Read config.
 	try {
 	    FileInputStream fstream = new FileInputStream(baseDir + "config.cfg");
@@ -87,19 +86,19 @@ public class LaTeX_Compiler {
 	    e4.printStackTrace();
 	    System.exit(-1);
 	}
-	
+
 	if (pathToLaTeXScript[0].contains("texi2") && args[0].contains(" ")) {
 	    System.err.println("Error: Specified path to texfile contains spaces and you are using texi2pdf or texi2dvi which does not support spaces in file paths!");
 	    System.exit(-1);
 	}
-	
+
 	String latexPath = args[0];
-	
+
 	if (!latexPath.endsWith(".tex")) {
 	    System.err.println("Error: Specified file has the wrong extension. Only .tex is supported!");
 	    System.exit(-1);
 	}
-	
+
 	File latex = new File(latexPath);
 	if (!latex.exists()) {
 	    System.err.println("Error: LaTeX file does not exist!");
@@ -129,21 +128,24 @@ public class LaTeX_Compiler {
 	try {
 	    ProcessBuilder pb = new ProcessBuilder(commands);
 	    pb.inheritIO();
-	    //pb.directory(new File(baseDir));
 	    Process p = pb.start();
 	    p.waitFor();
+	    if (p.exitValue() != 0) {
+		System.err.println("Error! Exiting...");
+		System.exit(-1);
+	    }
 	} catch (Exception e) {
 	    System.err.println("Error: LaTeX compilation failed! Reason: \n" + e.getMessage());
 	    System.exit(-1);
 	}
 
 	Overlay[] overlays;
-	if (new File(baseDir + "pdbf-config.json").exists()) {
+	if (new File("pdbf-config.json").exists()) {
 	    overlays = readJSONconfig();
 	} else {
 	    overlays = new Overlay[0];
 	}
-	
+
 	// Split
 	File f = new File(baseDir + "pdbf-db.sql");
 	File f2 = new File(baseDir + "pdbf-db.json");
@@ -178,9 +180,9 @@ public class LaTeX_Compiler {
 	} catch (IOException e3) {
 	    e3.printStackTrace();
 	}
-	//Process raw SQL statements
+	// Process raw SQL statements
 	getFinalDatabase();
-	
+
 	System.out.println("Generating images...");
 	for (int i = 0; i < overlays.length; ++i) {
 	    if (overlays[i].type instanceof Chart) {
@@ -195,6 +197,10 @@ public class LaTeX_Compiler {
 	for (Process p : processes) {
 	    try {
 		p.waitFor();
+		if (p.exitValue() != 0) {
+		    System.err.println("Error! Exiting...");
+		    System.exit(-1);
+		}
 	    } catch (InterruptedException e) {
 		e.printStackTrace();
 	    }
@@ -227,20 +233,18 @@ public class LaTeX_Compiler {
 	} catch (IOException e2) {
 	    e2.printStackTrace();
 	}
-	
+
 	String aux = "";
 	for (String dataTmp : dataFiles) {
 	    String data = new File(dataTmp).getName();
 	    try {
-		aux += "\\expandafter\\gdef\\csname pdbf@" + data.substring(0, data.length()-5) + "\\endcsname{" + FileUtils.readFileToString(new File(dataTmp)) + "}\n";
+		aux += "\\expandafter\\gdef\\csname pdbf@" + data.substring(0, data.length() - 5) + "\\endcsname{" + FileUtils.readFileToString(new File(dataTmp)) + "}\n";
 	    } catch (IOException e) {
 		e.printStackTrace();
 	    }
 	}
 	try {
-	    String nm = new File(latexPath).getName();
-	    FileUtils.writeStringToFile(new File(baseDir + nm.substring(0, nm.length()-4) + ".aux"), aux, true);
-	    FileUtils.writeStringToFile(new File(latexPath.substring(0, latexPath.length()-4) + ".aux"), aux, true);
+	    FileUtils.writeStringToFile(new File(latexPath.substring(0, latexPath.length() - 4) + ".aux"), aux, true);
 	} catch (IOException e2) {
 	    e2.printStackTrace();
 	}
@@ -249,15 +253,18 @@ public class LaTeX_Compiler {
 	try {
 	    ProcessBuilder pb = new ProcessBuilder(commands);
 	    pb.inheritIO();
-	    //pb.directory(new File(baseDir));
 	    Process p = pb.start();
 	    p.waitFor();
+	    if (p.exitValue() != 0) {
+		System.err.println("Error! Exiting...");
+		System.exit(-1);
+	    }
 	} catch (Exception e) {
 	    System.err.println("Error: LaTeX compilation failed! Reason: \n" + e.getMessage());
 	    System.exit(-1);
 	}
-	
-	if (new File(baseDir + "pdbf-config.json").exists()) {
+
+	if (new File("pdbf-config.json").exists()) {
 	    overlays = readJSONconfig();
 	} else {
 	    overlays = new Overlay[0];
@@ -274,7 +281,7 @@ public class LaTeX_Compiler {
 	overlays = olist.toArray(overlays);
 	try {
 	    String json = gson.toJson(overlays);
-	    FileUtils.writeStringToFile(new File(baseDir + "pdbf-config.json"), json, Tools.utf8);
+	    FileUtils.writeStringToFile(new File("pdbf-config.json"), json, Tools.utf8);
 	} catch (IOException e1) {
 	    e1.printStackTrace();
 	}
@@ -289,9 +296,9 @@ public class LaTeX_Compiler {
 	// Read JSON
 	Overlay[] overlays = null;
 	try {
-	    String json = FileUtils.readFileToString(new File(baseDir + "pdbf-config.json"), Tools.utf8);
+	    String json = FileUtils.readFileToString(new File("pdbf-config.json"), Tools.utf8);
 	    overlays = gson.fromJson(json, Overlay[].class);
-	    String json2 = FileUtils.readFileToString(new File(baseDir + "pdbf-dim.json"), Tools.utf8);
+	    String json2 = FileUtils.readFileToString(new File("pdbf-dim.json"), Tools.utf8);
 	    dimOrg = gson.fromJson(json2, Dimension.class);
 	    for (int i = 0; i < overlays.length; ++i) {
 		Visualization v = overlays[i].type;
@@ -408,9 +415,9 @@ public class LaTeX_Compiler {
 	    e.printStackTrace();
 	}
     }
-    
+
     private static void processData(Overlay o) {
-	Visualization c = (Visualization)o.type;
+	Visualization c = (Visualization) o.type;
 	cleanupfiles.add(baseDirData + o.name + ".html");
 	cleanupfiles.add(baseDir + o.name + ".data");
 	dataFiles.add(baseDir + o.name + ".data");
@@ -434,11 +441,11 @@ public class LaTeX_Compiler {
 	    e.printStackTrace();
 	}
     }
-    
+
     private static void getFinalDatabase() {
 	cleanupfiles.add(baseDirData + "pdbfDatabase.html");
 	try {
-	    Dimension dim = new Dimension(dimOrg.width, dimOrg.height);
+	    Dimension dim = dimOrg;
 	    String viewer;
 	    String viewerHEAD = FileUtils.readFileToString(new File(baseDirData + "template-head-images.html"), Tools.utf8);
 	    String viewerTAIL = FileUtils.readFileToString(new File(baseDirData + "template-tail-images.html"), Tools.utf8);
@@ -452,6 +459,10 @@ public class LaTeX_Compiler {
 	    pb.inheritIO();
 	    Process p = pb.start();
 	    p.waitFor();
+	    if (p.exitValue() != 0) {
+		System.err.println("Error! Exiting...");
+		System.exit(-1);
+	    }
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}

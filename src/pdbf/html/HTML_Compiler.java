@@ -13,8 +13,8 @@ public class HTML_Compiler {
     public static DecimalFormat df = new DecimalFormat("0000000000");
 
     public static void main(String[] args) {
-	String baseDir = new File(CompleteRun_HTML.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
-	String baseDirData = baseDir + "data" + File.separator;
+	String baseDir = Tools.getBaseDir();
+	String baseDirData = Tools.getBaseDirData();
 	
 	System.out.println("Compiling HTML...");
 
@@ -38,11 +38,11 @@ public class HTML_Compiler {
 	    }
 	    String all = FileUtils.readFileToString(new File(baseDirData + "all"), Tools.utf8);
 	    String preload = FileUtils.readFileToString(new File(baseDir + "pdbf-preload"));
-	    viewer = viewerHEAD + "pdf_base64 = \"" + Tools.encodeFileToBase64Binary(new File(baseDir + pdfname)) + "\";\r\n" + "db_base64 = \"\";\r\n" + "json_base64 = \"" + Tools.encodeFileToBase64Binary(new File(baseDir + "pdbf-config.json")) + "\";\r\n" + "dbjson_base64 = \"" + Tools.escapeSpecialChars(new File(baseDir + "pdbf-db.json")) + "\";\r\n" + preload + "\r\n" + (CompleteRun_HTML.includeRes ? (all + "\r\n") : ("")) + add + viewerTAIL;
+	    viewer = viewerHEAD + "pdf_base64 = \"" + Tools.encodeFileToBase64Binary(new File(pdfname)) + "\";\r\n" + "db_base64 = \"\";\r\n" + "json_base64 = \"" + Tools.encodeFileToBase64Binary(new File("pdbf-config.json")) + "\";\r\n" + "dbjson_base64 = \"" + Tools.escapeSpecialChars(new File(baseDir + "pdbf-db.json")) + "\";\r\n" + preload + "\r\n" + (CompleteRun_HTML.includeRes ? (all + "\r\n") : ("")) + add + viewerTAIL;
 	    //TODO: use here also script instead of comment
 	    String insert1 = "%<!DOCTYPE html><html dir=\"ltr\" mozdisallowselectionprint moznomarginboxes>" + "<head><meta charset=\"utf-8\"><!--\n";
 	    String insert2 = "1337 0 obj\n" + "stream\n" + "-->\n" + viewer + "<!--\n" + "endstream\n" + "endobj\n";
-	    StringBuilder sb = new StringBuilder(FileUtils.readFileToString(new File(baseDir + pdfname), StandardCharsets.ISO_8859_1));
+	    StringBuilder sb = new StringBuilder(FileUtils.readFileToString(new File(pdfname), StandardCharsets.ISO_8859_1));
 	    int pdfmarker = sb.indexOf("%PDF-");
 	    int pdfmarkerend = sb.indexOf("\n", pdfmarker);
 	    sb.insert(pdfmarkerend + 1, insert2);
@@ -75,7 +75,7 @@ public class HTML_Compiler {
 	    FileUtils.writeStringToFile(new File(outfile), sb.toString(), StandardCharsets.ISO_8859_1);
 	    
 	    //Delete static pdf to avoid confusion
-	    new File(baseDir + basename + ".pdf").delete();
+	    new File(pdfname).delete();
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
