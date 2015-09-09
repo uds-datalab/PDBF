@@ -11,7 +11,7 @@ import pdbf.common.Tools;
 public class MinifyResources {
 	
     public static void main(String[] args) {
-	String baseDir = new File(args[0]).getAbsoluteFile().getParentFile().getPath() + File.separator;
+	String baseDir = new File(CompleteRun_HTML.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
 	String baseDirData = baseDir + "data" + File.separator;
 	
 	String command[] = {"java", "-jar", baseDirData + "compiler.jar", baseDirData + "d3.js", baseDirData + "c3.js", 

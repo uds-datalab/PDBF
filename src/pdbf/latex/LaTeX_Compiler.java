@@ -29,6 +29,7 @@ import pdbf.common.Text;
 import pdbf.common.Tools;
 import pdbf.common.Visualization;
 import pdbf.common.VisualizationTypeAdapter;
+import pdbf.html.CompleteRun_HTML;
 
 public class LaTeX_Compiler {
 
@@ -59,7 +60,7 @@ public class LaTeX_Compiler {
     private static String latexFolder;
 
     public static void main(String[] args) {
-	baseDir = new File(args[0]).getAbsoluteFile().getParentFile().getPath() + File.separator;
+	baseDir = new File(CompleteRun_HTML.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
 	baseDirData = baseDir + "data" + File.separator;
 	
 	// Read config.
@@ -88,7 +89,7 @@ public class LaTeX_Compiler {
 	}
 	
 	if (pathToLaTeXScript[0].contains("texi2") && args[0].contains(" ")) {
-	    System.err.println("Error: Specified path to texfile contains spaces and you are using texi2pdf or texi2dvi which do not support spaces in file paths!");
+	    System.err.println("Error: Specified path to texfile contains spaces and you are using texi2pdf or texi2dvi which does not support spaces in file paths!");
 	    System.exit(-1);
 	}
 	

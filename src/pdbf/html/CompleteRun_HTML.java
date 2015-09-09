@@ -13,7 +13,7 @@ public class CompleteRun_HTML {
     public static boolean includeRes = true;
     
     public static void main(String[] args) {
-	String baseDir = new File(args[0]).getAbsoluteFile().getParentFile().getPath() + File.separator;
+	String baseDir = new File(CompleteRun_HTML.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
 	
 	if (LaTeX_Compiler.OS.contains("win")) {
 	    LaTeX_Compiler.suffix = "win";

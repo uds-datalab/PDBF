@@ -13,7 +13,7 @@ public class HTML_Compiler {
     public static DecimalFormat df = new DecimalFormat("0000000000");
 
     public static void main(String[] args) {
-	String baseDir = new File(args[0]).getAbsoluteFile().getParentFile().getPath() + File.separator;
+	String baseDir = new File(CompleteRun_HTML.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
 	String baseDirData = baseDir + "data" + File.separator;
 	
 	System.out.println("Compiling HTML...");
