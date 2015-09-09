@@ -87,6 +87,11 @@ public class LaTeX_Compiler {
 	    System.exit(-1);
 	}
 	
+	if (pathToLaTeXScript[0].contains("texi2") && args[0].contains(" ")) {
+	    System.err.println("Error: Specified path to texfile contains spaces and you are using texi2pdf or texi2dvi which do not support spaces in file paths!");
+	    System.exit(-1);
+	}
+	
 	String latexPath = args[0];
 	
 	if (!latexPath.endsWith(".tex")) {
