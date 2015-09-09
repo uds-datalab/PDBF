@@ -1,0 +1,35 @@
+\documentclass[10pt]{article}
+\usepackage{pdbf}
+\usepackage[a4paper]{geometry}
+
+% Option 1:
+% use q SQL dump inserting data into a mockup database
+\dbSQLText{
+CREATE TABLE HelloWorld(id int, text varchar); INSERT INTO HelloWorld VALUES(10, 'Hello World!'); INSERT INTO HelloWorld VALUES(120, 'Hallo Welt!');  INSERT INTO HelloWorld VALUES(100, 'bonjour le monde!');  INSERT INTO HelloWorld VALUES(42, 'Hello World!');}
+
+% Option 2:
+% use a jdbc connecction to an existing database
+% note: this connection is opnly required when creating the document; all data will be embedded into the document when compiling the document; afterwards the jdbc connection is not required anymore
+
+%\dbSQLFile{somedb.sql}
+%\dbSQLJDBC{jdbc:postgresql://localhost:5432/postgres}{postgres}{test}{testtable}%
+
+\begin{document}
+
+\dataTable[verticalLines=i, horizontalLinesHeader=b hh, horizontalLinesBody=i]{SELECT text FROM HelloWorld WHERE id=10;}\\[3pt]
+
+\noindent
+The table ``HelloWorld'' contains the following \dataText{SELECT COUNT(*) FROM HelloWorld;} tuples:
+
+\dataTable[verticalLines=i, horizontalLinesHeader=b hh, horizontalLinesBody=i]{SELECT * FROM HelloWorld;}\\[3pt]
+
+\noindent Column ``id'' contains \dataText{SELECT COUNT(DISTINCT id) FROM HelloWorld;} unique values whereas column ``text'' contains \dataText{SELECT COUNT(DISTINCT text) FROM HelloWorld;} unique values. The smallest id is  \dataText{SELECT min(id) FROM HelloWorld;}, the biggest id is  \dataText{SELECT max(id) FROM HelloWorld;}.
+
+\vspace*{0.5cm}
+\noindent\textbf{Notice}:
+
+\noindent If you opened ``hello world.html'', try to rename this file to ``hello world.pdf'' and see what happens.
+
+\noindent If you opened ``hello world.pdf'', try to rename this file to ``hello world.html'' and see what happens.
+
+\end{document}
