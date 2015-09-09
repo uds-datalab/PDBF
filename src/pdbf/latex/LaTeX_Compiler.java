@@ -108,7 +108,7 @@ public class LaTeX_Compiler {
 	latexFolder = latex.getAbsoluteFile().getParent();
 
 	ArrayList<String> commands = new ArrayList<String>(Arrays.asList(pathToLaTeXScript));
-	commands.add(latex.getAbsolutePath());
+	commands.add(latex.getPath());
 
 	File fi1 = new File(baseDir + "PDBF.sty").getAbsoluteFile();
 	File fi11 = new File(baseDir + "dummy.png").getAbsoluteFile();
@@ -128,7 +128,7 @@ public class LaTeX_Compiler {
 	try {
 	    ProcessBuilder pb = new ProcessBuilder(commands);
 	    pb.inheritIO();
-	    pb.directory(new File(baseDir));
+	    //pb.directory(new File(baseDir));
 	    Process p = pb.start();
 	    p.waitFor();
 	} catch (Exception e) {
@@ -248,7 +248,7 @@ public class LaTeX_Compiler {
 	try {
 	    ProcessBuilder pb = new ProcessBuilder(commands);
 	    pb.inheritIO();
-	    pb.directory(new File(baseDir));
+	    //pb.directory(new File(baseDir));
 	    Process p = pb.start();
 	    p.waitFor();
 	} catch (Exception e) {
