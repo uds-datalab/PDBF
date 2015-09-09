@@ -28,7 +28,7 @@ public class CompleteRun_HTML {
 	}
 
 	if (args.length > 3 || args.length < 1 || args[0].equalsIgnoreCase("--help")) {
-	    System.out.println("Usage:\tjava -jar PDBF.jar LaTeX_file\nOR\n\tjava -jar PDBF.jar --vm  PDBF_File.html VM_File.ova\nFor further help visit: https://github.com/uds-datalab/PDBF");
+	    System.out.println("Usage:\tjava -jar pdbf.jar LaTeX_file\nOR\n\tjava -jar pdbf.jar --vm  PDBF_File.html VM_File.ova\nFor further help visit: https://github.com/uds-datalab/PDBF");
 	    System.exit(0);
 	}
 	

@@ -110,9 +110,9 @@ public class LaTeX_Compiler {
 	ArrayList<String> commands = new ArrayList<String>(Arrays.asList(pathToLaTeXScript));
 	commands.add(latex.getPath());
 
-	File fi1 = new File(baseDir + "PDBF.sty").getAbsoluteFile();
+	File fi1 = new File(baseDir + "pdbf.sty").getAbsoluteFile();
 	File fi11 = new File(baseDir + "dummy.png").getAbsoluteFile();
-	File fi2 = new File(latexFolder + File.separator + "PDBF.sty").getAbsoluteFile();
+	File fi2 = new File(latexFolder + File.separator + "pdbf.sty").getAbsoluteFile();
 	File fi22 = new File(latexFolder + File.separator + "dummy.png").getAbsoluteFile();
 	if (!fi1.equals(fi2)) {
 	    try {
