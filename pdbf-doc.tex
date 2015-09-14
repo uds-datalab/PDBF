@@ -57,6 +57,8 @@ Default:& #4\\
 \end{tabular} \\[4pt]%
 }
 
+\def\pdbfQuality{4.0}
+
 \dbSQLText{CREATE TABLE test(a int, b int); INSERT INTO test VALUES(1, 10); INSERT INTO test VALUES(2, 100); INSERT INTO test VALUES(3, 120); INSERT INTO test VALUES(4, 100);}
 
 \begin{document}
@@ -234,14 +236,39 @@ PDBF uses AlaSQL as database engine. For all available features of the database 
 {Number $>$ 0 AND Number $<$ 1}
 {\texttt{0.05}}\\[3pt]
 %
-\section{SQL data sources}
+\section{Data sources}
+
+\subsection{SQL}
 \noindent Macros: \\[3pt]
 \verb|\dbSQLText{sqlQueryString}| \\
 \verb|\dbSQLFile{fileWithSQLQueries}| \\
+\textbf{Note:} Relative filepaths are relative to the tex file.\\
 \verb|\dbSQLJDBC{jdbcConnectionURL}{user}{password}{commaSeperatedListOfTableNames}| \\
 \textbf{Note:} jdbcConnectionURL consist of jdbc followed by the name of the dbms (only postgresql and mysql are currently supported) followed by the url of the dbms followed by the database name (e.g. jdbc:postgresql://localhost:5432/postgres).\\
 \textbf{Note:} jdbcConnectionURL, user, and password are not stored in the output documents.\\[4pt]
-\textbf{WARNING:} \verb|\dbSQLText| and \verb|\dbSQLFile| are currently horribly slow, even for medium sized (more than 100 tuples) amounts of data. Use \verb|\dbSQLJDBC| instead.
+
+\subsection{CSV}
+\verb|\dbCSVFile[options]{fileWithCSVData}{tableName}| \\[8pt]
+\textbf{Note:} Relative filepaths are relative to the tex file.\\[4pt]
+\noindent Options:\\[3pt]
+%
+\option
+{headers}
+{Defines the names of columns for the CSV file. If not set the first line of the CSV file is used as header.}
+{Javascript-Array of Strings}
+{\texttt{[]}}
+
+\option
+{quote}
+{Defines the quote character for this CSV file.}
+{String}
+{\texttt{"}}
+
+\option
+{seperator}
+{Defines the seperator character for this CSV file.}
+{String}
+{\texttt{,}}
 
 \section{PDBF elements}
 \subsection{Chart}

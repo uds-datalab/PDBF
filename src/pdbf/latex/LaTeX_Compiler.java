@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.io.FileUtils;
 
 import com.google.gson.Gson;
@@ -340,6 +343,7 @@ public class LaTeX_Compiler {
 	try {
 	    Database db = (Database) overlay.type;
 	    File f = new File(baseDir + "pdbf-db.sql");
+	    Alasql alasql = dbc.alasql;
 	    switch (db.type) {
 	    case 1:
 		FileUtils.writeStringToFile(f, db.value1 + System.lineSeparator(), Tools.utf8, true);
@@ -359,10 +363,15 @@ public class LaTeX_Compiler {
 		Connection conn = DriverManager.getConnection(db.value1, db.value2, db.value3);
 		// Create JSON Database
 		StringTokenizer stok = new StringTokenizer(db.value4, ",");
-		Alasql alasql = dbc.alasql;
 		while (stok.hasMoreTokens()) {
 		    Table table = new Table();
 		    String curTable = stok.nextToken().trim();
+		    
+			if (alasql.containsTable(curTable)) {
+			    System.err.println("Error: Database already contains a table with name \"" + curTable + "\"");
+			    System.exit(-1);
+			}
+		    
 		    Statement stmt = conn.createStatement();
 		    ResultSet rs = stmt.executeQuery("SELECT * FROM " + curTable);
 		    ResultSetMetaData rsmd = rs.getMetaData();
@@ -383,6 +392,42 @@ public class LaTeX_Compiler {
 		    alasql.addTable(table, curTable);
 		}
 		conn.close();
+		break;
+	    case 4:
+		File csvData = new File(db.value1);
+		if (!csvData.isAbsolute()) {
+		    csvData = new File(latexFolder + File.separator + db.value1);
+		}
+		CSVFormat csvformat = CSVFormat.RFC4180.withDelimiter(db.seperator).withQuote(db.quote);
+		if (db.headers.length > 0) {
+		    csvformat = csvformat.withHeader(db.headers);
+		} else {
+		    csvformat = csvformat.withHeader();
+		}
+		CSVParser parser = CSVParser.parse(csvData, Tools.utf8, csvformat);
+		
+		Table table = new Table();
+		String curTable = db.value2;
+		
+		if (alasql.containsTable(curTable)) {
+		    System.err.println("Error: Database already contains a table with name \"" + curTable + "\"");
+		    System.exit(-1);
+		}
+
+		int cols = parser.getHeaderMap().size();
+		for (String colname : parser.getHeaderMap().keySet()) {
+		    table.columns.add(new Column(colname, "STRING"));
+		}
+		if (cols > 0) {
+		    for (CSVRecord csvRecord : parser) {
+			Object[] data = new Object[cols];
+			for (int i = 0; i < cols; ++i) {
+			    data[i] = csvRecord.get(i);
+			}
+			table.data.add(new Data(data));
+		    }
+		}
+		alasql.addTable(table, curTable);
 		break;
 	    }
 	} catch (Exception e) {

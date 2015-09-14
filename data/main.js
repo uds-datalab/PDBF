@@ -1612,7 +1612,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 		containerChart.setAttribute('style', '-moz-border-radius: 1%; -webkit-border-radius: 1%; border-radius: 1%; padding:2%; background:white; margin:1%; margin-top:2em; display: inline-block; vertical-align:top; white-space: normal;');
 	}
 	var containerControl = document.createElement('div');
-	containerControl.setAttribute('style', 'width:30%; height:85.5%; -moz-border-radius: 1%; -webkit-border-radius: 1%; border-radius: 1%; padding:2%; background:white; margin:1%; margin-top:2em; display: inline-block; text-align: left; white-space: normal;');
+	containerControl.setAttribute('style', 'width:30%; -moz-border-radius: 1%; -webkit-border-radius: 1%; border-radius: 1%; padding:2%; background:white; margin:1%; margin-top:2em; display: inline-block; text-align: left; white-space: normal;');
 	
 	var containerSwitch = document.createElement('div');
 	containerSwitch.setAttribute('style', 'margin-bottom:5px; display: inline-block; vertical-align:top;');

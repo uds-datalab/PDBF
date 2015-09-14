@@ -39,5 +39,9 @@ public class Alasql implements JsonSerializer<Alasql> {
 	tables.add(table);
 	tableNames.add(tableName);
     }
+    
+    public boolean containsTable(String tableName) {
+	return this.tableNames.contains(tableName);
+    }
 
 }
