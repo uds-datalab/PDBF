@@ -489,7 +489,7 @@ public class LaTeX_Compiler {
     private static void getFinalDatabase() {
 	cleanupfiles.add(baseDirData + "pdbfDatabase.html");
 	try {
-	    Dimension dim = dimOrg;
+	    Dimension dim = new Dimension(1.0, 1.0);
 	    String viewer;
 	    String viewerHEAD = FileUtils.readFileToString(new File(baseDirData + "template-head-images.html"), Tools.utf8);
 	    String viewerTAIL = FileUtils.readFileToString(new File(baseDirData + "template-tail-images.html"), Tools.utf8);
