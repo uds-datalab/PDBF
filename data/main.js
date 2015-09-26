@@ -787,9 +787,8 @@ function buildContainerTableBig(json, containerOver) {
 	
 	var viewerContainer = document.getElementById("viewerContainer");
 	var tip = 'Tip: Click on the attributes to change the sorting.';
-	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip, [ json ], update, 'table', false);
-	
 	json.jsonBig = jQuery.extend(true, {}, json);
+	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip, [ json ], update, 'table', false);
 	
 	var err;
 	try {
@@ -805,7 +804,7 @@ function buildContainerTableBig(json, containerOver) {
 	var containerContent = ref.containerContent;
 	var containerOptions = ref.options;
 	var error = ref.error;
-	ref.editor.setValue(prettifySQL(json.type.I.queryB));
+	ref.editor.setValue(prettifySQL(json.jsonBig.type.I.queryB));
 	
 	getTableFromResults(results, containerContent);
 	
