@@ -86,8 +86,6 @@
 \define@key{pdbf}{options}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@opt]\def\pdbf@options{{\pdbf@opt}}}
 \def\pdbfQuality{1.0}
 \define@key{pdbf}{quality}{\def\pdbfQuality{#1}}
-\def\pdbfScale{1.0}
-\define@key{pdbf}{scale}{\def\pdbfScale{#1}}
 \def\pdbf@chartType{Line}
 \define@key{pdbf}{chartType}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@chartType]}
 
@@ -159,6 +157,7 @@
 	\fi%
 	\StrSubstitute{#2}{"}{\@backslashchar"}[\pdbf@query]%
 	\StrSubstitute{#3}{"}{\@backslashchar"}[\pdbf@queryB]%
+	\edef\pdbf@tmpOverlay{Overlay\arabic{visual}}
 	{\fontsize{5pt}{1sp}\selectfont%
 		\setlength\tabcolsep{1sp}%
 		% Place Image
@@ -195,7 +194,6 @@
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"queryB": "\pdbf@queryB",}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"options": "\pdbf@options",}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"quality": \pdbfQuality,}%
-		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"zoom": \pdbfScale,}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"overlap": \pdbf@overlap,}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"legendpos": "\pdbfLegendpos",}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"includeZero": false,}%
@@ -232,6 +230,7 @@
 		\stepcounter{visual}%
 		\stepcounter{overlay}%
 	}%
+	\put(-10000,0){abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789pdbf!\textasciitilde\textbraceleft\textbraceright\textbackslash\textasciicircum\textsection\textdollar\%\&/()=?\#+\textless\textgreater\textbar\textunderscore[].,;:\pdbf@tmpOverlay-}~%
 	\relax
 }
 
@@ -285,7 +284,6 @@
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"queryB": "\pdbf@queryB",}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"options": "\pdbf@options",}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"quality": \pdbfQuality,}%
-		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"zoom": \pdbfScale,}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"overlap": \pdbf@overlap,}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"legendpos": "\pdbfLegendpos",}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"includeZero": false,}%
@@ -336,12 +334,12 @@
 }
 
 \NewDocumentCommand\dataText{O{} m}{%
-{\expandafter\ifx\csname pdbf@Overlay\arabic{visual}\endcsname\relax\pdbf@csxdefaux{}\else\pdbf@csxdefaux{\csname pdbf@Overlay\arabic{visual}\endcsname}\fi%
+{\expandafter\ifx\csname pdbf@Overlay\arabic{visual}\endcsname\relax\pdbf@csxdefaux{dummy}\else\pdbf@csxdefaux{\csname pdbf@Overlay\arabic{visual}\endcsname}\fi%
 \pdbf@sqlmult{\csname pdbf@Overlay\arabic{visual}\endcsname}{#2}{pdbf.common.DataText}{#1}}%
 }
 
 \NewDocumentCommand\dataTable{O{} m}{%
-{\expandafter\ifx\csname pdbf@Overlay\arabic{visual}\endcsname\relax\pdbf@csxdefaux{}\else\pdbf@csxdefaux{\csname pdbf@Overlay\arabic{visual}\endcsname}\fi%
+{\expandafter\ifx\csname pdbf@Overlay\arabic{visual}\endcsname\relax\pdbf@csxdefaux{dummy}\else\pdbf@csxdefaux{\csname pdbf@Overlay\arabic{visual}\endcsname}\fi%
 \pdbf@sqlmult{\csname pdbf@Overlay\arabic{visual}\endcsname}{#2}{pdbf.common.DataTable}{#1}}%
 }
 

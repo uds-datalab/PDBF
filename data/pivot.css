@@ -25,18 +25,17 @@ table.innerTable tr th:last-child {
 	cursor: pointer;
 }
 
-.hasTooltip + span {
+.hasTooltip + div {
 	visibility: hidden;
 	background-color: white;
-    color: white;
     position: absolute;
-    width: 60%;
-	margin-left: -60%;
 	-webkit-transition:opacity 200ms linear; 
 	-moz-transition:opacity 200ms linear; 
 	-o-transition:opacity 200ms linear; 
 	transition:opacity 200ms linear;
-	margin-top: 1.6em;
+	margin-top: 0.6em;
+    margin-left: -20.0em;
+    min-width: 25em;
 	z-index: 99999;
 }
 
@@ -46,10 +45,9 @@ font-family:sans-serif;
 
 fieldset { border: 0px solid white;}
 form{text-align: left;}
-select, input, td, th, table, button, pre{font-size:inherit; font-family:sans-serif;}
+select, input, button, pre{font-size:inherit; font-family:sans-serif;}
 
 table {
-    font-family:sans-serif;
     text-align: left;
     border-collapse: collapse;
 }

@@ -1,5 +1,4 @@
 'use strict';
-
 $(function() {
 	var a = document.body.lastChild;
 	var b = $("#mozPrintCallback-shim").get(0);
@@ -20,8 +19,7 @@ $(function() {
 tic();
 var tmp = UTF8ArrToStr(base64DecToArr(db_base64));
 var tmp2 = dbjson_base64;
-toc("Base64 decode time for DB");
-tic();
+
 if (tmp2 != "") {
 	if (typeof notCompressed != 'undefined') {
 		alasql.databases = JSON.parse(tmp2);
@@ -29,8 +27,9 @@ if (tmp2 != "") {
 		alasql.databases = JSON.parse(LZString.decompressFromBase64(tmp2));
 	}
 }
+
 if (tmp != "") {
-	alasqlQuery(tmp);
+	alasql(tmp);
 }
 toc("DB load time");
 
@@ -74,7 +73,7 @@ function overlay(pageNr) {
 		var page = document.getElementById("pageContainer" + pageNr);
 		for (var i = 0; i < pageOverlays[pageNr].length; ++i) {
 			var json = pageOverlays[pageNr][i];
-			zoomFactor = PDFViewerApplication.pdfViewer._currentScale * json.type.I.zoom;
+			zoomFactor = PDFViewerApplication.pdfViewer._currentScale * (json.type.I.fontsize/12.0);
 			display(json, page, false);
 		}
 	}

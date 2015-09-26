@@ -49,6 +49,7 @@ public class LaTeX_Compiler {
 
     private static String baseDir;
     private static String baseDirData;
+    private static String arg0;
 
     static {
 	GsonBuilder builder = new GsonBuilder();
@@ -96,6 +97,7 @@ public class LaTeX_Compiler {
 	}
 
 	String latexPath = args[0];
+	arg0 = args[0];
 
 	if (!latexPath.endsWith(".tex")) {
 	    System.err.println("Error: Specified file has the wrong extension. Only .tex is supported!");
@@ -112,6 +114,19 @@ public class LaTeX_Compiler {
 
 	ArrayList<String> commands = new ArrayList<String>(Arrays.asList(pathToLaTeXScript));
 	commands.add(latex.getPath());
+	
+	//Check if phantomjs runs without problems. This can for example detect that a 32bit OS is used but a 64bit binary is present
+	try {
+	    ProcessBuilder pb = new ProcessBuilder(baseDir + "external-tools" + File.separator + "phantomjs-" + suffix, "--version");
+	    Process p = pb.start();
+	    p.waitFor();
+	    if (p.exitValue() != 0) {
+		System.err.println("Error! Your system can't run the supplied binary of phantom-js. This means that you have to upgrade your system to 64-bit or you have to compile phantom-js yourself and then replace the binary for your system in the external-tools folder. Instructions on how to compile phantom-js you can find here: http://phantomjs.org/build.html.");
+		System.exit(-1);
+	    }
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
 
 	File fi1 = new File(baseDir + "pdbf.sty").getAbsoluteFile();
 	File fi11 = new File(baseDir + "dummy.png").getAbsoluteFile();
@@ -186,7 +201,15 @@ public class LaTeX_Compiler {
 	// Process raw SQL statements
 	getFinalDatabase();
 
-	System.out.println("Generating images...");
+	//count
+	int count = 0;
+	for (int i = 0; i < overlays.length; ++i) {
+	    if (overlays[i].type instanceof Chart || overlays[i].type instanceof DataText || overlays[i].type instanceof DataTable || overlays[i].type instanceof Text) {
+		count++;
+	    } 
+	}
+	
+	System.out.println("Generating images...\n" + count + " Overlays to process");
 	for (int i = 0; i < overlays.length; ++i) {
 	    if (overlays[i].type instanceof Chart) {
 		processVisual(overlays[i]);
@@ -194,6 +217,8 @@ public class LaTeX_Compiler {
 		processData(overlays[i]);
 	    } else if (overlays[i].type instanceof DataTable) {
 		processData(overlays[i]);
+	    } else if (overlays[i].type instanceof Text) {
+		System.out.println("Finished " + overlays[i].name);
 	    }
 	}
 
@@ -320,7 +345,7 @@ public class LaTeX_Compiler {
 		}
 
 		if (!(v instanceof Database)) {
-		    v.zoom = v.fontsize / 12.0 * v.zoom;
+		    v.quality *= 2;
 		    if (v.aggregationattributeBig.equals("")) {
 			v.aggregationattributeBig = v.aggregationattribute;
 		    }
@@ -441,18 +466,23 @@ public class LaTeX_Compiler {
 	cleanupfiles.add(baseDir + o.name + ".json");
 	preloadfiles.add(baseDir + o.name + ".json");
 	copyfiles.add(baseDir + o.name + ".png");
+	
+	String a = new File(arg0).getName();
+	String filename = a.substring(0, a.length() - 4);
+	String pdfname = filename + ".pdf";
+	
 	try {
 	    Dimension dim = new Dimension(dimOrg.width * c.quality, dimOrg.height * c.quality);
 	    String viewer;
 	    String viewerHEAD = FileUtils.readFileToString(new File(baseDirData + "template-head-images.html"), Tools.utf8);
 	    String viewerTAIL = FileUtils.readFileToString(new File(baseDirData + "template-tail-images.html"), Tools.utf8);
-	    viewer = viewerHEAD + "dim_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(dim)) + "\";\r\n" + "json_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(o)) + "\";\r\n" + "db_base64 = \"\";\r\n" + "dbjson_base64 = \"" + Tools.escapeSpecialChars(new File(baseDir + "pdbf-db.json")) + "\";\r\n" + viewerTAIL;
+	    viewer = viewerHEAD + "pdf_base64 = \"" + Tools.encodeFileToBase64Binary(new File(pdfname)) + "\";\r\n" + "dim_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(dim)) + "\";\r\n" + "json_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(o)) + "\";\r\n" + "db_base64 = \"\";\r\n" + "dbjson_base64 = \"" + Tools.escapeSpecialChars(new File(baseDir + "pdbf-db.json")) + "\";\r\n" + viewerTAIL;
 	    FileUtils.writeStringToFile(new File(baseDirData + o.name + ".html"), viewer, Tools.utf8);
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
 	try {
-	    ProcessBuilder pb = new ProcessBuilder(baseDir + "external-tools" + File.separator + "phantomjs-" + suffix, baseDir + "external-tools" + File.separator + "capture.js", "data" + File.separator + o.name + ".html", baseDir);
+	    ProcessBuilder pb = new ProcessBuilder(baseDir + "external-tools" + File.separator + "phantomjs-" + suffix, baseDir + "external-tools" + File.separator + "capture.js", o.name + ".html", baseDirData);
 	    pb.inheritIO();
 	    Process p = pb.start();
 	    processes.add(p);
@@ -477,7 +507,7 @@ public class LaTeX_Compiler {
 	    e.printStackTrace();
 	}
 	try {
-	    ProcessBuilder pb = new ProcessBuilder(baseDir + "external-tools" + File.separator + "phantomjs-" + suffix, baseDir + "external-tools" + File.separator + "captureData.js", "data" + File.separator + o.name + ".html", baseDir);
+	    ProcessBuilder pb = new ProcessBuilder(baseDir + "external-tools" + File.separator + "phantomjs-" + suffix, baseDir + "external-tools" + File.separator + "captureData.js", o.name + ".html", baseDirData);
 	    pb.inheritIO();
 	    Process p = pb.start();
 	    processes.add(p);
@@ -499,7 +529,7 @@ public class LaTeX_Compiler {
 	    e.printStackTrace();
 	}
 	try {
-	    ProcessBuilder pb = new ProcessBuilder(baseDir + "external-tools" + File.separator + "phantomjs-" + suffix, baseDir + "external-tools" + File.separator + "captureDatabase.js", "data" + File.separator + "pdbfDatabase.html", baseDir);
+	    ProcessBuilder pb = new ProcessBuilder(baseDir + "external-tools" + File.separator + "phantomjs-" + suffix, baseDir + "external-tools" + File.separator + "captureDatabase.js", "pdbfDatabase.html", baseDirData);
 	    pb.inheritIO();
 	    Process p = pb.start();
 	    p.waitFor();

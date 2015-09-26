@@ -258,7 +258,6 @@
         
         //////////////////////////////////////////////////////////////////////
         config.point_r = config.point_r * config.completeScale;
-        $$.svg[0][0].style.fontSize = config.completeScale*10;
         $$.svg[0][0].style.strokeWidth = config.completeScale;
         config.padding_right = config.padding_right*config.completeScale;
         config.padding_top = config.padding_top*config.completeScale;
@@ -381,7 +380,7 @@
 
     c3_chart_internal_fn.updateSizes = function () {
         var $$ = this, config = $$.config;
-        var legendHeight = $$.legend ? $$.getLegendHeight() : 0,
+        var legendHeight = $$.legend ? ($$.getLegendHeight() + 5*config.completeScale) : 0,
             legendWidth = $$.legend ? $$.getLegendWidth() : 0,
             legendHeightForBottom = $$.isLegendRight || $$.isLegendInset ? 0 : legendHeight,
             hasArc = $$.hasArcType(),
@@ -1046,7 +1045,7 @@
             size_width: undefined,
             size_height: undefined,
             padding_left: undefined,
-            padding_right: 10,
+            padding_right: 5,
             padding_top: 5,
             padding_bottom: undefined,
             innerTickSize: 3,
@@ -1471,7 +1470,8 @@
         }
 
         domainLength = Math.abs(yDomainMax - yDomainMin);
-        padding = padding_top = padding_bottom = domainLength * 0.1;
+        padding = padding_top = padding_bottom = domainLength * 0.03;
+        padding_bottom = 0;
 
         if (typeof center !== 'undefined') {
             yDomainAbs = Math.max(Math.abs(yDomainMin), Math.abs(yDomainMax));
@@ -1528,7 +1528,7 @@
             maxDataCount = $$.getMaxDataCount();
             padding = maxDataCount > 1 ? (diff / (maxDataCount - 1)) / 2 : 0.5;
         } else {
-            padding = diff * 0.01;
+            padding = diff * 0.03;
         }
         if (typeof config.axis_x_padding === 'object' && notEmpty(config.axis_x_padding)) {
             paddingLeft = isValue(config.axis_x_padding.left) ? config.axis_x_padding.left : padding;
@@ -1537,6 +1537,11 @@
             paddingLeft = paddingRight = config.axis_x_padding;
         } else {
             paddingLeft = paddingRight = padding;
+            if (!$$.hasType('bar')) {
+            	paddingLeft = 0.00000001;
+            } else {
+            	paddingRight += diff * 0.03
+            }
         }
         return {left: paddingLeft, right: paddingRight};
     };
@@ -3348,7 +3353,7 @@
     };
     c3_chart_internal_fn.getTextRect = function (text, cls) {
         var dummy = this.d3.select('body').append('div').classed('c3', true),
-            svg = dummy.append("svg").style('visibility', 'hidden').style('position', 'fixed').style('top', 0).style('left', 0).style('font-size', 10*this.config.completeScale),
+            svg = dummy.append("svg").style('visibility', 'hidden').style('position', 'fixed').style('top', 0).style('left', 0).style('font-size', 12*this.config.completeScale),
             rect;
         svg.selectAll('.dummy')
             .data([text])
@@ -3895,7 +3900,7 @@
         };
 
         $$.margin3 = {
-            top: $$.isLegendRight ? 0 : $$.isLegendInset ? insetLegendPosition.top : $$.currentHeight - legendHeight,
+            top: ($$.isLegendRight ? 0 : $$.isLegendInset ? insetLegendPosition.top : $$.currentHeight - legendHeight) + 5*config.completeScale,
             right: NaN,
             bottom: 0,
             left: $$.isLegendRight ? $$.currentWidth - legendWidth : $$.isLegendInset ? insetLegendPosition.left : 0
@@ -4483,7 +4488,7 @@
                 this.updateXAxisTickValues(targetsToShow, axis);
             }
             dummy = $$.d3.select('body').append('div').classed('c3', true);
-            svg = dummy.append("svg").style('visibility', 'hidden').style('position', 'fixed').style('top', 0).style('left', 0).style('font-size', 10*config.completeScale),
+            svg = dummy.append("svg").style('visibility', 'hidden').style('position', 'fixed').style('top', 0).style('left', 0).style('font-size', 12*config.completeScale),
             svg.append('g').call(axis).each(function () {
                 $$.d3.select(this).selectAll('text').each(function () {
                     var box = this.getBoundingClientRect();
@@ -7069,32 +7074,6 @@
         var ua = window.navigator.userAgent;
         return ua.indexOf('Chrome') >= 0;
     };
-
-    // PhantomJS doesn't have support for Function.prototype.bind, which has caused confusion. Use
-    // this polyfill to avoid the confusion.
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind#Polyfill
-
-    if (!Function.prototype.bind) {
-      Function.prototype.bind = function(oThis) {
-        if (typeof this !== 'function') {
-          // closest thing possible to the ECMAScript 5
-          // internal IsCallable function
-          throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
-        }
-
-        var aArgs   = Array.prototype.slice.call(arguments, 1),
-            fToBind = this,
-            fNOP    = function() {},
-            fBound  = function() {
-              return fToBind.apply(this instanceof fNOP ? this : oThis, aArgs.concat(Array.prototype.slice.call(arguments)));
-            };
-
-        fNOP.prototype = this.prototype;
-        fBound.prototype = new fNOP();
-
-        return fBound;
-      };
-    }
 
     if (typeof define === 'function' && define.amd) {
         define("c3", ["d3"], c3);

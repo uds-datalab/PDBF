@@ -17,6 +17,12 @@
 /*jshint globalstrict: false */
 /* globals PDFJS */
 
+//#########################################################
+var pdbf_state = false; // false == waiting for keyword trigger, true == waiting
+						// for Overlay number
+var font_store = {}; // stores the font for every Overlay
+// #########################################################
+
 // Initializing PDFJS global object (if still undefined)
 if (typeof PDFJS === 'undefined') {
   (typeof window !== 'undefined' ? window : this).PDFJS = {};
@@ -31,22 +37,24 @@ PDFJS.build = 'e9072ac';
 
 /* -*- Mode: Java; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* vim: set shiftwidth=2 tabstop=2 autoindent cindent expandtab: */
-/* Copyright 2012 Mozilla Foundation
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+/*
+ * Copyright 2012 Mozilla Foundation
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
-/* globals Cmd, ColorSpace, Dict, MozBlobBuilder, Name, PDFJS, Ref, URL,
-           Promise */
+/*
+ * globals Cmd, ColorSpace, Dict, MozBlobBuilder, Name, PDFJS, Ref, URL, Promise
+ */
 
 'use strict';
 
@@ -125,7 +133,8 @@ PDFJS.VERBOSITY_LEVELS = {
 
 // All the possible operations for an operator list.
 var OPS = PDFJS.OPS = {
-  // Intentionally start from 1 so it is easy to spot bad operators that will be
+  // Intentionally start from 1 so it is easy to spot bad operators that will
+	// be
   // 0's.
   dependency: 1,
   setLineWidth: 2,
@@ -658,9 +667,9 @@ var Util = PDFJS.Util = (function UtilClosure() {
   };
 
   // Apply a generic 3d matrix M on a 3-vector v:
-  //   | a b c |   | X |
-  //   | d e f | x | Y |
-  //   | g h i |   | Z |
+  // | a b c | | X |
+  // | d e f | x | Y |
+  // | g h i | | Z |
   // M is assumed to be serialized as [a,b,c,d,e,f,g,h,i],
   // with v as [X,Y,Z]
   Util.apply3dTransform = function Util_apply3dTransform(m, v) {
@@ -808,20 +817,27 @@ var Util = PDFJS.Util = (function UtilClosure() {
 
 /**
  * PDF page viewport created based on scale, rotation and offset.
+ * 
  * @class
  * @alias PDFJS.PageViewport
  */
 var PageViewport = PDFJS.PageViewport = (function PageViewportClosure() {
   /**
-   * @constructor
-   * @private
-   * @param viewBox {Array} xMin, yMin, xMax and yMax coordinates.
-   * @param scale {number} scale of the viewport.
-   * @param rotation {number} rotations of the viewport in degrees.
-   * @param offsetX {number} offset X
-   * @param offsetY {number} offset Y
-   * @param dontFlip {boolean} if true, axis Y will not be flipped.
-   */
+	 * @constructor
+	 * @private
+	 * @param viewBox
+	 *            {Array} xMin, yMin, xMax and yMax coordinates.
+	 * @param scale
+	 *            {number} scale of the viewport.
+	 * @param rotation
+	 *            {number} rotations of the viewport in degrees.
+	 * @param offsetX
+	 *            {number} offset X
+	 * @param offsetY
+	 *            {number} offset Y
+	 * @param dontFlip
+	 *            {boolean} if true, axis Y will not be flipped.
+	 */
   function PageViewport(viewBox, scale, rotation, offsetX, offsetY, dontFlip) {
     this.viewBox = viewBox;
     this.scale = scale;
@@ -846,7 +862,7 @@ var PageViewport = PDFJS.PageViewport = (function PageViewportClosure() {
       case 270:
         rotateA = 0; rotateB = -1; rotateC = -1; rotateD = 0;
         break;
-      //case 0:
+      // case 0:
       default:
         rotateA = 1; rotateB = 0; rotateC = 0; rotateD = -1;
         break;
@@ -887,12 +903,14 @@ var PageViewport = PDFJS.PageViewport = (function PageViewportClosure() {
   }
   PageViewport.prototype = /** @lends PDFJS.PageViewport.prototype */ {
     /**
-     * Clones viewport with additional properties.
-     * @param args {Object} (optional) If specified, may contain the 'scale' or
-     * 'rotation' properties to override the corresponding properties in
-     * the cloned viewport.
-     * @returns {PDFJS.PageViewport} Cloned viewport.
-     */
+	 * Clones viewport with additional properties.
+	 * 
+	 * @param args
+	 *            {Object} (optional) If specified, may contain the 'scale' or
+	 *            'rotation' properties to override the corresponding properties
+	 *            in the cloned viewport.
+	 * @returns {PDFJS.PageViewport} Cloned viewport.
+	 */
     clone: function PageViewPort_clone(args) {
       args = args || {};
       var scale = 'scale' in args ? args.scale : this.scale;
@@ -901,25 +919,30 @@ var PageViewport = PDFJS.PageViewport = (function PageViewportClosure() {
                               this.offsetX, this.offsetY, args.dontFlip);
     },
     /**
-     * Converts PDF point to the viewport coordinates. For examples, useful for
-     * converting PDF location into canvas pixel coordinates.
-     * @param x {number} X coordinate.
-     * @param y {number} Y coordinate.
-     * @returns {Object} Object that contains 'x' and 'y' properties of the
-     * point in the viewport coordinate space.
-     * @see {@link convertToPdfPoint}
-     * @see {@link convertToViewportRectangle}
-     */
+	 * Converts PDF point to the viewport coordinates. For examples, useful for
+	 * converting PDF location into canvas pixel coordinates.
+	 * 
+	 * @param x
+	 *            {number} X coordinate.
+	 * @param y
+	 *            {number} Y coordinate.
+	 * @returns {Object} Object that contains 'x' and 'y' properties of the
+	 *          point in the viewport coordinate space.
+	 * @see {@link convertToPdfPoint}
+	 * @see {@link convertToViewportRectangle}
+	 */
     convertToViewportPoint: function PageViewport_convertToViewportPoint(x, y) {
       return Util.applyTransform([x, y], this.transform);
     },
     /**
-     * Converts PDF rectangle to the viewport coordinates.
-     * @param rect {Array} xMin, yMin, xMax and yMax coordinates.
-     * @returns {Array} Contains corresponding coordinates of the rectangle
-     * in the viewport coordinate space.
-     * @see {@link convertToViewportPoint}
-     */
+	 * Converts PDF rectangle to the viewport coordinates.
+	 * 
+	 * @param rect
+	 *            {Array} xMin, yMin, xMax and yMax coordinates.
+	 * @returns {Array} Contains corresponding coordinates of the rectangle in
+	 *          the viewport coordinate space.
+	 * @see {@link convertToViewportPoint}
+	 */
     convertToViewportRectangle:
       function PageViewport_convertToViewportRectangle(rect) {
       var tl = Util.applyTransform([rect[0], rect[1]], this.transform);
@@ -927,14 +950,17 @@ var PageViewport = PDFJS.PageViewport = (function PageViewportClosure() {
       return [tl[0], tl[1], br[0], br[1]];
     },
     /**
-     * Converts viewport coordinates to the PDF location. For examples, useful
-     * for converting canvas pixel location into PDF one.
-     * @param x {number} X coordinate.
-     * @param y {number} Y coordinate.
-     * @returns {Object} Object that contains 'x' and 'y' properties of the
-     * point in the PDF coordinate space.
-     * @see {@link convertToViewportPoint}
-     */
+	 * Converts viewport coordinates to the PDF location. For examples, useful
+	 * for converting canvas pixel location into PDF one.
+	 * 
+	 * @param x
+	 *            {number} X coordinate.
+	 * @param y
+	 *            {number} Y coordinate.
+	 * @returns {Object} Object that contains 'x' and 'y' properties of the
+	 *          point in the PDF coordinate space.
+	 * @see {@link convertToViewportPoint}
+	 */
     convertToPdfPoint: function PageViewport_convertToPdfPoint(x, y) {
       return Util.applyInverseTransform([x, y], this.transform);
     }
@@ -1039,7 +1065,7 @@ function isRef(v) {
 
 /**
  * Promise Capability object.
- *
+ * 
  * @typedef {Object} PromiseCapability
  * @property {Promise} promise - A promise object.
  * @property {function} resolve - Fullfills the promise.
@@ -1048,10 +1074,11 @@ function isRef(v) {
 
 /**
  * Creates a promise capability object.
+ * 
  * @alias PDFJS.createPromiseCapability
- *
- * @return {PromiseCapability} A capability object contains:
- * - a Promise, resolve and reject methods.
+ * 
+ * @return {PromiseCapability} A capability object contains: - a Promise,
+ *         resolve and reject methods.
  */
 function createPromiseCapability() {
   var capability = {};
@@ -1065,14 +1092,13 @@ function createPromiseCapability() {
 PDFJS.createPromiseCapability = createPromiseCapability;
 
 /**
- * Polyfill for Promises:
- * The following promise implementation tries to generally implement the
- * Promise/A+ spec. Some notable differences from other promise libaries are:
- * - There currently isn't a seperate deferred and promise object.
- * - Unhandled rejections eventually show an error if they aren't handled.
- *
- * Based off of the work in:
- * https://bugzilla.mozilla.org/show_bug.cgi?id=810490
+ * Polyfill for Promises: The following promise implementation tries to
+ * generally implement the Promise/A+ spec. Some notable differences from other
+ * promise libaries are: - There currently isn't a seperate deferred and promise
+ * object. - Unhandled rejections eventually show an error if they aren't
+ * handled.
+ * 
+ * Based off of the work in: https://bugzilla.mozilla.org/show_bug.cgi?id=810490
  */
 (function PromiseClosure() {
   if (globalScope.Promise) {
@@ -1246,11 +1272,13 @@ PDFJS.createPromiseCapability = createPromiseCapability;
     }
   }
   /**
-   * Builds a promise that is resolved when all the passed in promises are
-   * resolved.
-   * @param {array} array of data and/or promises to wait for.
-   * @return {Promise} New dependant promise.
-   */
+	 * Builds a promise that is resolved when all the passed in promises are
+	 * resolved.
+	 * 
+	 * @param {array}
+	 *            array of data and/or promises to wait for.
+	 * @return {Promise} New dependant promise.
+	 */
   Promise.all = function Promise_all(promises) {
     var resolveAll, rejectAll;
     var deferred = new Promise(function (resolve, reject) {
@@ -1294,27 +1322,32 @@ PDFJS.createPromiseCapability = createPromiseCapability;
   };
 
   /**
-   * Checks if the value is likely a promise (has a 'then' function).
-   * @return {boolean} true if value is thenable
-   */
+	 * Checks if the value is likely a promise (has a 'then' function).
+	 * 
+	 * @return {boolean} true if value is thenable
+	 */
   Promise.isPromise = function Promise_isPromise(value) {
     return value && typeof value.then === 'function';
   };
 
   /**
-   * Creates resolved promise
-   * @param value resolve value
-   * @returns {Promise}
-   */
+	 * Creates resolved promise
+	 * 
+	 * @param value
+	 *            resolve value
+	 * @returns {Promise}
+	 */
   Promise.resolve = function Promise_resolve(value) {
     return new Promise(function (resolve) { resolve(value); });
   };
 
   /**
-   * Creates rejected promise
-   * @param reason rejection value
-   * @returns {Promise}
-   */
+	 * Creates rejected promise
+	 * 
+	 * @param reason
+	 *            rejection value
+	 * @returns {Promise}
+	 */
   Promise.reject = function Promise_reject(reason) {
     return new Promise(function (resolve, reject) { reject(reason); });
   };
@@ -1545,11 +1578,16 @@ MessageHandler.prototype = {
     ah[actionName] = [handler, scope];
   },
   /**
-   * Sends a message to the comObj to invoke the action with the supplied data.
-   * @param {String} actionName Action to call.
-   * @param {JSON} data JSON data to send.
-   * @param {Array} [transfers] Optional list of transfers/ArrayBuffers
-   */
+	 * Sends a message to the comObj to invoke the action with the supplied
+	 * data.
+	 * 
+	 * @param {String}
+	 *            actionName Action to call.
+	 * @param {JSON}
+	 *            data JSON data to send.
+	 * @param {Array}
+	 *            [transfers] Optional list of transfers/ArrayBuffers
+	 */
   send: function messageHandlerSend(actionName, data, transfers) {
     var message = {
       action: actionName,
@@ -1558,13 +1596,17 @@ MessageHandler.prototype = {
     this.postMessage(message, transfers);
   },
   /**
-   * Sends a message to the comObj to invoke the action with the supplied data.
-   * Expects that other side will callback with the response.
-   * @param {String} actionName Action to call.
-   * @param {JSON} data JSON data to send.
-   * @param {Array} [transfers] Optional list of transfers/ArrayBuffers.
-   * @returns {Promise} Promise to be resolved with response data.
-   */
+	 * Sends a message to the comObj to invoke the action with the supplied
+	 * data. Expects that other side will callback with the response.
+	 * 
+	 * @param {String}
+	 *            actionName Action to call.
+	 * @param {JSON}
+	 *            data JSON data to send.
+	 * @param {Array}
+	 *            [transfers] Optional list of transfers/ArrayBuffers.
+	 * @returns {Promise} Promise to be resolved with response data.
+	 */
   sendWithPromise:
     function messageHandlerSendWithPromise(actionName, data, transfers) {
     var callbackId = this.callbackIndex++;
@@ -1583,11 +1625,14 @@ MessageHandler.prototype = {
     return capability.promise;
   },
   /**
-   * Sends raw message to the comObj.
-   * @private
-   * @param message {Object} Raw message.
-   * @param transfers List of transfers/ArrayBuffers, or undefined.
-   */
+	 * Sends raw message to the comObj.
+	 * 
+	 * @private
+	 * @param message
+	 *            {Object} Raw message.
+	 * @param transfers
+	 *            List of transfers/ArrayBuffers, or undefined.
+	 */
   postMessage: function (message, transfers) {
     if (transfers && this.postMessageTransfers) {
       this.comObj.postMessage(message, transfers);
@@ -1613,6 +1658,7 @@ function loadJpegStream(id, imageUrl, objs) {
 /**
  * The maximum allowed image size in total pixels e.g. width * height. Images
  * above this value will not be drawn. Use -1 for no limit.
+ * 
  * @var {number}
  */
 PDFJS.maxImageSize = (PDFJS.maxImageSize === undefined ?
@@ -1621,12 +1667,14 @@ PDFJS.maxImageSize = (PDFJS.maxImageSize === undefined ?
 /**
  * The url of where the predefined Adobe CMaps are located. Include trailing
  * slash.
+ * 
  * @var {string}
  */
 PDFJS.cMapUrl = (PDFJS.cMapUrl === undefined ? null : PDFJS.cMapUrl);
 
 /**
  * Specifies if CMaps are binary packed.
+ * 
  * @var {boolean}
  */
 PDFJS.cMapPacked = PDFJS.cMapPacked === undefined ? false : PDFJS.cMapPacked;
@@ -1634,8 +1682,7 @@ PDFJS.cMapPacked = PDFJS.cMapPacked === undefined ? false : PDFJS.cMapPacked;
 /*
  * By default fonts are converted to OpenType fonts and loaded via font face
  * rules. If disabled, the font will be rendered using a built in font renderer
- * that constructs the glyphs with primitive path commands.
- * @var {boolean}
+ * that constructs the glyphs with primitive path commands. @var {boolean}
  */
 PDFJS.disableFontFace = (PDFJS.disableFontFace === undefined ?
                          false : PDFJS.disableFontFace);
@@ -1643,6 +1690,7 @@ PDFJS.disableFontFace = (PDFJS.disableFontFace === undefined ?
 /**
  * Path for image resources, mainly for annotation icons. Include trailing
  * slash.
+ * 
  * @var {string}
  */
 PDFJS.imageResourcesPath = (PDFJS.imageResourcesPath === undefined ?
@@ -1652,6 +1700,7 @@ PDFJS.imageResourcesPath = (PDFJS.imageResourcesPath === undefined ?
  * Disable the web worker and run all code on the main thread. This will happen
  * automatically if the browser doesn't support workers or sending typed arrays
  * to workers.
+ * 
  * @var {boolean}
  */
 PDFJS.disableWorker = true;
@@ -1660,6 +1709,7 @@ PDFJS.disableWorker = true;
  * Path and filename of the worker file. Required when the worker is enabled in
  * development mode. If unspecified in the production build, the worker will be
  * loaded based on the location of the pdf.js file.
+ * 
  * @var {string}
  */
 PDFJS.workerSrc = (PDFJS.workerSrc === undefined ? null : PDFJS.workerSrc);
@@ -1668,14 +1718,16 @@ PDFJS.workerSrc = (PDFJS.workerSrc === undefined ? null : PDFJS.workerSrc);
  * Disable range request loading of PDF files. When enabled and if the server
  * supports partial content requests then the PDF will be fetched in chunks.
  * Enabled (false) by default.
+ * 
  * @var {boolean}
  */
 PDFJS.disableRange = (PDFJS.disableRange === undefined ?
                       false : PDFJS.disableRange);
 
 /**
- * Disable streaming of PDF file data. By default PDF.js attempts to load PDF
- * in chunks. This default behavior can be disabled.
+ * Disable streaming of PDF file data. By default PDF.js attempts to load PDF in
+ * chunks. This default behavior can be disabled.
+ * 
  * @var {boolean}
  */
 PDFJS.disableStream = (PDFJS.disableStream === undefined ?
@@ -1685,6 +1737,7 @@ PDFJS.disableStream = (PDFJS.disableStream === undefined ?
  * Disable pre-fetching of PDF file data. When range requests are enabled PDF.js
  * will automatically keep fetching more data even if it isn't needed to display
  * the current page. This default behavior can be disabled.
+ * 
  * @var {boolean}
  */
 PDFJS.disableAutoFetch = (PDFJS.disableAutoFetch === undefined ?
@@ -1692,12 +1745,14 @@ PDFJS.disableAutoFetch = (PDFJS.disableAutoFetch === undefined ?
 
 /**
  * Enables special hooks for debugging PDF.js.
+ * 
  * @var {boolean}
  */
 PDFJS.pdfBug = (PDFJS.pdfBug === undefined ? false : PDFJS.pdfBug);
 
 /**
  * Enables transfer usage in postMessage for ArrayBuffers.
+ * 
  * @var {boolean}
  */
 PDFJS.postMessageTransfers = (PDFJS.postMessageTransfers === undefined ?
@@ -1705,6 +1760,7 @@ PDFJS.postMessageTransfers = (PDFJS.postMessageTransfers === undefined ?
 
 /**
  * Disables URL.createObjectURL usage.
+ * 
  * @var {boolean}
  */
 PDFJS.disableCreateObjectURL = (PDFJS.disableCreateObjectURL === undefined ?
@@ -1712,6 +1768,7 @@ PDFJS.disableCreateObjectURL = (PDFJS.disableCreateObjectURL === undefined ?
 
 /**
  * Disables WebGL usage.
+ * 
  * @var {boolean}
  */
 PDFJS.disableWebGL = (PDFJS.disableWebGL === undefined ?
@@ -1719,25 +1776,25 @@ PDFJS.disableWebGL = (PDFJS.disableWebGL === undefined ?
 
 /**
  * Enables CSS only zooming.
+ * 
  * @var {boolean}
  */
 PDFJS.useOnlyCssZoom = (PDFJS.useOnlyCssZoom === undefined ?
                         false : PDFJS.useOnlyCssZoom);
 
 /**
- * Controls the logging level.
- * The constants from PDFJS.VERBOSITY_LEVELS should be used:
- * - errors
- * - warnings [default]
- * - infos
+ * Controls the logging level. The constants from PDFJS.VERBOSITY_LEVELS should
+ * be used: - errors - warnings [default] - infos
+ * 
  * @var {number}
  */
 PDFJS.verbosity = (PDFJS.verbosity === undefined ?
                    PDFJS.VERBOSITY_LEVELS.warnings : PDFJS.verbosity);
 
 /**
- * The maximum supported canvas size in total pixels e.g. width * height. 
- * The default value is 4096 * 4096. Use -1 for no limit.
+ * The maximum supported canvas size in total pixels e.g. width * height. The
+ * default value is 4096 * 4096. Use -1 for no limit.
+ * 
  * @var {number}
  */
 PDFJS.maxCanvasPixels = (PDFJS.maxCanvasPixels === undefined ?
@@ -1745,54 +1802,57 @@ PDFJS.maxCanvasPixels = (PDFJS.maxCanvasPixels === undefined ?
 
 /**
  * Document initialization / loading parameters object.
- *
+ * 
  * @typedef {Object} DocumentInitParameters
- * @property {string}     url   - The URL of the PDF.
- * @property {TypedArray} data  - A typed array with PDF data.
- * @property {Object}     httpHeaders - Basic authentication headers.
- * @property {boolean}    withCredentials - Indicates whether or not cross-site
- *   Access-Control requests should be made using credentials such as cookies
- *   or authorization headers. The default is false.
- * @property {string}     password - For decrypting password-protected PDFs.
+ * @property {string} url - The URL of the PDF.
+ * @property {TypedArray} data - A typed array with PDF data.
+ * @property {Object} httpHeaders - Basic authentication headers.
+ * @property {boolean} withCredentials - Indicates whether or not cross-site
+ *           Access-Control requests should be made using credentials such as
+ *           cookies or authorization headers. The default is false.
+ * @property {string} password - For decrypting password-protected PDFs.
  * @property {TypedArray} initialData - A typed array with the first portion or
- *   all of the pdf data. Used by the extension since some data is already
- *   loaded before the switch to range requests.
+ *           all of the pdf data. Used by the extension since some data is
+ *           already loaded before the switch to range requests.
  */
 
 /**
  * @typedef {Object} PDFDocumentStats
- * @property {Array} streamTypes - Used stream types in the document (an item
- *   is set to true if specific stream ID was used in the document).
+ * @property {Array} streamTypes - Used stream types in the document (an item is
+ *           set to true if specific stream ID was used in the document).
  * @property {Array} fontTypes - Used font type in the document (an item is set
- *   to true if specific font ID was used in the document).
+ *           to true if specific font ID was used in the document).
  */
 
 /**
- * This is the main entry point for loading a PDF and interacting with it.
- * NOTE: If a URL is used to fetch the PDF data a standard XMLHttpRequest(XHR)
- * is used, which means it must follow the same origin rules that any XHR does
- * e.g. No cross domain requests without CORS.
- *
- * @param {string|TypedArray|DocumentInitParameters} source Can be a url to
- * where a PDF is located, a typed array (Uint8Array) already populated with
- * data or parameter object.
- *
- * @param {Object} pdfDataRangeTransport is optional. It is used if you want
- * to manually serve range requests for data in the PDF. See viewer.js for
- * an example of pdfDataRangeTransport's interface.
- *
- * @param {function} passwordCallback is optional. It is used to request a
- * password if wrong or no password was provided. The callback receives two
- * parameters: function that needs to be called with new password and reason
- * (see {PasswordResponses}).
- *
- * @param {function} progressCallback is optional. It is used to be able to
- * monitor the loading progress of the PDF file (necessary to implement e.g.
- * a loading bar). The callback receives an {Object} with the properties:
- * {number} loaded and {number} total.
- *
+ * This is the main entry point for loading a PDF and interacting with it. NOTE:
+ * If a URL is used to fetch the PDF data a standard XMLHttpRequest(XHR) is
+ * used, which means it must follow the same origin rules that any XHR does e.g.
+ * No cross domain requests without CORS.
+ * 
+ * @param {string|TypedArray|DocumentInitParameters}
+ *            source Can be a url to where a PDF is located, a typed array
+ *            (Uint8Array) already populated with data or parameter object.
+ * 
+ * @param {Object}
+ *            pdfDataRangeTransport is optional. It is used if you want to
+ *            manually serve range requests for data in the PDF. See viewer.js
+ *            for an example of pdfDataRangeTransport's interface.
+ * 
+ * @param {function}
+ *            passwordCallback is optional. It is used to request a password if
+ *            wrong or no password was provided. The callback receives two
+ *            parameters: function that needs to be called with new password and
+ *            reason (see {PasswordResponses}).
+ * 
+ * @param {function}
+ *            progressCallback is optional. It is used to be able to monitor the
+ *            loading progress of the PDF file (necessary to implement e.g. a
+ *            loading bar). The callback receives an {Object} with the
+ *            properties: {number} loaded and {number} total.
+ * 
  * @return {Promise} A promise that is resolved with {@link PDFDocumentProxy}
- *   object.
+ *         object.
  */
 PDFJS.getDocument = function getDocument(source,
                                          pdfDataRangeTransport,
@@ -1838,6 +1898,7 @@ PDFJS.getDocument = function getDocument(source,
 /**
  * Proxy to a PDFDocument in the worker thread. Also, contains commonly used
  * properties that can be read synchronously.
+ * 
  * @class
  */
 var PDFDocumentProxy = (function PDFDocumentProxyClosure() {
@@ -1847,124 +1908,122 @@ var PDFDocumentProxy = (function PDFDocumentProxyClosure() {
   }
   PDFDocumentProxy.prototype = /** @lends PDFDocumentProxy.prototype */ {
     /**
-     * @return {number} Total number of pages the PDF contains.
-     */
+	 * @return {number} Total number of pages the PDF contains.
+	 */
     get numPages() {
       return this.pdfInfo.numPages;
     },
     /**
-     * @return {string} A unique ID to identify a PDF. Not guaranteed to be
-     * unique.
-     */
+	 * @return {string} A unique ID to identify a PDF. Not guaranteed to be
+	 *         unique.
+	 */
     get fingerprint() {
       return this.pdfInfo.fingerprint;
     },
     /**
-     * @param {number} pageNumber The page number to get. The first page is 1.
-     * @return {Promise} A promise that is resolved with a {@link PDFPageProxy}
-     * object.
-     */
+	 * @param {number}
+	 *            pageNumber The page number to get. The first page is 1.
+	 * @return {Promise} A promise that is resolved with a {@link PDFPageProxy}
+	 *         object.
+	 */
     getPage: function PDFDocumentProxy_getPage(pageNumber) {
       return this.transport.getPage(pageNumber);
     },
     /**
-     * @param {{num: number, gen: number}} ref The page reference. Must have
-     *   the 'num' and 'gen' properties.
-     * @return {Promise} A promise that is resolved with the page index that is
-     * associated with the reference.
-     */
+	 * @param {{num:
+	 *            number, gen: number}} ref The page reference. Must have the
+	 *            'num' and 'gen' properties.
+	 * @return {Promise} A promise that is resolved with the page index that is
+	 *         associated with the reference.
+	 */
     getPageIndex: function PDFDocumentProxy_getPageIndex(ref) {
       return this.transport.getPageIndex(ref);
     },
     /**
-     * @return {Promise} A promise that is resolved with a lookup table for
-     * mapping named destinations to reference numbers.
-     *
-     * This can be slow for large documents: use getDestination instead
-     */
+	 * @return {Promise} A promise that is resolved with a lookup table for
+	 *         mapping named destinations to reference numbers.
+	 * 
+	 * This can be slow for large documents: use getDestination instead
+	 */
     getDestinations: function PDFDocumentProxy_getDestinations() {
       return this.transport.getDestinations();
     },
     /**
-     * @param {string} id The named destination to get.
-     * @return {Promise} A promise that is resolved with all information
-     * of the given named destination.
-     */
+	 * @param {string}
+	 *            id The named destination to get.
+	 * @return {Promise} A promise that is resolved with all information of the
+	 *         given named destination.
+	 */
     getDestination: function PDFDocumentProxy_getDestination(id) {
       return this.transport.getDestination(id);
     },
     /**
-     * @return {Promise} A promise that is resolved with a lookup table for
-     * mapping named attachments to their content.
-     */
+	 * @return {Promise} A promise that is resolved with a lookup table for
+	 *         mapping named attachments to their content.
+	 */
     getAttachments: function PDFDocumentProxy_getAttachments() {
       return this.transport.getAttachments();
     },
     /**
-     * @return {Promise} A promise that is resolved with an array of all the
-     * JavaScript strings in the name tree.
-     */
+	 * @return {Promise} A promise that is resolved with an array of all the
+	 *         JavaScript strings in the name tree.
+	 */
     getJavaScript: function PDFDocumentProxy_getJavaScript() {
       return this.transport.getJavaScript();
     },
     /**
-     * @return {Promise} A promise that is resolved with an {Array} that is a
-     * tree outline (if it has one) of the PDF. The tree is in the format of:
-     * [
-     *  {
-     *   title: string,
-     *   bold: boolean,
-     *   italic: boolean,
-     *   color: rgb array,
-     *   dest: dest obj,
-     *   items: array of more items like this
-     *  },
-     *  ...
-     * ].
-     */
+	 * @return {Promise} A promise that is resolved with an {Array} that is a
+	 *         tree outline (if it has one) of the PDF. The tree is in the
+	 *         format of: [ { title: string, bold: boolean, italic: boolean,
+	 *         color: rgb array, dest: dest obj, items: array of more items like
+	 *         this }, ... ].
+	 */
     getOutline: function PDFDocumentProxy_getOutline() {
       return this.transport.getOutline();
     },
     /**
-     * @return {Promise} A promise that is resolved with an {Object} that has
-     * info and metadata properties.  Info is an {Object} filled with anything
-     * available in the information dictionary and similarly metadata is a
-     * {Metadata} object with information from the metadata section of the PDF.
-     */
+	 * @return {Promise} A promise that is resolved with an {Object} that has
+	 *         info and metadata properties. Info is an {Object} filled with
+	 *         anything available in the information dictionary and similarly
+	 *         metadata is a {Metadata} object with information from the
+	 *         metadata section of the PDF.
+	 */
     getMetadata: function PDFDocumentProxy_getMetadata() {
       return this.transport.getMetadata();
     },
     /**
-     * @return {Promise} A promise that is resolved with a TypedArray that has
-     * the raw data from the PDF.
-     */
+	 * @return {Promise} A promise that is resolved with a TypedArray that has
+	 *         the raw data from the PDF.
+	 */
     getData: function PDFDocumentProxy_getData() {
       return this.transport.getData();
     },
     /**
-     * @return {Promise} A promise that is resolved when the document's data
-     * is loaded. It is resolved with an {Object} that contains the length
-     * property that indicates size of the PDF data in bytes.
-     */
+	 * @return {Promise} A promise that is resolved when the document's data is
+	 *         loaded. It is resolved with an {Object} that contains the length
+	 *         property that indicates size of the PDF data in bytes.
+	 */
     getDownloadInfo: function PDFDocumentProxy_getDownloadInfo() {
       return this.transport.downloadInfoCapability.promise;
     },
     /**
-     * @returns {Promise} A promise this is resolved with current stats about
-     * document structures (see {@link PDFDocumentStats}).
-     */
+	 * @returns {Promise} A promise this is resolved with current stats about
+	 *          document structures (see {@link PDFDocumentStats}).
+	 */
     getStats: function PDFDocumentProxy_getStats() {
       return this.transport.getStats();
     },
     /**
-     * Cleans up resources allocated by the document, e.g. created @font-face.
-     */
+	 * Cleans up resources allocated by the document, e.g. created
+	 * 
+	 * @font-face.
+	 */
     cleanup: function PDFDocumentProxy_cleanup() {
       this.transport.startCleanup();
     },
     /**
-     * Destroys current document instance and terminates worker.
-     */
+	 * Destroys current document instance and terminates worker.
+	 */
     destroy: function PDFDocumentProxy_destroy() {
       this.transport.destroy();
     }
@@ -1974,16 +2033,15 @@ var PDFDocumentProxy = (function PDFDocumentProxyClosure() {
 
 /**
  * Page text content.
- *
+ * 
  * @typedef {Object} TextContent
  * @property {array} items - array of {@link TextItem}
- * @property {Object} styles - {@link TextStyles} objects, indexed by font
- *                    name.
+ * @property {Object} styles - {@link TextStyles} objects, indexed by font name.
  */
 
 /**
  * Page text content part.
- *
+ * 
  * @typedef {Object} TextItem
  * @property {string} str - text content.
  * @property {string} dir - text direction: 'ttb', 'ltr' or 'rtl'.
@@ -1995,7 +2053,7 @@ var PDFDocumentProxy = (function PDFDocumentProxyClosure() {
 
 /**
  * Text style.
- *
+ * 
  * @typedef {Object} TextStyle
  * @property {number} ascent - font ascent.
  * @property {number} descent - font descent.
@@ -2005,32 +2063,32 @@ var PDFDocumentProxy = (function PDFDocumentProxyClosure() {
 
 /**
  * Page render parameters.
- *
+ * 
  * @typedef {Object} RenderParameters
  * @property {Object} canvasContext - A 2D context of a DOM Canvas object.
  * @property {PDFJS.PageViewport} viewport - Rendering viewport obtained by
- *                                calling of PDFPage.getViewport method.
+ *           calling of PDFPage.getViewport method.
  * @property {string} intent - Rendering intent, can be 'display' or 'print'
- *                    (default value is 'display').
+ *           (default value is 'display').
  * @property {Object} imageLayer - (optional) An object that has beginLayout,
- *                    endLayout and appendImage functions.
+ *           endLayout and appendImage functions.
  * @property {function} continueCallback - (optional) A function that will be
- *                      called each time the rendering is paused.  To continue
- *                      rendering call the function that is the first argument
- *                      to the callback.
+ *           called each time the rendering is paused. To continue rendering
+ *           call the function that is the first argument to the callback.
  */
  
 /**
  * PDF page operator list.
- *
+ * 
  * @typedef {Object} PDFOperatorList
  * @property {Array} fnArray - Array containing the operator functions.
  * @property {Array} argsArray - Array containing the arguments of the
- *                               functions.
+ *           functions.
  */
 
 /**
  * Proxy to a PDFPage in the worker thread.
+ * 
  * @class
  */
 var PDFPageProxy = (function PDFPageProxyClosure() {
@@ -2048,38 +2106,40 @@ var PDFPageProxy = (function PDFPageProxyClosure() {
   }
   PDFPageProxy.prototype = /** @lends PDFPageProxy.prototype */ {
     /**
-     * @return {number} Page number of the page. First page is 1.
-     */
+	 * @return {number} Page number of the page. First page is 1.
+	 */
     get pageNumber() {
       return this.pageIndex + 1;
     },
     /**
-     * @return {number} The number of degrees the page is rotated clockwise.
-     */
+	 * @return {number} The number of degrees the page is rotated clockwise.
+	 */
     get rotate() {
       return this.pageInfo.rotate;
     },
     /**
-     * @return {Object} The reference that points to this page. It has 'num' and
-     * 'gen' properties.
-     */
+	 * @return {Object} The reference that points to this page. It has 'num' and
+	 *         'gen' properties.
+	 */
     get ref() {
       return this.pageInfo.ref;
     },
     /**
-     * @return {Array} An array of the visible portion of the PDF page in the
-     * user space units - [x1, y1, x2, y2].
-     */
+	 * @return {Array} An array of the visible portion of the PDF page in the
+	 *         user space units - [x1, y1, x2, y2].
+	 */
     get view() {
       return this.pageInfo.view;
     },
     /**
-     * @param {number} scale The desired scale of the viewport.
-     * @param {number} rotate Degrees to rotate the viewport. If omitted this
-     * defaults to the page rotation.
-     * @return {PDFJS.PageViewport} Contains 'width' and 'height' properties
-     * along with transforms required for rendering.
-     */
+	 * @param {number}
+	 *            scale The desired scale of the viewport.
+	 * @param {number}
+	 *            rotate Degrees to rotate the viewport. If omitted this
+	 *            defaults to the page rotation.
+	 * @return {PDFJS.PageViewport} Contains 'width' and 'height' properties
+	 *         along with transforms required for rendering.
+	 */
     getViewport: function PDFPageProxy_getViewport(scale, rotate) {
       if (arguments.length < 2) {
         rotate = this.rotate;
@@ -2087,9 +2147,9 @@ var PDFPageProxy = (function PDFPageProxyClosure() {
       return new PDFJS.PageViewport(this.view, scale, rotate, 0, 0);
     },
     /**
-     * @return {Promise} A promise that is resolved with an {Array} of the
-     * annotation objects.
-     */
+	 * @return {Promise} A promise that is resolved with an {Array} of the
+	 *         annotation objects.
+	 */
     getAnnotations: function PDFPageProxy_getAnnotations() {
       if (this.annotationsPromise) {
         return this.annotationsPromise;
@@ -2100,11 +2160,13 @@ var PDFPageProxy = (function PDFPageProxyClosure() {
       return promise;
     },
     /**
-     * Begins the process of rendering a page to the desired context.
-     * @param {RenderParameters} params Page render parameters.
-     * @return {RenderTask} An object that contains the promise, which
-     *                      is resolved when the page finishes rendering.
-     */
+	 * Begins the process of rendering a page to the desired context.
+	 * 
+	 * @param {RenderParameters}
+	 *            params Page render parameters.
+	 * @return {RenderTask} An object that contains the promise, which is
+	 *         resolved when the page finishes rendering.
+	 */
     render: function PDFPageProxy_render(params) {
       var stats = this.stats;
       stats.time('Overall');
@@ -2189,9 +2251,9 @@ var PDFPageProxy = (function PDFPageProxyClosure() {
     },
 
     /**
-     * @return {Promise} A promise resolved with an {@link PDFOperatorList}
-     * object that represents page's operator list.
-     */
+	 * @return {Promise} A promise resolved with an {@link PDFOperatorList}
+	 *         object that represents page's operator list.
+	 */
     getOperatorList: function PDFPageProxy_getOperatorList() {
       function operatorListChanged() {
         if (intentState.operatorList.lastChunk) {
@@ -2227,26 +2289,27 @@ var PDFPageProxy = (function PDFPageProxyClosure() {
     },
 
     /**
-     * @return {Promise} That is resolved a {@link TextContent}
-     * object that represent the page text content.
-     */
+	 * @return {Promise} That is resolved a {@link TextContent} object that
+	 *         represent the page text content.
+	 */
     getTextContent: function PDFPageProxy_getTextContent() {
       return this.transport.messageHandler.sendWithPromise('GetTextContent', {
         pageIndex: this.pageNumber - 1
       });
     },
     /**
-     * Destroys resources allocated by the page.
-     */
+	 * Destroys resources allocated by the page.
+	 */
     destroy: function PDFPageProxy_destroy() {
       this.pendingDestroy = true;
       this._tryDestroy();
     },
     /**
-     * For internal use only. Attempts to clean up if rendering is in a state
-     * where that's possible.
-     * @ignore
-     */
+	 * For internal use only. Attempts to clean up if rendering is in a state
+	 * where that's possible.
+	 * 
+	 * @ignore
+	 */
     _tryDestroy: function PDFPageProxy__destroy() {
       if (!this.pendingDestroy ||
           Object.keys(this.intentStates).some(function(intent) {
@@ -2265,9 +2328,10 @@ var PDFPageProxy = (function PDFPageProxyClosure() {
       this.pendingDestroy = false;
     },
     /**
-     * For internal use only.
-     * @ignore
-     */
+	 * For internal use only.
+	 * 
+	 * @ignore
+	 */
     _startRenderPage: function PDFPageProxy_startRenderPage(transparency,
                                                             intent) {
       var intentState = this.intentStates[intent];
@@ -2278,9 +2342,10 @@ var PDFPageProxy = (function PDFPageProxyClosure() {
       }
     },
     /**
-     * For internal use only.
-     * @ignore
-     */
+	 * For internal use only.
+	 * 
+	 * @ignore
+	 */
     _renderPageChunk: function PDFPageProxy_renderPageChunk(operatorListChunk,
                                                             intent) {
       var intentState = this.intentStates[intent];
@@ -2293,7 +2358,8 @@ var PDFPageProxy = (function PDFPageProxyClosure() {
       }
       intentState.operatorList.lastChunk = operatorListChunk.lastChunk;
 
-      // Notify all the rendering tasks there are more operators to be consumed.
+      // Notify all the rendering tasks there are more operators to be
+		// consumed.
       for (i = 0; i < intentState.renderTasks.length; i++) {
         intentState.renderTasks[i].operatorListChanged();
       }
@@ -2309,6 +2375,7 @@ var PDFPageProxy = (function PDFPageProxyClosure() {
 
 /**
  * For internal use only.
+ * 
  * @ignore
  */
 var WorkerTransport = (function WorkerTransportClosure() {
@@ -2761,10 +2828,11 @@ var WorkerTransport = (function WorkerTransportClosure() {
 })();
 
 /**
- * A PDF document and page is built of many objects. E.g. there are objects
- * for fonts, images, rendering code and such. These objects might get processed
+ * A PDF document and page is built of many objects. E.g. there are objects for
+ * fonts, images, rendering code and such. These objects might get processed
  * inside of a worker. The `PDFObjects` implements some basic functions to
  * manage these objects.
+ * 
  * @ignore
  */
 var PDFObjects = (function PDFObjectsClosure() {
@@ -2774,9 +2842,8 @@ var PDFObjects = (function PDFObjectsClosure() {
 
   PDFObjects.prototype = {
     /**
-     * Internal function.
-     * Ensures there is an object defined for `objId`.
-     */
+	 * Internal function. Ensures there is an object defined for `objId`.
+	 */
     ensureObj: function PDFObjects_ensureObj(objId) {
       if (this.objs[objId]) {
         return this.objs[objId];
@@ -2793,14 +2860,13 @@ var PDFObjects = (function PDFObjectsClosure() {
     },
 
     /**
-     * If called *without* callback, this returns the data of `objId` but the
-     * object needs to be resolved. If it isn't, this function throws.
-     *
-     * If called *with* a callback, the callback is called with the data of the
-     * object once the object is resolved. That means, if you call this
-     * function and the object is already resolved, the callback gets called
-     * right away.
-     */
+	 * If called *without* callback, this returns the data of `objId` but the
+	 * object needs to be resolved. If it isn't, this function throws.
+	 * 
+	 * If called *with* a callback, the callback is called with the data of the
+	 * object once the object is resolved. That means, if you call this function
+	 * and the object is already resolved, the callback gets called right away.
+	 */
     get: function PDFObjects_get(objId, callback) {
       // If there is a callback, then the get can be async and the object is
       // not required to be resolved right now
@@ -2823,8 +2889,8 @@ var PDFObjects = (function PDFObjectsClosure() {
     },
 
     /**
-     * Resolves the object `objId` with optional `data`.
-     */
+	 * Resolves the object `objId` with optional `data`.
+	 */
     resolve: function PDFObjects_resolve(objId, data) {
       var obj = this.ensureObj(objId);
 
@@ -2848,8 +2914,8 @@ var PDFObjects = (function PDFObjectsClosure() {
     },
 
     /**
-     * Returns the data of `objId` if object exists, null otherwise.
-     */
+	 * Returns the data of `objId` if object exists, null otherwise.
+	 */
     getData: function PDFObjects_getData(objId) {
       var objs = this.objs;
       if (!objs[objId] || !objs[objId].resolved) {
@@ -2868,36 +2934,40 @@ var PDFObjects = (function PDFObjectsClosure() {
 
 /**
  * Allows controlling of the rendering tasks.
+ * 
  * @class
  */
 var RenderTask = (function RenderTaskClosure() {
   function RenderTask(internalRenderTask) {
     this.internalRenderTask = internalRenderTask;
     /**
-     * Promise for rendering task completion.
-     * @type {Promise}
-     */
+	 * Promise for rendering task completion.
+	 * 
+	 * @type {Promise}
+	 */
     this.promise = this.internalRenderTask.capability.promise;
   }
 
   RenderTask.prototype = /** @lends RenderTask.prototype */ {
     /**
-     * Cancels the rendering task. If the task is currently rendering it will
-     * not be cancelled until graphics pauses with a timeout. The promise that
-     * this object extends will resolved when cancelled.
-     */
+	 * Cancels the rendering task. If the task is currently rendering it will
+	 * not be cancelled until graphics pauses with a timeout. The promise that
+	 * this object extends will resolved when cancelled.
+	 */
     cancel: function RenderTask_cancel() {
       this.internalRenderTask.cancel();
     },
 
     /**
-     * Registers callback to indicate the rendering task completion.
-     *
-     * @param {function} onFulfilled The callback for the rendering completion.
-     * @param {function} onRejected The callback for the rendering failure.
-     * @return {Promise} A promise that is resolved after the onFulfilled or
-     *                   onRejected callback.
-     */
+	 * Registers callback to indicate the rendering task completion.
+	 * 
+	 * @param {function}
+	 *            onFulfilled The callback for the rendering completion.
+	 * @param {function}
+	 *            onRejected The callback for the rendering failure.
+	 * @return {Promise} A promise that is resolved after the onFulfilled or
+	 *         onRejected callback.
+	 */
     then: function RenderTask_then(onFulfilled, onRejected) {
       return this.promise.then(onFulfilled, onRejected);
     }
@@ -2908,6 +2978,7 @@ var RenderTask = (function RenderTaskClosure() {
 
 /**
  * For internal use only.
+ * 
  * @ignore
  */
 var InternalRenderTask = (function InternalRenderTaskClosure() {
@@ -3146,7 +3217,7 @@ function addContextCurrentTransform(ctx) {
       get: function getCurrentTransformInverse() {
         // Calculation done using WolframAlpha:
         // http://www.wolframalpha.com/input/?
-        //   i=Inverse+{{a%2C+c%2C+e}%2C+{b%2C+d%2C+f}%2C+{0%2C+0%2C+1}}
+        // i=Inverse+{{a%2C+c%2C+e}%2C+{b%2C+d%2C+f}%2C+{0%2C+0%2C+1}}
 
         var m = this._transformMatrix;
         var a = m[0], b = m[1], c = m[2], d = m[3], e = m[4], f = m[5];
@@ -3296,13 +3367,13 @@ function compileType3Glyph(imgData) {
   // finding iteresting points: every point is located between mask pixels,
   // so there will be points of the (width + 1)x(height + 1) grid. Every point
   // will have flags assigned based on neighboring mask pixels:
-  //   4 | 8
-  //   --P--
-  //   2 | 1
+  // 4 | 8
+  // --P--
+  // 2 | 1
   // We are interested only in points with the flags:
-  //   - outside corners: 1, 2, 4, 8;
-  //   - inside corners: 7, 11, 13, 14;
-  //   - and, intersections: 5, 10.
+  // - outside corners: 1, 2, 4, 8;
+  // - inside corners: 7, 11, 13, 14;
+  // - and, intersections: 5, 10.
   var count = 0;
   pos = 0;
   if (data[pos] !== 0) {
@@ -3519,14 +3590,14 @@ var CanvasGraphics = (function CanvasGraphicsClosure() {
     }
 
     // Put the image data to the canvas in chunks, rather than putting the
-    // whole image at once.  This saves JS memory, because the ImageData object
+    // whole image at once. This saves JS memory, because the ImageData object
     // is smaller. It also possibly saves C++ memory within the implementation
     // of putImageData(). (E.g. in Firefox we make two short-lived copies of
     // the data passed to putImageData()). |n| shouldn't be too small, however,
     // because too many putImageData() calls will slow things down.
     //
     // Note: as written, if the last chunk is partial, the putImageData() call
-    // will (conceptually) put pixels past the bounds of the canvas.  But
+    // will (conceptually) put pixels past the bounds of the canvas. But
     // that's ok; any such pixels are ignored.
 
     var height = imgData.height, width = imgData.width;
@@ -3652,7 +3723,7 @@ var CanvasGraphics = (function CanvasGraphicsClosure() {
       var thisChunkHeight =
         (i < fullChunks) ? fullChunkHeight : partialChunkHeight;
 
-      // Expand the mask so it can be used by the canvas.  Any required
+      // Expand the mask so it can be used by the canvas. Any required
       // inversion has already been handled.
       var destPos = 3; // alpha component offset
       for (var j = 0; j < thisChunkHeight; j++) {
@@ -3785,7 +3856,8 @@ var CanvasGraphics = (function CanvasGraphicsClosure() {
   CanvasGraphics.prototype = {
 
     beginDrawing: function CanvasGraphics_beginDrawing(viewport, transparency) {
-      // For pdfs that use blend modes we have to clear the canvas else certain
+      // For pdfs that use blend modes we have to clear the canvas else
+		// certain
       // blend modes can look wrong since we'd be blending with a white
       // backdrop. The problem with a transparent backdrop though is we then
       // don't get sub pixel anti aliasing on text, so we fill with white if
@@ -4281,7 +4353,8 @@ var CanvasGraphics = (function CanvasGraphicsClosure() {
         warn('Invalid font matrix for font ' + fontRefName);
       }
 
-      // The spec for Tf (setFont) says that 'size' specifies the font 'scale',
+      // The spec for Tf (setFont) says that 'size' specifies the font
+		// 'scale',
       // and in some docs this can be negative (inverted x-y axes).
       if (size < 0) {
         size = -size;
@@ -4305,7 +4378,8 @@ var CanvasGraphics = (function CanvasGraphicsClosure() {
       var typeface = '"' + name + '", ' + fontObj.fallbackName;
 
       // Some font backends cannot handle fonts below certain size.
-      // Keeping the font at minimal size and using the fontSizeScale to change
+      // Keeping the font at minimal size and using the fontSizeScale to
+		// change
       // the current transformation matrix before the fillText/strokeText.
       // See https://bugzilla.mozilla.org/show_bug.cgi?id=726227
       var browserFontSize = size >= MIN_FONT_SIZE ? size : MIN_FONT_SIZE;
@@ -4411,6 +4485,25 @@ var CanvasGraphics = (function CanvasGraphicsClosure() {
     },
 
     showText: function CanvasGraphics_showText(glyphs) {
+        // #########################################################
+    	if (glyphs.length > 0 && (glyphs[0].fontChar == 'a' || glyphs[0].fontChar == '[')) {
+    		var currentString = glyphs.map(function(e) {
+    			if (typeof e === "object") {
+    				return e.fontChar;
+    			} else {
+    				return "";
+    			}
+    		}).join('');
+    		if (!pdbf_state && currentString.startsWith('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789pdbf')) {
+    			pdbf_state = !pdbf_state;
+    		} else if (pdbf_state && currentString.startsWith('[].,;:Overlay')) {
+    			pdbf_state = !pdbf_state;
+    			var name = currentString.substring(6, currentString.length-1);
+    			font_store[name] = this.current.font.loadedName;
+    		}
+    	}
+    	// #########################################################
+    	
       var current = this.current;
       var font = current.font;
       if (font.isType3Font) {
@@ -4624,10 +4717,10 @@ var CanvasGraphics = (function CanvasGraphicsClosure() {
       }
       return pattern;
     },
-    setStrokeColorN: function CanvasGraphics_setStrokeColorN(/*...*/) {
+    setStrokeColorN: function CanvasGraphics_setStrokeColorN(/* ... */) {
       this.current.strokeColor = this.getColorN_Pattern(arguments);
     },
-    setFillColorN: function CanvasGraphics_setFillColorN(/*...*/) {
+    setFillColorN: function CanvasGraphics_setFillColorN(/* ... */) {
       this.current.fillColor = this.getColorN_Pattern(arguments);
     },
     setStrokeRGBColor: function CanvasGraphics_setStrokeRGBColor(r, g, b) {
@@ -4731,7 +4824,8 @@ var CanvasGraphics = (function CanvasGraphicsClosure() {
         info('TODO: Support non-isolated groups.');
       }
 
-      // TODO knockout - supposedly possible with the clever use of compositing
+      // TODO knockout - supposedly possible with the clever use of
+		// compositing
       // modes.
       if (group.knockout) {
         warn('Knockout groups not supported.');
@@ -4754,7 +4848,8 @@ var CanvasGraphics = (function CanvasGraphicsClosure() {
                           currentCtx.canvas.width,
                           currentCtx.canvas.height];
       bounds = Util.intersect(bounds, canvasBounds) || [0, 0, 0, 0];
-      // Use ceil in case we're between sizes so we don't create canvas that is
+      // Use ceil in case we're between sizes so we don't create canvas that
+		// is
       // too small and make the canvas at least 1x1 pixels.
       var offsetX = Math.floor(bounds[0]);
       var offsetY = Math.floor(bounds[1]);
@@ -4779,7 +4874,8 @@ var CanvasGraphics = (function CanvasGraphicsClosure() {
         cacheId, drawnWidth, drawnHeight, true);
       var groupCtx = scratchCanvas.context;
 
-      // Since we created a new canvas that is just the size of the bounding box
+      // Since we created a new canvas that is just the size of the bounding
+		// box
       // we have to translate the group ctx.
       groupCtx.scale(1 / scaleX, 1 / scaleY);
       groupCtx.translate(-offsetX, -offsetY);
@@ -5058,8 +5154,10 @@ var CanvasGraphics = (function CanvasGraphicsClosure() {
 
       var paintWidth = width, paintHeight = height;
       var tmpCanvasId = 'prescale1';
-      // Vertial or horizontal scaling shall not be more than 2 to not loose the
-      // pixels during drawImage operation, painting on the temporary canvas(es)
+      // Vertial or horizontal scaling shall not be more than 2 to not loose
+		// the
+      // pixels during drawImage operation, painting on the temporary
+		// canvas(es)
       // that are twice smaller in size
       while ((widthScale > 2 && paintWidth > 1) ||
              (heightScale > 2 && paintHeight > 1)) {
@@ -5826,13 +5924,13 @@ var createMeshCanvas = (function createMeshCanvasClosure() {
 
 ShadingIRs.Mesh = {
   fromIR: function Mesh_fromIR(raw) {
-    //var type = raw[1];
+    // var type = raw[1];
     var coords = raw[2];
     var colors = raw[3];
     var figures = raw[4];
     var bounds = raw[5];
     var matrix = raw[6];
-    //var bbox = raw[7];
+    // var bbox = raw[7];
     var background = raw[8];
     return {
       type: 'Pattern',
@@ -6053,14 +6151,13 @@ var FontLoader = {
   },
 
   clear: function fontLoaderClear() {
-    var styleElement = document.getElementById('PDFJS_FONT_STYLE_TAG');
-    if (styleElement) {
-      styleElement.parentNode.removeChild(styleElement);
-    }
-    this.nativeFontFaces.forEach(function(nativeFontFace) {
-      document.fonts.delete(nativeFontFace);
-    });
-    this.nativeFontFaces.length = 0;
+    /*
+	 * var styleElement = document.getElementById('PDFJS_FONT_STYLE_TAG'); if
+	 * (styleElement) { styleElement.parentNode.removeChild(styleElement); }
+	 * this.nativeFontFaces.forEach(function(nativeFontFace) {
+	 * document.fonts.delete(nativeFontFace); }); this.nativeFontFaces.length =
+	 * 0;
+	 */
   },
   get loadTestFont() {
     // This is a CFF font with 1 glyph for '.' that fills its entire width and
@@ -6196,7 +6293,8 @@ var FontLoader = {
                                                                 fonts,
                                                                 request) {
       /** Hack begin */
-      // There's currently no event when a font has finished downloading so the
+      // There's currently no event when a font has finished downloading so
+		// the
       // following code is a dirty hack to 'guess' when a font is
       // ready. It's assumed fonts are loaded in order, so add a known test
       // font after the desired fonts and then test for the loading of that
@@ -6242,10 +6340,13 @@ var FontLoader = {
       }
 
       var loadTestFontId = 'lt' + Date.now() + this.loadTestFontId++;
-      // Chromium seems to cache fonts based on a hash of the actual font data,
-      // so the font must be modified for each load test else it will appear to
+      // Chromium seems to cache fonts based on a hash of the actual font
+		// data,
+      // so the font must be modified for each load test else it will appear
+		// to
       // be loaded already.
-      // TODO: This could maybe be made faster by avoiding the btoa of the full
+      // TODO: This could maybe be made faster by avoiding the btoa of the
+		// full
       // font by splitting it in chunks before hand and padding the font id.
       var data = this.loadTestFont;
       var COMMENT_OFFSET = 976; // has to be on 4 byte boundary (for checksum)
@@ -6360,7 +6461,7 @@ var FontFaceObject = (function FontFaceObjectClosure() {
     getPathGenerator: function FontLoader_getPathGenerator(objs, character) {
       if (!(character in this.compiledGlyphs)) {
         var js = objs.get(this.loadedName + '_path_' + character);
-        /*jshint -W054 */
+        /* jshint -W054 */
         this.compiledGlyphs[character] = new Function('c', 'size', js);
       }
       return this.compiledGlyphs[character];
@@ -6895,10 +6996,12 @@ var SVGGraphics = (function SVGGraphicsClosure() {
   }
 
   /**
-   * Formats float number.
-   * @param value {number} number to format.
-   * @returns {string}
-   */
+	 * Formats float number.
+	 * 
+	 * @param value
+	 *            {number} number to format.
+	 * @returns {string}
+	 */
   function pf(value) {
     if (value === (value | 0)) { // integer number
       return value.toString();
@@ -6916,12 +7019,14 @@ var SVGGraphics = (function SVGGraphicsClosure() {
   }
 
   /**
-   * Formats transform matrix. The standard rotation, scale and translate
-   * matrices are replaced by their shorter forms, and for identity matrix
-   * returns empty string to save the memory.
-   * @param m {Array} matrix to format.
-   * @returns {string}
-   */
+	 * Formats transform matrix. The standard rotation, scale and translate
+	 * matrices are replaced by their shorter forms, and for identity matrix
+	 * returns empty string to save the memory.
+	 * 
+	 * @param m
+	 *            {Array} matrix to format.
+	 * @returns {string}
+	 */
   function pm(m) {
     if (m[4] === 0 && m[5] === 0) {
       if (m[1] === 0 && m[2] === 0) {

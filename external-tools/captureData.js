@@ -15,6 +15,10 @@ page.onError = function (msg, trace) {
 	phantom.exit();
 };
 
+/*page.onConsoleMessage = function(msg, lineNum, sourceId) {
+console.log('CONSOLE: ' + msg + ' (from line #' + lineNum + ' in "' + sourceId + '")');
+};*/
+
 fs.changeWorkingDirectory(system.args[2]);
 
 page.open(system.args[1], function() {
@@ -34,7 +38,8 @@ page.open(system.args[1], function() {
 	});
 		
 	window.setTimeout(function () {
-		fs.write(data.name + '.data', data.result, 'w');
+		console.log("Finished " + data.name);
+		fs.write('../' + data.name + '.data', data.result, 'w');
 		phantom.exit();
 	}, 500);
 });

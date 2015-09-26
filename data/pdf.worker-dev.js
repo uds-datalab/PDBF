@@ -11508,7 +11508,7 @@ var PartialEvaluator = (function PartialEvaluatorClosure() {
 
           textChunk.str.push(glyphUnicode);
         }
-
+        
         var a = textState.textLineMatrix[0];
         var b = textState.textLineMatrix[1];
         var scaleLineX = Math.sqrt(a * a + b * b);

@@ -1,5 +1,5 @@
 #PDBF - A Toolkit for Creating Janiform Data Documents
-Version 1.0.4
+Version 1.1.0
 
 ##Bugs, Suggestions, Feature requests
 If you encounter bugs, have suggestions or have a feature request, then please go to the [issue page](https://github.com/uds-datalab/PDBF/issues) open a new issue if necessary and explain your concern.

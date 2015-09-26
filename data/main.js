@@ -59,6 +59,11 @@ function display(json, page, phantomJS) {
 	} else {
 		style = "position: absolute; width:" + (json.type.I.x2 - json.type.I.x1 + 0.001) * 100 + "%; height:" + (json.type.I.y1 - json.type.I.y2 + 0.001) * 100 + "%; left:" + json.type.I.x1 * 100 + "%; bottom:" + (json.type.I.y2 - 0.001) * 100 + "%;";
 	}
+	if (typeof font_store === "undefined" || typeof font_store[json.name] === "undefined") {
+		style += "font-size: " + (zoomFactor * 12.0) + "pt;"
+	} else {
+		style += "font-size: " + (zoomFactor * 12.0) + "pt; font-family: " + font_store[json.name] + ", sans-serif;"
+	}
 	page.appendChild(container);
 	
 	var containerOver = document.getElementById(json.name + "Big");
@@ -266,6 +271,7 @@ function buildContainerChartBig(json, containerOver, initial) {
 			containerOptions.style.visibility = 'visible';
 		}
 		var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor, json.chartdataBig.values, containerContent);
+		optionsBig.completeScale = 1.25;
 		json.chart = c3.generate(optionsBig);
 	};
 	var update = function() {
@@ -291,6 +297,7 @@ function buildContainerChartBig(json, containerOver, initial) {
 		json.jsonBig.type.I.showRangeSelector = showRangeSelector.checked;
 		
 		var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor, json.chartdataBig.values, containerContent);
+		optionsBig.completeScale = 1.25;
 		
 		// logscale
 		if (json.jsonBig.type.I.logScale == true) {
@@ -338,9 +345,9 @@ function buildContainerChartBig(json, containerOver, initial) {
 	
 	var viewerContainer = document.getElementById("viewerContainer");
 	var tip = "Tip: Scroll to zoom the graph. Click and drag to pan the graph.<br/>";
-	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip, [ json ], updateData, 'graph', true);
 	json.jsonBig = jQuery.extend(true, {}, json);
-	var chartdataCpy = getChartData(json);
+	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip, [ json ], updateData, 'graph', true);
+	var chartdataCpy = getChartData(json.jsonBig);
 	json.resultBig = chartdataCpy.res;
 	var containerContent = ref.containerContent;
 	var containerControl = ref.containerControl;
@@ -386,18 +393,19 @@ function buildContainerChartBig(json, containerOver, initial) {
 	showRangeSelector.checked = json.jsonBig.type.I.showRangeSelector;
 	
 	var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor, chartdataCpy.values, containerContent);
+	optionsBig.completeScale = 1.25;
 	
 	json.chart = c3.generate(optionsBig);
 	
 	json.chartdataBig = chartdataCpy;
 	
-	containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
-	
 	containerOver.update = function() {
 		var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor, json.chartdataBig.values, containerContent);
+		optionsBig.completeScale = 1.25;
 		json.chart = c3.generate(optionsBig);
 		containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
 	};
+	containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
 	
 	containerOver.updateData = updateData;
 }
@@ -420,7 +428,7 @@ function buildContainerChart(container, json, zoomFactor, style, containerOver) 
 		chartdata = json.result;
 	}
 	
-	style = "background: white; font-size: " + (zoomFactor * 10) + "pt; " + style;
+	style = "background: white;" + style;
 	container.setAttribute('style', style);
 	
 	var options = getChartOptions(json, zoomFactor, chartdata, chart);
@@ -639,7 +647,7 @@ function buildContainerPivotBig(json, containerOver, initial) {
 	var updateData = function() {
 		json.type.I.queryB = ref.editor.getValue();
 		// TODO: save pivot table settings (aggr, aggrAtt, renderer)
-		var r = getPivotTableData(json, true);
+		var r = getPivotTableData(json.jsonBig, true);
 		json.resultBig = r.res;
 		if (r.error != undefined) {
 			error.innerHTML = 'Query status: Error! ' + r.error;
@@ -659,6 +667,7 @@ function buildContainerPivotBig(json, containerOver, initial) {
 	};
 	
 	var viewerContainer = document.getElementById("viewerContainer");
+	json.jsonBig = jQuery.extend(true, {}, json);
 	var tip = "Tip: Drag and drop attributes to the row/column area. <br/>Move the cursor over the result cells to see more detailed results for min and max aggregator.<br/>";
 	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip, [ json ], updateData, 'pivot table', false);
 	
@@ -667,9 +676,9 @@ function buildContainerPivotBig(json, containerOver, initial) {
 	var containerOptions = ref.options;
 	var editor = ref.editor;
 	var error = ref.error;
-	editor.setValue(prettifySQL(json.type.I.queryB));
+	editor.setValue(prettifySQL(json.jsonBig.type.I.queryB));
 	
-	var r = getPivotTableData(json, true);
+	var r = getPivotTableData(json.jsonBig, true);
 	json.resultBig = r.res;
 	if (initial) {
 		if (r.error != undefined) {
@@ -698,11 +707,10 @@ function buildContainerPivotBig(json, containerOver, initial) {
 		aggregatorName : aggrName
 	});
 	
-	containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
-	
 	containerOver.update = function() {
 		containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
 	};
+	containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
 	
 	containerOver.updateData = updateData;
 }
@@ -743,7 +751,7 @@ function buildContainerPivot(container, json, zoomFactor, style, containerOver) 
 		aggregator : aggr,
 		unused : unused
 	});
-	container.getElementsByClassName("pvtTable")[0].setAttribute('style', 'width: 100%; height: 100%; font-size: ' + zoomFactor * 12 + 'pt;');
+	container.getElementsByClassName("pvtTable")[0].setAttribute('style', 'width: 100%; height: 100%;');
 }
 
 function buildContainerTableBig(json, containerOver) {
@@ -804,6 +812,7 @@ function buildContainerTableBig(json, containerOver) {
 	containerOver.update = function() {
 		containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
 	};
+	containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
 	
 	containerOver.updateData = update;
 }
@@ -994,7 +1003,7 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 	var legend = options.legend.show ? fontbasesize * zoomFactor * 1.6 : 0;
 	var inner = document.createElement('table');
 	var charts = [];
-	inner.setAttribute('style', 'height: 100%; width: 100%; border-collapse: collapse; text-align:center; font-size: ' + fontbasesize * zoomFactor + 'px;');
+	inner.setAttribute('style', 'height: 100%; width: 100%; border-collapse: collapse; text-align:center;');
 	overlay.appendChild(inner);
 	inner.className = 'multiplot';
 	
@@ -1472,7 +1481,8 @@ function getChartOptions(json, zoomFactor, values, chart) {
 			height : $(chart).height()
 		},
 		padding : {
-			top : 1
+			top : 3,
+			right : 5
 		},
 		axis : {
 			x : {
@@ -1486,10 +1496,6 @@ function getChartOptions(json, zoomFactor, values, chart) {
 				tick : {
 					fit : false
 				},
-				padding : {
-					top : 5,
-					bottom : 0
-				}
 			},
 			y2 : {
 				tick : {
@@ -1507,7 +1513,7 @@ function getChartOptions(json, zoomFactor, values, chart) {
 		subchart : {
 			show : json.type.I.showRangeSelector
 		},
-		completeScale : zoomFactor * 1.45,
+		completeScale : zoomFactor * (json.type.I.fontsize/12.0) * 1.45,
 		onresize : function() {
 			this.api.resize({
 				height : $(this.bound).height(),
@@ -1606,11 +1612,19 @@ function getChartOptions(json, zoomFactor, values, chart) {
 function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, update, f, fixed) {
 	var json = jsonArr[0]; // pass by reference
 	var containerChart = document.createElement('div');
+	var style;
 	if (fixed) {
-		containerChart.setAttribute('style', 'width:58%; height:85.5%; -moz-border-radius: 1%; -webkit-border-radius: 1%; border-radius: 1%; padding:2%; background:white; margin:1%; margin-top:2em; display: inline-block; vertical-align:top; white-space: normal;');
+		style = 'width:58%; height:85.5%; -moz-border-radius: 1%; -webkit-border-radius: 1%; border-radius: 1%; padding:2%; background:white; margin:1%; margin-top:2em; display: inline-block; vertical-align:top; white-space: normal;';
 	} else {
-		containerChart.setAttribute('style', '-moz-border-radius: 1%; -webkit-border-radius: 1%; border-radius: 1%; padding:2%; background:white; margin:1%; margin-top:2em; display: inline-block; vertical-align:top; white-space: normal;');
+		style = '-moz-border-radius: 1%; -webkit-border-radius: 1%; border-radius: 1%; padding:2%; background:white; margin:1%; margin-top:2em; display: inline-block; vertical-align:top; white-space: normal;';
 	}
+	if (typeof font_store === "undefined" || typeof font_store[json.name] === "undefined") {
+		style += "font-size: 10pt;"
+	} else {
+		style += "font-size: 10pt; font-family: " + font_store[json.name] + ", sans-serif;"
+	}
+	containerChart.setAttribute('style', style);
+	
 	var containerControl = document.createElement('div');
 	containerControl.setAttribute('style', 'width:30%; -moz-border-radius: 1%; -webkit-border-radius: 1%; border-radius: 1%; padding:2%; background:white; margin:1%; margin-top:2em; display: inline-block; text-align: left; white-space: normal;');
 	
@@ -1811,6 +1825,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 		}
 		multiControl.appendChild(selectY);
 		
+		containerControl.appendChild(document.createElement('br'));
 		containerControl.appendChild(multiControl);
 		
 		var selectArr = [];
@@ -1833,26 +1848,26 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 		$(selectX).change(function() {
 			var x = $(selectX).val();
 			var y = $(selectY).val();
-			json.type.I.query = selectArr[x][y];
-			json.type.I.queryB = selectArr[x][y];
-			editor.setValue(prettifySQL(json.type.I.query));
+			json.jsonBig.type.I.query = selectArr[x][y];
+			json.jsonBig.type.I.queryB = selectArr[x][y];
+			editor.setValue(prettifySQL(json.jsonBig.type.I.query));
 			containerOver.updateData();
 		});
 		
 		$(selectY).change(function() {
 			var x = $(selectX).val();
 			var y = $(selectY).val();
-			json.type.I.query = selectArr[x][y];
-			json.type.I.queryB = selectArr[x][y];
-			editor.setValue(prettifySQL(json.type.I.query));
+			json.jsonBig.type.I.query = selectArr[x][y];
+			json.jsonBig.type.I.queryB = selectArr[x][y];
+			editor.setValue(prettifySQL(json.jsonBig.type.I.query));
 			containerOver.updateData();
 		});
 		
 		var x = $(selectX).val();
 		var y = $(selectY).val();
-		json.type.I.query = selectArr[x][y];
-		json.type.I.queryB = selectArr[x][y];
-		editor.setValue(prettifySQL(json.type.I.query));
+		json.jsonBig.type.I.query = selectArr[x][y];
+		json.jsonBig.type.I.queryB = selectArr[x][y];
+		editor.setValue(prettifySQL(json.jsonBig.type.I.query));
 	}
 	
 	fixOverlaySize();

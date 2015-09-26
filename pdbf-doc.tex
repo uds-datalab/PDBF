@@ -57,7 +57,7 @@ Default:& #4\\
 \end{tabular} \\[4pt]%
 }
 
-\def\pdbfQuality{4.0}
+\def\pdbfQuality{2.0}
 
 \dbSQLText{CREATE TABLE test(a int, b int); INSERT INTO test VALUES(1, 10); INSERT INTO test VALUES(2, 100); INSERT INTO test VALUES(3, 120); INSERT INTO test VALUES(4, 100);}
 
@@ -248,6 +248,7 @@ PDBF uses AlaSQL as database engine. For all available features of the database 
 \textbf{Note:} jdbcConnectionURL, user, and password are not stored in the output documents.\\[4pt]
 
 \subsection{CSV}
+\textbf{Note:} By default the first line of the CSV file is used as attribute names for the table. You can use the header option to manually specify attribute names.\\[3pt]
 \verb|\dbCSVFile[options]{fileWithCSVData}{tableName}| \\[8pt]
 \textbf{Note:} Relative filepaths are relative to the tex file.\\[4pt]
 \noindent Options:\\[3pt]
@@ -271,6 +272,7 @@ PDBF uses AlaSQL as database engine. For all available features of the database 
 {\texttt{,}}
 
 \section{PDBF elements}
+\textbf{Note:} All PDBF elements use the font size, font family, and font style that was active at the point of their definition. You can for example surround all commands with \verb|\textbf{...}|, \verb|\emph{...}| or any other font command.\\[3pt]
 \subsection{Chart}
 \begin{figure}[h!]%
 \hspace{-218pt}Examples:\\
@@ -284,20 +286,10 @@ PDBF uses AlaSQL as database engine. For all available features of the database 
     \chart[width=\textwidth, height=0.6\textwidth, chartType=bar]{SELECT * FROM test;}
     \caption{Bar Chart}
     \end{minipage} \\[8pt]
-    
     \begin{minipage}{1.0\textwidth}
     \chart[width=\textwidth, height=0.36\textwidth, chartType=signatureplot]{SELECT b FROM test;}
     \caption{Signatureplot Chart}
     \end{minipage}
-%    \begin{minipage}{.48\textwidth}
-%    \chart[width=\textwidth, height=0.8\textwidth, chartType=signatureplot]{SELECT * FROM test;}
-%    \caption{Signatureplot Chart}
-%    \end{minipage}
-%    \hspace{11pt}
-%    \begin{minipage}{.48\textwidth}
-%    \chart[width=\textwidth, height=0.8\textwidth, chartType=Line, xunit=Date, yunit={Runtime [in sec]}, options={"strokeWidth": 0, "drawPoints": true, "pointSize": 3, "highlightCircleSize": 4, "xRangePad": 10}]{SELECT date, runtimeA AS [engine A], runtimeB AS [engine B] FROM data2;}
-%    \caption{Multi-column Dot Chart}
-%    \end{minipage}
 \end{figure}
 
 \newpage
@@ -327,13 +319,7 @@ PDBF uses AlaSQL as database engine. For all available features of the database 
 
 \option
 {quality}
-{Sets the quality for the image version of the chart in the pdf. 1.0 corresponds roughly to 120 pixels per inch. Can also be redefined globally (\texttt{pdbfQuality}).}
-{Number $>$ 0}
-{\texttt{1.0}}
-
-\option
-{scale}
-{Scales the size of the chart. 1.0 corresponds roughly to font-size that is currently choosen in \LaTeX. Can also be redefined globally (\texttt{pdbfScale}).}
+{Sets the quality for the image version of the chart in the pdf. 1.0 corresponds roughly to 240 pixels per inch. Can also be redefined globally (\texttt{pdbfQuality}).}
 {Number $>$ 0}
 {\texttt{1.0}}
 
@@ -385,12 +371,12 @@ PDBF uses AlaSQL as database engine. For all available features of the database 
 {\texttt{true} or \texttt{false}}
 {\texttt{false} for in-page chart, \texttt{true} for overlay chart}
 
-%\option %TODO: not yet implemented
-%{logscale}
-%{If set, the y axis uses log scale. Can also be redefined globally (\texttt{pdbfLogscale}).}
-%{\texttt{true} or \texttt{false}}
-%{\texttt{false}}
-%
+\option
+{logscale}
+{If set, the y-axis uses log scale. Can also be redefined globally (\texttt{pdbfLogscale}).}
+{\texttt{true} or \texttt{false}}
+{\texttt{false}}
+
 %\option %TODO: not yet implemented
 %{overlap}
 %{Unused.}
@@ -500,25 +486,19 @@ PDBF uses AlaSQL as database engine. For all available features of the database 
 %
 \option
 {width}
-{Sets the width of the chart.}
+{Sets the width of the table.}
 {\LaTeX~length}
 {No default value. Value must always be set!}
 
 \option
 {height}
-{Sets the height of the chart.}
+{Sets the height of the table.}
 {\LaTeX~length}
 {No default value. Value must always be set!}
 
 \option
 {quality}
-{Sets the quality for the image version of the chart in the pdf. 1.0 corresponds roughly to 120 pixels per inch. Can also be redefined globally (\texttt{pdbfQuality}).}
-{Number $>$ 0}
-{\texttt{1.0}}
-
-\option
-{scale}
-{Scales the size of the chart. 1.0 corresponds roughly to font-size that is currently choosen in \LaTeX. Can also be redefined globally (\texttt{pdbfScale}).}
+{Sets the quality for the image version of the table in the pdf. 1.0 corresponds roughly to 240 pixels per inch. Can also be redefined globally (\texttt{pdbfQuality}).}
 {Number $>$ 0}
 {\texttt{1.0}}
 
@@ -548,7 +528,7 @@ PDBF uses AlaSQL as database engine. For all available features of the database 
 
 \option
 {cols}
-{The attributes for the columns in the pivot table.}
+{The attributes for the columns in the pivot table. \textbf{Note:} This feature is currently broken!}
 {JavaScript array of strings (e.g. ["a", "b", "c"]). The name of attributes have to be present in the result of the sql query for the overlay and page}
 {\texttt{[]} (which means empty array)}
 
@@ -576,7 +556,8 @@ Example:\\[3pt]
 {\texttt{blue}}
 
 \subsection{DataText}
-Write text that is the result of a SQL-statement.\\[3pt]
+Write text that is the result of a SQL-statement.\\
+\textbf{Note:} DataText can be linked to other PDBF elements (Currently only charts supported). This means that if you move the mouse over this DataText then the specified data in the linked PDBF element is highlighted.\\[3pt]
 Example:\\[3pt]
 The table ``test'' contains \dataText{SELECT COUNT(*) FROM test;} tuples.\\
 The table ``test'' contains the following tuples: \dataText{SELECT * FROM test;}.\\[3pt]

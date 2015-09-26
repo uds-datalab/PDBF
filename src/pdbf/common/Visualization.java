@@ -48,7 +48,6 @@ public abstract class Visualization {
     public double y2;
     public long page;
     public String options;
-    public double zoom;
     public double quality;
     public double fontsize;
     public String name;

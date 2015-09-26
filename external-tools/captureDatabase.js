@@ -33,7 +33,7 @@ page.open(system.args[1], function() {
 	});
 		
 	window.setTimeout(function () {
-		fs.write('pdbf-db.json', data, 'w');
+		fs.write('../' + 'pdbf-db.json', data, 'w');
 		phantom.exit();
 	}, 500);
 });

@@ -1,6 +1,6 @@
 //redirect alerts to console
 function alert(e) {
-	throw new Error(e);
+	throw "" + e;
 }
 
 // Load pdbf-dim.json
@@ -52,14 +52,16 @@ function parse(json) {
 	pageOverlay[pageOverlay.length] = json;
 }
 
-var zoomFactor = json.type.I.zoom * 1.30 * json.type.I.quality;
-var rawZoomFactor = json.type.I.zoom * 1.30 * json.type.I.quality;
+var zoomFactor = 1.30 * (json.type.I.fontsize/12.0) * json.type.I.quality;
+var rawZoomFactor = 1.30 * (json.type.I.fontsize/12.0) * json.type.I.quality;
 
 function overlay() {
-	document.body.innerHTML = '';
+	var subContainer = document.getElementById("subContainer");
+	subContainer.innerHTML = '';
 	var pageNr = 0;
 	for (var i = 0; i < pageOverlays[pageNr].length; ++i) {
 		var json = pageOverlays[pageNr][i];
-		display(json, document.body, true);
+		PDFViewerApplication.page = json.type.I.page;
+		display(json, subContainer, true);
 	}
 }

@@ -3430,9 +3430,10 @@ var PageView = function pageView(container, id, scale, defaultViewport,
       }
     };
     var renderTask = this.renderTask = this.pdfPage.render(renderContext);
-
+	var pageNumber = this.id;
     this.renderTask.promise.then(
       function pdfPageRenderCallback() {
+		overlay(pageNumber);
         pageViewDrawCallback(null);
         if (textLayer) {
           self.pdfPage.getTextContent().then(
@@ -3453,8 +3454,6 @@ var PageView = function pageView(container, id, scale, defaultViewport,
     // Add the page to the cache at the start of drawing. That way it can be
     // evicted from the cache and destroyed even if we pause its rendering.
     cache.push(this);
-	
-	overlay(this.id);
   };
 
   this.beforePrint = function pageViewBeforePrint() {
@@ -6379,7 +6378,9 @@ function webViewerInitialized() {
 //	pdfstring = pageSource.substring(begin, end+5);
 //	PDFViewerApplication.open(strToUTF8Arr(pdfstring), 0);
 
-PDFViewerApplication.open(base64DecToArr(pdf_base64), 0);
+if (typeof pdf_base64 !== "undefined") {
+	PDFViewerApplication.open(base64DecToArr(pdf_base64), 0);
+}
 
   /*if (file && file.lastIndexOf('file:', 0) === 0) {
     // file:-scheme. Load the contents in the main thread because QtWebKit

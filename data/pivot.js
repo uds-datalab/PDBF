@@ -278,7 +278,7 @@
 							if (data.intable) {
 								return formatter(x[attr]);
 							} else {
-								var ret = "<span class=\"hasTooltip\">" + formatter(x[attr]) + "</span><span style=\"position:absolute;\" ><table style=\"width: 100%;\"><tr>";
+								var ret = "<span class=\"hasTooltip\">" + formatter(x[attr]) + "</span><div style=\"position:absolute;\" ><table style=\"width: 100%;\"><tr>";
 								for (key in x) {
 									ret += "<th class=\"pvtAxisLabel\">" + key + "</th>";
 								}
@@ -389,7 +389,7 @@
 									var ret = "";
 									r += (x[attr]);
 								} else {
-									var ret = "<span class=\"hasTooltip\">" + (x[attr]) + "</span><span style=\"position:absolute;\" ><table style=\"width: 100%; border: 0.2em solid #CDCDCD; background: white;\"><tr>";
+									var ret = "<span class=\"hasTooltip\">" + (x[attr]) + "</span><div style=\"position:absolute;\" ><table style=\"width: 100%; border: 0.2em solid #CDCDCD; background: white;\"><tr>";
 									for (key in x) {
 										ret += "<th class=\"pvtAxisLabel\">" + key + "</th>";
 									}
@@ -1679,11 +1679,11 @@
 						// ////////////////////////////////////////////////////////////////////////////////////////
 						if (!subopts.intable) {
 							$('.hasTooltip').hover(function() {
-								var tooltip = $(this).next('span')[0];
+								var tooltip = $(this).next('div')[0];
 								tooltip.style.visibility = 'visible';
 								tooltip.style.opacity = 1;
 							}, function() {
-								var tooltip = $(this).next('span')[0];
+								var tooltip = $(this).next('div')[0];
 								setTimeout(function(o) {
 									o.style.visibility = 'hidden';
 								}, 500, tooltip);
