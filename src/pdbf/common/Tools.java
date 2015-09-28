@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
+import java.security.CodeSource;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
@@ -38,24 +39,15 @@ public class Tools {
     }
 
     public static String getBaseDir() {
-	String className = CompleteRun_HTML.class.getName().replace('.', '/');
-	String classJar = CompleteRun_HTML.class.getClass().getResource("/" + className + ".class").toString();
 	String tmp = null;
 	
 	try {
-	    tmp = ClassLoader.getSystemClassLoader().getResource(".").toURI().getPath();
+	    CodeSource codeSource = CompleteRun_HTML.class.getProtectionDomain().getCodeSource();
+	    File jarFile = new File(codeSource.getLocation().toURI().getPath());
+	    tmp = jarFile.getParentFile().getPath() + File.separator;
 	} catch (URISyntaxException e) {
 	    e.printStackTrace();
 	    System.exit(-1);
-	}
-	
-	//check if we are running from jar or classfiles
-	if (classJar.startsWith("jar:")) {
-	    //jar
-	    tmp = new File(tmp).getAbsoluteFile().getPath() + File.separator;
-	} else {
-	    //classfiles
-	    tmp = new File(tmp).getAbsoluteFile().getParentFile().getPath() + File.separator;
 	}
 	return tmp;
     }
