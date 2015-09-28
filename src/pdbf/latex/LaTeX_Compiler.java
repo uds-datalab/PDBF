@@ -81,7 +81,7 @@ public class LaTeX_Compiler {
 	    }
 	    // remind user to adjust config
 	    if (tmp.get(tmp.size() - 1).equals("DELETE ME")) {
-		System.err.println("Warning: You have to first adjust the config.cfg file before you can use this tool. Exiting...");
+		System.err.println("Warning: You have to first adjust the config.cfg file before you can use this tool. Did you maybe forget to remove the \"DELETE ME\" at the end of the config file? Exiting...");
 		System.exit(-1);
 	    }
 	    br.close();
