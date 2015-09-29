@@ -30,6 +30,20 @@ This toolkit is licensed unter the MIT License (see [here](https://github.com/ud
 * You can play around with the minimal.tex file which contains a minimal example of PDBF usage
 * For further information take a look at the [documentation](http://uds-datalab.github.io/PDBF/)
 
+##Compile LaTeX to single HTML file
+You can also use the PDBF compiler to compile your LaTeX files to a single HTML file.
+To do so just run the compiler as on any other document (you dont need to include the pdbf package in your tex file):
+
+java -jar pdbf.jar sometexfile.tex
+
+The resulting HTML file is saved in the same folder with the same name but html ending.
+
+##Build Instructions
+* Run "mvn package" if you only want to compile pdbf.jar
+* Run "mvn verify" if you want to compile pdbf.jar and run integration tests.
+
+Note: The compiled pdbf.jar is automatically copied from target to the main folder.
+
 ##Thanks to the authors of:
 * phantomJS (https://github.com/ariya/phantomjs)
 * Apache Commons IO (http://commons.apache.org/proper/commons-io/)
