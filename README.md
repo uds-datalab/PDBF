@@ -30,7 +30,14 @@ This toolkit is licensed unter the MIT License (see [here](https://github.com/ud
 * You can play around with the minimal.tex file which contains a minimal example of PDBF usage
 * For further information take a look at the [documentation](http://uds-datalab.github.io/PDBF/)
 
-##Compile LaTeX to single HTML file
+##Features
+#####Automatic generation of Charts, Multiplot Charts, Pivot tables
+With PDBF you don't need to manually generate these kinds of elements. The PDBF compiler automatically generates a static version for the pdf and the dynamic version for the html part of the PDBF document. This also means that your document is always up to date! If you change something in the underlying data that generate your PDBF document and then recompile the document, then the data in the document is up to date. No need to manually update externally generated charts or pivot tables.
+
+#####Generate your document directly from the results of your experiment
+The idea of PDBF is to store the results of the experiment directly in the document and to make it more transparent how this chart, pivot table, etc. was generated from the result data. Therefore we currently support CSV files, SQL files, and SQL servers as data sources and use SQL as description language for the transformation of the raw result data to the final representation in the document.
+
+#####Compile LaTeX to single HTML file
 You can also use the PDBF compiler to compile your LaTeX files to a single HTML file.
 To do so just run the compiler as on any other document (you dont need to include the pdbf package in your tex file):
 
