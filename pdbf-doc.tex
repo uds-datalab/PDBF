@@ -86,6 +86,8 @@ This approach works completely offline. No internet connection is required, neit
 \section{License}
 \noindent This toolkit is licensed unter the MIT License. See LICENSE.md file.\\
 
+\newpage
+
 \section{Getting started}
 \begin{itemize}
 \item Make sure you have a Java Runtime (version $>=$ 1.7) installed
@@ -97,6 +99,25 @@ This approach works completely offline. No internet connection is required, neit
 \item Optionally you can attach the included vldb-Invaders.ova (Space invaders clone) or \href{https://github.com/uds-datalab/PDBF/releases/download/1.0.1/dsl.ova}{download the dsl.ova} (Damn small linux) VirtualBox image and attach it to the compiled PDBF file with this command: java -jar pdbf.jar --vm pdbf-doc.html vldb-Invaders.ova
 \item You can play around with the minimal.tex file which contains a minimal example of PDBF usage
 \item For further information take a look at the \href{http://uds-datalab.github.io/PDBF/}{documentation}
+\end{itemize}
+
+\section{Features}
+\subsection{Automatic generation of Charts, Multiplot Charts, Pivot tables}
+With PDBF you don't need to manually generate these kinds of elements. The PDBF compiler automatically generates a static version for the pdf and the dynamic version for the html part of the PDBF document. This also means that your document is always up to date! If you change something in the underlying data that generate your PDBF document and then recompile the document, then the data in the document is up to date. No need to manually update externally generated charts or pivot tables.
+
+\subsection{Generate your document directly from the results of your experiment}
+The idea of PDBF is to store the results of the experiment directly in the document and to make it more transparent how this chart, pivot table, etc. was generated from the result data. Therefore we currently support CSV files, SQL files, and SQL servers as data sources and use SQL as description language for the transformation of the raw result data to the final representation in the document.
+
+\subsection{Compile LaTeX to single HTML file}
+You can also use the PDBF compiler to compile your LaTeX files to a single HTML file.
+To do so just run the compiler as on any other document (you dont need to include the pdbf package in your tex file):\\[3pt]
+\texttt{java -jar pdbf.jar sometexfile.tex}\\[3pt]
+The resulting HTML file is saved in the same folder with the same name but html ending.
+
+\section{Build Instructions}
+\begin{itemize}
+\item Run "mvn package" if you only want to compile pdbf.jar
+\item Run "mvn verify" if you want to compile pdbf.jar and run integration tests.
 \end{itemize}
 
 \section{Thanks to}
@@ -121,15 +142,17 @@ PDF.js (\url{https://github.com/mozilla/pdf.js})\\
 google-closure-compiler (\url{https://github.com/google/closure-compiler})\\
 lz-string (\url{https://github.com/pieroxy/lz-string})\\
 
+\newpage
+
 \section{How to use the PDBF compiler}
 Right now there are only two modes: \\[4pt]
--- The standart mode which compiles a tex file into the hybrid PDBF format:\\
+-- The standart mode which compiles a tex file into the janiform PDBF format:\\
 \verb|java -jar PDBF.jar LaTeX_file| \\[2pt]
 -- The VM mode which attaches a VirtualBox .ova file to an existing PDBF:\\
 \verb|java -jar PDBF.jar --vm PDBF_File.html VM_File.ova|
 
 \section{Requirements}
-These \LaTeX\relax packages are required for PDBF documents:
+The following \LaTeX~packages are required for PDBF documents:
 \begin{itemize}
 \item \verb|zref|
 \item \verb|xcolor|
@@ -139,17 +162,17 @@ These \LaTeX\relax packages are required for PDBF documents:
 \item \verb|geometry|
 \item \verb|array|
 \end{itemize}
-\noindent Furthermore it is needed that your \LaTeX\relax document uses the geometry package to specify the page size.\\
+\noindent Furthermore it is needed that your \LaTeX~document uses the geometry package to specify the page size.\\
 
-\noindent \textbf{Warning:} There are problems with \textbf{inputenc UTF8} and \textbf{pgfpages}. If you really have to use the inputenc UTF8 package then you cant use non-ASCII characters inside queries. The pgfpages package is incompatible to this package (Its fixable but requires additional effort). 
+\noindent \textbf{Warning:} There are problems with \textbf{inputenc} and \textbf{pgfpages} package. If you really have to use the inputenc package with UTF8 option then you cant use non-ASCII characters inside queries. The pgfpages package is currently incompatible to this package. 
 
-\section{SQL queries for PDBF elements}
-PDBF uses AlaSQL as database engine. For all available features of the database visit \url{https://github.com/agershun/alasql}. Some functionality might not yet be available because we currently use not the latest version.\\[4pt]
+\section{SQL specifics and special functions}
+PDBF uses AlaSQL as database engine. For all available features of the database visit \url{https://github.com/agershun/alasql}. Some functionality might not yet be available because we currently don't use the latest version.\\[4pt]
 \textbf{Note:} Mostly sql syntax is standart sql, but for example attributes with spaces in their name have to be sourrounded by square brackets. E.g. SELECT attribute AS [attribute with spaces] FROM test;\\
 
 \noindent We extended AlaSQL with the following statistical sql functions:\\[5pt]
-\verb|GRUBBS_FILTER(arr, alpha)|: \\
-\indent Desc.: Filters an array of values with a \href{http://en.wikipedia.org/wiki/Grubbs'_test_for_outliers}{grubbs test}\\
+\verb|GRUBBS_FILTER(arr, alpha, max)|: \\
+\indent Desc.: Filters an array of values with a two-sided \href{http://en.wikipedia.org/wiki/Grubbs'_test_for_outliers}{grubbs test}. The grubbs test is performed on the whole array. If a significant outlier is detected (Z > ZCrit) and the relative margin of error is not too high (margin\_of\_error / avg > 0.025) then the outlier is removed. This procedure is repeated until one of these two conditions fails.\\
 \indent Returns the filtered array.\\[3pt]
 \indent \option
 {arr}
@@ -540,6 +563,7 @@ PDBF uses AlaSQL as database engine. For all available features of the database 
 
 \subsection{SQL}
 Clickable SQL-statements\\[3pt]
+\textbf{Note:} Currently SQL is limited to one line of text. No line breaks are possible.\\
 Example:\\[3pt]
 \sql{SELECT * FROM test;}\\[3pt]
 %
@@ -557,6 +581,7 @@ Example:\\[3pt]
 
 \subsection{DataText}
 Write text that is the result of a SQL-statement.\\
+\textbf{Note:} Currently DataText is limited to one line of text. No line breaks are possible.\\
 \textbf{Note:} DataText can be linked to other PDBF elements (Currently only charts supported). This means that if you move the mouse over this DataText then the specified data in the linked PDBF element is highlighted.\\[3pt]
 Example:\\[3pt]
 The table ``test'' contains \dataText{SELECT COUNT(*) FROM test;} tuples.\\

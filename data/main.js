@@ -2021,8 +2021,7 @@ function GRUBBS_FILTER(arr, alpha) {
 	if (alpha == undefined) {
 		var alpha = 0.05;
 	}
-	var gogo = true;
-	while (gogo) {
+	while (true) {
 		var N = arr.length;
 		var t = jStat.studentt.inv((alpha) / (2 * N), N - 2);
 		var ZCrit = (N - 1) / Math.sqrt(N) * Math.sqrt((t * t) / (N - 2 + t * t));
@@ -2037,17 +2036,12 @@ function GRUBBS_FILTER(arr, alpha) {
 				Zindex = i;
 			}
 		});
-		var margin_of_error_runtime = MARGIN_OF_ERROR(arr);
-		var avg_runtime = MEAN(arr);
-		if (Z > ZCrit && margin_of_error_runtime / avg_runtime >= 0.025) { // TODO:
-			// this
-			// as
-			// parameter.
-			// Ask
-			// endre!
+		var margin_of_error = MARGIN_OF_ERROR(arr);
+		var avg = MEAN(arr);
+		if (Z > ZCrit && margin_of_error / avg > 0.025) {
 			arr.splice(Zindex, 1);
 		} else {
-			gogo = false;
+			break;
 		}
 	}
 	return arr;
