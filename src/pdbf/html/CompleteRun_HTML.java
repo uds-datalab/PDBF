@@ -16,16 +16,7 @@ public class CompleteRun_HTML {
     public static void main(String[] args) {
 	String baseDir = Tools.getBaseDir();
 	
-	if (LaTeX_Compiler.OS.contains("win")) {
-	    LaTeX_Compiler.suffix = "win";
-	} else if (LaTeX_Compiler.OS.contains("mac")) {
-	    LaTeX_Compiler.suffix = "mac";
-	} else if (LaTeX_Compiler.OS.contains("nix") || LaTeX_Compiler.OS.contains("nux") || LaTeX_Compiler.OS.contains("aix")) {
-	    LaTeX_Compiler.suffix = "unix";
-	} else {
-	    System.err.println("Sorry, your operating system is not supported!");
-	    System.exit(-1);
-	}
+	LaTeX_Compiler.suffix = Tools.getOS();
 
 	if (args.length > 3 || args.length < 1 || args[0].equalsIgnoreCase("--help")) {
 	    System.out.println("Usage:\tjava -jar pdbf.jar LaTeX_file\nOR\n\tjava -jar pdbf.jar --vm  PDBF_File.html VM_File.ova\nFor further help visit: https://github.com/uds-datalab/PDBF");

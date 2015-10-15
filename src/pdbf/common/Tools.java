@@ -11,11 +11,28 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 
 import pdbf.html.CompleteRun_HTML;
+import pdbf.latex.LaTeX_Compiler;
 
 public class Tools {
 
     public static Charset utf8 = Charset.forName("UTF-8");
 
+    public static String getOS() {
+	String OS = System.getProperty("os.name").toLowerCase();
+	
+	if (OS.contains("win")) {
+	    return "win";
+	} else if (OS.contains("mac")) {
+	    return "mac";
+	} else if (OS.contains("nix") || OS.contains("nux") || OS.contains("aix")) {
+	    return "unix";
+	} else {
+	    System.err.println("Sorry, your operating system is not supported!");
+	    System.exit(-1);
+	    return null;
+	}
+    }
+    
     public static String encodeFileToBase64Binary(File file) {
 	String encodedfile = null;
 	try {

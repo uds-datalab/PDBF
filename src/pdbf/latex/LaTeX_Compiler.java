@@ -36,7 +36,6 @@ import pdbf.common.VisualizationTypeAdapter;
 public class LaTeX_Compiler {
 
     private static String[] pathToLaTeXScript = new String[0];
-    public static String OS = System.getProperty("os.name").toLowerCase();
 
     private static ArrayList<Process> processes = new ArrayList<Process>();
     private static ArrayList<String> cleanupfiles = new ArrayList<String>();
