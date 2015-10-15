@@ -43,6 +43,14 @@ public class compileIT {
 	if (p.exitValue() != 0) {
 	    fail();
 	}
+	
+	ProcessBuilder pb2 = new ProcessBuilder("java", "-jar", baseDir + "pdbf.jar", documentPath);
+	pb.directory(new File(workingDir));
+	Process p2 = pb2.start();
+	p2.waitFor();
+	if (p2.exitValue() != 0) {
+	    fail();
+	}
     }
 
     @Test(timeout = 300000)
