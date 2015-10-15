@@ -13,7 +13,7 @@ import org.junit.runner.Description;
 
 import pdbf.common.Tools;
 
-public class compileIT {
+public class TestsIT {
     // TODO: write test for database with ugly "\"values\""
 
     @Rule
@@ -35,7 +35,7 @@ public class compileIT {
 
     private static String baseDir = new File(Tools.getBaseDir()).getParent() + File.separator;
 
-    public void compile(String workingDir, String documentPath) throws IOException, InterruptedException {
+    public void compileAndCheck(String workingDir, String documentPath) throws IOException, InterruptedException {
 	ProcessBuilder pb = new ProcessBuilder("java", "-jar", baseDir + "pdbf.jar", documentPath);
 	pb.directory(new File(workingDir));
 	Process p = pb.start();
@@ -44,20 +44,20 @@ public class compileIT {
 	    fail();
 	}
 	
-	ProcessBuilder pb2 = new ProcessBuilder("java", "-jar", baseDir + "pdbf.jar", documentPath);
-	pb.directory(new File(workingDir));
-	Process p2 = pb2.start();
-	p2.waitFor();
-	if (p2.exitValue() != 0) {
-	    fail();
-	}
+//	ProcessBuilder pb2 = new ProcessBuilder("java", "-jar", baseDir + "pdbf.jar", documentPath);
+//	pb.directory(new File(workingDir + File.separator + "Reference"));
+//	Process p2 = pb2.start();
+//	p2.waitFor();
+//	if (p2.exitValue() != 0) {
+//	    fail();
+//	}
     }
 
     @Test(timeout = 300000)
     public void compileDocumentation() throws IOException, InterruptedException {
 	File f = new File(baseDir + "pdbf-doc.html");
 	f.delete();
-	compile(baseDir, "pdbf-doc.tex");
+	compileAndCheck(baseDir, "pdbf-doc.tex");
 	if (!f.exists()) {
 	    fail();
 	}
@@ -67,7 +67,7 @@ public class compileIT {
     public void compileMinimal() throws IOException, InterruptedException {
 	File f = new File(baseDir + "minimal.html");
 	f.delete();
-	compile(baseDir, "minimal.tex");
+	compileAndCheck(baseDir, "minimal.tex");
 	if (!f.exists()) {
 	    fail();
 	}
@@ -77,7 +77,7 @@ public class compileIT {
     public void compileNoPDBF() throws IOException, InterruptedException {
 	File f = new File(baseDir + "kein_pdbf.html");
 	f.delete();
-	compile(baseDir, "kein_pdbf.tex");
+	compileAndCheck(baseDir, "kein_pdbf.tex");
 	if (!f.exists()) {
 	    fail();
 	}
@@ -90,7 +90,7 @@ public class compileIT {
 	new File(otherFolder).mkdirs();
 	FileUtils.copyFile(new File(baseDir + "minimal.tex"), new File(otherFolder + "minimal.tex"));
 
-	compile(otherFolder, "minimal.tex");
+	compileAndCheck(otherFolder, "minimal.tex");
 	if (!new File(otherFolder + "minimal.html").exists()) {
 	    fail();
 	}

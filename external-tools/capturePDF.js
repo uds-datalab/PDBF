@@ -84,7 +84,7 @@ var getPage = function (i, pagesCount) {
 };
 
 page.viewportSize = {
-	width: 1050+50,
+	width: 1050,
 	height: 1485
 };
 
@@ -97,6 +97,10 @@ page.open(system.args[1], function() {
 		}, 
 		function() {
 			var pagesCount = page.evaluate(function() {
+				var vc = document.getElementById("viewerContainer");
+				vc.setAttribute("style", "overflow:hidden;");
+				var tv = document.getElementById("toolbarViewer");
+				tv.setAttribute("style", "visibility:hidden;");
 				PDFViewerApplication.setScale("page-fit");
 				PDFViewerApplication.page = 1;
 				return PDFViewerApplication.pagesCount;
