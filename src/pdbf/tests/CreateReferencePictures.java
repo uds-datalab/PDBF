@@ -16,13 +16,12 @@ public class CreateReferencePictures {
     public static String wDir = baseDir + "src" + File.separator + "pdbf" + File.separator + "referenceImages" + File.separator;
 
     public static void main(String[] args) throws InterruptedException, IOException {
-	String[] documents = { "pdbf-doc.html", "minimal.html", "no_pdbf.html" };
-	String[] documentsTex = { "pdbf-doc.tex", "minimal.tex", "no_pdbf.tex" };
+	String[] documents = { "pdbf-doc", "minimal", "no_pdbf" };
 	String[] documentsDir = { baseDir, baseDir, "src" + File.separator + "pdbf" + File.separator + "tests" + File.separator };
 
 	for (int i = 0; i < documents.length; i++) {
-	    CompileAndCheckIT.compile(documentsDir[i], documentsTex[i]);
-	    getReferencePictures(documentsDir[i], documents[i], wDir);
+	    CompileAndCheckIT.compile(documentsDir[i], documents[i] + ".tex");
+	    getReferencePictures(documentsDir[i], documents[i] + ".html", wDir);
 	}
 	for (Process p : processes) {
 	    p.waitFor();

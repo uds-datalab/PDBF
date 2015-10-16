@@ -84,8 +84,8 @@ var getPage = function (i, pagesCount) {
 };
 
 page.viewportSize = {
-	width: 1050,
-	height: 1485
+	width: 1050*3,
+	height: 1485*3
 };
 
 page.open(system.args[1], function() {		
