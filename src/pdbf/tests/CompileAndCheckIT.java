@@ -64,8 +64,7 @@ public class CompileAndCheckIT {
 	}
 	double n = width * height * 3;
     	double p = sum / n / 255.0;
-	System.out.println(p);
-	return true;
+	return p < 0.10; //More than 10% difference? Somehthing must be really wrong. TODO: decrease this further if similarity on linux gets better
     }
     
     public static void compile(String workingDir, String documentName) throws IOException, InterruptedException {
