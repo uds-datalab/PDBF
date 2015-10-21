@@ -18,6 +18,7 @@ import pdbf.common.Tools;
 
 public class CompileAndCheckIT {
     // TODO: write test for database with ugly "\"values\""
+    // TODO: write test to check the pdf part, maybe also with phantomjs?
 
     @Rule
     public TimeTestWatcher watcher = new TimeTestWatcher();

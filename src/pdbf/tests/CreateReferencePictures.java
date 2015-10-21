@@ -35,6 +35,9 @@ public class CreateReferencePictures {
 	for (File f : deleteList) {
 	    f.delete();
 	}
+	new File(testDir + "no_pdbf.aux").delete();
+	new File(testDir + "no_pdbf.log").delete();
+	new File(testDir + "no_pdbf.html").delete();
     }
 
     public static void getReferencePicturesPages(String htmlDir, String htmlName, String workingDir) throws IOException, InterruptedException {
