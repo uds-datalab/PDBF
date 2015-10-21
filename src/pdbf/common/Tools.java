@@ -11,7 +11,6 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 
 import pdbf.html.CompleteRun_HTML;
-import pdbf.latex.LaTeX_Compiler;
 
 public class Tools {
 

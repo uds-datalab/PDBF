@@ -3,7 +3,6 @@ package pdbf.tests;
 import static org.junit.Assert.fail;
 
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -37,7 +36,9 @@ public class CompileAndCheckIT {
 	}
     };
 
-    private static String baseDir = new File(Tools.getBaseDir()).getParent() + File.separator;
+    public static String baseDir = new File(Tools.getBaseDir()).getParent() + File.separator;
+    public static String testDir = baseDir + "src" + File.separator + "pdbf" + File.separator + "tests" + File.separator;
+    public static String refDir = baseDir + "src" + File.separator + "pdbf" + File.separator + "referenceImages" + File.separator;
 
     public static boolean compareImages(BufferedImage i1, BufferedImage i2) {
 	int height = i1.getHeight();
@@ -54,22 +55,29 @@ public class CompileAndCheckIT {
 		int color1 = i1.getRGB(x, y);
 		int color2 = i2.getRGB(x, y);
 		int r1 = (color1 & 0xFF0000) >> 16;
-	    	int r2 = (color2 & 0xFF0000) >> 16;
-	    	int g1 = (color1 & 0x00FF00) >> 8;
-	    	int g2 = (color2 & 0x00FF00) >> 8;
-	    	int b1 = (color1 & 0x0000FF);
-	    	int b2 = (color2 & 0x0000FF);
-	    	sum += Math.abs(r1 - r2) + Math.abs(g1 - g2) + Math.abs(b1 - b2);
+		int r2 = (color2 & 0xFF0000) >> 16;
+		int g1 = (color1 & 0x00FF00) >> 8;
+		int g2 = (color2 & 0x00FF00) >> 8;
+		int b1 = (color1 & 0x0000FF);
+		int b2 = (color2 & 0x0000FF);
+		sum += Math.abs(r1 - r2) + Math.abs(g1 - g2) + Math.abs(b1 - b2);
 	    }
 	}
 	double n = width * height * 3;
-    	double p = sum / n / 255.0;
-	return p < 0.10; //More than 10% difference? Somehthing must be really wrong. TODO: decrease this further if similarity on linux gets better
+	double p = sum / n / 255.0;
+	System.out.println("" + Math.round(p*10000)/100 + "%");
+	double errorThreshold = 0.10;
+	if (p >= errorThreshold) {
+	    System.out.println("Failed! Too much difference to reference picture");
+	}
+	return p < errorThreshold; // More than 10% difference? Something must be really
+			 // wrong. TODO: decrease this further if similarity on
+			 // linux gets better
     }
-    
-    public static void compile(String workingDir, String documentName) throws IOException, InterruptedException {
-	ProcessBuilder pb = new ProcessBuilder("java", "-jar", baseDir + "pdbf.jar", documentName);
-	pb.directory(new File(workingDir));
+
+    public static void compile(String texDir, String texName) throws IOException, InterruptedException {
+	ProcessBuilder pb = new ProcessBuilder("java", "-jar", baseDir + "pdbf.jar", texName);
+	pb.directory(new File(texDir));
 	pb.inheritIO();
 	Process p = pb.start();
 	p.waitFor();
@@ -78,11 +86,11 @@ public class CompileAndCheckIT {
 	}
     }
 
-    public static void check(String workingDir, String documentName) throws IOException, InterruptedException {
+    public static void comparePages(String htmlDir, String htmlName) throws IOException, InterruptedException {
 	CreateReferencePictures.processes.clear();
 	CreateReferencePictures.deleteList.clear();
 	// Create current images
-	CreateReferencePictures.getReferencePictures(workingDir, documentName, baseDir);
+	CreateReferencePictures.getReferencePicturesPages(htmlDir, htmlName, baseDir);
 	for (Process p : CreateReferencePictures.processes) {
 	    p.waitFor();
 	    if (p.exitValue() != 0) {
@@ -94,10 +102,44 @@ public class CompileAndCheckIT {
 	}
 	// Compare current images to reference images
 	File dir = new File(baseDir);
-	for(File file : dir.listFiles()) {
-	    if(file.getName().startsWith(documentName)) {
+	for (File file : dir.listFiles()) {
+	    String name = file.getName();
+	    if (name.startsWith(htmlName) && name.endsWith(".png")) {
+		//TODO: use a thread pool!
 		BufferedImage i1 = ImageIO.read(file);
-		BufferedImage i2 = ImageIO.read(new File(baseDir + "src" + File.separator + "pdbf" + File.separator + "referenceImages" + File.separator + file.getName()));
+		BufferedImage i2 = ImageIO.read(new File(refDir + name));
+		System.out.print(file.getName() + " error percentage: ");
+		if (!compareImages(i1, i2)) {
+		    fail();
+		}
+		file.delete();
+	    }
+	}
+    }
+
+    public static void compareOverlays(String htmlDir, String htmlName) throws IOException, InterruptedException {
+	CreateReferencePictures.processes.clear();
+	CreateReferencePictures.deleteList.clear();
+	// Create current images
+	CreateReferencePictures.getReferencePicturesOverlays(htmlDir, htmlName, baseDir);
+	for (Process p : CreateReferencePictures.processes) {
+	    p.waitFor();
+	    if (p.exitValue() != 0) {
+		throw new IllegalStateException("Child process returned error!");
+	    }
+	}
+	for (File f : CreateReferencePictures.deleteList) {
+	    f.delete();
+	}
+	// Compare current images to reference images
+	File dir = new File(baseDir);
+	for (File file : dir.listFiles()) {
+	    String name = file.getName();
+	    if (name.startsWith(htmlName) && name.endsWith(".png")) {
+		//TODO: use a thread pool!
+		BufferedImage i1 = ImageIO.read(file);
+		BufferedImage i2 = ImageIO.read(new File(refDir + file.getName()));
+		System.out.print(file.getName() + " error percentage: ");
 		if (!compareImages(i1, i2)) {
 		    fail();
 		}
@@ -107,40 +149,46 @@ public class CompileAndCheckIT {
     }
 
     @Test(timeout = 600000)
-    public void compileAndCheckDocumentation() throws IOException, InterruptedException {
+    public void documentation() throws IOException, InterruptedException {
 	File f = new File(baseDir + "pdbf-doc.html");
 	f.delete();
 	compile(baseDir, "pdbf-doc.tex");
 	if (!f.exists()) {
 	    fail();
 	}
-	check(baseDir, "pdbf-doc.html");
+	comparePages(baseDir, "pdbf-doc.html");
+	compareOverlays(baseDir, "pdbf-doc.html");
     }
 
     @Test(timeout = 600000)
-    public void compileAndCheckMinimal() throws IOException, InterruptedException {
+    public void minimal() throws IOException, InterruptedException {
 	File f = new File(baseDir + "minimal.html");
 	f.delete();
 	compile(baseDir, "minimal.tex");
 	if (!f.exists()) {
 	    fail();
 	}
-	check(baseDir, "minimal.html");
+	comparePages(baseDir, "minimal.html");
+	compareOverlays(baseDir, "minimal.html");
     }
 
     @Test(timeout = 600000)
-    public void compileAndCheckNoPDBF() throws IOException, InterruptedException {
-	File f = new File(baseDir + "src" + File.separator + "pdbf" + File.separator + "tests" + File.separator + "no_pdbf.html");
+    public void noPDBF() throws IOException, InterruptedException {
+	File f = new File(testDir + "no_pdbf.html");
 	f.delete();
-	compile(baseDir + "src" + File.separator + "pdbf" + File.separator + "tests" + File.separator, "no_pdbf.tex");
+	compile(testDir, "no_pdbf.tex");
+	new File(testDir + "no_pdbf.aux").delete();
+	new File(testDir + "no_pdbf.log").delete();
 	if (!f.exists()) {
 	    fail();
 	}
-	check(baseDir + "src" + File.separator + "pdbf" + File.separator + "tests" + File.separator, "no_pdbf.html");
+	comparePages(testDir, "no_pdbf.html");
+	compareOverlays(testDir, "no_pdbf.html");
+	new File(testDir + "no_pdbf.html").delete();
     }
 
     @Test(timeout = 300000)
-    public void compileMinimalOtherDir() throws IOException, InterruptedException {
+    public void compileOtherDir() throws IOException, InterruptedException {
 	// Create Folder and copy tex file
 	String otherFolder = baseDir + "otherFolder" + File.separator;
 	new File(otherFolder).mkdirs();

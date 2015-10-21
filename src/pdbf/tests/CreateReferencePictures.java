@@ -13,20 +13,23 @@ public class CreateReferencePictures {
     public static ArrayList<File> deleteList = new ArrayList<File>();
     public static ArrayList<Process> processes = new ArrayList<Process>();
     public static String baseDir = new File(Tools.getBaseDir()).getParent() + File.separator;
-    public static String wDir = baseDir + "src" + File.separator + "pdbf" + File.separator + "referenceImages" + File.separator;
-
+    public static String refDir = baseDir + "src" + File.separator + "pdbf" + File.separator + "referenceImages" + File.separator;
+    public static String testDir = baseDir + "src" + File.separator + "pdbf" + File.separator + "tests" + File.separator;
+    public static String suffix = Tools.getOS();
+    
     public static void main(String[] args) throws InterruptedException, IOException {
 	String[] documents = { "pdbf-doc", "minimal", "no_pdbf" };
-	String[] documentsDir = { baseDir, baseDir, "src" + File.separator + "pdbf" + File.separator + "tests" + File.separator };
+	String[] documentsDir = { baseDir, baseDir, testDir };
 
 	for (int i = 0; i < documents.length; i++) {
 	    CompileAndCheckIT.compile(documentsDir[i], documents[i] + ".tex");
-	    getReferencePictures(documentsDir[i], documents[i] + ".html", wDir);
+	    getReferencePicturesPages(documentsDir[i], documents[i] + ".html", refDir);
+	    getReferencePicturesOverlays(documentsDir[i], documents[i] + ".html", refDir);
 	}
 	for (Process p : processes) {
 	    p.waitFor();
 	    if (p.exitValue() != 0) {
-		throw new IllegalStateException();
+		throw new IllegalStateException("Child process returned error!");
 	    }
 	}
 	for (File f : deleteList) {
@@ -34,17 +37,24 @@ public class CreateReferencePictures {
 	}
     }
 
-    public static void getReferencePictures(String htmlDir, String htmlName, String workingDir) throws IOException, InterruptedException {
-	String baseDir = new File(Tools.getBaseDir()).getParent() + File.separator;
-	String suffix = Tools.getOS();
+    public static void getReferencePicturesPages(String htmlDir, String htmlName, String workingDir) throws IOException, InterruptedException {
+	getReferencePictures("capturePages.js", htmlDir, htmlName, workingDir);
+    }
+    
+    public static void getReferencePicturesOverlays(String htmlDir, String htmlName, String workingDir) throws IOException, InterruptedException {
+	getReferencePictures("captureOverlays.js", htmlDir, htmlName, workingDir);
+    }
+    
+    public static void getReferencePictures(String jsName, String htmlDir, String htmlName, String workingDir) throws IOException, InterruptedException {
 	String phantomjs = baseDir + "external-tools" + File.separator + "phantomjs-" + suffix;
-	String script = baseDir + "external-tools" + File.separator + "capturePDF.js";
-
+	String script = testDir + jsName;
+	boolean delete = true;
+	
 	File destFile = new File(workingDir + File.separator + htmlName);
 	try {
 	    FileUtils.copyFile(new File(htmlDir + htmlName), destFile);
 	} catch (Exception e) {
-	    //Do nothing
+	    delete = false;
 	}
 	ProcessBuilder pb = new ProcessBuilder(phantomjs, script, htmlName, workingDir);
 	pb.directory(new File(workingDir));
@@ -52,6 +62,8 @@ public class CreateReferencePictures {
 	Process p = pb.start();
 
 	processes.add(p);
-	deleteList.add(destFile);
+	if (delete) {
+	    deleteList.add(destFile);
+	}
     }
 }
