@@ -24,9 +24,10 @@ This toolkit is licensed unter the MIT License (see [here](https://github.com/ud
 * [Download the latest version](https://github.com/uds-datalab/PDBF/archive/gh-pages.zip)
 * Extract zip and change workingdir to extracted folder
 * Adjust config.cfg
-* Try to compile pdbf-doc.tex file with this command: java -jar pdbf.jar pdbf-doc.tex
+* Try to compile pdbf-doc.tex file with this command: **java -jar pdbf.jar pdbf-doc.tex**
 * Open pdbf-doc.html, this is the final output of the compilation process, if you rename it to ".pdf" it is also a valid pdf-document
-* Optionally you can attach the included vldb-Invaders.ova (Space invaders clone) or [download the dsl.ova](https://github.com/uds-datalab/PDBF/releases/download/1.0.1/dsl.ova) (Damn small linux) VirtualBox image and attach it to the compiled PDBF file with this command: java -jar pdbf.jar --vm pdbf-doc.html vldb-Invaders.ova
+* Optionally you can attach the included vldb-Invaders.ova (Space invaders clone) or [download the dsl.ova](https://github.com/uds-datalab/PDBF/releases/download/1.0.1/dsl.ova) (Damn small linux) VirtualBox image and attach it to the compiled PDBF file with this command: **java -jar pdbf.jar --vm pdbf-doc.html vldb-Invaders.ova**
+* Open pdbf-doc.ova, this is the final output with the attached ova file. Its still a valid pdf and html at the same time.
 * You can play around with the minimal.tex file which contains a minimal example of PDBF usage
 * For further information take a look at the [documentation](http://uds-datalab.github.io/PDBF/)
 
@@ -55,7 +56,6 @@ Note: The compiled pdbf.jar is automatically copied from target to the main fold
 * phantomJS (https://github.com/ariya/phantomjs)
 * Apache Commons (http://commons.apache.org/)
 * Apache PDFBox (https://pdfbox.apache.org/)
-* jTar (https://github.com/kamranzafar/jtar)
 * google-gson (https://github.com/google/gson)
 * postgreSQL JDBC Driver (https://jdbc.postgresql.org/)
 * MariaDB JDBC Driver (https://mariadb.com/kb/en/mariadb/about-the-mariadb-java-client/)

@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.security.CodeSource;
+import java.util.ArrayList;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
@@ -16,6 +17,14 @@ public class Tools {
 
     public static Charset utf8 = Charset.forName("UTF-8");
 
+    public static String baseDir = new File(getBaseDir()).getParent() + File.separator;
+    public static String refDir = baseDir + "src" + File.separator + "pdbf" + File.separator + "referenceImages" + File.separator;
+    public static String testDir = baseDir + "src" + File.separator + "pdbf" + File.separator + "tests" + File.separator;
+    public static String suffix = getOS();
+    
+    public static ArrayList<File> deleteList = new ArrayList<File>();
+    public static ArrayList<Process> processes = new ArrayList<Process>();
+    
     public static String getOS() {
 	String OS = System.getProperty("os.name").toLowerCase();
 	
@@ -71,5 +80,27 @@ public class Tools {
     public static String getBaseDirData() {
 	String tmp = getBaseDir() + "data" + File.separator;
 	return tmp;
+    }
+
+    public static void runJsFile(String jsName, String htmlDir, String htmlName, String workingDir) throws IOException, InterruptedException {
+        String phantomjs = baseDir + "external-tools" + File.separator + "phantomjs-" + suffix;
+        String script = testDir + jsName;
+        boolean delete = true;
+        
+        File destFile = new File(workingDir + File.separator + htmlName);
+        try {
+            FileUtils.copyFile(new File(htmlDir + htmlName), destFile);
+        } catch (Exception e) {
+            delete = false;
+        }
+        ProcessBuilder pb = new ProcessBuilder(phantomjs, script, htmlName, workingDir);
+        pb.directory(new File(workingDir));
+        pb.inheritIO();
+        Process p = pb.start();
+    
+        Tools.processes.add(p);
+        if (delete) {
+            Tools.deleteList.add(destFile);
+        }
     }
 }

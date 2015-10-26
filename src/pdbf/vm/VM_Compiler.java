@@ -21,7 +21,7 @@ public class VM_Compiler {
 	
 	try {
 	    StringBuilder sb = new StringBuilder(FileUtils.readFileToString(new File(args[2]), StandardCharsets.ISO_8859_1));
-	    String replace = "%PDF-1.5\n%.ovf\0\n1 0 obj\nstream\n<head><meta charset=UTF-8><script>";
+	    String replace = "%PDF-1.5\n%ª«¬­.ovf\0\n1 0 obj\nstream\n<head><meta charset=UTF-8><script>";
 	    sb.replace(0, replace.length(), replace);
 	    
 	    //Fix tar
@@ -44,11 +44,12 @@ public class VM_Compiler {
 	    sb.setCharAt(155, '\0');
 	    
 	    //Add new file to tar
-	    String n = "UNUSED\0" + sb.substring(7, 513);
+	    String name = "DO_NOT_DELETE\0";
+	    String n = name + sb.substring(name.length(), 513);
 	    int von = sb.length();
 	    sb.append(n);
 	    
-	    String removeFromHTML = "%PDF-1.5\n%<!DOCTYPE html><html dir=\"ltr\" mozdisallowselectionprint moznomarginboxes>" + "<head><meta charset=\"utf-8\"><!--\n1337 0 obj\nstream";
+	    String removeFromHTML = "%PDF-1.5\n%ª«¬­<!DOCTYPE html><html dir=\"ltr\" mozdisallowselectionprint moznomarginboxes>" + "<head><meta charset=\"utf-8\"><!--\n1337 0 obj\nstream";
 	    String addToHTML = "</script>";
 	    String html = FileUtils.readFileToString(new File(args[1]), StandardCharsets.ISO_8859_1).substring(removeFromHTML.length());
 	    html = addToHTML + html;

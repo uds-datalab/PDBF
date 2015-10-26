@@ -94,9 +94,10 @@ This approach works completely offline. No internet connection is required, neit
 \item \href{https://github.com/uds-datalab/PDBF/archive/gh-pages.zip}{Download the latest version}
 \item Extract zip and change workingdir to extracted folder
 \item Adjust config.cfg
-\item Try to compile pdbf-doc.tex file with this command: java -jar pdbf.jar pdbf-doc.tex
+\item Try to compile pdbf-doc.tex file with this command: \texttt{java -jar pdbf.jar pdbf-doc.tex}
 \item Open pdbf-doc.html, this is the final output of the compilation process, if you rename it to ".pdf" it is also a valid pdf-document
-\item Optionally you can attach the included vldb-Invaders.ova (Space invaders clone) or \href{https://github.com/uds-datalab/PDBF/releases/download/1.0.1/dsl.ova}{download the dsl.ova} (Damn small linux) VirtualBox image and attach it to the compiled PDBF file with this command: java -jar pdbf.jar --vm pdbf-doc.html vldb-Invaders.ova
+\item Optionally you can attach the included vldb-Invaders.ova (Space invaders clone) or \href{https://github.com/uds-datalab/PDBF/releases/download/1.0.1/dsl.ova}{download the dsl.ova} (Damn small linux) VirtualBox image and attach it to the compiled PDBF file with this command: \texttt{java -jar pdbf.jar --vm pdbf-doc.html vldb-Invaders.ova}.
+\item Open pdbf-doc.ova, this is the final output with the attached ova file. Its still a valid pdf and html at the same time.
 \item You can play around with the minimal.tex file which contains a minimal example of PDBF usage
 \item For further information take a look at the \href{http://uds-datalab.github.io/PDBF/}{documentation}
 \end{itemize}
@@ -112,7 +113,7 @@ The idea of PDBF is to store the results of the experiment directly in the docum
 You can also use the PDBF compiler to compile your LaTeX files to a single HTML file.
 To do so just run the compiler as on any other document (you dont need to include the pdbf package in your tex file):\\[3pt]
 \texttt{java -jar pdbf.jar sometexfile.tex}\\[3pt]
-The resulting HTML file is saved in the same folder with the same name but html ending.
+The resulting HTML file is saved in the same folder with the same name but with ".html" filename extension.
 
 \section{Build Instructions}
 \begin{itemize}
@@ -122,8 +123,9 @@ The resulting HTML file is saved in the same folder with the same name but html 
 
 \section{Thanks to}
 phantomJS (\url{https://github.com/ariya/phantomjs})\\
-Apache Commons IO (\url{http://commons.apache.org/proper/commons-io/})\\
-Apache Commons Codec (\url{http://commons.apache.org/proper/commons-codec/})\\
+Apache Commons (\url{http://commons.apache.org/})\\
+Apache PDFBox (\url{https://pdfbox.apache.org/})\\
+jTar (\url{https://github.com/kamranzafar/jtar})\\
 google-gson (\url{https://github.com/google/gson})\\
 postgreSQL JDBC Driver (\url{https://jdbc.postgresql.org/})\\
 MariaDB JDBC Driver (\url{https://mariadb.com/kb/en/mariadb/about-the-mariadb-java-client/})\\
@@ -148,8 +150,10 @@ lz-string (\url{https://github.com/pieroxy/lz-string})\\
 Right now there are only two modes: \\[4pt]
 -- The standart mode which compiles a tex file into the janiform PDBF format:\\
 \verb|java -jar PDBF.jar LaTeX_file| \\[2pt]
+\textbf{Note:} The compiled document can be found in the same folder as the tex file and has the same name as the tex file but ".html" filename extension.\\[8pt]
 -- The VM mode which attaches a VirtualBox .ova file to an existing PDBF:\\
-\verb|java -jar PDBF.jar --vm PDBF_File.html VM_File.ova|
+\verb|java -jar PDBF.jar --vm PDBF_File.html VM_File.ova|\\[2pt]
+\textbf{Note:} The compiled document can be found in the same folder as the html file and has the same name as the html file but ".ova" filename extension.
 
 \section{Requirements}
 The following \LaTeX~packages are required for PDBF documents:

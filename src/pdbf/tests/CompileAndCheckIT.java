@@ -3,22 +3,31 @@ package pdbf.tests;
 import static org.junit.Assert.fail;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
+import javax.activation.FileDataSource;
 import javax.imageio.ImageIO;
 
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.io.FileUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
+import org.apache.pdfbox.preflight.PreflightDocument;
+import org.apache.pdfbox.preflight.ValidationResult;
+import org.apache.pdfbox.preflight.ValidationResult.ValidationError;
+import org.apache.pdfbox.preflight.exception.SyntaxValidationException;
+import org.apache.pdfbox.preflight.parser.PreflightParser;
 
 import pdbf.common.Tools;
+import pdbf.vm.VM_Compiler;
 
 public class CompileAndCheckIT {
     // TODO: write test for database with ugly "\"values\""
-    // TODO: write test to check the pdf part, maybe also with phantomjs?
 
     @Rule
     public TimeTestWatcher watcher = new TimeTestWatcher();
@@ -27,6 +36,7 @@ public class CompileAndCheckIT {
 	private long startTime;
 
 	protected void starting(Description description) {
+	    System.out.println("Starting test: " + description.getMethodName());
 	    startTime = System.currentTimeMillis();
 	}
 
@@ -66,14 +76,15 @@ public class CompileAndCheckIT {
 	}
 	double n = width * height * 3;
 	double p = sum / n / 255.0;
-	System.out.println("" + Math.round(p*10000)/100 + "%");
+	System.out.println("" + Math.round(p * 10000) / 100.0 + "%");
 	double errorThreshold = 0.10;
 	if (p >= errorThreshold) {
 	    System.out.println("Failed! Too much difference to reference picture");
 	}
-	return p < errorThreshold; // More than 10% difference? Something must be really
-			 // wrong. TODO: decrease this further if similarity on
-			 // linux gets better
+	return p < errorThreshold; // More than 10% difference? Something must
+				   // be really
+	// wrong. TODO: decrease this further if similarity on
+	// linux gets better
     }
 
     public static void compile(String texDir, String texName) throws IOException, InterruptedException {
@@ -87,18 +98,18 @@ public class CompileAndCheckIT {
 	}
     }
 
-    public static void comparePages(String htmlDir, String htmlName) throws IOException, InterruptedException {
-	CreateReferencePictures.processes.clear();
-	CreateReferencePictures.deleteList.clear();
+    public static void compareImages(String jsName, String htmlDir, String htmlName) throws IOException, InterruptedException {
+	Tools.processes.clear();
+	Tools.deleteList.clear();
 	// Create current images
-	CreateReferencePictures.getReferencePicturesPages(htmlDir, htmlName, baseDir);
-	for (Process p : CreateReferencePictures.processes) {
+	Tools.runJsFile(jsName, htmlDir, htmlName, baseDir);
+	for (Process p : Tools.processes) {
 	    p.waitFor();
 	    if (p.exitValue() != 0) {
 		throw new IllegalStateException();
 	    }
 	}
-	for (File f : CreateReferencePictures.deleteList) {
+	for (File f : Tools.deleteList) {
 	    f.delete();
 	}
 	// Compare current images to reference images
@@ -106,7 +117,7 @@ public class CompileAndCheckIT {
 	for (File file : dir.listFiles()) {
 	    String name = file.getName();
 	    if (name.startsWith(htmlName) && name.endsWith(".png")) {
-		//TODO: use a thread pool!
+		// TODO: use a thread pool!
 		BufferedImage i1 = ImageIO.read(file);
 		BufferedImage i2 = ImageIO.read(new File(refDir + name));
 		System.out.print(file.getName() + " error percentage: ");
@@ -118,74 +129,93 @@ public class CompileAndCheckIT {
 	}
     }
 
-    public static void compareOverlays(String htmlDir, String htmlName) throws IOException, InterruptedException {
-	CreateReferencePictures.processes.clear();
-	CreateReferencePictures.deleteList.clear();
-	// Create current images
-	CreateReferencePictures.getReferencePicturesOverlays(htmlDir, htmlName, baseDir);
-	for (Process p : CreateReferencePictures.processes) {
-	    p.waitFor();
-	    if (p.exitValue() != 0) {
-		throw new IllegalStateException("Child process returned error!");
+    public static void checkHTML(String htmlDir, String htmlName) throws IOException, InterruptedException {
+	compareImages("capturePages.js", htmlDir, htmlName);
+	compareImages("captureOverlays.js", htmlDir, htmlName);
+    }
+    
+    public static void checkPDF(String pdfDir, String pdfName) throws IOException {
+	ValidationResult result = null;
+
+	FileDataSource fd = new FileDataSource(pdfDir + pdfName);
+	PreflightParser parser = new PreflightParser(fd);
+	try {
+	    parser.parse();
+
+	    PreflightDocument document = parser.getPreflightDocument();
+
+	    result = document.getResult();
+	    document.close();
+
+	} catch (SyntaxValidationException e) {
+	    result = e.getResult();
+	}
+
+	if (result.isValid()) {
+	    System.out.println("The file is a valid PDF/A-1b file");
+	} else {
+	    System.out.println("The file is not valid, error(s) :");
+	    for (ValidationError error : result.getErrorsList()) {
+		System.out.println(error.getErrorCode() + " : " + error.getDetails());
+	    }
+	    fail();
+	}
+
+    }
+
+    public static void checkTAR(String tarDir, String tarName) throws IOException {
+	String tarFile = tarDir + tarName;
+	TarArchiveInputStream tis = new TarArchiveInputStream(new BufferedInputStream(new FileInputStream(tarFile)));
+	while (tis.getNextEntry() != null) {
+	    byte data[] = new byte[8192];
+	    while (tis.read(data) != -1) {
+		// Do nothing
 	    }
 	}
-	for (File f : CreateReferencePictures.deleteList) {
+	tis.close();
+	System.out.println("Finished checkTar successfully");
+    }
+
+    public static void documentTest(String baseDir, String baseName, boolean withVM) throws IOException, InterruptedException {
+	File f = new File(baseDir + baseName + ".html");
+	File f2 = new File(baseDir + baseName + ".pdf");
+	File f3 = new File(baseDir + baseName + ".ova");
+	f.delete();
+	compile(baseDir, baseName + ".tex");
+	if (!f.exists()) {
+	    fail();
+	}
+	if (withVM) {
+	    String[] args = { "", baseDir + baseName + ".html", CompileAndCheckIT.baseDir + "vldb-Invaders.ova" };
+	    VM_Compiler.main(args);
 	    f.delete();
+	    FileUtils.moveFile(f3, f);
 	}
-	// Compare current images to reference images
-	File dir = new File(baseDir);
-	for (File file : dir.listFiles()) {
-	    String name = file.getName();
-	    if (name.startsWith(htmlName) && name.endsWith(".png")) {
-		//TODO: use a thread pool!
-		BufferedImage i1 = ImageIO.read(file);
-		BufferedImage i2 = ImageIO.read(new File(refDir + file.getName()));
-		System.out.print(file.getName() + " error percentage: ");
-		if (!compareImages(i1, i2)) {
-		    fail();
-		}
-		file.delete();
-	    }
-	}
+	checkHTML(baseDir, baseName + ".html");
+	FileUtils.moveFile(f, f2);
+	checkPDF(baseDir, baseName + ".pdf");
+	FileUtils.moveFile(f2, f);
+	new File(baseDir + ".aux").delete();
+	new File(baseDir + ".log").delete();
     }
 
     @Test(timeout = 600000)
     public void documentation() throws IOException, InterruptedException {
-	File f = new File(baseDir + "pdbf-doc.html");
-	f.delete();
-	compile(baseDir, "pdbf-doc.tex");
-	if (!f.exists()) {
-	    fail();
-	}
-	comparePages(baseDir, "pdbf-doc.html");
-	compareOverlays(baseDir, "pdbf-doc.html");
+	documentTest(baseDir, "pdbf-doc", true);
+	checkTAR(baseDir, "pdbf-doc.html");
     }
 
     @Test(timeout = 600000)
     public void minimal() throws IOException, InterruptedException {
-	File f = new File(baseDir + "minimal.html");
-	f.delete();
-	compile(baseDir, "minimal.tex");
-	if (!f.exists()) {
-	    fail();
-	}
-	comparePages(baseDir, "minimal.html");
-	compareOverlays(baseDir, "minimal.html");
+	documentTest(baseDir, "minimal", false);
     }
 
     @Test(timeout = 600000)
     public void noPDBF() throws IOException, InterruptedException {
-	File f = new File(testDir + "no_pdbf.html");
-	f.delete();
-	compile(testDir, "no_pdbf.tex");
-	new File(testDir + "no_pdbf.aux").delete();
-	new File(testDir + "no_pdbf.log").delete();
-	if (!f.exists()) {
-	    fail();
-	}
-	comparePages(testDir, "no_pdbf.html");
-	compareOverlays(testDir, "no_pdbf.html");
+	documentTest(testDir, "no_pdbf", false);
 	new File(testDir + "no_pdbf.html").delete();
+	new File(testDir + "pdbf.sty").delete();
+	new File(testDir + "dummy.png").delete();
     }
 
     @Test(timeout = 300000)
@@ -194,12 +224,10 @@ public class CompileAndCheckIT {
 	String otherFolder = baseDir + "otherFolder" + File.separator;
 	new File(otherFolder).mkdirs();
 	FileUtils.copyFile(new File(baseDir + "minimal.tex"), new File(otherFolder + "minimal.tex"));
-
 	compile(otherFolder, "minimal.tex");
 	if (!new File(otherFolder + "minimal.html").exists()) {
 	    fail();
 	}
-
 	// Delete test folder and contents
 	FileUtils.deleteDirectory(new File(otherFolder));
     }

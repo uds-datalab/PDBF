@@ -138,6 +138,22 @@
               </resources>              
             </configuration>            
           </execution>
+          <execution>
+            <id>copy-resources4</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/classes/pdbf/referenceImages</outputDirectory>
+              <resources>          
+                <resource>
+                  <directory>src/pdbf/referenceImages</directory>
+                  <filtering>false</filtering>
+                </resource>
+              </resources>              
+            </configuration>            
+          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -207,6 +223,21 @@
       <artifactId>junit</artifactId>
       <version>4.11</version>
     </dependency>
+    <dependency>
+	  <groupId>org.apache.pdfbox</groupId>
+	  <artifactId>pdfbox</artifactId>
+	  <version>2.0.0-RC1</version>
+	</dependency>
+	<dependency>
+	  <groupId>org.apache.pdfbox</groupId>
+	  <artifactId>preflight</artifactId>
+	  <version>2.0.0-RC1</version>
+	</dependency>
+	<dependency>
+	  <groupId>org.apache.commons</groupId>
+	  <artifactId>commons-compress</artifactId>
+	  <version>1.8</version>
+	</dependency>
   </dependencies>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

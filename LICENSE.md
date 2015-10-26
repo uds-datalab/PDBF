@@ -791,8 +791,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-Apache Commons IO (http://commons.apache.org/proper/commons-io/) and 
-Apache Commons Codec (http://commons.apache.org/proper/commons-codec/):
+Apache Commons (http://commons.apache.org/),
+Apache PDFBox (https://pdfbox.apache.org/):
                                  Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
