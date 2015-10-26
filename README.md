@@ -53,8 +53,9 @@ Note: The compiled pdbf.jar is automatically copied from target to the main fold
 
 ##Thanks to the authors of:
 * phantomJS (https://github.com/ariya/phantomjs)
-* Apache Commons IO (http://commons.apache.org/proper/commons-io/)
-* Apache Commons Codec (http://commons.apache.org/proper/commons-codec/)
+* Apache Commons (http://commons.apache.org/)
+* Apache PDFBox (https://pdfbox.apache.org/)
+* jTar (https://github.com/kamranzafar/jtar)
 * google-gson (https://github.com/google/gson)
 * postgreSQL JDBC Driver (https://jdbc.postgresql.org/)
 * MariaDB JDBC Driver (https://mariadb.com/kb/en/mariadb/about-the-mariadb-java-client/)
