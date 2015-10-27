@@ -42,7 +42,12 @@ public class HTML_Compiler {
 	    //TODO: use here also script instead of comment
 	    String insert1 = "%ª«¬­<!DOCTYPE html><html dir=\"ltr\" mozdisallowselectionprint moznomarginboxes>" + "<head><meta charset=\"utf-8\"><!--\n";
 	    String insert2 = "1337 0 obj\n" + "stream\n" + "-->\n" + viewer + "<!--\n" + "endstream\n" + "endobj\n";
-	    StringBuilder sb = new StringBuilder(FileUtils.readFileToString(new File(pdfname), StandardCharsets.ISO_8859_1));
+	    String pdfcontent = FileUtils.readFileToString(new File(pdfname), StandardCharsets.ISO_8859_1);
+	    if (pdfcontent.toLowerCase().contains("</script>")) {
+		System.err.println("The generated pdf cannot be used to generate a pdbf document! Try to either change some content in your tex file or try to add \\pdfcompresslevel=8 to your tex file.");
+		System.exit(-1);
+	    }
+	    StringBuilder sb = new StringBuilder(pdfcontent);
 	    int pdfmarker = sb.indexOf("%PDF-");
 	    int pdfmarkerend = sb.indexOf("\n", pdfmarker);
 	    sb.insert(pdfmarkerend + 1, insert2);

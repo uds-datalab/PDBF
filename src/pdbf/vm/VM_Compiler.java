@@ -20,7 +20,12 @@ public class VM_Compiler {
 	String basename = args[1].substring(0, args[1].length() - 5);
 	
 	try {
-	    StringBuilder sb = new StringBuilder(FileUtils.readFileToString(new File(args[2]), StandardCharsets.ISO_8859_1));
+	    String vmcontent = FileUtils.readFileToString(new File(args[2]), StandardCharsets.ISO_8859_1);
+	    if (vmcontent.toLowerCase().contains("</script>")) {
+		System.err.println("The ova file cannot be used to generate a pdbf document! Try to somehow change the content of the ova file and then try again.");
+		System.exit(-1);
+	    }
+	    StringBuilder sb = new StringBuilder(vmcontent);
 	    String replace = "%PDF-1.5\n%ª«¬­.ovf\0\n1 0 obj\nstream\n<head><meta charset=UTF-8><script>";
 	    sb.replace(0, replace.length(), replace);
 	    

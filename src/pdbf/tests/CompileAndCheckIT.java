@@ -197,6 +197,8 @@ public class CompileAndCheckIT {
 	FileUtils.moveFile(f2, f);
 	new File(baseDir + ".aux").delete();
 	new File(baseDir + ".log").delete();
+	new File(baseDir + ".out").delete();
+	new File(baseDir + ".toc").delete();
     }
 
     @Test(timeout = 600000)
