@@ -87,7 +87,7 @@ var waitAndCapture = function (i) {
 	                }, i);
 	                window.setTimeout(function () {
 	                    console.log("processing " + o.name + " of " + o.len);
-	                    page.render('./' + system.args[1] + o.name + '.png');
+	                    page.render('./' + system.args[1] + o.name + '.png', {format: 'png', quality: '0'});
 		                if (i + 1 < o.len) {
 		                    page.evaluate(function(i) {
 		                        PDFViewerApplication.page = json[i+1].type.I.page;
@@ -96,7 +96,7 @@ var waitAndCapture = function (i) {
 		                } else {
 		                    phantom.exit();
 		                }
-	                }, 500);
+	                }, 1000);
             	}, 500);
             },
             60000 // timeout 1m

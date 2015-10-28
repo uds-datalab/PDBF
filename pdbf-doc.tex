@@ -421,7 +421,7 @@ PDBF uses AlaSQL as database engine. For all available features of the database 
 \subsection{Multiplot Chart}
 \begin{figure}[h!]%
     Example:\\
-    \multiplotChart[width=\textwidth, height=0.5\textwidth, xCount=2, yCount=2, yValues={["b", "b*2"]}, xValues={["a > 2", "a <= 2"]}, yFirst]{SELECT a,? FROM test WHERE ?;}
+    \multiplotChart[width=\textwidth, height=0.5\textwidth, xCount=2, yCount=2, yValues={["b", "b*2"]}, xValues={["a > 2", "a <= 2"]},  topArr={["a smaller or equal 2", "a greater 2"]}, yFirst]{SELECT a,? FROM test WHERE ?;}
     \caption{Multiplot Line Chart}
 \end{figure}
 

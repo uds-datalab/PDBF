@@ -17,6 +17,10 @@ public class CompleteRun_HTML {
 	String baseDir = Tools.getBaseDir();
 	
 	LaTeX_Compiler.suffix = Tools.getOS();
+	
+	if (!includeRes) {
+	    System.out.println("!!!!Warning!!!! includeRes is off");
+	}
 
 	if (args.length > 3 || args.length < 1 || args[0].equalsIgnoreCase("--help")) {
 	    System.out.println("Usage:\tjava -jar pdbf.jar LaTeX_file\nOR\n\tjava -jar pdbf.jar --vm  PDBF_File.html VM_File.ova\nFor further help visit: https://github.com/uds-datalab/PDBF");

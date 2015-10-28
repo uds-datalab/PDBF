@@ -2,7 +2,7 @@
 \usepackage{pdbf}
 \usepackage[a4paper]{geometry}
 
-\dbSQLText{CREATE TABLE test(a int, b int); INSERT INTO test VALUES(1, 10); INSERT INTO test VALUES(2, 100); INSERT INTO test VALUES(3, 120); INSERT INTO test VALUES(4, 100);}
+\dbSQLText{CREATE TABLE test(a int, b int, c int); INSERT INTO test VALUES(1, 10, 15); INSERT INTO test VALUES(2, 100, 90); INSERT INTO test VALUES(3, 120, 110); INSERT INTO test VALUES(4, 100, 150);}
 %\dbSQLFile{somedb.sql}
 %\dbSQLJDBC{jdbc:postgresql://localhost:5432/postgres}{postgres}{test}{testtable}%
 %\dbCSVFile{result.csv}{test}
@@ -15,11 +15,11 @@ The following points are linked to the chart below: \dataText[linkTo=testname, l
 \chart[width=\textwidth, height=0.45\textwidth, chartType=line, name=testname]{SELECT * FROM test;}\\[3pt]
 \chart[width=\textwidth, height=0.45\textwidth, chartType=bar]{SELECT * FROM test;}\\[3pt]
 \newpage
-{\fontfamily{phv} \large \selectfont
+{\fontfamily{phv} \tiny \selectfont
 \noindent
-Change the font before this line to Helvetica and fontsize from 10 to 12.\\[3pt]
+Change the font before this line to Helvetica and fontsize to tiny.\\[3pt]
 \chart[width=\textwidth, height=0.45\textwidth, chartType=signatureplot]{SELECT b FROM test;}\\[3pt]
-\multiplotChart[width=\textwidth, height=0.9\textwidth, xCount=2, yCount=2, yValues={["b", "b*2"]}, xValues={["a <= 2", "a > 2"]}, yFirst]{SELECT a,? FROM test WHERE ?;}\\[3pt]
+\multiplotChart[width=\textwidth, height=0.9\textwidth, xCount=2, yCount=2, yValues={["b", "b*2"]}, xValues={["a <= 2", "a > 2"]}, topArr={["a smaller or equal 2", "a greater 2"]}, yFirst]{SELECT a,? FROM test WHERE ?;}\\[3pt]
 \pivotTable[width=\textwidth, height=0.5\textwidth, rows={["a"]}, aggregationattribute=b]{SELECT * FROM test;}\\[3pt]
 \dataTable[verticalLines=i, horizontalLinesHeader=b hh, horizontalLinesBody=i]{SELECT * FROM test;}\\[3pt]
 }

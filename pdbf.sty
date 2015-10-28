@@ -94,6 +94,14 @@
 \define@key{pdbf}{logscale}[true]{\def\pdbfLogscale{#1}}
 \def\pdbfLegendpos{topright}
 \define@key{pdbf}{legendpos}{\def\pdbfLegendpos{#1}}
+\def\pdbf@includeZero{false}
+\define@key{pdbf}{includeZero}{\def\pdbf@includeZero{#1}}
+\def\pdbf@drawPoints{false}
+\define@key{pdbf}{drawPoints}{\def\pdbf@drawPoints{#1}}
+\def\pdbf@fillGraph{false}
+\define@key{pdbf}{fillGraph}{\def\pdbf@fillGraph{#1}}
+\def\pdbf@showRangeSelector{false}
+\define@key{pdbf}{showRangeSelector}{\def\pdbf@showRangeSelector{#1}}
 
 %BarChart
 \def\pdbf@overlap{-1}
@@ -157,7 +165,7 @@
 	\fi%
 	\StrSubstitute{#2}{"}{\@backslashchar"}[\pdbf@query]%
 	\StrSubstitute{#3}{"}{\@backslashchar"}[\pdbf@queryB]%
-	\edef\pdbf@tmpOverlay{Overlay\arabic{visual}}
+	\edef\pdbf@tmpOverlay{Overlay\arabic{visual}}%
 	{\fontsize{5pt}{1sp}\selectfont%
 		\setlength\tabcolsep{1sp}%
 		% Place Image
@@ -196,10 +204,10 @@
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"quality": \pdbfQuality,}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"overlap": \pdbf@overlap,}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"legendpos": "\pdbfLegendpos",}%
-		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"includeZero": false,}%
-		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"drawPoints": false,}%
-		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"fillGraph": fillGraph,}%
-		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"showRangeSelector": false,}% 
+		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"includeZero": \pdbf@includeZero,}%
+		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"drawPoints": \pdbf@drawPoints,}%
+		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"fillGraph": \pdbf@fillGraph,}%
+		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"showRangeSelector": \pdbf@showRangeSelector,}% 
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregation": "\pdbf@aggregation",}% 
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationattribute": "\pdbf@aggregationattribute",}% 
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationBig": "\pdbf@aggregationBig",}% 
@@ -230,7 +238,7 @@
 		\stepcounter{visual}%
 		\stepcounter{overlay}%
 	}%
-	\put(-10000,0){abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789pdbf!\textasciitilde\textbraceleft\textbraceright\textbackslash\textasciicircum\textsection\textdollar\%\&/()=?\#+\textless\textgreater\textbar\textunderscore[].,;:\pdbf@tmpOverlay-}~%
+	\put(-10000,0){abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789pdbf!\textasciitilde\textbraceleft\textbraceright\textbackslash\textasciicircum\textsection\textdollar\%\&/()=?\#+\textbar\textunderscore[].,;:\pdbf@tmpOverlay-}~%
 	\relax
 }
 
@@ -286,10 +294,10 @@
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"quality": \pdbfQuality,}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"overlap": \pdbf@overlap,}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"legendpos": "\pdbfLegendpos",}%
-		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"includeZero": false,}%
-		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"drawPoints": false,}%
-		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"fillGraph": fillGraph,}%
-		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"showRangeSelector": false,}% 
+		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"includeZero": \pdbf@includeZero,}%
+		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"drawPoints": \pdbf@drawPoints,}%
+		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"fillGraph": \pdbf@fillGraph,}%
+		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"showRangeSelector": \pdbf@showRangeSelector,}% 
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregation": "\pdbf@aggregation",}% 
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationattribute": "\pdbf@aggregationattribute",}% 
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"aggregationBig": "\pdbf@aggregationBig",}% 

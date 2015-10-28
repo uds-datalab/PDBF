@@ -380,7 +380,7 @@
 
     c3_chart_internal_fn.updateSizes = function () {
         var $$ = this, config = $$.config;
-        var legendHeight = $$.legend ? ($$.getLegendHeight() + 5*config.completeScale) : 0,
+        var legendHeight = $$.legend ? ($$.getLegendHeight()) : 0,
             legendWidth = $$.legend ? $$.getLegendWidth() : 0,
             legendHeightForBottom = $$.isLegendRight || $$.isLegendInset ? 0 : legendHeight,
             hasArc = $$.hasArcType(),
@@ -3353,7 +3353,7 @@
     };
     c3_chart_internal_fn.getTextRect = function (text, cls) {
         var dummy = this.d3.select('body').append('div').classed('c3', true),
-            svg = dummy.append("svg").style('visibility', 'hidden').style('position', 'fixed').style('top', 0).style('left', 0).style('font-size', 12*this.config.completeScale),
+            svg = dummy.append("svg").style('visibility', 'hidden').style('position', 'fixed').style('top', 0).style('left', 0).style('font', $(this.config.bindto).css('font')),
             rect;
         svg.selectAll('.dummy')
             .data([text])
@@ -3767,7 +3767,7 @@
             .style("position", "absolute")
             .style("pointer-events", "none")
             .style("display", "none")
-            .style("transform", "scale("+config.completeScale+")")
+            .style("transform", "scale(1)")
             .style("transform-origin", "center top");
         // Show tooltip if needed
         if (config.tooltip_init_show) {
@@ -3815,40 +3815,7 @@
     };
     c3_chart_internal_fn.tooltipPosition = function (dataToShow, tWidth, tHeight, element) {
     	var mouse = d3.mouse(element);
-    	/*var $$ = this, config = $$.config, d3 = $$.d3;
-        var svgLeft, tooltipLeft, tooltipRight, tooltipTop, chartRight;
-        var forArc = $$.hasArcType(),
-            mouse = d3.mouse(element);
-      // Determin tooltip position
-        if (forArc) {
-            tooltipLeft = (($$.width - ($$.isLegendRight ? $$.getLegendWidth() : 0)) / 2) + mouse[0];
-            tooltipTop = ($$.height / 2) + mouse[1] + 20;
-        } else {
-            svgLeft = $$.getSvgLeft(true);
-            if (config.axis_rotated) {
-                tooltipLeft = svgLeft + mouse[0] + 100;
-                tooltipRight = tooltipLeft + tWidth;
-                chartRight = $$.currentWidth - $$.getCurrentPaddingRight();
-                tooltipTop = $$.x(dataToShow[0].x) + 20;
-            } else {
-                tooltipLeft = svgLeft + $$.getCurrentPaddingLeft(true) + $$.x(dataToShow[0].x) + 20;
-                tooltipRight = tooltipLeft + tWidth;
-                chartRight = svgLeft + $$.currentWidth - $$.getCurrentPaddingRight();
-                tooltipTop = mouse[1] + 15;
-            }
-
-            if (tooltipRight > chartRight) {
-                // 20 is needed for Firefox to keep tooletip width
-                tooltipLeft -= tooltipRight - chartRight + 20;
-            }
-            if (tooltipTop + tHeight > $$.currentHeight) {
-                tooltipTop -= tHeight + 30;
-            }
-        }
-        if (tooltipTop < 0) {
-            tooltipTop = 0;
-        }*/
-        return {top: mouse[1]+10*this.config.completeScale, left: mouse[0]};
+        return {top: mouse[1]+14, left: mouse[0]};
     };
     c3_chart_internal_fn.showTooltip = function (selectedData, element) {
         var $$ = this, config = $$.config;
@@ -3900,7 +3867,7 @@
         };
 
         $$.margin3 = {
-            top: ($$.isLegendRight ? 0 : $$.isLegendInset ? insetLegendPosition.top : $$.currentHeight - legendHeight) + 5*config.completeScale,
+            top: ($$.isLegendRight ? 0 : $$.isLegendInset ? insetLegendPosition.top : $$.currentHeight - legendHeight/6),
             right: NaN,
             bottom: 0,
             left: $$.isLegendRight ? $$.currentWidth - legendWidth : $$.isLegendInset ? insetLegendPosition.left : 0
@@ -3929,10 +3896,10 @@
             if ($$.isLegendRight) {
                 h = $$.currentHeight;
             } else {
-                h = Math.max(20, $$.legendItemHeight) * ($$.legendStep + 1);
+                h = $$.legendItemHeight * ($$.legendStep + 1);
             }
         }
-        return h;
+        return h + $$.config.completeScale*4;
     };
     c3_chart_internal_fn.opacityForLegend = function (legendItem) {
         return legendItem.classed(CLASS.legendItemHidden) ? null : 1;
@@ -4083,11 +4050,11 @@
             xForLegend = function (id) { return margins[steps[id]] + offsets[id]; };
             yForLegend = function (id) { return maxHeight * steps[id]; };
         }
-        xForLegendText = function (id, i) { return xForLegend(id, i) + 14 + config.completeScale*8.33 - 8.33; };
-        yForLegendTextB = function (id, i) { return yForLegend(id, i) + 1 + config.completeScale*2 - 2; };
-        yForLegendText = function (id, i) { return yForLegend(id, i) - 1 + config.completeScale*10; };
+        xForLegendText = function (id, i) { return xForLegend(id, i) + config.completeScale*8.33*1.5; };
+        yForLegendTextB = function (id, i) { return yForLegend(id, i) - config.completeScale*8.33; };
+        yForLegendText = function (id, i) { return yForLegend(id, i); };
         xForLegendRect = function (id, i) { return xForLegend(id, i); };
-        yForLegendRect = function (id, i) { return yForLegend(id, i) - 5; };
+        yForLegendRect = function (id, i) { return yForLegend(id, i) - maxHeight/1.5; };
 
         // Define g for legend area
         l = $$.legend.selectAll('.' + CLASS.legendItem)
@@ -4488,7 +4455,7 @@
                 this.updateXAxisTickValues(targetsToShow, axis);
             }
             dummy = $$.d3.select('body').append('div').classed('c3', true);
-            svg = dummy.append("svg").style('visibility', 'hidden').style('position', 'fixed').style('top', 0).style('left', 0).style('font-size', 12*config.completeScale),
+            svg = dummy.append("svg").style('visibility', 'hidden').style('position', 'fixed').style('top', 0).style('left', 0).style('font', $(config.bindto).css('font')),
             svg.append('g').call(axis).each(function () {
                 $$.d3.select(this).selectAll('text').each(function () {
                     var box = this.getBoundingClientRect();

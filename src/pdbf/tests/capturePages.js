@@ -67,7 +67,7 @@ var getPage = function (i, pagesCount) {
 			function() {
 				window.setTimeout(function () {
 					console.log("processing page " + i + " of " + pagesCount);
-					page.render('./' + system.args[1] + i +'.png');
+					page.render('./' + system.args[1] + i +'.png', {format: 'png', quality: '0'});
 					if (i < pagesCount) {
 						page.evaluate(function() {
 							PDFViewerApplication.page += 1;
@@ -76,7 +76,7 @@ var getPage = function (i, pagesCount) {
 						phantom.exit();
 					}
 					getPage(i+1, pagesCount);
-				}, 500);
+				}, 1000);
 			},
 			60000 //timeout 1m
 		);

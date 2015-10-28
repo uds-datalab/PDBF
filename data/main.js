@@ -1512,7 +1512,7 @@ function getChartOptions(json, zoomFactor, values, chart) {
 		subchart : {
 			show : json.type.I.showRangeSelector
 		},
-		completeScale : zoomFactor * (json.type.I.fontsize/12.0) * 1.45,
+		completeScale : zoomFactor,
 		onresize : function() {
 			this.api.resize({
 				height : $(this.bound).height(),

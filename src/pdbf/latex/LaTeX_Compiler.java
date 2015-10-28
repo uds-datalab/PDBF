@@ -7,11 +7,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.commons.csv.CSVFormat;
@@ -113,8 +115,9 @@ public class LaTeX_Compiler {
 
 	ArrayList<String> commands = new ArrayList<String>(Arrays.asList(pathToLaTeXScript));
 	commands.add(latex.getPath());
-	
-	//Check if phantomjs runs without problems. This can for example detect that a 32bit OS is used but a 64bit binary is present
+
+	// Check if phantomjs runs without problems. This can for example detect
+	// that a 32bit OS is used but a 64bit binary is present
 	try {
 	    ProcessBuilder pb = new ProcessBuilder(baseDir + "external-tools" + File.separator + "phantomjs-" + suffix, "--version");
 	    Process p = pb.start();
@@ -200,14 +203,14 @@ public class LaTeX_Compiler {
 	// Process raw SQL statements
 	getFinalDatabase();
 
-	//count
+	// count
 	int count = 0;
 	for (int i = 0; i < overlays.length; ++i) {
 	    if (overlays[i].type instanceof Chart || overlays[i].type instanceof DataText || overlays[i].type instanceof DataTable || overlays[i].type instanceof Text) {
 		count++;
-	    } 
+	    }
 	}
-	
+
 	System.out.println("Generating images...\n" + count + " Overlays to process");
 	for (int i = 0; i < overlays.length; ++i) {
 	    if (overlays[i].type instanceof Chart) {
@@ -344,7 +347,7 @@ public class LaTeX_Compiler {
 		}
 
 		if (!(v instanceof Database)) {
-		    v.quality *= 2;
+		    v.quality *= 4;
 		    if (v.aggregationattributeBig.equals("")) {
 			v.aggregationattributeBig = v.aggregationattribute;
 		    }
@@ -363,6 +366,7 @@ public class LaTeX_Compiler {
 	return overlays;
     }
 
+    @SuppressWarnings("deprecation")
     private static void processDatabase(Overlay overlay, DatabaseContainer dbc) {
 	try {
 	    Database db = (Database) overlay.type;
@@ -390,14 +394,15 @@ public class LaTeX_Compiler {
 		while (stok.hasMoreTokens()) {
 		    Table table = new Table();
 		    String curTable = stok.nextToken().trim();
-		    
-			if (alasql.containsTable(curTable)) {
-			    System.err.println("Error: Database already contains a table with name \"" + curTable + "\"");
-			    System.exit(-1);
-			}
-		    
-		    Statement stmt = conn.createStatement();
-		    ResultSet rs = stmt.executeQuery("SELECT * FROM " + curTable);
+
+		    if (alasql.containsTable(curTable)) {
+			System.err.println("Error: Database already contains a table with name \"" + curTable + "\"");
+			System.exit(-1);
+		    }
+
+		    PreparedStatement stmt = conn.prepareStatement("SELECT * FROM ?");
+		    stmt.setString(1, curTable);
+		    ResultSet rs = stmt.executeQuery();
 		    ResultSetMetaData rsmd = rs.getMetaData();
 		    int cols = rsmd.getColumnCount();
 		    for (int i = 1; i <= cols; ++i) {
@@ -429,24 +434,99 @@ public class LaTeX_Compiler {
 		    csvformat = csvformat.withHeader();
 		}
 		CSVParser parser = CSVParser.parse(csvData, Tools.utf8, csvformat);
-		
+
 		Table table = new Table();
 		String curTable = db.value2;
-		
+
 		if (alasql.containsTable(curTable)) {
 		    System.err.println("Error: Database already contains a table with name \"" + curTable + "\"");
 		    System.exit(-1);
 		}
 
 		int cols = parser.getHeaderMap().size();
+		List<CSVRecord> csvRecords = parser.getRecords();
+		ArrayList<String> types = new ArrayList<String>();
+
+		for (int i = 0; i < cols; ++i) {
+		    // calculate type of csv data for every column
+		    boolean isParsable = true;
+		    // FLOAT
+		    for (CSVRecord csvRecord : csvRecords) {
+			String cur = csvRecord.get(i);
+			try {
+			    Double.parseDouble(cur);
+			} catch (NumberFormatException e) {
+			    if (!cur.toLowerCase().equals("null")) {
+				isParsable = false;
+				break;
+			    }
+			}
+		    }
+		    if (isParsable) {
+			types.add("FLOAT");
+			continue;
+		    }
+		    isParsable = true;
+		    // BOOLEAN
+		    for (CSVRecord csvRecord : csvRecords) {
+			String cur = csvRecord.get(i).toLowerCase();
+			if (!(cur.equals("true") || cur.equals("false") || cur.equals("null"))) {
+			    isParsable = false;
+			    break;
+			}
+		    }
+		    if (isParsable) {
+			types.add("BOOLEAN");
+			continue;
+		    }
+		    isParsable = true;
+		    // TIMESTAMP
+		    for (CSVRecord csvRecord : csvRecords) {
+			String cur = csvRecord.get(i);
+			try {
+			    new Date(cur);
+			} catch (IllegalArgumentException e) {
+			    if (!cur.toLowerCase().equals("null")) {
+				isParsable = false;
+				break;
+			    }
+			}
+		    }
+		    if (isParsable) {
+			types.add("TIMESTAMP");
+			continue;
+		    }
+		    isParsable = true;
+		    types.add("STRING");
+		}
+
+		int tmp = 0;
 		for (String colname : parser.getHeaderMap().keySet()) {
-		    table.columns.add(new Column(colname, "STRING"));
+		    table.columns.add(new Column(colname, types.get(tmp++)));
 		}
 		if (cols > 0) {
-		    for (CSVRecord csvRecord : parser) {
+		    for (CSVRecord csvRecord : csvRecords) {
 			Object[] data = new Object[cols];
 			for (int i = 0; i < cols; ++i) {
-			    data[i] = csvRecord.get(i);
+			    String cur = csvRecord.get(i);
+			    if (cur.toLowerCase().equals("null")) {
+				data[i] = null;
+			    } else {
+				switch (types.get(i)) {
+				case "FLOAT":
+				    data[i] = Double.parseDouble(cur);
+				    break;
+				case "BOOLEAN":
+				    data[i] = Boolean.parseBoolean(cur);
+				    break;
+				case "TIMESTAMP":
+				    data[i] = new Date(cur);
+				    break;
+				default:
+				    data[i] = cur;
+				}
+			    }
+
 			}
 			table.data.add(new Data(data));
 		    }
@@ -465,11 +545,11 @@ public class LaTeX_Compiler {
 	cleanupfiles.add(baseDir + o.name + ".json");
 	preloadfiles.add(baseDir + o.name + ".json");
 	copyfiles.add(baseDir + o.name + ".png");
-	
+
 	String a = new File(arg0).getName();
 	String filename = a.substring(0, a.length() - 4);
 	String pdfname = filename + ".pdf";
-	
+
 	try {
 	    Dimension dim = new Dimension(dimOrg.width * c.quality, dimOrg.height * c.quality);
 	    String viewer;

@@ -24,6 +24,7 @@ import org.apache.pdfbox.preflight.exception.SyntaxValidationException;
 import org.apache.pdfbox.preflight.parser.PreflightParser;
 
 import pdbf.common.Tools;
+import pdbf.html.CompleteRun_HTML;
 import pdbf.vm.VM_Compiler;
 
 public class CompileAndCheckIT {
@@ -38,6 +39,10 @@ public class CompileAndCheckIT {
 	protected void starting(Description description) {
 	    System.out.println("Starting test: " + description.getMethodName());
 	    startTime = System.currentTimeMillis();
+	    if (!CompleteRun_HTML.includeRes) {
+		System.out.println("Test failed because includeRes is off!");
+		fail();
+	    }
 	}
 
 	protected void finished(Description description) {

@@ -57,9 +57,6 @@ table.pvtTable tr th, table.pvtTable tr th {
     line-height: 1.0;
 }
 
-table.pvtTable .pvtColLabel {text-align: center;}
-table.pvtTable .pvtTotalLabel {text-align: right;}
-
 table.pvtTable tr td {
     border: 0.1em solid #CDCDCD;
     text-align: left;
