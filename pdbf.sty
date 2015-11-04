@@ -22,10 +22,6 @@
 \immediate\write\pdbf@tempfile{[}
 
 \AtBeginDocument{
-	% Next line is needed because we need to adjust xref table after injecting html and currently we want to keep it simple. 
-	% Could be omitted if reading of xref streams is implemented later on.
-	\pdfobjcompresslevel=0
-
 	\newlength{\emptylen} 
 	\settowidth{\emptylen}{} 
 	

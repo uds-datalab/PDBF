@@ -36,6 +36,12 @@ public class CompleteRun_HTML {
 	    System.exit(0);
 	}
 	
+	new File("pdbf-dim.json").delete();
+	new File("pdbf-config.json").delete();
+	new File(baseDir + "pdbf-db.sql").delete();
+	new File(baseDir + "pdbf-db.json").delete();
+	new File(baseDir + "pdbf-preload").delete();
+	
 	if (args[0].equalsIgnoreCase("--vm")) {
 	    VM_Compiler.main(args);
 	    System.exit(0);

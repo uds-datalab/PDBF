@@ -165,7 +165,6 @@ public class CompileAndCheckIT {
 	    }
 	    fail();
 	}
-
     }
 
     public static void checkTAR(String tarDir, String tarName) throws IOException {
