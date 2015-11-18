@@ -51,14 +51,13 @@ public class Tools {
 
     public static String getOS() {
 	String OS = System.getProperty("os.name").toLowerCase();
-	System.out.println(OS);
 	if (OS.contains("win")) {
 	    return "win";
 	} else if (OS.contains("mac")) {
 	    return "mac";
 	} else if (OS.contains("nix") || OS.contains("nux") || OS.contains("aix")) {
 	    return "unix";
-	} else if (OS.contains("BSD")) {
+	} else if (OS.contains("bsd")) {
 	    return "bsd";
 	} else {
 	    System.err.println("Sorry, your operating system is not supported!");
