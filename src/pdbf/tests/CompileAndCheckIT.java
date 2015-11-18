@@ -183,6 +183,8 @@ public class CompileAndCheckIT {
 	File f2 = new File(baseDir + baseName + ".pdf");
 	File f3 = new File(baseDir + baseName + ".ova");
 	f.delete();
+	f2.delete();
+	f3.delete();
 	compile(baseDir, baseName + ".tex");
 	if (!f.exists()) {
 	    fail();

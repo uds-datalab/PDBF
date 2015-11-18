@@ -51,7 +51,7 @@ public class Tools {
 
     public static String getOS() {
 	String OS = System.getProperty("os.name").toLowerCase();
-
+	System.out.println(OS);
 	if (OS.contains("win")) {
 	    return "win";
 	} else if (OS.contains("mac")) {
