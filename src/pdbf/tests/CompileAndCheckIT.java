@@ -82,14 +82,12 @@ public class CompileAndCheckIT {
 	double n = width * height * 3;
 	double p = sum / n / 255.0;
 	System.out.println("" + Math.round(p * 10000) / 100.0 + "%");
-	double errorThreshold = 0.10;
+	double errorThreshold = 0.03;
 	if (p >= errorThreshold) {
 	    System.out.println("Failed! Too much difference to reference picture");
 	}
-	return p < errorThreshold; // More than 10% difference? Something must
-				   // be really
-	// wrong. TODO: decrease this further if similarity on
-	// linux gets better
+	return p < errorThreshold; // More than 3% difference? Something must
+				   // be really wrong. 
     }
 
     public static void compile(String texDir, String texName) throws IOException, InterruptedException {
@@ -157,7 +155,7 @@ public class CompileAndCheckIT {
 	}
 
 	if (result.isValid()) {
-	    System.out.println("The file is a valid PDF/A-1b file");
+	    System.out.println("Finished checkPDF successfully");
 	} else {
 	    System.out.println("The file is not valid, error(s) :");
 	    for (ValidationError error : result.getErrorsList()) {
@@ -177,7 +175,7 @@ public class CompileAndCheckIT {
 	    }
 	}
 	tis.close();
-	System.out.println("Finished checkTar successfully");
+	System.out.println("Finished checkTAR successfully");
     }
 
     public static void documentTest(String baseDir, String baseName, boolean withVM) throws IOException, InterruptedException {

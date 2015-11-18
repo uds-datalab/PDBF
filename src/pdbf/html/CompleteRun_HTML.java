@@ -36,8 +36,8 @@ public class CompleteRun_HTML {
 	    System.exit(0);
 	}
 	
-	new File("pdbf-dim.json").delete();
-	new File("pdbf-config.json").delete();
+	new File(baseDir + "pdbf-dim.json").delete();
+	new File(baseDir + "pdbf-config.json").delete();
 	new File(baseDir + "pdbf-db.sql").delete();
 	new File(baseDir + "pdbf-db.json").delete();
 	new File(baseDir + "pdbf-preload").delete();
@@ -56,8 +56,8 @@ public class CompleteRun_HTML {
 	LaTeX_Compiler.main(args);
 	HTML_Compiler.main(args);
 
-	new File("pdbf-dim.json").delete();
-	new File("pdbf-config.json").delete();
+	new File(baseDir + "pdbf-dim.json").delete();
+	new File(baseDir + "pdbf-config.json").delete();
 	new File(baseDir + "pdbf-db.sql").delete();
 	new File(baseDir + "pdbf-db.json").delete();
 	new File(baseDir + "pdbf-preload").delete();

@@ -58,6 +58,8 @@ public class Tools {
 	    return "mac";
 	} else if (OS.contains("nix") || OS.contains("nux") || OS.contains("aix")) {
 	    return "unix";
+	} else if (OS.contains("BSD")) {
+	    return "bsd";
 	} else {
 	    System.err.println("Sorry, your operating system is not supported!");
 	    System.exit(-1);

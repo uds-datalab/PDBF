@@ -962,7 +962,6 @@
 		 */
 		pivotTableRenderer = function(pivotData, opts) {
 			var aggregator, c, colAttrs, colKey, colKeys, defaults, i, j, r, result, rowAttrs, rowKey, rowKeys, spanSize, td, th, totalAggregator, tr, txt, val, x;
-			var aggr = pivotData.getAggregator([], []);
 			defaults = {
 				localeStrings : {
 					totals : "Totals"
@@ -1034,10 +1033,10 @@
 						tr.appendChild(th);
 					}
 				}
-				if ((parseInt(j) === 0 && rowAttrs.length !== 0) || !pivotData.intable) {
+				if (parseInt(j) === 0) {
 					th = document.createElement("th");
 					th.className = "pvtTotalLabel";
-					th.innerHTML = aggr.label;
+					th.innerHTML = opts.localeStrings.totals;
 					th.setAttribute("rowspan", colAttrs.length + (rowAttrs.length === 0 ? 0 : 1));
 					tr.appendChild(th);
 				}
@@ -1055,12 +1054,14 @@
 					tr.appendChild(th);
 				}
 				// //////////////////////////////////////////////////////////////////////////////////////////
+				var aggr = pivotData.getAggregator([], []);
 				if (aggr.special && pivotData.intable && pivotData.unused != undefined && colAttrs.length === 0) {
 					for (var i = 0; i < pivotData.unused.length; ++i) {
 						th = document.createElement("th");
 						th.className = "pvtTotalLabel";
 						th.innerHTML = pivotData.unused[i];
 						tr.appendChild(th);
+						result.appendChild(tr);
 					}
 					th = document.createElement("th");
 					th.className = "pvtTotalLabel";
@@ -1069,134 +1070,15 @@
 					result.appendChild(tr);
 				} else {
 					th = document.createElement("th");
-					th.className = "pvtTotalLabel";
-					th.innerHTML = aggr.label;
+					if (colAttrs.length === 0) {
+						th.className = "pvtTotalLabel";
+						th.innerHTML = opts.localeStrings.totals;
+					}
 					tr.appendChild(th);
 					result.appendChild(tr);
 				}
 				// //////////////////////////////////////////////////////////////////////////////////////////
 			}
-			/////////////////////
-			totalAggregator = pivotData.getAggregator([], colKeys);
-			if (totalAggregator.special && pivotData.intable && pivotData.unused != undefined) {
-				val = totalAggregator.value();
-				for (var i = 0; i < pivotData.unused.length; ++i) {
-					tr = document.createElement("tr");
-					th = document.createElement("th");
-					th.className = "pvtTotalLabel";
-					th.innerHTML = pivotData.unused[i]; //TODO: continue here
-					th.setAttribute("colspan", rowAttrs.length + (colAttrs.length === 0 ? 0 : 1));
-					tr.appendChild(th);
-					for (j in colKeys) {
-						if (!__hasProp.call(colKeys, j))
-							continue;
-						colKey = colKeys[j];
-						totalAggregator = pivotData.getAggregator([], colKey);
-						val = totalAggregator.value();
-						td = document.createElement("td");
-						td.className = "pvtTotal colTotal";
-						td.innerHTML = totalAggregator.format(val);
-						if (totalAggregator.special) {
-							// TODO: check data-value. is array ok?
-							var p_data = totalAggregator.formatPlain(val);
-							if (p_data != undefined) {
-								td.setAttribute("data-value", p_data);
-							} else {
-								td.setAttribute('style', 'padding:0px;');
-							}
-						} else {
-							td.setAttribute("data-value", val);
-						}
-						td.setAttribute("data-for", "col" + j);
-						tr.appendChild(td);
-					}
-					result.appendChild(tr);
-				}
-			}
-			
-			
-			/*if (totalAggregator.special && pivotData.intable && pivotData.unused != undefined) {
-				val = totalAggregator.value();
-				for (var i = 0; i < pivotData.unused.length; ++i) {
-					td = document.createElement("td");
-					td.setAttribute('style', 'padding:0px;');
-					td.className = "pvtTotal rowTotal";
-					var r = '<table class="innerTable" style="width: 100%; height:100%; white-space: nowrap;">';
-					if (Array.isArray(val)) {
-						if (totalAggregator.tooBig) {
-							// TODO: td.setAttribute("data-value", p_data);
-							td.setAttribute("colspan", pivotData.unused.length);
-							td.innerHTML = '' + (totalAggregator.tooBig) + ' indistinguishable best solutions';
-							tr.appendChild(td);
-							td.setAttribute("data-for", "row" + i);
-							result.appendChild(tr);
-							break;
-						} else {
-							for (var j = 0; j < val.length; ++j) {
-								// TODO: td.setAttribute("data-value",
-								// p_data);
-								r += '<tr style="height:' + (100 / val.length) + '%;"><td>' + val[j][pivotData.unused[i]] + '</td></tr>';
-							}
-						}
-						r += '</table>';
-					} else {
-						r = val[pivotData.unused[i]];
-					}
-					td.innerHTML = r;
-					if (totalAggregator.special) {
-						// TODO: check data-value. is array ok?
-						var p_data = totalAggregator.formatPlain(val);
-						if (p_data != undefined) {
-							td.setAttribute("data-value", p_data);
-						} else {
-							td.setAttribute('style', 'padding:0px;');
-						}
-					} else {
-						td.setAttribute("data-value", val);
-					}
-					td.setAttribute("data-for", "row" + i);
-					tr.appendChild(td);
-					result.appendChild(tr);
-				}
-				val = totalAggregator.value();
-				td = document.createElement("td");
-				td.className = "pvtTotal rowTotal";
-				td.innerHTML = totalAggregator.format(val);
-				if (totalAggregator.special) {
-					// TODO: check data-value. is array ok?
-					var p_data = totalAggregator.formatPlain(val);
-					if (p_data != undefined) {
-						td.setAttribute("data-value", p_data);
-					} else {
-						td.setAttribute('style', 'padding:0px;');
-					}
-				} else {
-					td.setAttribute("data-value", val);
-				}
-				td.setAttribute("data-for", "row" + i);
-				tr.appendChild(td);
-				result.appendChild(tr);
-			} else {
-				val = totalAggregator.value();
-				td = document.createElement("td");
-				td.className = "pvtTotal rowTotal";
-				td.innerHTML = totalAggregator.format(val);
-				if (totalAggregator.special) {
-					// TODO: check data-value. is array ok?
-					var p_data = totalAggregator.formatPlain(val);
-					if (p_data != undefined) {
-						td.setAttribute("data-value", p_data);
-					} else {
-						td.setAttribute('style', 'padding:0px;');
-					}
-				} else {
-					td.setAttribute("data-value", val);
-				}
-				td.setAttribute("data-for", "row" + i);
-				tr.appendChild(td);
-				result.appendChild(tr);
-			}*/
-			/////////////////////
 			for (i in rowKeys) {
 				if (!__hasProp.call(rowKeys, i))
 					continue;
@@ -1322,7 +1204,7 @@
 			tr = document.createElement("tr");
 			th = document.createElement("th");
 			th.className = "pvtTotalLabel";
-			th.innerHTML = aggr.label;
+			th.innerHTML = opts.localeStrings.totals;
 			th.setAttribute("colspan", rowAttrs.length + (colAttrs.length === 0 ? 0 : 1));
 			tr.appendChild(th);
 			for (j in colKeys) {
@@ -1349,7 +1231,7 @@
 				tr.appendChild(td);
 			}
 			// //////////////////////////////////////////////////////////////////////////////////////////
-			if ((colAttrs.length !== 0 && rowAttrs.length !== 0) || !pivotData.intable) {
+			if (!pivotData.intable) {
 				totalAggregator = pivotData.getAggregator([], []);
 				val = totalAggregator.value();
 				td = document.createElement("td");
@@ -1367,13 +1249,11 @@
 					td.setAttribute("data-value", val);
 				}
 				tr.appendChild(td);
-			}
-			// //////////////////////////////////////////////////////////////////////////////////////////
-			if (colAttrs.length !== 0 || !pivotData.intable) {
 				result.appendChild(tr);
 				result.setAttribute("data-numrows", rowKeys.length);
 				result.setAttribute("data-numcols", colKeys.length);
 			}
+			// //////////////////////////////////////////////////////////////////////////////////////////
 			return result;
 		};
 

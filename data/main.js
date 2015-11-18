@@ -60,7 +60,7 @@ function display(json, page, phantomJS) {
 		style = "position: absolute; width:" + (json.type.I.x2 - json.type.I.x1 + 0.001) * 100 + "%; height:" + (json.type.I.y1 - json.type.I.y2 + 0.001) * 100 + "%; left:" + json.type.I.x1 * 100 + "%; bottom:" + (json.type.I.y2 - 0.001) * 100 + "%;";
 	}
 	if (typeof font_store === "undefined" || typeof font_store[json.name] === "undefined") {
-		style += "font-size: " + (zoomFactor * 12.0) + "pt;"
+		style += "font-size: " + (zoomFactor * 12.0) + "pt; font-family: sans-serif;"
 	} else {
 		style += "font-size: " + (zoomFactor * 12.0) + "pt; font-family: " + font_store[json.name] + ", sans-serif;"
 	}
@@ -1479,10 +1479,6 @@ function getChartOptions(json, zoomFactor, values, chart) {
 			width : $(chart).width(),
 			height : $(chart).height()
 		},
-		padding : {
-			top : 3,
-			right : 5
-		},
 		axis : {
 			x : {
 				label : json.type.I.xUnitName,
@@ -1504,7 +1500,7 @@ function getChartOptions(json, zoomFactor, values, chart) {
 		},
 		zoom : {
 			enabled : true,
-			rescale : true
+			rescale : false
 		},
 		point : {
 			show : json.type.I.drawPoints
@@ -1513,11 +1509,8 @@ function getChartOptions(json, zoomFactor, values, chart) {
 			show : json.type.I.showRangeSelector
 		},
 		completeScale : zoomFactor,
-		onresize : function() {
-			this.api.resize({
-				height : $(this.bound).height(),
-				width : $(this.bound).width()
-			});
+		legend : {
+			position : 'bottom'
 		}
 	};
 	
@@ -1530,11 +1523,12 @@ function getChartOptions(json, zoomFactor, values, chart) {
 	}
 	jQuery.extend(true, options, addOpt);
 	
-	if (options.axis.x.label == '')
+	if (options.axis.x.label == '') {
 		delete options.axis.x.label;
-	if (options.axis.y.label == '')
+	}
+	if (options.axis.y.label == '') {
 		delete options.axis.y.label;
-	
+	}
 	if (json.type.I.includeZero) {
 		options.axis.y.min = 0;
 	}
@@ -1618,7 +1612,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 		style = '-moz-border-radius: 1%; -webkit-border-radius: 1%; border-radius: 1%; padding:2%; background:white; margin:1%; margin-top:2em; display: inline-block; vertical-align:top; white-space: normal;';
 	}
 	if (typeof font_store === "undefined" || typeof font_store[json.name] === "undefined") {
-		style += "font-size: 10pt;"
+		style += "font-size: 10pt; font-family: sans-serif;"
 	} else {
 		style += "font-size: 10pt; font-family: " + font_store[json.name] + ", sans-serif;"
 	}

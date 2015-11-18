@@ -1797,8 +1797,7 @@ PDFJS.verbosity = (PDFJS.verbosity === undefined ?
  * 
  * @var {number}
  */
-PDFJS.maxCanvasPixels = (PDFJS.maxCanvasPixels === undefined ?
-                         16777216 : PDFJS.maxCanvasPixels);
+PDFJS.maxCanvasPixels = -1;
 
 /**
  * Document initialization / loading parameters object.

@@ -81,8 +81,8 @@ public class LaTeX_Compiler {
 		}
 	    }
 	    // remind user to adjust config
-	    if (tmp.get(tmp.size() - 1).equals("DELETE ME")) {
-		System.err.println("Warning: You have to first adjust the config.cfg file before you can use this tool. Did you maybe forget to remove the \"DELETE ME\" at the end of the config file? Exiting...");
+	    if (tmp.size() == 0 || tmp.get(tmp.size() - 1).equals("DELETE ME")) {
+		System.err.println("Warning: You have to first adjust the config.cfg file before you can use this tool.\nDid you forgot to remove the \"DELETE ME\" at the end of the config file? Exiting...");
 		System.exit(-1);
 	    }
 	    br.close();
@@ -114,7 +114,7 @@ public class LaTeX_Compiler {
 	latexFolder = latex.getAbsoluteFile().getParent();
 
 	ArrayList<String> commands = new ArrayList<String>(Arrays.asList(pathToLaTeXScript));
-	commands.add(latex.getPath());
+	commands.add(latex.getAbsolutePath());
 
 	// Check if phantomjs runs without problems. This can for example detect
 	// that a 32bit OS is used but a 64bit binary is present
@@ -148,6 +148,7 @@ public class LaTeX_Compiler {
 	try {
 	    ProcessBuilder pb = new ProcessBuilder(commands);
 	    pb.inheritIO();
+	    pb.directory(new File(baseDir));
 	    Process p = pb.start();
 	    p.waitFor();
 	    if (p.exitValue() != 0) {
@@ -160,7 +161,7 @@ public class LaTeX_Compiler {
 	}
 
 	Overlay[] overlays;
-	if (new File("pdbf-config.json").exists()) {
+	if (new File(baseDir + "pdbf-config.json").exists()) {
 	    overlays = readJSONconfig();
 	} else {
 	    overlays = new Overlay[0];
@@ -283,6 +284,7 @@ public class LaTeX_Compiler {
 	try {
 	    ProcessBuilder pb = new ProcessBuilder(commands);
 	    pb.inheritIO();
+	    pb.directory(new File(baseDir));
 	    Process p = pb.start();
 	    p.waitFor();
 	    if (p.exitValue() != 0) {
@@ -294,7 +296,7 @@ public class LaTeX_Compiler {
 	    System.exit(-1);
 	}
 
-	if (new File("pdbf-config.json").exists()) {
+	if (new File(baseDir + "pdbf-config.json").exists()) {
 	    overlays = readJSONconfig();
 	} else {
 	    overlays = new Overlay[0];
@@ -311,7 +313,7 @@ public class LaTeX_Compiler {
 	overlays = olist.toArray(overlays);
 	try {
 	    String json = gson.toJson(overlays);
-	    FileUtils.writeStringToFile(new File("pdbf-config.json"), json, Tools.utf8);
+	    FileUtils.writeStringToFile(new File(baseDir + "pdbf-config.json"), json, Tools.utf8);
 	} catch (IOException e1) {
 	    e1.printStackTrace();
 	}
@@ -326,9 +328,9 @@ public class LaTeX_Compiler {
 	// Read JSON
 	Overlay[] overlays = null;
 	try {
-	    String json = FileUtils.readFileToString(new File("pdbf-config.json"), Tools.utf8);
+	    String json = FileUtils.readFileToString(new File(baseDir + "pdbf-config.json"), Tools.utf8);
 	    overlays = gson.fromJson(json, Overlay[].class);
-	    String json2 = FileUtils.readFileToString(new File("pdbf-dim.json"), Tools.utf8);
+	    String json2 = FileUtils.readFileToString(new File(baseDir + "pdbf-dim.json"), Tools.utf8);
 	    dimOrg = gson.fromJson(json2, Dimension.class);
 	    for (int i = 0; i < overlays.length; ++i) {
 		Visualization v = overlays[i].type;
@@ -548,7 +550,7 @@ public class LaTeX_Compiler {
 
 	String a = new File(arg0).getName();
 	String filename = a.substring(0, a.length() - 4);
-	String pdfname = filename + ".pdf";
+	String pdfname = baseDir + filename + ".pdf";
 
 	try {
 	    Dimension dim = new Dimension(dimOrg.width * c.quality, dimOrg.height * c.quality);

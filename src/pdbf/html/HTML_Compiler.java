@@ -16,7 +16,7 @@ public class HTML_Compiler {
 	String a = new File(args[0]).getName();
 	String filename = a.substring(0, a.length() - 4);
 	String basename = args[0].substring(0, args[0].length() - 4);
-	String pdfname = filename + ".pdf";
+	String pdfname = baseDir + filename + ".pdf";
 	String outfile = basename + ".html";
 
 	try {
@@ -33,7 +33,7 @@ public class HTML_Compiler {
 	    }
 	    String all = FileUtils.readFileToString(new File(baseDirData + "all"), Tools.utf8);
 	    String preload = FileUtils.readFileToString(new File(baseDir + "pdbf-preload"));
-	    viewer = viewerHEAD + "pdf_base64 = \"" + Tools.encodeFileToBase64Binary(new File(pdfname)) + "\";\r\n" + "db_base64 = \"\";\r\n" + "json_base64 = \"" + Tools.encodeFileToBase64Binary(new File("pdbf-config.json")) + "\";\r\n" + "dbjson_base64 = \"" + Tools.escapeSpecialChars(new File(baseDir + "pdbf-db.json")) + "\";\r\n" + preload + "\r\n" + (CompleteRun_HTML.includeRes ? (all + "\r\n") : ("")) + add + viewerTAIL;
+	    viewer = viewerHEAD + "pdf_base64 = \"" + Tools.encodeFileToBase64Binary(new File(pdfname)) + "\";\r\n" + "db_base64 = \"\";\r\n" + "json_base64 = \"" + Tools.encodeFileToBase64Binary(new File(baseDir + "pdbf-config.json")) + "\";\r\n" + "dbjson_base64 = \"" + Tools.escapeSpecialChars(new File(baseDir + "pdbf-db.json")) + "\";\r\n" + preload + "\r\n" + (CompleteRun_HTML.includeRes ? (all + "\r\n") : ("")) + add + viewerTAIL;
 	    // TODO: use here also script instead of comment
 	    String insert1 = "%ª«¬­<!DOCTYPE html><html dir=\"ltr\" mozdisallowselectionprint moznomarginboxes>" + "<head><meta charset=\"utf-8\"><!--\n";
 	    String insert2 = "1337 0 obj\n" + "stream\n" + "-->\n" + viewer + "<!--\n" + "endstream\n" + "endobj\n";
