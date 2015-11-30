@@ -141,6 +141,8 @@ public class Tools {
 	    int f2Len = Integer.parseInt(stok.nextToken());
 	    int f3Len = Integer.parseInt(stok.nextToken());
 	    int newlength = 4;
+	    int fromStr = skipNewline(sb, sb.indexOf("/Length ", b) + "/Length ".length(), true);
+	    int toStr = skipNewline(sb, sb.indexOf("/Filter", b), false);
 	    sb.replace(b, e, "" + newlength + " " + newlength + " " + newlength);
 	    b = skipNewline(sb, sb.indexOf("stream", e) + "stream".length(), true);
 	    e = skipNewline(sb, sb.indexOf("endstream", b), false);
@@ -197,7 +199,9 @@ public class Tools {
 	    }
 	    baos.close();
 	    dos.close();
-	    sb.replace(from, to, baos2.toString("ISO_8859_1"));
+	    String newxref = baos2.toString("ISO_8859_1");
+	    sb.replace(from, to, newxref);
+	    sb.replace(fromStr, toStr, Integer.toString(newxref.length()));
 	} else {
 	    // xref table
 	    b = sb.lastIndexOf("\nxref\n") + "\nxref\n".length();
