@@ -79,7 +79,13 @@ function display(json, page, phantomJS) {
 				fullscreen.addEventListener("click", function() {
 					if (containerOver == null) {
 						containerOver = document.createElement('div');
-						containerOver.setAttribute('style', 'position:fixed; z-index:-1; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;');
+						var styleBig = 'position:fixed; z-index:-1; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;';
+						if (typeof font_store === "undefined" || typeof font_store[json.name] === "undefined") {
+							styleBig += "font-size: " + (rawZoomFactor * 12.0) + "pt; font-family: sans-serif;"
+						} else {
+							styleBig += "font-size: " + (rawZoomFactor * 12.0) + "pt; font-family: " + font_store[json.name] + ", sans-serif;"
+						}
+						containerOver.setAttribute('style', styleBig);
 						containerOver.id = json.name + "Big";
 						containerOver.className = "centerhv";
 						buildContainerChartBig(json, containerOver, true);
@@ -109,7 +115,13 @@ function display(json, page, phantomJS) {
 				fullscreen.addEventListener("click", function() {
 					if (containerOver == null) {
 						containerOver = document.createElement('div');
-						containerOver.setAttribute('style', 'position:fixed; z-index:-1; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;');
+						var styleBig = 'position:fixed; z-index:-1; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;';
+						if (typeof font_store === "undefined" || typeof font_store[json.name] === "undefined") {
+							styleBig += "font-size: " + (rawZoomFactor * 12.0) + "pt; font-family: sans-serif;"
+						} else {
+							styleBig += "font-size: " + (rawZoomFactor * 12.0) + "pt; font-family: " + font_store[json.name] + ", sans-serif;"
+						}
+						containerOver.setAttribute('style', styleBig);
 						containerOver.id = json.name + "Big";
 						containerOver.className = "centerhv";
 						buildContainerChartBig(json, containerOver, true);
@@ -144,7 +156,13 @@ function display(json, page, phantomJS) {
 				container.addEventListener("click", function() {
 					if (containerOver == null) {
 						containerOver = document.createElement('div');
-						containerOver.setAttribute('style', 'position:fixed; z-index:-1; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;');
+						var styleBig = 'position:fixed; z-index:-1; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;';
+						if (typeof font_store === "undefined" || typeof font_store[json.name] === "undefined") {
+							styleBig += "font-size: " + (rawZoomFactor * 12.0) + "pt; font-family: sans-serif;"
+						} else {
+							styleBig += "font-size: " + (rawZoomFactor * 12.0) + "pt; font-family: " + font_store[json.name] + ", sans-serif;"
+						}
+						containerOver.setAttribute('style', styleBig);
 						containerOver.id = json.name + "Big";
 						containerOver.className = "centerhv";
 						buildContainerTableBig(json, containerOver);
@@ -203,12 +221,19 @@ function display(json, page, phantomJS) {
 					}
 				});
 			}
+			//Fallthrough
 		case "pdbf.common.Text":
 			if (!phantomJS) {
 				container.addEventListener("click", function() {
 					if (containerOver == null) {
 						containerOver = document.createElement('div');
-						containerOver.setAttribute('style', 'position:fixed; z-index:-1; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;');
+						var styleBig = 'position:fixed; z-index:-1; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;';
+						if (typeof font_store === "undefined" || typeof font_store[json.name] === "undefined") {
+							styleBig += "font-size: " + (rawZoomFactor * 12.0) + "pt; font-family: sans-serif;"
+						} else {
+							styleBig += "font-size: " + (rawZoomFactor * 12.0) + "pt; font-family: " + font_store[json.name] + ", sans-serif;"
+						}
+						containerOver.setAttribute('style', styleBig);
 						containerOver.id = json.name + "Big";
 						containerOver.className = "centerhv";
 						buildContainerTableBig(json, containerOver);
@@ -228,7 +253,13 @@ function display(json, page, phantomJS) {
 				fullscreen.addEventListener("click", function() {
 					if (containerOver == null) {
 						containerOver = document.createElement('div');
-						containerOver.setAttribute('style', 'position:fixed; z-index:-1; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;');
+						var styleBig = 'position:fixed; z-index:-1; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;';
+						if (typeof font_store === "undefined" || typeof font_store[json.name] === "undefined") {
+							styleBig += "font-size: " + (rawZoomFactor * 12.0) + "pt; font-family: sans-serif;"
+						} else {
+							styleBig += "font-size: " + (rawZoomFactor * 12.0) + "pt; font-family: " + font_store[json.name] + ", sans-serif;"
+						}
+						containerOver.setAttribute('style', styleBig);
 						containerOver.id = json.name + "Big";
 						containerOver.className = "centerhv";
 						buildContainerPivotBig(json, containerOver, true);
@@ -254,13 +285,20 @@ function display(json, page, phantomJS) {
 	toc("Display time for " + json.name);
 }
 
-function buildContainerChartBig(json, containerOver, initial) {
-	var basetextsize = 8;
-	
-	var updateData = function() {
-		json.jsonBig.type.I.xUnitName = '';
-		json.jsonBig.type.I.yUnitName = '';
+function buildContainerChartBig(json, containerOver, initial) {	
+	containerOver.updateData = function() {
 		json.jsonBig.type.I.query = ref.editor.getValue();
+		containerOver.update();
+	};
+	containerOver.update = function() {
+		json.jsonBig.type.I.logScale = logScale.checked;
+		json.jsonBig.type.I.includeZero = includeZero.checked;
+		if (json.type.I.chartType == 'Line' || json.type.I.chartType == 'line') {
+			json.jsonBig.type.I.drawPoints = drawPoints.checked;
+			json.jsonBig.type.I.fillGraph = fillGraph.checked;
+		}
+		json.jsonBig.type.I.showRangeSelector = showRangeSelector.checked;
+		
 		json.chartdataBig = getChartData(json.jsonBig);
 		json.resultBig = json.chartdataBig.res;
 		if (json.chartdataBig.error != undefined) {
@@ -270,64 +308,8 @@ function buildContainerChartBig(json, containerOver, initial) {
 			error.innerHTML = 'Query status: OK';
 			containerOptions.style.visibility = 'visible';
 		}
-		var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor, json.chartdataBig.values, containerContent);
-		optionsBig.completeScale = 1.25;
-		json.chart = c3.generate(optionsBig);
-	};
-	var update = function() {
-		if (logScale.checked == false && json.jsonBig.type.I.logScale != logScale.checked) {
-			//TODO: quick and dirty hack to fix logscale
-			json.chartdataBig = getChartData(json.jsonBig);
-			json.resultBig = json.chartdataBig.res;
-			if (json.chartdataBig.error != undefined) {
-				error.innerHTML = 'Query status: Error! ' + json.chartdataBig.error;
-				containerOptions.style.visibility = 'hidden';
-			} else {
-				error.innerHTML = 'Query status: OK';
-				containerOptions.style.visibility = 'visible';
-			}
-		}
-		
-		json.jsonBig.type.I.logScale = logScale.checked;
-		json.jsonBig.type.I.includeZero = includeZero.checked;
-		if (json.type.I.chartType == 'Line' || json.type.I.chartType == 'line') {
-			json.jsonBig.type.I.drawPoints = drawPoints.checked;
-			json.jsonBig.type.I.fillGraph = fillGraph.checked;
-		}
-		json.jsonBig.type.I.showRangeSelector = showRangeSelector.checked;
 		
 		var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor, json.chartdataBig.values, containerContent);
-		optionsBig.completeScale = 1.25;
-		
-		// logscale
-		if (json.jsonBig.type.I.logScale == true) {
-			var logscale = json.chart.data();
-			for (var series = 0; series < logscale.length; ++series) {
-				var logscaleValues = logscale[series]['values'];
-				for (var i = 0; i < logscaleValues.length; i++) {
-					var logId = logscaleValues[i]['id'];
-					var logVal = logscaleValues[i]['value'];
-					
-					json.jsonBig.type.I.logScale = logScale.checked;
-					
-					optionsBig.data['json'][i][logId] = Math.log(logVal) / Math.LN10;
-					optionsBig.axis.y.tick.format = function(d) {
-						return Math.pow(10, d).toFixed(2);
-					};
-					
-					if (logVal < 0) {
-						json.jsonBig.type.I.includeZero = optionsBig.axis.y.min;
-						includeZero.checked = false;
-					}
-					if (includeZero.checked == true) {
-						json.jsonBig.type.I.includeZero = '0';
-						optionsBig.axis.y.min = '0';
-					} else if (optionsBig.axis.y.min != undefined && isInt(optionsBig.axis.y.min) && includeZero.checked == false) {
-						json.jsonBig.type.I.includeZero = optionsBig.axis.y.min;
-					}
-				}
-			}
-		} 
 		
 		if (logScale.checked) {
 			includeZero.disabled = true;
@@ -346,68 +328,37 @@ function buildContainerChartBig(json, containerOver, initial) {
 	var viewerContainer = document.getElementById("viewerContainer");
 	var tip = "Tip: Scroll to zoom the graph. Click and drag to pan the graph.<br/>";
 	json.jsonBig = jQuery.extend(true, {}, json);
-	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip, [ json ], updateData, 'graph', true);
-	var chartdataCpy = getChartData(json.jsonBig);
-	json.resultBig = chartdataCpy.res;
+	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip, [ json ], containerOver.updateData, 'graph', true);
 	var containerContent = ref.containerContent;
 	var containerControl = ref.containerControl;
 	var containerOptions = ref.options;
 	var error = ref.error;
 	
-	if (initial) {
-		if (chartdataCpy.error != undefined) {
-			alert(json.name + "Big reports error:\n" + chartdataCpy.error);
-		}
-	} else {
-		if (chartdataCpy.error != undefined) {
-			error.innerHTML = 'Query status: Error!' + chartdataCpy.error;
-			containerOptions.style.visibility = 'hidden';
-		} else {
-			error.innerHTML = 'Query status: OK';
-			containerOptions.style.visibility = 'visible';
-		}
-	}
-	
 	var logScale = getCheckbox('LogScale (Y-Axis)', containerOptions);
-	logScale.addEventListener('change', update);
+	logScale.addEventListener('change', containerOver.update);
 	logScale.checked = json.jsonBig.type.I.logScale;
 	
 	json.jsonBig.type.I.showRangeSelector = true;
 	
 	var includeZero = getCheckbox('IncludeZero', containerOptions);
-	includeZero.addEventListener('change', update);
+	includeZero.addEventListener('change', containerOver.update);
 	includeZero.checked = json.jsonBig.type.I.includeZero;
 	
 	if (json.jsonBig.type.I.chartType == 'Line' || json.jsonBig.type.I.chartType == 'line') {
 		var fillGraph = getCheckbox('FillGraph', containerOptions);
-		fillGraph.addEventListener('change', update);
+		fillGraph.addEventListener('change', containerOver.update);
 		fillGraph.checked = json.jsonBig.type.I.fillGraph;
 		
 		var drawPoints = getCheckbox('DrawPoints', containerOptions);
-		drawPoints.addEventListener('change', update);
+		drawPoints.addEventListener('change', containerOver.update);
 		drawPoints.checked = json.jsonBig.type.I.drawPoints;
 	}
 	
 	var showRangeSelector = getCheckbox('ShowRangeSelector', containerOptions);
-	showRangeSelector.addEventListener('change', update);
+	showRangeSelector.addEventListener('change', containerOver.update);
 	showRangeSelector.checked = json.jsonBig.type.I.showRangeSelector;
 	
-	var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor, chartdataCpy.values, containerContent);
-	optionsBig.completeScale = 1.25;
-	
-	json.chart = c3.generate(optionsBig);
-	
-	json.chartdataBig = chartdataCpy;
-	
-	containerOver.update = function() {
-		var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor, json.chartdataBig.values, containerContent);
-		optionsBig.completeScale = 1.25;
-		json.chart = c3.generate(optionsBig);
-		containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
-	};
-	containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
-	
-	containerOver.updateData = updateData;
+	containerOver.update();
 }
 
 function buildContainerChart(container, json, zoomFactor, style, containerOver) {
@@ -423,6 +374,7 @@ function buildContainerChart(container, json, zoomFactor, style, containerOver) 
 			return;
 		}
 		chartdata = chartdata.values;
+
 		json.result = chartdata;
 	} else {
 		chartdata = json.result;
@@ -432,7 +384,9 @@ function buildContainerChart(container, json, zoomFactor, style, containerOver) 
 	container.setAttribute('style', style);
 	
 	var options = getChartOptions(json, zoomFactor, chartdata, chart);
+
 	json.options = options;
+	
 	json.chartInPage = c3.generate(options);
 }
 
@@ -668,7 +622,7 @@ function buildContainerPivotBig(json, containerOver, initial) {
 	
 	var viewerContainer = document.getElementById("viewerContainer");
 	json.jsonBig = jQuery.extend(true, {}, json);
-	var tip = "Tip: Drag and drop attributes to the row/column area. <br/>Move the cursor over the result cells to see more detailed results for min and max aggregator.<br/>";
+	var tip = "Tip: Drag and drop attributes to the row/column area.<br/>";
 	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip, [ json ], updateData, 'pivot table', false);
 	
 	var containerContent = ref.containerContent;
@@ -708,9 +662,8 @@ function buildContainerPivotBig(json, containerOver, initial) {
 	});
 	
 	containerOver.update = function() {
-		containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
+
 	};
-	containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
 	
 	containerOver.updateData = updateData;
 }
@@ -809,9 +762,8 @@ function buildContainerTableBig(json, containerOver) {
 	getTableFromResults(results, containerContent);
 	
 	containerOver.update = function() {
-		containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
+
 	};
-	containerOver.style['font-size'] = '' + rawZoomFactor * basetextsize + 'pt';
 	
 	containerOver.updateData = update;
 }
@@ -1511,7 +1463,13 @@ function getChartOptions(json, zoomFactor, values, chart) {
 		completeScale : zoomFactor,
 		legend : {
 			position : 'bottom'
-		}
+		},
+		onresize : function() {
+			this.api.resize({
+				height : $(this.bindto).height(),
+				width : $(this.bindto).width()
+			});
+		},
 	};
 	
 	jQuery.extend(true, options, defaultChartOptions);
@@ -1531,6 +1489,17 @@ function getChartOptions(json, zoomFactor, values, chart) {
 	}
 	if (json.type.I.includeZero) {
 		options.axis.y.min = 0;
+	}
+	
+	var defaultformat = function (v) {
+        return (v || v === 0) ? +v : "";
+    };
+	var funcsave = options.axis.y.tick.format;
+	funcsave = typeof funcsave == "function" ? optionsBig.axis.y.tick.format : defaultformat;
+	if (json.type.I.logScale) {
+		options.axis.y.tick.format = function(d) {
+			return funcsave(+Math.exp(d).toFixed(2));
+		};
 	}
 	
 	switch (json.type.I.chartType) {
@@ -1610,11 +1579,6 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 		style = 'width:58%; height:85.5%; -moz-border-radius: 1%; -webkit-border-radius: 1%; border-radius: 1%; padding:2%; background:white; margin:1%; margin-top:2em; display: inline-block; vertical-align:top; white-space: normal;';
 	} else {
 		style = '-moz-border-radius: 1%; -webkit-border-radius: 1%; border-radius: 1%; padding:2%; background:white; margin:1%; margin-top:2em; display: inline-block; vertical-align:top; white-space: normal;';
-	}
-	if (typeof font_store === "undefined" || typeof font_store[json.name] === "undefined") {
-		style += "font-size: 10pt; font-family: sans-serif;"
-	} else {
-		style += "font-size: 10pt; font-family: " + font_store[json.name] + ", sans-serif;"
 	}
 	containerChart.setAttribute('style', style);
 	
@@ -1905,18 +1869,39 @@ function getChartData(json) {
 	for ( var key in results[0]) {
 		columns[columns.length] = key;
 	}
+	var ret = {
+			values : {
+				x : columns[0],
+				json : results,
+				keys : {
+					value : columns
+				}
+			},
+			error : error,
+			res : results
+		};
 	
-	return {
-		values : {
-			x : columns[0],
-			json : results,
-			keys : {
-				value : columns
+	// logscale
+	if (json.type.I.logScale == true) {
+		for (var i = 0; i < ret.values.json.length; i++) {
+			var logscaleValues = ret.values.json[i];
+			for (var series = 0; series < ret.values.keys.value.length; ++series) {
+				var logId = ret.values.keys.value[series];
+				if (logId == ret.values.x) {
+					continue;
+				}
+				var logVal = logscaleValues[logId];
+				
+				if (isNaN(logVal)) {
+					throw "Error! Logscale is active and chart contains negative values!";
+				}
+				
+				ret.values.json[i][logId] = Math.log(logVal);
 			}
-		},
-		error : error,
-		res : results
-	};
+		}
+	} 
+	
+	return ret;
 }
 
 function getPivotTableData(json, isBig) {
@@ -1997,12 +1982,12 @@ function getPivotTableData(json, isBig) {
 function getFullscreenDiv() {
 	var fullscreen = document.createElement('div');
 	var rawZoomFactor = PDFViewerApplication.pdfViewer._currentScale;
-	fullscreen.setAttribute('style', 'z-index:4; position:absolute; opacity:0.5; -webkit-transition:opacity 200ms ease-out; -moz-transition:opacity 200ms ease-out; -o-transition:opacity 200ms ease-out; transition:opacity 200ms ease-out;');
+	fullscreen.setAttribute('style', 'z-index:4; position:absolute; opacity:0.3; -webkit-transition:opacity 200ms ease-out; -moz-transition:opacity 200ms ease-out; -o-transition:opacity 200ms ease-out; transition:opacity 200ms ease-out;');
 	fullscreen.innerHTML = "<img style=\"width:" + 17 * rawZoomFactor + "px; height:" + 17 * rawZoomFactor + "px;\" src=\"data:image/png;base64,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\"/>";
 	$(fullscreen).hover(function() {
-		this.style.opacity = 1;
+		this.style.opacity = 0.8;
 	}, function() {
-		this.style.opacity = 0.5;
+		this.style.opacity = 0.3;
 	});
 	return fullscreen;
 }

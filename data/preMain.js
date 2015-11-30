@@ -65,7 +65,7 @@ function parse(json) {
 
 function overlay(pageNr) {
 	if (init) {
-		rawZoomFactor = 1.25;// PDFViewerApplication.pdfViewer._currentScale;
+		rawZoomFactor = 0.8;// PDFViewerApplication.pdfViewer._currentScale;
 		init = false;
 	}
 

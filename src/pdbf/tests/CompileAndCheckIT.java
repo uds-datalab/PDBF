@@ -97,6 +97,7 @@ public class CompileAndCheckIT {
 	Process p = pb.start();
 	p.waitFor();
 	if (p.exitValue() != 0) {
+	    System.err.println("PDBF compiler exited with error!");
 	    fail();
 	}
     }
@@ -109,6 +110,10 @@ public class CompileAndCheckIT {
 	for (Process p : Tools.processes) {
 	    p.waitFor();
 	    if (p.exitValue() != 0) {
+		System.err.println("Phantomjs exited with error!");
+		for (Process p2 : Tools.processes) {
+		    p2.destroy();
+		}
 		throw new IllegalStateException();
 	    }
 	}
@@ -217,13 +222,18 @@ public class CompileAndCheckIT {
     }
 
     @Test(timeout = 600000)
+    public void charts() throws IOException, InterruptedException {
+	documentTest(testDir, "charts", false);
+    }
+    
+    @Test(timeout = 600000)
     public void noPDBF() throws IOException, InterruptedException {
 	documentTest(testDir, "no_pdbf", false);
 	new File(testDir + "no_pdbf.html").delete();
 	new File(testDir + "pdbf.sty").delete();
 	new File(testDir + "dummy.png").delete();
     }
-
+    
     @Test(timeout = 300000)
     public void compileOtherDir() throws IOException, InterruptedException {
 	// Create Folder and copy tex file

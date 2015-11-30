@@ -2709,9 +2709,9 @@
         if (isValue(config.padding_left)) {
             return config.padding_left;
         } else if (config.axis_rotated) {
-            return !config.axis_x_show ? 1 : Math.max($$.getAxisWidthByAxisId('x', withoutRecompute), 40);
+            return !config.axis_x_show ? 1 : Math.max($$.getAxisWidthByAxisId('x', withoutRecompute), 40 * config.completeScale);
         } else if (!config.axis_y_show || config.axis_y_inner) { // && !config.axis_rotated
-            return $$.axis.getYAxisLabelPosition().isOuter ? 30 : 1;
+            return $$.axis.getYAxisLabelPosition().isOuter ? 30 * config.completeScale : 1 * config.completeScale;
         } else {
             return $$.getAxisWidthByAxisId('y', withoutRecompute);
         }
@@ -4043,7 +4043,7 @@
             if ($$.isLegendRight) {
                 h = $$.currentHeight;
             } else {
-            	h = Math.max(20 * $$.config.completeScale, $$.legendItemHeight) * ($$.legendStep + 1)
+            	h = $$.legendItemHeight * ($$.legendStep + 1)
             }
         }
         return h;
@@ -4105,7 +4105,7 @@
     c3_chart_internal_fn.updateLegend = function (targetIds, options, transitions) {
         var $$ = this, config = $$.config;
         var xForLegend, xForLegendText, xForLegendRect, yForLegend, yForLegendText, yForLegendRect, x1ForLegendTile, x2ForLegendTile, yForLegendTile;
-        var paddingTop = config.completeScale*4, paddingRight = config.completeScale*10, maxWidth = 0, maxHeight = 0, posMin = config.completeScale*10, tileWidth = (config.legend_item_tile_width + 5);
+        var paddingTop = config.completeScale*2, paddingRight = config.completeScale*3, maxWidth = 0, maxHeight = 0, posMin = $$.isLegendInset ? config.legend_inset_step ? config.completeScale*3 : 0 : config.completeScale*10, tileWidth = config.completeScale*(config.legend_item_tile_width + 5);
         var l, totalLength = 0, offsets = {}, widths = {}, heights = {}, margins = [0], steps = {}, step = 0;
         var withTransition, withTransitionForTransform;
         var texts, rects, tiles, background;
@@ -4252,10 +4252,10 @@
             });
         l.append('text')
             .text(function (id) { return isDefined(config.data_names[id]) ? config.data_names[id] : id; })
-            .each(function (id, i) { updatePositions(this, id, i); })
+            .each(function (id, i) { updatePositions(this, id, i); $$.updateLegendItemWidth(maxWidth); $$.updateLegendItemHeight(maxHeight); })
             .style("pointer-events", "none")
-            .attr('x', $$.isLegendRight || $$.isLegendInset ? xForLegendText : -200 * config.completeScale)
-            .attr('y', $$.isLegendRight || $$.isLegendInset ? -200 * config.completeScale : yForLegendText);
+            .attr('x', $$.isLegendRight || $$.isLegendInset ? xForLegendText : -200)
+            .attr('y', $$.isLegendRight || $$.isLegendInset ? -200 : yForLegendText);
         l.append('rect')
             .attr("class", CLASS.legendItemEvent)
             .style('fill-opacity', 0)
@@ -4303,7 +4303,7 @@
                 .attr('y1', yForLegendTile)
                 .attr('x2', x2ForLegendTile)
                 .attr('y2', yForLegendTile);
-
+            
         if (background) {
             (withTransition ? background.transition() : background)
                 .attr('height', $$.getLegendHeight() - 12 * config.completeScale)
@@ -4559,9 +4559,9 @@
     };
     Axis.prototype.dxForAxisLabel = function dxForAxisLabel(forHorizontal, position) {
         if (forHorizontal) {
-            return position.isLeft ? "0.3em" : position.isRight ? "-0.3em" : "0";
+            return position.isLeft ? "1.3em" : position.isRight ? "-0.3em" : "0";
         } else {
-            return position.isTop ? "0.0em" : position.isBottom ? "0.3em" : "0";
+            return position.isTop ? "0.0em" : position.isBottom ? "1.0em" : "0";
         }
     };
     Axis.prototype.textAnchorForAxisLabel = function textAnchorForAxisLabel(forHorizontal, position) {
@@ -4595,7 +4595,7 @@
         if (config.axis_rotated) {
             return position.isInner ? "1.0em" : -25*$$.config.completeScale - this.getMaxTickWidth('x');
         } else {
-            return position.isInner ? "-0.3em" : config.axis_x_height ? config.axis_x_height - 10*$$.config.completeScale : "2.7em";
+            return position.isInner ? "-0.3em" : config.axis_x_height ? config.axis_x_height - 10*$$.config.completeScale : "2.1em";
         }
     };
     Axis.prototype.dyForYAxisLabel = function dyForYAxisLabel() {

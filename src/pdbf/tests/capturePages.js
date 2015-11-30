@@ -60,9 +60,9 @@ var getPage = function (i, pagesCount) {
 	window.setTimeout(function () {
 		waitFor(
 			function() {
-				return page.evaluate(function() {
-					return !PDFViewer.updateInProgress;
-				});
+                return page.evaluate(function(i) {
+                	return pdbfReady(i);
+                }, i);
 			}, 
 			function() {
 				window.setTimeout(function () {

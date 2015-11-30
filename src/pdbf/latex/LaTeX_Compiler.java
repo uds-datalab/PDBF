@@ -34,6 +34,7 @@ import pdbf.common.Text;
 import pdbf.common.Tools;
 import pdbf.common.Visualization;
 import pdbf.common.VisualizationTypeAdapter;
+import pdbf.html.CompleteRun_HTML;
 
 public class LaTeX_Compiler {
 
@@ -152,7 +153,7 @@ public class LaTeX_Compiler {
 	    Process p = pb.start();
 	    p.waitFor();
 	    if (p.exitValue() != 0) {
-		System.err.println("Error! Exiting...");
+		System.err.println("Latex compiler exited with error!");
 		System.exit(-1);
 	    }
 	} catch (Exception e) {
@@ -223,13 +224,34 @@ public class LaTeX_Compiler {
 	    } else if (overlays[i].type instanceof Text) {
 		System.out.println("Finished " + overlays[i].name);
 	    }
+
+	    if (processes.size() >= Runtime.getRuntime().availableProcessors()) {
+		for (Process p : processes) {
+		    try {
+			p.waitFor();
+			if (p.exitValue() != 0) {
+			    System.err.println("Phantomjs exited with error!");
+			    for (Process p2 : processes) {
+				p2.destroy();
+			    }
+			    System.exit(-1);
+			}
+		    } catch (InterruptedException e) {
+			e.printStackTrace();
+		    }
+		}
+		processes.clear();
+	    }
 	}
 
 	for (Process p : processes) {
 	    try {
 		p.waitFor();
 		if (p.exitValue() != 0) {
-		    System.err.println("Error! Exiting...");
+		    System.err.println("Phantomjs exited with error!");
+		    for (Process p2 : processes) {
+			p2.destroy();
+		    }
 		    System.exit(-1);
 		}
 	    } catch (InterruptedException e) {
@@ -275,7 +297,9 @@ public class LaTeX_Compiler {
 	    }
 	}
 	try {
-	    FileUtils.writeStringToFile(new File(latexPath.substring(0, latexPath.length() - 4) + ".aux"), aux, true);
+	    File auxfile = new File(latexPath.substring(0, latexPath.length() - 4) + ".aux");
+	    FileUtils.writeStringToFile(auxfile, aux, true);
+	    FileUtils.writeStringToFile(new File(baseDir + auxfile.getName()), aux, true);
 	} catch (IOException e2) {
 	    e2.printStackTrace();
 	}
@@ -288,7 +312,7 @@ public class LaTeX_Compiler {
 	    Process p = pb.start();
 	    p.waitFor();
 	    if (p.exitValue() != 0) {
-		System.err.println("Error! Exiting...");
+		System.err.println("Latex compiler exited with error!");
 		System.exit(-1);
 	    }
 	} catch (Exception e) {
@@ -542,33 +566,41 @@ public class LaTeX_Compiler {
     }
 
     private static void processVisual(Overlay o) {
-	Chart c = (Chart) o.type;
-	cleanupfiles.add(baseDirData + o.name + ".html");
-	cleanupfiles.add(baseDir + o.name + ".json");
-	preloadfiles.add(baseDir + o.name + ".json");
-	copyfiles.add(baseDir + o.name + ".png");
+	if (CompleteRun_HTML.includeRes) {
+	    Chart c = (Chart) o.type;
+	    cleanupfiles.add(baseDirData + o.name + ".html");
+	    cleanupfiles.add(baseDir + o.name + ".json");
+	    preloadfiles.add(baseDir + o.name + ".json");
+	    copyfiles.add(baseDir + o.name + ".png");
 
-	String a = new File(arg0).getName();
-	String filename = a.substring(0, a.length() - 4);
-	String pdfname = baseDir + filename + ".pdf";
+	    String a = new File(arg0).getName();
+	    String filename = a.substring(0, a.length() - 4);
+	    String pdfname = baseDir + filename + ".pdf";
 
-	try {
-	    Dimension dim = new Dimension(dimOrg.width * c.quality, dimOrg.height * c.quality);
-	    String viewer;
-	    String viewerHEAD = FileUtils.readFileToString(new File(baseDirData + "template-head-images.html"), Tools.utf8);
-	    String viewerTAIL = FileUtils.readFileToString(new File(baseDirData + "template-tail-images.html"), Tools.utf8);
-	    viewer = viewerHEAD + "pdf_base64 = \"" + Tools.encodeFileToBase64Binary(new File(pdfname)) + "\";\r\n" + "dim_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(dim)) + "\";\r\n" + "json_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(o)) + "\";\r\n" + "db_base64 = \"\";\r\n" + "dbjson_base64 = \"" + Tools.escapeSpecialChars(new File(baseDir + "pdbf-db.json")) + "\";\r\n" + viewerTAIL;
-	    FileUtils.writeStringToFile(new File(baseDirData + o.name + ".html"), viewer, Tools.utf8);
-	} catch (Exception e) {
-	    e.printStackTrace();
-	}
-	try {
-	    ProcessBuilder pb = new ProcessBuilder(baseDir + "external-tools" + File.separator + "phantomjs-" + suffix, baseDir + "external-tools" + File.separator + "capture.js", o.name + ".html", baseDirData);
-	    pb.inheritIO();
-	    Process p = pb.start();
-	    processes.add(p);
-	} catch (Exception e) {
-	    e.printStackTrace();
+	    try {
+		Dimension dim = new Dimension(dimOrg.width * c.quality, dimOrg.height * c.quality);
+		String viewer;
+		String viewerHEAD = FileUtils.readFileToString(new File(baseDirData + "template-head-images.html"), Tools.utf8);
+		String viewerTAIL = FileUtils.readFileToString(new File(baseDirData + "template-tail-images.html"), Tools.utf8);
+		viewer = viewerHEAD + "pdf_base64 = \"" + Tools.encodeFileToBase64Binary(new File(pdfname)) + "\";\r\n" + "dim_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(dim)) + "\";\r\n" + "json_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(o)) + "\";\r\n" + "db_base64 = \"\";\r\n" + "dbjson_base64 = \"" + Tools.escapeSpecialChars(new File(baseDir + "pdbf-db.json")) + "\";\r\n" + viewerTAIL;
+		FileUtils.writeStringToFile(new File(baseDirData + o.name + ".html"), viewer, Tools.utf8);
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }
+	    try {
+		ProcessBuilder pb = new ProcessBuilder(baseDir + "external-tools" + File.separator + "phantomjs-" + suffix, baseDir + "external-tools" + File.separator + "capture.js", o.name + ".html", baseDirData);
+		pb.inheritIO();
+		Process p = pb.start();
+		processes.add(p);
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }
+	} else {
+	    try {
+		FileUtils.copyFile(new File(baseDir + "dummy.png"), new File(baseDir + o.name + ".png"));
+	    } catch (IOException e) {
+		e.printStackTrace();
+	    }
 	}
     }
 
@@ -615,7 +647,7 @@ public class LaTeX_Compiler {
 	    Process p = pb.start();
 	    p.waitFor();
 	    if (p.exitValue() != 0) {
-		System.err.println("Error! Exiting...");
+		System.err.println("Phantomjs exited with error!");
 		System.exit(-1);
 	    }
 	} catch (Exception e) {

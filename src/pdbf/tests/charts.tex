@@ -1,0 +1,159 @@
+\documentclass[10pt]{article}
+\usepackage{pdbf}
+\usepackage[a4paper]{geometry}
+
+\dbSQLText{CREATE TABLE test(a int, b int, c int); INSERT INTO test VALUES(1, 10, 15); INSERT INTO test VALUES(2, 100, 90); INSERT INTO test VALUES(3, 120, 110); INSERT INTO test VALUES(4, 100, 150);}
+
+\def\test{
+	%
+	%%%%%%%%%%%%%%%%%%% Page1
+	%
+	\chart[width=0.49\textwidth, height=0.45\textwidth, chartType=line, xunit=xLabel, yunit=yLabel, options={
+		"axis": { 
+			"x": { 
+				"tick": { "rotate": 45 }
+			}
+		}
+	}]{SELECT * FROM test;}
+	\chart[width=0.49\textwidth, height=0.45\textwidth, chartType=line, xunit=xLabel, yunit=yLabel, options={
+		"axis": { 
+			"x": { 
+				"tick": { "rotate": 90 }
+			}
+		}
+	}]{SELECT * FROM test;}\\
+	\chart[width=0.49\textwidth, height=0.45\textwidth, chartType=line, xunit=xLabel, yunit=yLabel, options={
+		"legend": {
+			"position": "inset",
+			"inset": {
+				"anchor": "top-left",
+				"x": 25,
+				"y": 0,
+				"step": 1
+			}
+		}
+	}]{SELECT * FROM test;}
+	\chart[width=0.49\textwidth, height=0.45\textwidth, chartType=line, xunit=xLabel, yunit=yLabel, options={
+		"legend": {
+			"position": "inset",
+			"inset": {
+				"anchor": "top-left",
+				"x": 25,
+				"y": 0
+			}
+		}
+	}]{SELECT * FROM test;}\\
+	\chart[width=0.49\textwidth, height=0.45\textwidth, chartType=line, xunit=xLabel, yunit=yLabel, options={
+		"legend": {
+			"position": "inset",
+			"inset": {
+				"anchor": "top-right",
+				"step": 1
+			}
+		}
+	}]{SELECT * FROM test;}
+	\chart[width=0.49\textwidth, height=0.45\textwidth, chartType=line, xunit=xLabel, yunit=yLabel, options={
+		"legend": {
+			"position": "inset",
+			"inset": {
+				"anchor": "top-right"
+			}
+		}
+	}]{SELECT * FROM test;}\\
+	%
+	%%%%%%%%%%%%%%%%%%% Page2
+	%
+	\chart[width=0.49\textwidth, height=0.45\textwidth, chartType=line, xunit=xLabel, yunit=yLabel, options={
+		"legend": {
+			"position": "right"
+		}
+	}]{SELECT * FROM test;}
+	\chart[width=0.49\textwidth, height=0.45\textwidth, chartType=line, xunit=xLabel, yunit=yLabel, options={
+		"legend": {
+			"show": false
+		}
+	}]{SELECT * FROM test;}\\
+	\chart[width=0.49\textwidth, height=0.45\textwidth, chartType=line, xunit=xLabel, yunit=yLabel, options={
+		"axis": { 
+			"x": { 
+				"label": {
+					"text": "xLabel",
+	       			"position": "inner-center"
+				}
+			},
+			"y": { 
+				"label": {
+					"text": "yLabel",
+	       			"position": "inner-middle"
+				}
+			}
+		}
+	}]{SELECT * FROM test;}
+	\chart[width=0.49\textwidth, height=0.45\textwidth, chartType=line, xunit=xLabel, yunit=yLabel, options={
+		"axis": { 
+			"x": { 
+				"label": {
+					"text": "xLabel",
+	       			"position": "inner-left"
+				}
+			},
+			"y": { 
+				"label": {
+					"text": "yLabel",
+	       			"position": "inner-bottom"
+				}
+			}
+		}
+	}]{SELECT * FROM test;}\\
+	\chart[width=0.49\textwidth, height=0.45\textwidth, chartType=line, xunit=xLabel, yunit=yLabel, options={
+		"axis": { 
+			"x": { 
+				"label": {
+					"text": "xLabel",
+	       			"position": "outer-right"
+				}
+			},
+			"y": { 
+				"label": {
+					"text": "yLabel",
+	       			"position": "outer-top"
+				}
+			}
+		}
+	}]{SELECT * FROM test;}
+	\chart[width=0.49\textwidth, height=0.45\textwidth, chartType=line, xunit=xLabel, yunit=yLabel, options={
+		"axis": { 
+			"x": { 
+				"label": {
+					"text": "xLabel",
+	       			"position": "outer-center"
+				}
+			},
+			"y": { 
+				"label": {
+					"text": "yLabel",
+	       			"position": "outer-middle"
+				}
+			}
+		}
+	}]{SELECT * FROM test;}\\
+}
+
+
+\begin{document}
+\noindent
+\tiny
+\test
+\normalsize
+\test
+\LARGE
+\test
+%
+\fontfamily{phv}
+\tiny
+\test
+\normalsize
+\test
+\LARGE
+\test
+\end{document}

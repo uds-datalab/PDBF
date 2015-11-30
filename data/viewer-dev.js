@@ -29,6 +29,11 @@
 
 'use strict';
 
+var pdbfReady = function(page) {
+	return typeof pdbfLoadedPages[page] != "undefined";
+}
+var pdbfLoadedPages = {};
+
 var DEFAULT_URL = '';
 var DEFAULT_SCALE_DELTA = 1.1;
 var MIN_SCALE = 0.25;
@@ -3433,7 +3438,6 @@ var PageView = function pageView(container, id, scale, defaultViewport,
 	var pageNumber = this.id;
     this.renderTask.promise.then(
       function pdfPageRenderCallback() {
-		overlay(pageNumber);
         pageViewDrawCallback(null);
         if (textLayer) {
           self.pdfPage.getTextContent().then(
@@ -3442,6 +3446,8 @@ var PageView = function pageView(container, id, scale, defaultViewport,
             }
           );
         }
+		overlay(pageNumber);
+		pdbfLoadedPages[pageNumber] = true;
       },
       function pdfPageRenderError(error) {
         pageViewDrawCallback(error);
