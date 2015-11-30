@@ -210,23 +210,23 @@ public class CompileAndCheckIT {
 	new File(baseDir + ".toc").delete();
     }
 
-    @Test(timeout = 600000)
+    @Test(timeout = 1800000)
     public void documentation() throws IOException, InterruptedException {
 	documentTest(baseDir, "pdbf-doc", true);
 	checkTAR(baseDir, "pdbf-doc.html");
     }
 
-    @Test(timeout = 600000)
+    @Test(timeout = 1800000)
     public void minimal() throws IOException, InterruptedException {
 	documentTest(baseDir, "minimal", false);
     }
 
-    @Test(timeout = 600000)
+    @Test(timeout = 1800000)
     public void charts() throws IOException, InterruptedException {
 	documentTest(testDir, "charts", false);
     }
     
-    @Test(timeout = 600000)
+    @Test(timeout = 1800000)
     public void noPDBF() throws IOException, InterruptedException {
 	documentTest(testDir, "no_pdbf", false);
 	new File(testDir + "no_pdbf.html").delete();
@@ -234,7 +234,7 @@ public class CompileAndCheckIT {
 	new File(testDir + "dummy.png").delete();
     }
     
-    @Test(timeout = 300000)
+    @Test(timeout = 1800000)
     public void compileOtherDir() throws IOException, InterruptedException {
 	// Create Folder and copy tex file
 	String otherFolder = baseDir + "otherFolder" + File.separator;
