@@ -167,10 +167,10 @@
 		% Place Image
 		\begin{tabular}{ccc}%
 		\pdbf@save{Overlay\arabic{visual}1}&&\\%
-		\IfFileExists{Overlay\arabic{visual}.png}{%
-	    		&\includegraphics[width=\pdbf@width, height=\pdbf@height]{Overlay\arabic{visual}.png}&\\%
+		\IfFileExists{Overlay\arabic{visual}.pdf}{%
+	    		&\includegraphics[width=\pdbf@width, height=\pdbf@height, page=1]{Overlay\arabic{visual}.pdf}&\\%
 		}{%
-	    		&\includegraphics[width=\pdbf@width, height=\pdbf@height, draft]{dummy.png}&\\%
+	    		&\includegraphics[width=\pdbf@width, height=\pdbf@height, page=1, draft]{dummy.pdf}&\\%
 		}%
 		&&\zsavepos{Overlay\arabic{visual}2}\\%
 		\end{tabular}%

@@ -231,7 +231,7 @@ public class CompileAndCheckIT {
 	documentTest(testDir, "no_pdbf", false);
 	new File(testDir + "no_pdbf.html").delete();
 	new File(testDir + "pdbf.sty").delete();
-	new File(testDir + "dummy.png").delete();
+	new File(testDir + "dummy.pdf").delete();
     }
     
     @Test(timeout = 1800000)

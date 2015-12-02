@@ -67,6 +67,14 @@ page.open(system.args[1], function() {
 		height: size.h
 	};
 	
+	page.paperSize = {
+		width: size.w/3,
+		height: size.h/3,
+		margin: '0px'
+	};
+	
+	page.zoomFactor = 1.0;
+	
 	waitFor(
 		function() {
 			return page.evaluate(function() {
@@ -81,7 +89,7 @@ page.open(system.args[1], function() {
 			window.setTimeout(function () {
 				console.log("Finished " + data.name);
 				fs.write('../' + data.name + '.json', data.result, 'w');
-				page.render('../' + data.name +'.png', {format: 'png', quality: '0'});
+				page.render('../' + data.name +'.pdf', {format: 'pdf', quality: '100'});
 				phantom.exit();
 			}, 500);
 		},

@@ -132,9 +132,9 @@ public class LaTeX_Compiler {
 	}
 
 	File fi1 = new File(baseDir + "pdbf.sty").getAbsoluteFile();
-	File fi11 = new File(baseDir + "dummy.png").getAbsoluteFile();
+	File fi11 = new File(baseDir + "dummy.pdf").getAbsoluteFile();
 	File fi2 = new File(latexFolder + File.separator + "pdbf.sty").getAbsoluteFile();
-	File fi22 = new File(latexFolder + File.separator + "dummy.png").getAbsoluteFile();
+	File fi22 = new File(latexFolder + File.separator + "dummy.pdf").getAbsoluteFile();
 	if (!fi1.equals(fi2)) {
 	    try {
 		FileUtils.copyFile(fi1, fi2);
@@ -571,7 +571,7 @@ public class LaTeX_Compiler {
 	    cleanupfiles.add(baseDirData + o.name + ".html");
 	    cleanupfiles.add(baseDir + o.name + ".json");
 	    preloadfiles.add(baseDir + o.name + ".json");
-	    copyfiles.add(baseDir + o.name + ".png");
+	    copyfiles.add(baseDir + o.name + ".pdf");
 
 	    String a = new File(arg0).getName();
 	    String filename = a.substring(0, a.length() - 4);
@@ -597,7 +597,7 @@ public class LaTeX_Compiler {
 	    }
 	} else {
 	    try {
-		FileUtils.copyFile(new File(baseDir + "dummy.png"), new File(baseDir + o.name + ".png"));
+		FileUtils.copyFile(new File(baseDir + "dummy.pdf"), new File(baseDir + o.name + ".pdf"));
 	    } catch (IOException e) {
 		e.printStackTrace();
 	    }

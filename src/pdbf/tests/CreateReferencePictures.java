@@ -42,7 +42,7 @@ public class CreateReferencePictures {
 	for (int i = 0; i < 72; ++i) {
 	    new File(baseDir + "Overlay" + (i + 1) + ".png").delete();
 	}
-	new File(testDir + "dummy.png").delete();
+	new File(testDir + "dummy.pdf").delete();
 	new File(testDir + "pdbf.sty").delete();
 	System.out.println("Finished!");
     }
