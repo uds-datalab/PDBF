@@ -1,7 +1,7 @@
 var system = require('system');
 var fs = require('fs');
-if (system.args.length !== 3) {
-	console.log('Usage: ' + system.args[0] + ' webpagefile basedir');
+if (system.args.length !== 4) {
+	console.log('Usage: ' + system.args[0] + ' webpagefile basedir dpiScalingFactor');
 	phantom.exit();
 } 
 
@@ -68,8 +68,8 @@ page.open(system.args[1], function() {
 	};
 	
 	page.paperSize = {
-		width: size.w/3,
-		height: size.h/3,
+		width: 1.0*size.w/system.args[3],
+		height: 1.0*size.h/system.args[3],
 		margin: '0px'
 	};
 	

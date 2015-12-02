@@ -48,6 +48,7 @@ public class LaTeX_Compiler {
     private static Gson gson;
     public static String suffix;
     private static Dimension dimOrg;
+    private static float dpiScalingFactor;
 
     private static String baseDir;
     private static String baseDirData;
@@ -77,7 +78,12 @@ public class LaTeX_Compiler {
 	    ArrayList<String> tmp = new ArrayList<String>();
 	    while ((strLine = br.readLine()) != null) {
 		strLine = strLine.trim();
-		if (!strLine.startsWith("#") && !strLine.equals("")) {
+		if (strLine.startsWith("dpiScalingFactor")) {
+		    StringTokenizer stok = new StringTokenizer(strLine, ":");
+		    stok.nextToken();
+		    dpiScalingFactor = Float.parseFloat(stok.nextToken());
+		}
+		else if (!strLine.startsWith("#") && !strLine.equals("")) {
 		    tmp.add(strLine);
 		}
 	    }
@@ -588,7 +594,7 @@ public class LaTeX_Compiler {
 		e.printStackTrace();
 	    }
 	    try {
-		ProcessBuilder pb = new ProcessBuilder(baseDir + "external-tools" + File.separator + "phantomjs-" + suffix, baseDir + "external-tools" + File.separator + "capture.js", o.name + ".html", baseDirData);
+		ProcessBuilder pb = new ProcessBuilder(baseDir + "external-tools" + File.separator + "phantomjs-" + suffix, baseDir + "external-tools" + File.separator + "capture.js", o.name + ".html", baseDirData, ""+dpiScalingFactor);
 		pb.inheritIO();
 		Process p = pb.start();
 		processes.add(p);
