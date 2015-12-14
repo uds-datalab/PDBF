@@ -1541,32 +1541,34 @@ function getChartOptions(json, zoomFactor, values, chart) {
 		}
 	}
 	
-	// add scoped css
-	var css = document.createElement('style');
-	css.setAttribute('scoped', 'scoped');
-	$(chart).parent().append(css);
-	var cssText;
-	cssText += '.c3-line {																	'
-	cssText += 'stroke-width: ' + (zoomFactor) + 'px; 										'
-	cssText += '}																			'
-	cssText += '.c3-circle._expanded_ {														'
-	cssText += ' 	stroke-width: ' + (zoomFactor) + 'px;									'
-	cssText += ' 	stroke: white; 															'
-	cssText += ' }																			'
-	cssText += ' .c3-selected-circle {														'
-	cssText += ' 	fill: white;															'
-	cssText += ' 	stroke-width: ' + (2 * zoomFactor) + 'px; 								'
-	cssText += ' }																			'
-	cssText += ' .c3-target.c3-focused path.c3-line, .c3-target.c3-focused path.c3-step {	'
-	cssText += '	 stroke-width: ' + (2 * zoomFactor) + 'px; 								'
-	cssText += ' }																			'
-	cssText += ' .c3-legend-background {													'
-	cssText += '	 opacity: 0.75;															'
-	cssText += ' 	 fill: white;															'
-	cssText += ' 	 stroke: lightgray;														'
-	cssText += ' 	 stroke-width: ' + (zoomFactor) + '; 									'
-	cssText += ' }																			';
-	css.innerHTML = cssText;
+	if (!($(chart).parent().children().last()[0] instanceof HTMLStyleElement)) {
+		// add scoped css
+		var css = document.createElement('style');
+		css.setAttribute('scoped', 'scoped');
+		$(chart).parent().append(css);
+		var cssText;
+		cssText += '.c3-line {																	'
+		cssText += 'stroke-width: ' + (zoomFactor) + 'px; 										'
+		cssText += '}																			'
+		cssText += '.c3-circle._expanded_ {														'
+		cssText += ' 	stroke-width: ' + (zoomFactor) + 'px;									'
+		cssText += ' 	stroke: white; 															'
+		cssText += ' }																			'
+		cssText += ' .c3-selected-circle {														'
+		cssText += ' 	fill: white;															'
+		cssText += ' 	stroke-width: ' + (2 * zoomFactor) + 'px; 								'
+		cssText += ' }																			'
+		cssText += ' .c3-target.c3-focused path.c3-line, .c3-target.c3-focused path.c3-step {	'
+		cssText += '	 stroke-width: ' + (2 * zoomFactor) + 'px; 								'
+		cssText += ' }																			'
+		cssText += ' .c3-legend-background {													'
+		cssText += '	 opacity: 0.75;															'
+		cssText += ' 	 fill: white;															'
+		cssText += ' 	 stroke: lightgray;														'
+		cssText += ' 	 stroke-width: ' + (zoomFactor) + '; 									'
+		cssText += ' }																			';
+		css.innerHTML = cssText;
+	}
 	
 	return options;
 }

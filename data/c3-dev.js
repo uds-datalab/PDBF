@@ -4460,7 +4460,7 @@
     };
     Axis.prototype.getXAxisTickFormat = function getXAxisTickFormat() {
         var $$ = this.owner, config = $$.config,
-            format = $$.isTimeSeries() ? $$.defaultAxisTimeFormat : $$.isCategorized() ? $$.categoryName : function (v) { return v < 0 ? v.toFixed(0) : v; };
+            format = $$.isTimeSeries() ? $$.defaultAxisTimeFormat : $$.isCategorized() ? $$.categoryName : function (v) { return parseFloat(v.toFixed(10)); };
         if (config.axis_x_tick_format) {
             if (isFunction(config.axis_x_tick_format)) {
                 format = config.axis_x_tick_format;
