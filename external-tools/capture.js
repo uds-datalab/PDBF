@@ -91,7 +91,7 @@ page.open(system.args[1], function() {
 				fs.write('../' + data.name + '.json', data.result, 'w');
 				page.render('../' + data.name +'.pdf', {format: 'pdf', quality: '100'});
 				phantom.exit();
-			}, 500);
+			}, 1000);
 		},
 		60000 //timeout 1m
 	);

@@ -277,6 +277,14 @@ function display(json, page, phantomJS) {
 					elem : undefined
 				}; // TODO:
 			}
+			if (false && phantomJS) { //TODO: reenable this
+				//Check if Pivot table fits into the div. If not then decrease the font-size until it fits
+				while ($(container).children().last().children().width() >= $(container).width()) {
+					zoomFactor = zoomFactor - 0.001;
+					$(container).css('font-size', (zoomFactor * 12.0) + "pt");
+				}
+				//TODO: propagate final zoomFactor back to pdbf-config.json
+			}
 			break;
 		default:
 			alert("Unknown type: " + json.type.C);
