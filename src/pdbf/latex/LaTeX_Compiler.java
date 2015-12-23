@@ -7,9 +7,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -20,6 +20,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.io.FileUtils;
+import org.postgresql.util.PSQLException;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -82,8 +83,7 @@ public class LaTeX_Compiler {
 		    StringTokenizer stok = new StringTokenizer(strLine, ":");
 		    stok.nextToken();
 		    dpiScalingFactor = Float.parseFloat(stok.nextToken());
-		}
-		else if (!strLine.startsWith("#") && !strLine.equals("")) {
+		} else if (!strLine.startsWith("#") && !strLine.equals("")) {
 		    tmp.add(strLine);
 		}
 	    }
@@ -149,6 +149,11 @@ public class LaTeX_Compiler {
 		e3.printStackTrace();
 		System.exit(-1);
 	    }
+	}
+
+	for (int i = 0; i < 100; ++i) {
+	    new File(baseDir + "Overlay" + i + ".pdf").delete(); //HACK: replace this by a scan for all OverlayX.pdf files where X is a number
+	    new File(latexFolder + File.separator + "Overlay" + i + ".pdf").delete();
 	}
 
 	System.out.println("Compiling LaTeX (1/2)...");
@@ -432,25 +437,29 @@ public class LaTeX_Compiler {
 			System.exit(-1);
 		    }
 
-		    PreparedStatement stmt = conn.prepareStatement("SELECT * FROM ?");
-		    stmt.setString(1, curTable);
-		    ResultSet rs = stmt.executeQuery();
-		    ResultSetMetaData rsmd = rs.getMetaData();
-		    int cols = rsmd.getColumnCount();
-		    for (int i = 1; i <= cols; ++i) {
-			table.columns.add(new Column(rsmd.getColumnName(i), rsmd.getColumnTypeName(i).toUpperCase()));
-		    }
-		    if (cols > 0) {
-			while (rs.next()) {
-			    Object[] data = new Object[cols];
-			    for (int i = 1; i <= cols; ++i) {
-				data[i - 1] = rs.getObject(i);
-			    }
-			    table.data.add(new Data(data));
+		    try {
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT * FROM \"" + curTable + "\"");
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int cols = rsmd.getColumnCount();
+			for (int i = 1; i <= cols; ++i) {
+			    table.columns.add(new Column(rsmd.getColumnName(i), rsmd.getColumnTypeName(i).toUpperCase()));
 			}
+			if (cols > 0) {
+			    while (rs.next()) {
+				Object[] data = new Object[cols];
+				for (int i = 1; i <= cols; ++i) {
+				    data[i - 1] = rs.getObject(i);
+				}
+				table.data.add(new Data(data));
+			    }
+			}
+			rs.close();
+			alasql.addTable(table, curTable);
+		    } catch (PSQLException e) {
+			System.err.println(e.getMessage());
+			System.exit(-1);
 		    }
-		    rs.close();
-		    alasql.addTable(table, curTable);
 		}
 		conn.close();
 		break;
@@ -594,7 +603,7 @@ public class LaTeX_Compiler {
 		e.printStackTrace();
 	    }
 	    try {
-		ProcessBuilder pb = new ProcessBuilder(baseDir + "external-tools" + File.separator + "phantomjs-" + suffix, baseDir + "external-tools" + File.separator + "capture.js", o.name + ".html", baseDirData, ""+dpiScalingFactor);
+		ProcessBuilder pb = new ProcessBuilder(baseDir + "external-tools" + File.separator + "phantomjs-" + suffix, baseDir + "external-tools" + File.separator + "capture.js", o.name + ".html", baseDirData, "" + dpiScalingFactor);
 		pb.inheritIO();
 		Process p = pb.start();
 		processes.add(p);

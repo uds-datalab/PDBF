@@ -17,7 +17,7 @@ The following points are linked to the chart on the left side below: \dataText[l
 {\fontfamily{phv} \tiny \selectfont
 \noindent
 Change the font before this line to Helvetica and fontsize to tiny.\\[3pt]
-\chart[width=0.6\textwidth, height=0.25\textwidth, chartType=signatureplot]{SELECT b FROM test;}\\[3pt]
+\chart[width=0.6\textwidth, height=0.25\textwidth, chartType=compareToBest]{SELECT b FROM test;}\\[3pt]
 \multiplotChart[width=0.6\textwidth, height=0.5\textwidth, xCount=2, yCount=2, yValues={["b", "b*2"]}, xValues={["a <= 2", "a > 2"]}, topArr={["a smaller or equal 2", "a greater 2"]}, yFirst]{SELECT a,? FROM test WHERE ?;}\\[3pt]
 \pivotTable[width=0.10\textwidth, height=0.15\textwidth, rows={["a"]}, aggregationattribute=b]{SELECT * FROM test;}
 \dataTable[verticalLines=i, horizontalLinesHeader=b hh, horizontalLinesBody=i]{SELECT * FROM test;}\\[3pt]

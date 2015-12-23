@@ -105,8 +105,8 @@ var waitAndCapture = function (i) {
 };
 
 page.viewportSize = {
-    width: 1050,
-    height: 1485
+    width: 1050*2,
+    height: 1485*2
 };
 
 page.open(system.args[1], function() {

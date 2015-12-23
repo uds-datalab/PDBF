@@ -953,7 +953,7 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 	}
 	
 	// TODO: right now only labels of one line height are supported!
-	var fontbasesize = 13;
+	var fontbasesize = 15;
 	var left = leftArr.length != 0 ? fontbasesize * zoomFactor * 1.6 : 0;
 	var right = rightArr.length != 0 ? fontbasesize * zoomFactor * 1.6 : 0;
 	var top = topArr.length != 0 ? fontbasesize * zoomFactor * 1.6 : 0;
@@ -1129,15 +1129,15 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 			td.setAttribute('style', style);
 			
 			var chartdata;
-			if (json.result[x + y * yCount] == undefined) {
+			if (json.result[x + y * Math.max(xCount, yCount)] == undefined) {
 				chartdata = getChartData(json);
 				if (chartdata.error != undefined) {
 					alert(json.name + " has error:\n" + chartdata.error);
 				}
 				chartdata = chartdata.values;
-				json.result[x + y * yCount] = chartdata;
+				json.result[x + y * Math.max(xCount, yCount)] = chartdata;
 			} else {
-				chartdata = json.result[x + y * yCount];
+				chartdata = json.result[x + y * Math.max(xCount, yCount)];
 			}
 			var options = getChartOptions(json, zoomFactor, chartdata, cellInner);
 			
@@ -1525,8 +1525,10 @@ function getChartOptions(json, zoomFactor, values, chart) {
 			break;
 		case 'SignaturePlot':
 		case 'signatureplot':
+		case 'compareToBest':
+		case 'comparetobest':
 			try {
-				options.data = signaturePlot([ options.data ]);
+				options.data = compareToBest([ options.data ]);
 				options.axis.x.tick.format = function(x) {
 					return '' + (Math.round(x * 10000) / 100) + '%';
 				};
@@ -2137,7 +2139,7 @@ function WELCH_TEST(arr1, arr2, alpha) {
 }
 alasql.fn.WELCH_TEST = WELCH_TEST;
 
-function signaturePlot(valuesArr) {
+function compareToBest(valuesArr) {
 	var values = valuesArr[0]; // Call by reference
 	if (values.keys == undefined)
 		return values;
@@ -2146,7 +2148,7 @@ function signaturePlot(valuesArr) {
 		return values;
 	}
 	if (keys.length > 1) {
-		throw new Error("SignaturePlot does only support one attribute");
+		throw new Error("compareToBest does only support one attribute");
 	}
 	values.x = "x";
 	var aname = keys[0];

@@ -41,7 +41,7 @@
 \urlstyle{rm}
 
 \def\a{5cm}
-\def\b{10.5cm}
+\def\b{11.2cm}
 
 \def\option#1#2#3#4{%
 \noindent \begin{tabular}{|p{\a}|p{\b}|}
@@ -90,15 +90,15 @@ This approach works completely offline. No internet connection is required, neit
 
 \section{Getting started}
 \begin{itemize}
-\item Make sure you have a Java Runtime (version $>=$ 1.7) installed
+\item Make sure you have a Java Runtime (version $>=$ 1.7) and a LaTeX distribution installed
 \item \href{https://github.com/uds-datalab/PDBF/archive/gh-pages.zip}{Download the latest version}
 \item Extract zip and change workingdir to extracted folder
 \item Adjust config.cfg
-\item Try to compile pdbf-doc.tex file with this command: \texttt{java -jar pdbf.jar pdbf-doc.tex}
-\item Open pdbf-doc.html, this is the final output of the compilation process, if you rename it to ".pdf" it is also a valid pdf-document
-\item Optionally you can attach the included vldb-Invaders.ova (Space invaders clone) or \href{https://github.com/uds-datalab/PDBF/releases/download/1.0.1/dsl.ova}{download the dsl.ova} (Damn small linux) VirtualBox image and attach it to the compiled PDBF file with this command: \texttt{java -jar pdbf.jar --vm pdbf-doc.html vldb-Invaders.ova}.
-\item Open pdbf-doc.ova, this is the final output with the attached ova file. Its still a valid pdf and html at the same time.
-\item You can play around with the minimal.tex file which contains a minimal example of PDBF usage
+\item Try to compile minimal.tex file with this command: \texttt{java -jar pdbf.jar minimal.tex}
+\item Open minimal.html, this is the final output of the compilation process, if you rename it to ".pdf" it is also a valid pdf-document
+\item Optionally you can attach the included vldb-Invaders.ova (Space invaders clone) or \href{https://github.com/uds-datalab/PDBF/releases/download/1.0.1/dsl.ova}{download the dsl.ova} (Damn small linux) VirtualBox image and attach it to the compiled PDBF file with this command: \texttt{java -jar pdbf.jar --vm minimal.html vldb-Invaders.ova}.
+\item Open minimal.ova, this is the final output with the attached ova file. Its still a valid pdf and html at the same time.
+\item You can play around with the minimal.tex file. It contains a small example on how to specify PDBF elements in LaTeX
 \item For further information take a look at the \href{http://uds-datalab.github.io/PDBF/}{documentation}
 \end{itemize}
 
@@ -316,8 +316,8 @@ PDBF uses AlaSQL as database engine. For all available features of the database 
     \caption{Bar Chart}
     \end{minipage} \\[8pt]
     \begin{minipage}{1.0\textwidth}
-    \chart[width=\textwidth, height=0.36\textwidth, chartType=signatureplot]{SELECT b FROM test;}
-    \caption{Signatureplot Chart}
+    \chart[width=\textwidth, height=0.36\textwidth, chartType=compareToBest]{SELECT b FROM test;}
+    \caption{compareToBest Chart}
     \end{minipage}
 \end{figure}
 
@@ -354,8 +354,10 @@ PDBF uses AlaSQL as database engine. For all available features of the database 
 \option
 {chartType}
 {Sets the type of the chart.}
-{\texttt{line} or \texttt{bar} or \texttt{signatureplot}}
+{\texttt{line} or \texttt{bar} or \texttt{compareToBest}}
 {\texttt{line}}
+
+\noindent\textbf{Note:} A chart or multiplot chart with option "chartType" set to "compareToBest" expects either an array of numbers or an array of an array of numbers as input. It plots the slowdown compared to the best value in the array. In the second case the inner array of numbers contains values for repetitions of the same experiment. \\[6pt]
 
 \option
 {xunit}

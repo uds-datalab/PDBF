@@ -10,7 +10,6 @@
 	transform-origin: 50% 50%;
 	-webkit-transform: rotate(-90deg);	
 	-webkit-transform-origin: 50% 50%;
-	width: 100%;
 }
 
 .vertical-text__innerR {
@@ -21,7 +20,6 @@
 	transform-origin: 50% 50%;
 	-webkit-transform: rotate(90deg);
 	-webkit-transform-origin: 50% 50%;
-	width: 100%;
 }
 
 .vertical-text__innerL:after {

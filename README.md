@@ -1,5 +1,5 @@
 #PDBF - A Toolkit for Creating Janiform Data Documents
-Version 1.2.0
+Version 1.2.1
 
 ##Bugs, Suggestions, Feature requests
 If you encounter bugs, have suggestions or have a feature request, then please go to the [issue page](https://github.com/uds-datalab/PDBF/issues) open a new issue if necessary and explain your concern.
@@ -20,15 +20,15 @@ A [demo paper](https://infosys.uni-saarland.de/publications/p1972-dittrich.html)
 This toolkit is licensed unter the MIT License (see [here](https://github.com/uds-datalab/PDBF/blob/gh-pages/LICENSE.md))
 
 ##Getting started
-* Make sure you have a Java Runtime (version >= 1.7) installed
+* Make sure you have a Java Runtime (version >= 1.7) and a LaTeX distribution installed
 * [Download the latest version](https://github.com/uds-datalab/PDBF/archive/gh-pages.zip)
 * Extract zip and change workingdir to extracted folder
 * Adjust config.cfg
-* Try to compile pdbf-doc.tex file with this command: **java -jar pdbf.jar pdbf-doc.tex**
-* Open pdbf-doc.html, this is the final output of the compilation process, if you rename it to ".pdf" it is also a valid pdf-document
-* Optionally you can attach the included vldb-Invaders.ova (Space invaders clone) or [download the dsl.ova](https://github.com/uds-datalab/PDBF/releases/download/1.0.1/dsl.ova) (Damn small linux) VirtualBox image and attach it to the compiled PDBF file with this command: **java -jar pdbf.jar --vm pdbf-doc.html vldb-Invaders.ova**
-* Open pdbf-doc.ova, this is the final output with the attached ova file. Its still a valid pdf and html at the same time.
-* You can play around with the minimal.tex file which contains a minimal example of PDBF usage
+* Try to compile minimal.tex file with this command: **java -jar pdbf.jar minimal.tex**
+* Open minimal.html, this is the final output of the compilation process, if you rename it to ".pdf" it is also a valid pdf-document
+* Optionally you can attach the included vldb-Invaders.ova (Space invaders clone) or [download the dsl.ova](https://github.com/uds-datalab/PDBF/releases/download/1.0.1/dsl.ova) (Damn small linux) VirtualBox image and attach it to the compiled PDBF file with this command: **java -jar pdbf.jar --vm minimal.html vldb-Invaders.ova**
+* Open minimal.ova (if you have VirtualBox installed), this is the final output with the attached ova file. Its still a valid pdf and html at the same time.
+* You can play around with the minimal.tex file. It contains a small example on how to specify PDBF elements in LaTeX
 * For further information take a look at the [documentation](http://uds-datalab.github.io/PDBF/)
 
 ##Features
