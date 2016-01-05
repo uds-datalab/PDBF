@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import pdbf.common.Tools;
 import pdbf.latex.LaTeX_Compiler;
@@ -14,6 +17,9 @@ public class CompleteRun_HTML {
     public static boolean includeRes = true;
     
     public static void main(String[] args) {
+	BasicConfigurator.configure();
+	Logger.getRootLogger().setLevel(Level.ERROR);
+	
 	String baseDir = Tools.getBaseDir();
 	
 	LaTeX_Compiler.suffix = Tools.getOS();

@@ -3,8 +3,11 @@ package pdbf.latex;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -15,11 +18,15 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.UUID;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.io.FileUtils;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
+import org.apache.pdfbox.pdmodel.encryption.StandardProtectionPolicy;
 import org.postgresql.util.PSQLException;
 
 import com.google.gson.Gson;
@@ -152,7 +159,14 @@ public class LaTeX_Compiler {
 	}
 
 	for (int i = 0; i < 100; ++i) {
-	    new File(baseDir + "Overlay" + i + ".pdf").delete(); //HACK: replace this by a scan for all OverlayX.pdf files where X is a number
+	    new File(baseDir + "Overlay" + i + ".pdf").delete(); // HACK:
+								 // replace this
+								 // by a scan
+								 // for all
+								 // OverlayX.pdf
+								 // files where
+								 // X is a
+								 // number
 	    new File(latexFolder + File.separator + "Overlay" + i + ".pdf").delete();
 	}
 
@@ -356,6 +370,36 @@ public class LaTeX_Compiler {
 	// Cleanup
 	for (String s : cleanupfiles) {
 	    new File(s).delete();
+	}
+
+	// Write-protect the pdf
+	System.out.println("Adding write protection to the pdf...");
+	try {
+	    String a = new File(args[0]).getName();
+	    String filename = a.substring(0, a.length() - 4);
+	    String basename = args[0].substring(0, args[0].length() - 4);
+	    String pdfname = baseDir + filename + ".pdf";
+
+	    System.setProperty("org.apache.pdfbox.baseParser.pushBackSize", "2024768");
+	    InputStream dataStream = new FileInputStream(new File(pdfname));
+	    PDDocument doc = PDDocument.load(dataStream);
+	    dataStream.close();
+	    AccessPermission ap = new AccessPermission();
+	    ap.setCanModify(false);
+	    ap.setCanExtractContent(true);
+	    ap.setCanPrint(true);
+	    ap.setCanPrintDegraded(true);
+	    ap.setReadOnly();
+	    StandardProtectionPolicy spp = new StandardProtectionPolicy(UUID.randomUUID().toString(), "", ap);
+	    doc.protect(spp);
+	    OutputStream out = new FileOutputStream(new File(pdfname));
+	    doc.save(out);
+	    doc.close();
+	    out.close();
+	} catch (Throwable e) {
+	    e.printStackTrace();
+	    System.err.println("Setting write protect to the pdf failed");
+	    System.exit(1);
 	}
     }
 
