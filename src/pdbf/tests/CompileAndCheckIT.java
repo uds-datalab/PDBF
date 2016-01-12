@@ -162,11 +162,12 @@ public class CompileAndCheckIT {
 	if (result.isValid()) {
 	    System.out.println("Finished checkPDF successfully");
 	} else {
-	    System.out.println("The file is not valid, error(s) :");
+	    System.err.println("The file is not valid, error(s) :");
 	    for (ValidationError error : result.getErrorsList()) {
-		System.out.println(error.getErrorCode() + " : " + error.getDetails());
+		System.err.println(error.getErrorCode() + " : " + error.getDetails());
+		fail(error.getErrorCode() + " : " + error.getDetails());
 	    }
-	    fail();
+	    fail("PDF file not valid, but no validation error was output");
 	}
     }
 
@@ -240,7 +241,7 @@ public class CompileAndCheckIT {
 	String otherFolder = baseDir + "otherFolder" + File.separator;
 	new File(otherFolder).mkdirs();
 	FileUtils.copyFile(new File(baseDir + "minimal.tex"), new File(otherFolder + "minimal.tex"));
-	compile(otherFolder, "minimal.tex");
+	documentTest(otherFolder, "minimal", false);
 	if (!new File(otherFolder + "minimal.html").exists()) {
 	    fail();
 	}

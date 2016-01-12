@@ -93,7 +93,7 @@
                   <directory>.</directory>
 			      <includes>
 			        <include>config.cfg</include>
-			        <include>dummy.png</include>
+			        <include>dummy.pdf</include>
 			        <include>hello_world.tex</include>
 			        <include>kein_pdbf.tex</include>
 			        <include>*.ova</include>

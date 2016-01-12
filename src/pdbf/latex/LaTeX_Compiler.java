@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -58,6 +59,7 @@ public class LaTeX_Compiler {
     private static Dimension dimOrg;
     private static float dpiScalingFactor;
 
+    private static String latexDir;
     private static String baseDir;
     private static String baseDirData;
     private static String arg0;
@@ -73,9 +75,50 @@ public class LaTeX_Compiler {
 
     private static String latexFolder;
 
+    public static void cleanup(String filename) {
+	new File(baseDir + filename + ".pdf").delete();
+	new File(baseDir + filename + "Embed.pdf").delete();
+	new File(latexDir + filename + ".pdf").delete();
+
+	for (String s : new File(baseDir).list()) {
+	    if (Pattern.matches("Overlay\\d+(Tmp|).(pdf|json|data)", s)) {
+		new File(baseDir + s).delete();
+	    }
+	}
+	for (String s : new File(latexDir).list()) {
+	    if (Pattern.matches("Overlay\\d+(Tmp|).(pdf|json|data)", s)) {
+		new File(latexDir + s).delete();
+	    }
+	}
+	
+	new File(baseDir + "pdbf-dim.json").delete();
+	new File(baseDir + "pdbf-config.json").delete();
+	new File(baseDir + "pdbf-db.sql").delete();
+	new File(baseDir + "pdbf-db.json").delete();
+	new File(baseDir + "pdbf-preload").delete();
+    }
+
     public static void main(String[] args) {
 	baseDir = Tools.getBaseDir();
 	baseDirData = Tools.getBaseDirData();
+
+	String texFilename = new File(args[0]).getName();
+	String baseFilename = texFilename.substring(0, texFilename.length() - 4);
+	String pdfname = baseDir + baseFilename + ".pdf";
+
+	String latexPath = args[0];
+	arg0 = args[0];
+
+	File latex = new File(latexPath);
+	if (!latex.exists()) {
+	    System.err.println("Error: LaTeX file does not exist!");
+	    System.exit(-1);
+	}
+
+	latexFolder = latex.getAbsoluteFile().getParent();
+	latexDir = latexFolder + File.separator;
+
+	cleanup(baseFilename);
 
 	// Read config.
 	try {
@@ -111,21 +154,10 @@ public class LaTeX_Compiler {
 	    System.exit(-1);
 	}
 
-	String latexPath = args[0];
-	arg0 = args[0];
-
 	if (!latexPath.endsWith(".tex")) {
 	    System.err.println("Error: Specified file has the wrong extension. Only .tex is supported!");
 	    System.exit(-1);
 	}
-
-	File latex = new File(latexPath);
-	if (!latex.exists()) {
-	    System.err.println("Error: LaTeX file does not exist!");
-	    System.exit(-1);
-	}
-
-	latexFolder = latex.getAbsoluteFile().getParent();
 
 	ArrayList<String> commands = new ArrayList<String>(Arrays.asList(pathToLaTeXScript));
 	commands.add(latex.getAbsolutePath());
@@ -146,8 +178,8 @@ public class LaTeX_Compiler {
 
 	File fi1 = new File(baseDir + "pdbf.sty").getAbsoluteFile();
 	File fi11 = new File(baseDir + "dummy.pdf").getAbsoluteFile();
-	File fi2 = new File(latexFolder + File.separator + "pdbf.sty").getAbsoluteFile();
-	File fi22 = new File(latexFolder + File.separator + "dummy.pdf").getAbsoluteFile();
+	File fi2 = new File(latexDir + "pdbf.sty").getAbsoluteFile();
+	File fi22 = new File(latexDir + "dummy.pdf").getAbsoluteFile();
 	if (!fi1.equals(fi2)) {
 	    try {
 		FileUtils.copyFile(fi1, fi2);
@@ -158,19 +190,8 @@ public class LaTeX_Compiler {
 	    }
 	}
 
-	for (int i = 0; i < 100; ++i) {
-	    new File(baseDir + "Overlay" + i + ".pdf").delete(); // HACK:
-								 // replace this
-								 // by a scan
-								 // for all
-								 // OverlayX.pdf
-								 // files where
-								 // X is a
-								 // number
-	    new File(latexFolder + File.separator + "Overlay" + i + ".pdf").delete();
-	}
-
-	System.out.println("Compiling LaTeX (1/2)...");
+	// Get the config.json out of the tex file
+	System.out.println("Compiling LaTeX (1/3)...");
 	try {
 	    ProcessBuilder pb = new ProcessBuilder(commands);
 	    pb.inheritIO();
@@ -193,7 +214,7 @@ public class LaTeX_Compiler {
 	    overlays = new Overlay[0];
 	}
 
-	// Split
+	// Generate database
 	File f = new File(baseDir + "pdbf-db.sql");
 	File f2 = new File(baseDir + "pdbf-db.json");
 	if (f.exists()) {
@@ -230,7 +251,7 @@ public class LaTeX_Compiler {
 	// Process raw SQL statements
 	getFinalDatabase();
 
-	// count
+	// count number of PDBF elements to process
 	int count = 0;
 	for (int i = 0; i < overlays.length; ++i) {
 	    if (overlays[i].type instanceof Chart || overlays[i].type instanceof DataText || overlays[i].type instanceof DataTable || overlays[i].type instanceof Text) {
@@ -284,19 +305,6 @@ public class LaTeX_Compiler {
 	    }
 	}
 
-	// Copy images to latex file
-	for (String s : copyfiles) {
-	    File source = new File(s).getAbsoluteFile();
-	    File target = new File(latexFolder + File.separator + source.getName()).getAbsoluteFile();
-	    if (!source.equals(target)) {
-		try {
-		    FileUtils.copyFile(source, target);
-		} catch (IOException e) {
-		    e.printStackTrace();
-		}
-	    }
-	}
-
 	String preload = "";
 	for (String preTmp : preloadfiles) {
 	    String pre = new File(preTmp).getName();
@@ -329,7 +337,45 @@ public class LaTeX_Compiler {
 	    e2.printStackTrace();
 	}
 
-	System.out.println("Compiling LaTeX (2/2)...");
+	// Compile without images for visual PDBF elements but with non visual
+	// PDBF elements
+	System.out.println("Compiling LaTeX (2/3)...");
+	try {
+	    ProcessBuilder pb = new ProcessBuilder(commands);
+	    pb.inheritIO();
+	    pb.directory(new File(baseDir));
+	    Process p = pb.start();
+	    p.waitFor();
+	    if (p.exitValue() != 0) {
+		System.err.println("Latex compiler exited with error!");
+		System.exit(-1);
+	    }
+	} catch (Exception e) {
+	    System.err.println("Error: LaTeX compilation failed! Reason: \n" + e.getMessage());
+	    System.exit(-1);
+	}
+	try {
+	    FileUtils.moveFile(new File(pdfname), new File(pdfname.substring(0, pdfname.length() - 4) + "Embed.pdf"));
+	} catch (IOException e2) {
+	    e2.printStackTrace();
+	    System.exit(-1);
+	}
+
+	// Copy images to latex file folder
+	for (String s : copyfiles) {
+	    File source = new File(s.substring(0, s.length() - 4) + "Tmp.pdf").getAbsoluteFile();
+	    File target = new File(latexDir + new File(s).getName()).getAbsoluteFile();
+	    if (!source.equals(target)) {
+		try {
+		    FileUtils.copyFile(source, target);
+		} catch (IOException e) {
+		    e.printStackTrace();
+		}
+	    }
+	}
+
+	// Compile final pdf part of PDBF document
+	System.out.println("Compiling LaTeX (3/3)...");
 	try {
 	    ProcessBuilder pb = new ProcessBuilder(commands);
 	    pb.inheritIO();
@@ -375,11 +421,6 @@ public class LaTeX_Compiler {
 	// Write-protect the pdf
 	System.out.println("Adding write protection to the pdf...");
 	try {
-	    String a = new File(args[0]).getName();
-	    String filename = a.substring(0, a.length() - 4);
-	    String basename = args[0].substring(0, args[0].length() - 4);
-	    String pdfname = baseDir + filename + ".pdf";
-
 	    System.setProperty("org.apache.pdfbox.baseParser.pushBackSize", "2024768");
 	    InputStream dataStream = new FileInputStream(new File(pdfname));
 	    PDDocument doc = PDDocument.load(dataStream);

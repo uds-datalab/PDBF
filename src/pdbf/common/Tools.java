@@ -73,6 +73,7 @@ public class Tools {
 	    encodedfile = Base64.encodeBase64String(bytes);
 	} catch (Exception e) {
 	    e.printStackTrace();
+	    System.exit(-1);
 	}
 	return encodedfile;
     }

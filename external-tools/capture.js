@@ -89,7 +89,7 @@ page.open(system.args[1], function() {
 			window.setTimeout(function () {
 				console.log("Finished " + data.name);
 				fs.write('../' + data.name + '.json', data.result, 'w');
-				page.render('../' + data.name +'.pdf', {format: 'pdf', quality: '0'});
+				page.render('../' + data.name +'Tmp.pdf', {format: 'pdf', quality: '0'});
 				phantom.exit();
 			}, 1000);
 		},

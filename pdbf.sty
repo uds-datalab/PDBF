@@ -1,7 +1,7 @@
 \def\filedate{2015/02/23}
 \def\fileversion{1.0}
 \NeedsTeXFormat{LaTeX2e}
-\AtEndOfPackage{\ProvidesPackage{PDBF}
+\AtEndOfPackage{\ProvidesPackage{pdbf}
              [\filedate\space\space\space\space\fileversion\space\space\space\space(Patrick Bender)]}
 \RequirePackage{zref-savepos}
 \RequirePackage{zref-abspage}
@@ -122,13 +122,13 @@
 \define@key{pdbf}{xCount}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@xCount]}
 \def\pdbf@yCount{0}
 \define@key{pdbf}{yCount}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@yCount]}
-\def\pdbf@leftArr{[]}
+\def\pdbf@leftArr{auto}
 \define@key{pdbf}{leftArr}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@leftArr]}
-\def\pdbf@rightArr{[]}
+\def\pdbf@rightArr{auto}
 \define@key{pdbf}{rightArr}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@rightArr]}
-\def\pdbf@topArr{[]}
+\def\pdbf@topArr{auto}
 \define@key{pdbf}{topArr}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@topArr]}
-\def\pdbf@bottomArr{[]}
+\def\pdbf@bottomArr{auto}
 \define@key{pdbf}{bottomArr}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@bottomArr]}
 \def\pdbf@xValues{}
 \define@key{pdbf}{xValues}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@xValues]}
@@ -167,10 +167,10 @@
 		% Place Image
 		\begin{tabular}{ccc}%
 		\pdbf@save{Overlay\arabic{visual}1}&&\\%
-		\IfFileExists{Overlay\arabic{visual}.pdf}{%
-	    		&\includegraphics[width=\pdbf@width, height=\pdbf@height, page=1]{Overlay\arabic{visual}.pdf}&\\%
+		\IfFileExists{./Overlay\arabic{visual}.pdf}{%
+	    		&\includegraphics[width=\pdbf@width, height=\pdbf@height, page=1]{./Overlay\arabic{visual}.pdf}&\\%
 		}{%
-	    		&\includegraphics[width=\pdbf@width, height=\pdbf@height, page=1, draft]{dummy.pdf}&\\%
+	    		&\includegraphics[width=\pdbf@width, height=\pdbf@height, page=1]{./dummy.pdf}&\\%
 		}%
 		&&\zsavepos{Overlay\arabic{visual}2}\\%
 		\end{tabular}%

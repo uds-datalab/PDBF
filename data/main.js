@@ -221,7 +221,7 @@ function display(json, page, phantomJS) {
 					}
 				});
 			}
-			//Fallthrough
+			// Fallthrough
 		case "pdbf.common.Text":
 			if (!phantomJS) {
 				container.addEventListener("click", function() {
@@ -277,13 +277,14 @@ function display(json, page, phantomJS) {
 					elem : undefined
 				}; // TODO:
 			}
-			if (false && phantomJS) { //TODO: reenable this
-				//Check if Pivot table fits into the div. If not then decrease the font-size until it fits
+			if (false && phantomJS) { // TODO: reenable this
+				// Check if Pivot table fits into the div. If not then decrease
+				// the font-size until it fits
 				while ($(container).children().last().children().width() >= $(container).width()) {
 					zoomFactor = zoomFactor - 0.001;
 					$(container).css('font-size', (zoomFactor * 12.0) + "pt");
 				}
-				//TODO: propagate final zoomFactor back to pdbf-config.json
+				// TODO: propagate final zoomFactor back to pdbf-config.json
 			}
 			break;
 		default:
@@ -293,7 +294,7 @@ function display(json, page, phantomJS) {
 	toc("Display time for " + json.name);
 }
 
-function buildContainerChartBig(json, containerOver, initial) {	
+function buildContainerChartBig(json, containerOver, initial) {
 	containerOver.updateData = function() {
 		json.jsonBig.type.I.query = ref.editor.getValue();
 		containerOver.update();
@@ -382,7 +383,7 @@ function buildContainerChart(container, json, zoomFactor, style, containerOver) 
 			return;
 		}
 		chartdata = chartdata.values;
-
+		
 		json.result = chartdata;
 	} else {
 		chartdata = json.result;
@@ -392,7 +393,7 @@ function buildContainerChart(container, json, zoomFactor, style, containerOver) 
 	container.setAttribute('style', style);
 	
 	var options = getChartOptions(json, zoomFactor, chartdata, chart);
-
+	
 	json.options = options;
 	
 	json.chartInPage = c3.generate(options);
@@ -670,7 +671,7 @@ function buildContainerPivotBig(json, containerOver, initial) {
 	});
 	
 	containerOver.update = function() {
-
+		
 	};
 	
 	containerOver.updateData = updateData;
@@ -770,7 +771,7 @@ function buildContainerTableBig(json, containerOver) {
 	getTableFromResults(results, containerContent);
 	
 	containerOver.update = function() {
-
+		
 	};
 	
 	containerOver.updateData = update;
@@ -863,34 +864,6 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 	var xCount = json.type.I.xCount;
 	var yCount = json.type.I.yCount;
 	
-	var leftArr;
-	try {
-		leftArr = JSON.parse(json.type.I.leftArr);
-	} catch (e) {
-		alert("Parsing of leftArr for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.leftArr);
-	}
-	
-	var rightArr;
-	try {
-		rightArr = JSON.parse(json.type.I.rightArr);
-	} catch (e) {
-		alert("Parsing of rightArr for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.rightArr);
-	}
-	
-	var topArr;
-	try {
-		topArr = JSON.parse(json.type.I.topArr);
-	} catch (e) {
-		alert("Parsing of topArr for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.topArr);
-	}
-	
-	var bottomArr;
-	try {
-		bottomArr = JSON.parse(json.type.I.bottomArr);
-	} catch (e) {
-		alert("Parsing of bottomArr for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.bottomArr);
-	}
-	
 	var xValues;
 	try {
 		xValues = JSON.parse(json.type.I.xValues);
@@ -903,6 +876,76 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 		yValues = JSON.parse(json.type.I.yValues);
 	} catch (e) {
 		alert("Parsing of yValues for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.yValues);
+	}
+	
+	var leftArr;
+	if (json.type.I.leftArr === "auto") {
+		if (json.type.I.yUnitName != "") {
+			leftArr = [ {
+				text : json.type.I.yUnitName,
+				c : yCount
+			} ];
+		} else {
+			leftArr = [];
+		}
+	} else {
+		try {
+			leftArr = JSON.parse(json.type.I.leftArr);
+		} catch (e) {
+			alert("Parsing of leftArr for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.leftArr);
+		}
+	}
+	
+	var rightArr;
+	if (json.type.I.rightArr === "auto") {
+		rightArr = [];
+		for (var i = 0; i < yValues.length; ++i) {
+			rightArr[rightArr.length] = {
+				text : yValues[i],
+				c : 1
+			};
+		}
+	} else {
+		try {
+			rightArr = JSON.parse(json.type.I.rightArr);
+		} catch (e) {
+			alert("Parsing of rightArr for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.rightArr);
+		}
+	}
+	
+	var topArr;
+	if (json.type.I.topArr === "auto") {
+		topArr = [];
+		for (var i = 0; i < xValues.length; ++i) {
+			topArr[topArr.length] = {
+				text : xValues[i],
+				c : 1
+			};
+		}
+	} else {
+		try {
+			topArr = JSON.parse(json.type.I.topArr);
+		} catch (e) {
+			alert("Parsing of topArr for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.topArr);
+		}
+	}
+	
+	var bottomArr;
+	if (json.type.I.bottomArr === "auto") {
+		if (json.type.I.xUnitName != "") {
+			bottomArr = [ {
+				text : json.type.I.xUnitName,
+				c : xCount
+			} ];
+		} else {
+			bottomArr = [];
+		}
+	} else {
+		try {
+			bottomArr = JSON.parse(json.type.I.bottomArr);
+		} catch (e) {
+			alert("Parsing of bottomArr for " + json.name + " failed!\nError: " + e.message + "\nValue: " + json.type.I.bottomArr);
+		}
 	}
 	
 	var queryBackup = json.type.I.query;
@@ -919,37 +962,6 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 	
 	if (((queryBackup.match(/\?/g) || []).length) != 2) {
 		alert("Query for multiplot must contain exactly 2 occurrences of \"?\"\nQuery was: " + queryBackup);
-	}
-	
-	if (leftArr.length == 0) {
-		leftArr = [ {
-			text : json.type.I.yUnitName,
-			c : yCount
-		} ];
-	}
-	if (rightArr.length == 0) {
-		rightArr = [];
-		for (var i = 0; i < yValues.length; ++i) {
-			rightArr[rightArr.length] = {
-				text : yValues[i],
-				c : 1
-			};
-		}
-	}
-	if (topArr.length == 0) {
-		topArr = [];
-		for (var i = 0; i < xValues.length; ++i) {
-			topArr[topArr.length] = {
-				text : xValues[i],
-				c : 1
-			};
-		}
-	}
-	if (bottomArr.length == 0) {
-		bottomArr = [ {
-			text : json.type.I.xUnitName,
-			c : xCount
-		} ];
 	}
 	
 	// TODO: right now only labels of one line height are supported!
@@ -1086,7 +1098,7 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 	for (var y = 0; y < yCount; ++y) {
 		var tr = document.createElement('tr');
 		inner.appendChild(tr);
-		if (y == nextLeft) {
+		if (left != 0 && y == nextLeft) {
 			var cur = leftArr.shift();
 			var td = document.createElement('td');
 			tr.appendChild(td);
@@ -1194,7 +1206,7 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 				}
 			}
 		}
-		if (y == nextRight) {
+		if (right != 0 && y == nextRight) {
 			var cur = rightArr.shift();
 			var td = document.createElement('td');
 			tr.appendChild(td);
@@ -1233,8 +1245,7 @@ function buildContainerMultiplotChart(container, json, zoomFactor, style, contai
 		
 		var td = document.createElement('td');
 		tr.appendChild(td);
-		td.setAttribute('style', 'height: 1.5em; width: ' + w + 'px;');
-		td.setAttribute('colspan', cur.c);
+		td.setAttribute('colspan', xCount);
 		
 		d3.select(td).insert('div', '.chart').attr('class', 'legend').selectAll('span').data(legendItems).enter().append('span').attr('data-id', function(id) {
 			return id;
@@ -1499,9 +1510,9 @@ function getChartOptions(json, zoomFactor, values, chart) {
 		options.axis.y.min = 0;
 	}
 	
-	var defaultformat = function (v) {
-        return (v || v === 0) ? +v : "";
-    };
+	var defaultformat = function(v) {
+		return (v || v === 0) ? +v : "";
+	};
 	var funcsave = options.axis.y.tick.format;
 	funcsave = typeof funcsave == "function" ? optionsBig.axis.y.tick.format : defaultformat;
 	if (json.type.I.logScale) {
@@ -1533,7 +1544,7 @@ function getChartOptions(json, zoomFactor, values, chart) {
 					return '' + (Math.round(x * 10000) / 100) + '%';
 				};
 				options.axis.y.tick.format = function(y) {
-					return '' + (Math.round(y * 10000) / 100)  + '%';
+					return '' + (Math.round(y * 10000) / 100) + '%';
 				};
 			} catch (e) {
 				alert(e);
@@ -1773,7 +1784,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 		}
 		
 		var multiControl = document.createElement('div');
-		multiControl.setAttribute('style', 'text-decoration: underline; display: inline-block; margin-bottom: 7px;'); 
+		multiControl.setAttribute('style', 'text-decoration: underline; display: inline-block; margin-bottom: 7px;');
 		multiControl.innerHTML = 'Multiplot Control:<br />';
 		var selectX = document.createElement('select');
 		selectX.setAttribute('style', 'display:inline-block; margin-bottom:3px;');
@@ -1882,16 +1893,16 @@ function getChartData(json) {
 		columns[columns.length] = key;
 	}
 	var ret = {
-			values : {
-				x : columns[0],
-				json : results,
-				keys : {
-					value : columns
-				}
-			},
-			error : error,
-			res : results
-		};
+		values : {
+			x : columns[0],
+			json : results,
+			keys : {
+				value : columns
+			}
+		},
+		error : error,
+		res : results
+	};
 	
 	// logscale
 	if (json.type.I.logScale == true) {
@@ -1911,7 +1922,7 @@ function getChartData(json) {
 				ret.values.json[i][logId] = Math.log(logVal);
 			}
 		}
-	} 
+	}
 	
 	return ret;
 }
@@ -2262,9 +2273,9 @@ function alasqlQuery(q) {
 }
 
 function isInt(x) {
-	   var y = parseInt(x, 10);
-	   return !isNaN(y) && x == y && x.toString() == y.toString();
-	}
+	var y = parseInt(x, 10);
+	return !isNaN(y) && x == y && x.toString() == y.toString();
+}
 
 function prettifySQL(sql) {
 	return alasql.pretty(sql, true);

@@ -2,8 +2,11 @@ package pdbf.html;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+
 import org.apache.commons.io.FileUtils;
+
 import pdbf.common.Tools;
+import pdbf.latex.LaTeX_Compiler;
 
 public class HTML_Compiler {
 
@@ -33,7 +36,7 @@ public class HTML_Compiler {
 	    }
 	    String all = FileUtils.readFileToString(new File(baseDirData + "all"), Tools.utf8);
 	    String preload = FileUtils.readFileToString(new File(baseDir + "pdbf-preload"));
-	    viewer = viewerHEAD + "pdf_base64 = \"" + Tools.encodeFileToBase64Binary(new File(pdfname)) + "\";\r\n" + "db_base64 = \"\";\r\n" + "json_base64 = \"" + Tools.encodeFileToBase64Binary(new File(baseDir + "pdbf-config.json")) + "\";\r\n" + "dbjson_base64 = \"" + Tools.escapeSpecialChars(new File(baseDir + "pdbf-db.json")) + "\";\r\n" + preload + "\r\n" + (CompleteRun_HTML.includeRes ? (all + "\r\n") : ("")) + add + viewerTAIL;
+	    viewer = viewerHEAD + "pdf_base64 = \"" + Tools.encodeFileToBase64Binary(new File(pdfname.substring(0, pdfname.length() - 4) + "Embed.pdf")) + "\";\r\n" + "db_base64 = \"\";\r\n" + "json_base64 = \"" + Tools.encodeFileToBase64Binary(new File(baseDir + "pdbf-config.json")) + "\";\r\n" + "dbjson_base64 = \"" + Tools.escapeSpecialChars(new File(baseDir + "pdbf-db.json")) + "\";\r\n" + preload + "\r\n" + (CompleteRun_HTML.includeRes ? (all + "\r\n") : ("")) + add + viewerTAIL;
 	    String insert1 = "%ª«¬­<!DOCTYPE html><html dir=\"ltr\" mozdisallowselectionprint moznomarginboxes>" + "<head><meta charset=\"utf-8\"><script>\n";
 	    String insert2 = "1337 0 obj\n" + "stream\n" + "</script>\n" + viewer + "<script>\n" + "endstream\n" + "endobj\n";
 	    String pdfcontent = FileUtils.readFileToString(new File(pdfname), StandardCharsets.ISO_8859_1);
@@ -52,8 +55,7 @@ public class HTML_Compiler {
 
 	    FileUtils.writeStringToFile(new File(outfile), sb.toString(), StandardCharsets.ISO_8859_1);
 
-	    // Delete static pdf to avoid confusion
-	    new File(pdfname).delete();
+	    //LaTeX_Compiler.cleanup(filename);
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
