@@ -67,7 +67,8 @@ public class LaTeX_Compiler {
     static {
 	GsonBuilder builder = new GsonBuilder();
 	builder.disableHtmlEscaping().serializeNulls();
-	builder.registerTypeAdapter(Visualization.class, new VisualizationTypeAdapter());
+	builder.registerTypeAdapter(Visualization.class,
+		new VisualizationTypeAdapter());
 	builder.registerTypeAdapter(Alasql.class, new Alasql());
 	builder.registerTypeAdapter(Table.class, new Table());
 	gson = builder.create();
@@ -90,7 +91,7 @@ public class LaTeX_Compiler {
 		new File(latexDir + s).delete();
 	    }
 	}
-	
+
 	new File(baseDir + "pdbf-dim.json").delete();
 	new File(baseDir + "pdbf-config.json").delete();
 	new File(baseDir + "pdbf-db.sql").delete();
@@ -103,7 +104,8 @@ public class LaTeX_Compiler {
 	baseDirData = Tools.getBaseDirData();
 
 	String texFilename = new File(args[0]).getName();
-	String baseFilename = texFilename.substring(0, texFilename.length() - 4);
+	String baseFilename = texFilename
+		.substring(0, texFilename.length() - 4);
 	String pdfname = baseDir + baseFilename + ".pdf";
 
 	String latexPath = args[0];
@@ -122,8 +124,10 @@ public class LaTeX_Compiler {
 
 	// Read config.
 	try {
-	    FileInputStream fstream = new FileInputStream(baseDir + "config.cfg");
-	    BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+	    FileInputStream fstream = new FileInputStream(baseDir
+		    + "config.cfg");
+	    BufferedReader br = new BufferedReader(new InputStreamReader(
+		    fstream));
 	    String strLine;
 
 	    ArrayList<String> tmp = new ArrayList<String>();
@@ -139,7 +143,9 @@ public class LaTeX_Compiler {
 	    }
 	    // remind user to adjust config
 	    if (tmp.size() == 0 || tmp.get(tmp.size() - 1).equals("DELETE ME")) {
-		System.err.println("Warning: You have to first adjust the config.cfg file before you can use this tool.\nDid you forgot to remove the \"DELETE ME\" at the end of the config file? Exiting...");
+		System.err
+			.println("Warning: You have to first adjust the config.cfg file before you can use this tool.\n"
+				+ "Did you forgot to remove the \"DELETE ME\" at the end of the config file? Exiting...");
 		System.exit(-1);
 	    }
 	    br.close();
@@ -150,26 +156,36 @@ public class LaTeX_Compiler {
 	}
 
 	if (pathToLaTeXScript[0].contains("texi2") && args[0].contains(" ")) {
-	    System.err.println("Error: Specified path to texfile contains spaces and you are using texi2pdf or texi2dvi which does not support spaces in file paths!");
+	    System.err
+		    .println("Error: Specified path to texfile contains spaces and you are using texi2pdf or"
+			    + " texi2dvi which does not support spaces in file paths!");
 	    System.exit(-1);
 	}
 
 	if (!latexPath.endsWith(".tex")) {
-	    System.err.println("Error: Specified file has the wrong extension. Only .tex is supported!");
+	    System.err
+		    .println("Error: Specified file has the wrong extension. Only .tex is supported!");
 	    System.exit(-1);
 	}
 
-	ArrayList<String> commands = new ArrayList<String>(Arrays.asList(pathToLaTeXScript));
+	ArrayList<String> commands = new ArrayList<String>(
+		Arrays.asList(pathToLaTeXScript));
 	commands.add(latex.getAbsolutePath());
 
 	// Check if phantomjs runs without problems. This can for example detect
 	// that a 32bit OS is used but a 64bit binary is present
 	try {
-	    ProcessBuilder pb = new ProcessBuilder(baseDir + "external-tools" + File.separator + "phantomjs-" + suffix, "--version");
+	    ProcessBuilder pb = new ProcessBuilder(baseDir + "external-tools"
+		    + File.separator + "phantomjs-" + suffix, "--version");
 	    Process p = pb.start();
 	    p.waitFor();
 	    if (p.exitValue() != 0) {
-		System.err.println("Error! Your system can't run the supplied binary of phantom-js. This means that you have to upgrade your system to 64-bit or you have to compile phantom-js yourself and then replace the binary for your system in the external-tools folder. Instructions on how to compile phantom-js you can find here: http://phantomjs.org/build.html.");
+		System.err
+			.println("Error! Your system can't run the supplied binary of phantom-js. "
+				+ "This means that you have to upgrade your system to 64-bit or you "
+				+ "have to compile phantom-js yourself and then replace the binary for "
+				+ "your system in the external-tools folder. Instructions on how to "
+				+ "compile phantom-js you can find here: http://phantomjs.org/build.html.");
 		System.exit(-1);
 	    }
 	} catch (Exception e) {
@@ -203,7 +219,8 @@ public class LaTeX_Compiler {
 		System.exit(-1);
 	    }
 	} catch (Exception e) {
-	    System.err.println("Error: LaTeX compilation failed! Reason: \n" + e.getMessage());
+	    System.err.println("Error: LaTeX compilation failed! Reason: \n"
+		    + e.getMessage());
 	    System.exit(-1);
 	}
 
@@ -219,13 +236,15 @@ public class LaTeX_Compiler {
 	File f2 = new File(baseDir + "pdbf-db.json");
 	if (f.exists()) {
 	    if (!f.delete()) {
-		System.out.println("pdbf-db.sql could not be deleted! Exiting...");
+		System.out
+			.println("pdbf-db.sql could not be deleted! Exiting...");
 		System.exit(-1);
 	    }
 	}
 	if (f2.exists()) {
 	    if (!f2.delete()) {
-		System.out.println("pdbf-db.json could not be deleted! Exiting...");
+		System.out
+			.println("pdbf-db.json could not be deleted! Exiting...");
 		System.exit(-1);
 	    }
 	}
@@ -244,7 +263,8 @@ public class LaTeX_Compiler {
 	}
 	try {
 	    File tmp_f = new File(baseDir + "pdbf-db.json");
-	    FileUtils.writeStringToFile(tmp_f, gson.toJson(dbc), Tools.utf8, true);
+	    FileUtils.writeStringToFile(tmp_f, gson.toJson(dbc), Tools.utf8,
+		    true);
 	} catch (IOException e3) {
 	    e3.printStackTrace();
 	}
@@ -254,12 +274,16 @@ public class LaTeX_Compiler {
 	// count number of PDBF elements to process
 	int count = 0;
 	for (int i = 0; i < overlays.length; ++i) {
-	    if (overlays[i].type instanceof Chart || overlays[i].type instanceof DataText || overlays[i].type instanceof DataTable || overlays[i].type instanceof Text) {
+	    if (overlays[i].type instanceof Chart
+		    || overlays[i].type instanceof DataText
+		    || overlays[i].type instanceof DataTable
+		    || overlays[i].type instanceof Text) {
 		count++;
 	    }
 	}
 
-	System.out.println("Generating images...\n" + count + " Overlays to process");
+	System.out.println("Generating images...\n" + count
+		+ " Overlays to process");
 	for (int i = 0; i < overlays.length; ++i) {
 	    if (overlays[i].type instanceof Chart) {
 		processVisual(overlays[i]);
@@ -309,13 +333,15 @@ public class LaTeX_Compiler {
 	for (String preTmp : preloadfiles) {
 	    String pre = new File(preTmp).getName();
 	    try {
-		preload += "var " + pre.substring(0, pre.length() - 5) + " = " + FileUtils.readFileToString(new File(preTmp)) + ";\n";
+		preload += "var " + pre.substring(0, pre.length() - 5) + " = "
+			+ FileUtils.readFileToString(new File(preTmp)) + ";\n";
 	    } catch (IOException e) {
 		e.printStackTrace();
 	    }
 	}
 	try {
-	    FileUtils.writeStringToFile(new File(baseDir + "pdbf-preload"), preload);
+	    FileUtils.writeStringToFile(new File(baseDir + "pdbf-preload"),
+		    preload);
 	} catch (IOException e2) {
 	    e2.printStackTrace();
 	}
@@ -324,15 +350,19 @@ public class LaTeX_Compiler {
 	for (String dataTmp : dataFiles) {
 	    String data = new File(dataTmp).getName();
 	    try {
-		aux += "\\expandafter\\gdef\\csname pdbf@" + data.substring(0, data.length() - 5) + "\\endcsname{" + FileUtils.readFileToString(new File(dataTmp)) + "}\n";
+		aux += "\\expandafter\\gdef\\csname pdbf@"
+			+ data.substring(0, data.length() - 5) + "\\endcsname{"
+			+ FileUtils.readFileToString(new File(dataTmp)) + "}\n";
 	    } catch (IOException e) {
 		e.printStackTrace();
 	    }
 	}
 	try {
-	    File auxfile = new File(latexPath.substring(0, latexPath.length() - 4) + ".aux");
+	    File auxfile = new File(latexPath.substring(0,
+		    latexPath.length() - 4) + ".aux");
 	    FileUtils.writeStringToFile(auxfile, aux, true);
-	    FileUtils.writeStringToFile(new File(baseDir + auxfile.getName()), aux, true);
+	    FileUtils.writeStringToFile(new File(baseDir + auxfile.getName()),
+		    aux, true);
 	} catch (IOException e2) {
 	    e2.printStackTrace();
 	}
@@ -351,11 +381,14 @@ public class LaTeX_Compiler {
 		System.exit(-1);
 	    }
 	} catch (Exception e) {
-	    System.err.println("Error: LaTeX compilation failed! Reason: \n" + e.getMessage());
+	    System.err.println("Error: LaTeX compilation failed! Reason: \n"
+		    + e.getMessage());
 	    System.exit(-1);
 	}
 	try {
-	    FileUtils.moveFile(new File(pdfname), new File(pdfname.substring(0, pdfname.length() - 4) + "Embed.pdf"));
+	    FileUtils.moveFile(new File(pdfname),
+		    new File(pdfname.substring(0, pdfname.length() - 4)
+			    + "Embed.pdf"));
 	} catch (IOException e2) {
 	    e2.printStackTrace();
 	    System.exit(-1);
@@ -363,8 +396,10 @@ public class LaTeX_Compiler {
 
 	// Copy images to latex file folder
 	for (String s : copyfiles) {
-	    File source = new File(s.substring(0, s.length() - 4) + "Tmp.pdf").getAbsoluteFile();
-	    File target = new File(latexDir + new File(s).getName()).getAbsoluteFile();
+	    File source = new File(s.substring(0, s.length() - 4) + "Tmp.pdf")
+		    .getAbsoluteFile();
+	    File target = new File(latexDir + new File(s).getName())
+		    .getAbsoluteFile();
 	    if (!source.equals(target)) {
 		try {
 		    FileUtils.copyFile(source, target);
@@ -387,7 +422,8 @@ public class LaTeX_Compiler {
 		System.exit(-1);
 	    }
 	} catch (Exception e) {
-	    System.err.println("Error: LaTeX compilation failed! Reason: \n" + e.getMessage());
+	    System.err.println("Error: LaTeX compilation failed! Reason: \n"
+		    + e.getMessage());
 	    System.exit(-1);
 	}
 
@@ -398,7 +434,8 @@ public class LaTeX_Compiler {
 	}
 
 	// Remove database entries from config
-	ArrayList<Overlay> olist = new ArrayList<Overlay>(Arrays.asList(overlays));
+	ArrayList<Overlay> olist = new ArrayList<Overlay>(
+		Arrays.asList(overlays));
 	for (int i = olist.size() - 1; i >= 0; --i) {
 	    if (olist.get(i).type instanceof Database) {
 		olist.remove(i);
@@ -408,7 +445,8 @@ public class LaTeX_Compiler {
 	overlays = olist.toArray(overlays);
 	try {
 	    String json = gson.toJson(overlays);
-	    FileUtils.writeStringToFile(new File(baseDir + "pdbf-config.json"), json, Tools.utf8);
+	    FileUtils.writeStringToFile(new File(baseDir + "pdbf-config.json"),
+		    json, Tools.utf8);
 	} catch (IOException e1) {
 	    e1.printStackTrace();
 	}
@@ -421,7 +459,8 @@ public class LaTeX_Compiler {
 	// Write-protect the pdf
 	System.out.println("Adding write protection to the pdf...");
 	try {
-	    System.setProperty("org.apache.pdfbox.baseParser.pushBackSize", "2024768");
+	    System.setProperty("org.apache.pdfbox.baseParser.pushBackSize",
+		    "2024768");
 	    InputStream dataStream = new FileInputStream(new File(pdfname));
 	    PDDocument doc = PDDocument.load(dataStream);
 	    dataStream.close();
@@ -431,7 +470,8 @@ public class LaTeX_Compiler {
 	    ap.setCanPrint(true);
 	    ap.setCanPrintDegraded(true);
 	    ap.setReadOnly();
-	    StandardProtectionPolicy spp = new StandardProtectionPolicy(UUID.randomUUID().toString(), "", ap);
+	    StandardProtectionPolicy spp = new StandardProtectionPolicy(UUID
+		    .randomUUID().toString(), "", ap);
 	    doc.protect(spp);
 	    OutputStream out = new FileOutputStream(new File(pdfname));
 	    doc.save(out);
@@ -448,13 +488,16 @@ public class LaTeX_Compiler {
 	// Read JSON
 	Overlay[] overlays = null;
 	try {
-	    String json = FileUtils.readFileToString(new File(baseDir + "pdbf-config.json"), Tools.utf8);
+	    String json = FileUtils.readFileToString(new File(baseDir
+		    + "pdbf-config.json"), Tools.utf8);
 	    overlays = gson.fromJson(json, Overlay[].class);
-	    String json2 = FileUtils.readFileToString(new File(baseDir + "pdbf-dim.json"), Tools.utf8);
+	    String json2 = FileUtils.readFileToString(new File(baseDir
+		    + "pdbf-dim.json"), Tools.utf8);
 	    dimOrg = gson.fromJson(json2, Dimension.class);
 	    for (int i = 0; i < overlays.length; ++i) {
 		Visualization v = overlays[i].type;
-		if (v instanceof Text || v instanceof DataText || v instanceof DataTable) {
+		if (v instanceof Text || v instanceof DataText
+			|| v instanceof DataTable) {
 		    Visualization t = overlays[i].type;
 		    t.x1 = t.x1 / dimOrg.width;
 		    t.x2 = t.x2 / dimOrg.width;
@@ -496,7 +539,8 @@ public class LaTeX_Compiler {
 	    Alasql alasql = dbc.alasql;
 	    switch (db.type) {
 	    case 1:
-		FileUtils.writeStringToFile(f, db.value1 + System.lineSeparator(), Tools.utf8, true);
+		FileUtils.writeStringToFile(f,
+			db.value1 + System.lineSeparator(), Tools.utf8, true);
 		break;
 	    case 2:
 		File inF = new File(db.value1);
@@ -504,13 +548,15 @@ public class LaTeX_Compiler {
 		    inF = new File(latexFolder + File.separator + db.value1);
 		}
 		String in = FileUtils.readFileToString(inF, Tools.utf8);
-		FileUtils.writeStringToFile(f, in + System.lineSeparator(), Tools.utf8, true);
+		FileUtils.writeStringToFile(f, in + System.lineSeparator(),
+			Tools.utf8, true);
 		break;
 	    case 3:
 		// Load supported Drivers
 		Class.forName("org.mariadb.jdbc.Driver");
 		Class.forName("org.postgresql.Driver");
-		Connection conn = DriverManager.getConnection(db.value1, db.value2, db.value3);
+		Connection conn = DriverManager.getConnection(db.value1,
+			db.value2, db.value3);
 		// Create JSON Database
 		StringTokenizer stok = new StringTokenizer(db.value4, ",");
 		while (stok.hasMoreTokens()) {
@@ -518,17 +564,21 @@ public class LaTeX_Compiler {
 		    String curTable = stok.nextToken().trim();
 
 		    if (alasql.containsTable(curTable)) {
-			System.err.println("Error: Database already contains a table with name \"" + curTable + "\"");
+			System.err
+				.println("Error: Database already contains a table with name \""
+					+ curTable + "\"");
 			System.exit(-1);
 		    }
 
 		    try {
 			Statement stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM \"" + curTable + "\"");
+			ResultSet rs = stmt.executeQuery("SELECT * FROM \""
+				+ curTable + "\"");
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int cols = rsmd.getColumnCount();
 			for (int i = 1; i <= cols; ++i) {
-			    table.columns.add(new Column(rsmd.getColumnName(i), rsmd.getColumnTypeName(i).toUpperCase()));
+			    table.columns.add(new Column(rsmd.getColumnName(i),
+				    rsmd.getColumnTypeName(i).toUpperCase()));
 			}
 			if (cols > 0) {
 			    while (rs.next()) {
@@ -553,19 +603,23 @@ public class LaTeX_Compiler {
 		if (!csvData.isAbsolute()) {
 		    csvData = new File(latexFolder + File.separator + db.value1);
 		}
-		CSVFormat csvformat = CSVFormat.RFC4180.withDelimiter(db.seperator).withQuote(db.quote);
+		CSVFormat csvformat = CSVFormat.RFC4180.withDelimiter(
+			db.seperator).withQuote(db.quote);
 		if (db.headers.length > 0) {
 		    csvformat = csvformat.withHeader(db.headers);
 		} else {
 		    csvformat = csvformat.withHeader();
 		}
-		CSVParser parser = CSVParser.parse(csvData, Tools.utf8, csvformat);
+		CSVParser parser = CSVParser.parse(csvData, Tools.utf8,
+			csvformat);
 
 		Table table = new Table();
 		String curTable = db.value2;
 
 		if (alasql.containsTable(curTable)) {
-		    System.err.println("Error: Database already contains a table with name \"" + curTable + "\"");
+		    System.err
+			    .println("Error: Database already contains a table with name \""
+				    + curTable + "\"");
 		    System.exit(-1);
 		}
 
@@ -596,7 +650,8 @@ public class LaTeX_Compiler {
 		    // BOOLEAN
 		    for (CSVRecord csvRecord : csvRecords) {
 			String cur = csvRecord.get(i).toLowerCase();
-			if (!(cur.equals("true") || cur.equals("false") || cur.equals("null"))) {
+			if (!(cur.equals("true") || cur.equals("false") || cur
+				.equals("null"))) {
 			    isParsable = false;
 			    break;
 			}
@@ -678,17 +733,38 @@ public class LaTeX_Compiler {
 	    String pdfname = baseDir + filename + ".pdf";
 
 	    try {
-		Dimension dim = new Dimension(dimOrg.width * c.quality, dimOrg.height * c.quality);
+		Dimension dim = new Dimension(dimOrg.width * c.quality,
+			dimOrg.height * c.quality);
 		String viewer;
-		String viewerHEAD = FileUtils.readFileToString(new File(baseDirData + "template-head-images.html"), Tools.utf8);
-		String viewerTAIL = FileUtils.readFileToString(new File(baseDirData + "template-tail-images.html"), Tools.utf8);
-		viewer = viewerHEAD + "pdf_base64 = \"" + Tools.encodeFileToBase64Binary(new File(pdfname)) + "\";\r\n" + "dim_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(dim)) + "\";\r\n" + "json_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(o)) + "\";\r\n" + "db_base64 = \"\";\r\n" + "dbjson_base64 = \"" + Tools.escapeSpecialChars(new File(baseDir + "pdbf-db.json")) + "\";\r\n" + viewerTAIL;
-		FileUtils.writeStringToFile(new File(baseDirData + o.name + ".html"), viewer, Tools.utf8);
+		String viewerHEAD = FileUtils.readFileToString(new File(
+			baseDirData + "template-head-images.html"), Tools.utf8);
+		String viewerTAIL = FileUtils.readFileToString(new File(
+			baseDirData + "template-tail-images.html"), Tools.utf8);
+		viewer = viewerHEAD
+			+ "pdf_base64 = \""
+			+ Tools.encodeFileToBase64Binary(new File(pdfname))
+			+ "\";\r\n"
+			+ "dim_base64 = \""
+			+ Tools.encodeStringToBase64Binary(gson.toJson(dim))
+			+ "\";\r\n"
+			+ "json_base64 = \""
+			+ Tools.encodeStringToBase64Binary(gson.toJson(o))
+			+ "\";\r\n"
+			+ "db_base64 = \"\";\r\n"
+			+ "dbjson_base64 = \""
+			+ Tools.escapeSpecialChars(new File(baseDir
+				+ "pdbf-db.json")) + "\";\r\n" + viewerTAIL;
+		FileUtils.writeStringToFile(new File(baseDirData + o.name
+			+ ".html"), viewer, Tools.utf8);
 	    } catch (Exception e) {
 		e.printStackTrace();
 	    }
 	    try {
-		ProcessBuilder pb = new ProcessBuilder(baseDir + "external-tools" + File.separator + "phantomjs-" + suffix, baseDir + "external-tools" + File.separator + "capture.js", o.name + ".html", baseDirData, "" + dpiScalingFactor);
+		ProcessBuilder pb = new ProcessBuilder(baseDir
+			+ "external-tools" + File.separator + "phantomjs-"
+			+ suffix, baseDir + "external-tools" + File.separator
+			+ "capture.js", o.name + ".html", baseDirData, ""
+			+ dpiScalingFactor);
 		pb.inheritIO();
 		Process p = pb.start();
 		processes.add(p);
@@ -697,7 +773,8 @@ public class LaTeX_Compiler {
 	    }
 	} else {
 	    try {
-		FileUtils.copyFile(new File(baseDir + "dummy.pdf"), new File(baseDir + o.name + ".pdf"));
+		FileUtils.copyFile(new File(baseDir + "dummy.pdf"), new File(
+			baseDir + o.name + ".pdf"));
 	    } catch (IOException e) {
 		e.printStackTrace();
 	    }
@@ -710,17 +787,35 @@ public class LaTeX_Compiler {
 	cleanupfiles.add(baseDir + o.name + ".data");
 	dataFiles.add(baseDir + o.name + ".data");
 	try {
-	    Dimension dim = new Dimension(dimOrg.width * c.quality, dimOrg.height * c.quality);
+	    Dimension dim = new Dimension(dimOrg.width * c.quality,
+		    dimOrg.height * c.quality);
 	    String viewer;
-	    String viewerHEAD = FileUtils.readFileToString(new File(baseDirData + "template-head-images.html"), Tools.utf8);
-	    String viewerTAIL = FileUtils.readFileToString(new File(baseDirData + "template-tail-images.html"), Tools.utf8);
-	    viewer = viewerHEAD + "dim_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(dim)) + "\";\r\n" + "json_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(o)) + "\";\r\n" + "db_base64 = \"\";\r\n" + "dbjson_base64 = \"" + Tools.escapeSpecialChars(new File(baseDir + "pdbf-db.json")) + "\";\r\n" + viewerTAIL;
-	    FileUtils.writeStringToFile(new File(baseDirData + o.name + ".html"), viewer, Tools.utf8);
+	    String viewerHEAD = FileUtils.readFileToString(new File(baseDirData
+		    + "template-head-images.html"), Tools.utf8);
+	    String viewerTAIL = FileUtils.readFileToString(new File(baseDirData
+		    + "template-tail-images.html"), Tools.utf8);
+	    viewer = viewerHEAD
+		    + "dim_base64 = \""
+		    + Tools.encodeStringToBase64Binary(gson.toJson(dim))
+		    + "\";\r\n"
+		    + "json_base64 = \""
+		    + Tools.encodeStringToBase64Binary(gson.toJson(o))
+		    + "\";\r\n"
+		    + "db_base64 = \"\";\r\n"
+		    + "dbjson_base64 = \""
+		    + Tools.escapeSpecialChars(new File(baseDir
+			    + "pdbf-db.json")) + "\";\r\n" + viewerTAIL;
+	    FileUtils.writeStringToFile(
+		    new File(baseDirData + o.name + ".html"), viewer,
+		    Tools.utf8);
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
 	try {
-	    ProcessBuilder pb = new ProcessBuilder(baseDir + "external-tools" + File.separator + "phantomjs-" + suffix, baseDir + "external-tools" + File.separator + "captureData.js", o.name + ".html", baseDirData);
+	    ProcessBuilder pb = new ProcessBuilder(baseDir + "external-tools"
+		    + File.separator + "phantomjs-" + suffix, baseDir
+		    + "external-tools" + File.separator + "captureData.js",
+		    o.name + ".html", baseDirData);
 	    pb.inheritIO();
 	    Process p = pb.start();
 	    processes.add(p);
@@ -734,15 +829,33 @@ public class LaTeX_Compiler {
 	try {
 	    Dimension dim = new Dimension(1.0, 1.0);
 	    String viewer;
-	    String viewerHEAD = FileUtils.readFileToString(new File(baseDirData + "template-head-images.html"), Tools.utf8);
-	    String viewerTAIL = FileUtils.readFileToString(new File(baseDirData + "template-tail-images.html"), Tools.utf8);
-	    viewer = viewerHEAD + "dim_base64 = \"" + Tools.encodeStringToBase64Binary(gson.toJson(dim)) + "\";\r\n" + "json_base64 = \"eyAidHlwZSIgOiB7ICJJIiA6IHsgIngxIiA6IDEsICJ4MiIgOiAyLCAieTEiIDogMywgInkyIiA6IDQgfSB9IH0=\";\r\n" + "db_base64 = \"" + Tools.encodeFileToBase64Binary(new File(baseDir + "pdbf-db.sql")) + "\";\r\n" + "dbjson_base64 = \"" + Tools.escapeSpecialChars(new File(baseDir + "pdbf-db.json")) + "\";\r\nvar notCompressed = true;\r\n" + viewerTAIL;
-	    FileUtils.writeStringToFile(new File(baseDirData + "pdbfDatabase.html"), viewer, Tools.utf8);
+	    String viewerHEAD = FileUtils.readFileToString(new File(baseDirData
+		    + "template-head-images.html"), Tools.utf8);
+	    String viewerTAIL = FileUtils.readFileToString(new File(baseDirData
+		    + "template-tail-images.html"), Tools.utf8);
+	    viewer = viewerHEAD
+		    + "dim_base64 = \""
+		    + Tools.encodeStringToBase64Binary(gson.toJson(dim))
+		    + "\";\r\n"
+		    + "json_base64 = \"eyAidHlwZSIgOiB7ICJJIiA6IHsgIngxIiA6IDEsICJ4MiIgOiAyLCAieTEiIDogMywgInkyIiA6IDQgfSB9IH0=\";\r\n"
+		    + "db_base64 = \""
+		    + Tools.encodeFileToBase64Binary(new File(baseDir
+			    + "pdbf-db.sql"))
+		    + "\";\r\n"
+		    + "dbjson_base64 = \""
+		    + Tools.escapeSpecialChars(new File(baseDir
+			    + "pdbf-db.json"))
+		    + "\";\r\nvar notCompressed = true;\r\n" + viewerTAIL;
+	    FileUtils.writeStringToFile(new File(baseDirData
+		    + "pdbfDatabase.html"), viewer, Tools.utf8);
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
 	try {
-	    ProcessBuilder pb = new ProcessBuilder(baseDir + "external-tools" + File.separator + "phantomjs-" + suffix, baseDir + "external-tools" + File.separator + "captureDatabase.js", "pdbfDatabase.html", baseDirData);
+	    ProcessBuilder pb = new ProcessBuilder(baseDir + "external-tools"
+		    + File.separator + "phantomjs-" + suffix, baseDir
+		    + "external-tools" + File.separator + "captureDatabase.js",
+		    "pdbfDatabase.html", baseDirData);
 	    pb.inheritIO();
 	    Process p = pb.start();
 	    p.waitFor();

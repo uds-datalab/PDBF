@@ -71,6 +71,13 @@ function display(json, page, phantomJS) {
 	// containerOver.update();
 	// } TODO: reenable if textsize of overlays can be changed
 	
+	var styleBig = 'position:fixed; z-index:-1; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; overflow-y:scroll; white-space: nowrap;';
+	if (typeof font_store === "undefined" || typeof font_store[json.name] === "undefined") {
+		styleBig += "font-size: " + (rawZoomFactor * 12.0) + "pt; font-family: sans-serif;"
+	} else {
+		styleBig += "font-size: " + (rawZoomFactor * 12.0) + "pt; font-family: " + font_store[json.name] + ", sans-serif;"
+	}
+	
 	switch (json.type.C) {
 		case "pdbf.common.MultiplotChart":
 			if (!phantomJS) {
@@ -79,12 +86,6 @@ function display(json, page, phantomJS) {
 				fullscreen.addEventListener("click", function() {
 					if (containerOver == null) {
 						containerOver = document.createElement('div');
-						var styleBig = 'position:fixed; z-index:-1; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;';
-						if (typeof font_store === "undefined" || typeof font_store[json.name] === "undefined") {
-							styleBig += "font-size: " + (rawZoomFactor * 12.0) + "pt; font-family: sans-serif;"
-						} else {
-							styleBig += "font-size: " + (rawZoomFactor * 12.0) + "pt; font-family: " + font_store[json.name] + ", sans-serif;"
-						}
 						containerOver.setAttribute('style', styleBig);
 						containerOver.id = json.name + "Big";
 						containerOver.className = "centerhv";
@@ -115,12 +116,6 @@ function display(json, page, phantomJS) {
 				fullscreen.addEventListener("click", function() {
 					if (containerOver == null) {
 						containerOver = document.createElement('div');
-						var styleBig = 'position:fixed; z-index:-1; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;';
-						if (typeof font_store === "undefined" || typeof font_store[json.name] === "undefined") {
-							styleBig += "font-size: " + (rawZoomFactor * 12.0) + "pt; font-family: sans-serif;"
-						} else {
-							styleBig += "font-size: " + (rawZoomFactor * 12.0) + "pt; font-family: " + font_store[json.name] + ", sans-serif;"
-						}
 						containerOver.setAttribute('style', styleBig);
 						containerOver.id = json.name + "Big";
 						containerOver.className = "centerhv";
@@ -156,12 +151,6 @@ function display(json, page, phantomJS) {
 				container.addEventListener("click", function() {
 					if (containerOver == null) {
 						containerOver = document.createElement('div');
-						var styleBig = 'position:fixed; z-index:-1; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;';
-						if (typeof font_store === "undefined" || typeof font_store[json.name] === "undefined") {
-							styleBig += "font-size: " + (rawZoomFactor * 12.0) + "pt; font-family: sans-serif;"
-						} else {
-							styleBig += "font-size: " + (rawZoomFactor * 12.0) + "pt; font-family: " + font_store[json.name] + ", sans-serif;"
-						}
 						containerOver.setAttribute('style', styleBig);
 						containerOver.id = json.name + "Big";
 						containerOver.className = "centerhv";
@@ -227,12 +216,6 @@ function display(json, page, phantomJS) {
 				container.addEventListener("click", function() {
 					if (containerOver == null) {
 						containerOver = document.createElement('div');
-						var styleBig = 'position:fixed; z-index:-1; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;';
-						if (typeof font_store === "undefined" || typeof font_store[json.name] === "undefined") {
-							styleBig += "font-size: " + (rawZoomFactor * 12.0) + "pt; font-family: sans-serif;"
-						} else {
-							styleBig += "font-size: " + (rawZoomFactor * 12.0) + "pt; font-family: " + font_store[json.name] + ", sans-serif;"
-						}
 						containerOver.setAttribute('style', styleBig);
 						containerOver.id = json.name + "Big";
 						containerOver.className = "centerhv";
@@ -253,12 +236,6 @@ function display(json, page, phantomJS) {
 				fullscreen.addEventListener("click", function() {
 					if (containerOver == null) {
 						containerOver = document.createElement('div');
-						var styleBig = 'position:fixed; z-index:-1; border:1px solid black; padding:10px; background:#DDDDDD; width:95%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; white-space: nowrap;';
-						if (typeof font_store === "undefined" || typeof font_store[json.name] === "undefined") {
-							styleBig += "font-size: " + (rawZoomFactor * 12.0) + "pt; font-family: sans-serif;"
-						} else {
-							styleBig += "font-size: " + (rawZoomFactor * 12.0) + "pt; font-family: " + font_store[json.name] + ", sans-serif;"
-						}
 						containerOver.setAttribute('style', styleBig);
 						containerOver.id = json.name + "Big";
 						containerOver.className = "centerhv";
@@ -313,9 +290,11 @@ function buildContainerChartBig(json, containerOver, initial) {
 		if (json.chartdataBig.error != undefined) {
 			error.innerHTML = 'Query status: Error! ' + json.chartdataBig.error;
 			containerOptions.style.visibility = 'hidden';
+			containerChart.style.visibility = 'hidden';
 		} else {
 			error.innerHTML = 'Query status: OK';
 			containerOptions.style.visibility = 'visible';
+			containerChart.style.visibility = 'visible';
 		}
 		
 		var optionsBig = getChartOptions(json.jsonBig, rawZoomFactor, json.chartdataBig.values, containerContent);
@@ -339,7 +318,7 @@ function buildContainerChartBig(json, containerOver, initial) {
 	json.jsonBig = jQuery.extend(true, {}, json);
 	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip, [ json ], containerOver.updateData, 'graph', true);
 	var containerContent = ref.containerContent;
-	var containerControl = ref.containerControl;
+	var containerChart = ref.containerChart;
 	var containerOptions = ref.options;
 	var error = ref.error;
 	
@@ -613,11 +592,13 @@ function buildContainerPivotBig(json, containerOver, initial) {
 		var r = getPivotTableData(json.jsonBig, true);
 		json.resultBig = r.res;
 		if (r.error != undefined) {
-			error.innerHTML = 'Query status: Error! ' + r.error;
+			error.innerHTML = 'Query status: Error! ' + err;
 			containerOptions.style.visibility = 'hidden';
+			containerChart.style.visibility = 'hidden';
 		} else {
 			error.innerHTML = 'Query status: OK';
 			containerOptions.style.visibility = 'visible';
+			containerChart.style.visibility = 'visible';
 		}
 		
 		var aggr = r.aggr;
@@ -636,6 +617,7 @@ function buildContainerPivotBig(json, containerOver, initial) {
 	
 	var containerContent = ref.containerContent;
 	var containerControl = ref.containerControl;
+	var containerChart = ref.containerChart;
 	var containerOptions = ref.options;
 	var editor = ref.editor;
 	var error = ref.error;
@@ -643,19 +625,14 @@ function buildContainerPivotBig(json, containerOver, initial) {
 	
 	var r = getPivotTableData(json.jsonBig, true);
 	json.resultBig = r.res;
-	if (initial) {
-		if (r.error != undefined) {
-			alert(r.error);
-			return;
-		}
+	if (r.error != undefined) {
+		error.innerHTML = 'Query status: Error! ' + err;
+		containerOptions.style.visibility = 'hidden';
+		containerChart.style.visibility = 'hidden';
 	} else {
-		if (r.error != undefined) {
-			error.innerHTML = 'Query status: Error! ' + r.error;
-			containerOptions.style.visibility = 'hidden';
-		} else {
-			error.innerHTML = 'Query status: OK';
-			containerOptions.style.visibility = 'visible';
-		}
+		error.innerHTML = 'Query status: OK';
+		containerOptions.style.visibility = 'visible';
+		containerChart.style.visibility = 'visible';
 	}
 	
 	var aggrName = r.aggrName;
@@ -740,10 +717,11 @@ function buildContainerTableBig(json, containerOver) {
 		if (err != undefined) {
 			error.innerHTML = 'Query status: Error! ' + err;
 			containerOptions.style.visibility = 'hidden';
-			containerContent.innerHTML = '';
+			containerChart.style.visibility = 'hidden';
 		} else {
 			error.innerHTML = 'Query status: OK';
 			containerOptions.style.visibility = 'visible';
+			containerChart.style.visibility = 'visible';
 		}
 	};
 	
@@ -751,6 +729,11 @@ function buildContainerTableBig(json, containerOver) {
 	var tip = 'Tip: Click on the attributes to change the sorting.';
 	json.jsonBig = jQuery.extend(true, {}, json);
 	var ref = prepopulateContainerOver(containerOver, viewerContainer, tip, [ json ], update, 'table', false);
+	
+	var containerContent = ref.containerContent;
+	var containerOptions = ref.options;
+	var containerChart = ref.containerChart;
+	var error = ref.error;
 	
 	var err;
 	try {
@@ -760,12 +743,15 @@ function buildContainerTableBig(json, containerOver) {
 		err = e.message;
 	}
 	if (err != undefined) {
-		alert(err);
+		error.innerHTML = 'Query status: Error! ' + err;
+		containerOptions.style.visibility = 'hidden';
+		containerChart.style.visibility = 'hidden';
+	} else {
+		error.innerHTML = 'Query status: OK';
+		containerOptions.style.visibility = 'visible';
+		containerChart.style.visibility = 'visible';
 	}
 	
-	var containerContent = ref.containerContent;
-	var containerOptions = ref.options;
-	var error = ref.error;
 	ref.editor.setValue(prettifySQL(json.jsonBig.type.I.queryB));
 	
 	getTableFromResults(results, containerContent);
