@@ -1,4 +1,4 @@
-package pdbf.latex;
+package pdbf.compilers;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -33,17 +33,22 @@ import org.postgresql.util.PSQLException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import pdbf.common.Chart;
-import pdbf.common.DataTable;
-import pdbf.common.DataText;
-import pdbf.common.Database;
-import pdbf.common.Dimension;
-import pdbf.common.Overlay;
-import pdbf.common.Text;
-import pdbf.common.Tools;
-import pdbf.common.Visualization;
-import pdbf.common.VisualizationTypeAdapter;
-import pdbf.html.CompleteRun_HTML;
+import pdbf.PDBF_Compiler;
+import pdbf.json.Dimension;
+import pdbf.json.Overlay;
+import pdbf.json.Visualization;
+import pdbf.json.VisualizationTypeAdapter;
+import pdbf.json.alasql.Alasql;
+import pdbf.json.alasql.Column;
+import pdbf.json.alasql.Data;
+import pdbf.json.alasql.DatabaseContainer;
+import pdbf.json.alasql.Table;
+import pdbf.json.pdbf.Chart;
+import pdbf.json.pdbf.DataTable;
+import pdbf.json.pdbf.DataText;
+import pdbf.json.pdbf.Database;
+import pdbf.json.pdbf.Text;
+import pdbf.tools.Tools;
 
 public class LaTeX_Compiler {
 
@@ -63,6 +68,8 @@ public class LaTeX_Compiler {
     private static String baseDir;
     private static String baseDirData;
     private static String arg0;
+
+    public static boolean pdfProtect = true;
 
     static {
 	GsonBuilder builder = new GsonBuilder();
@@ -456,31 +463,33 @@ public class LaTeX_Compiler {
 	    new File(s).delete();
 	}
 
-	// Write-protect the pdf
-	System.out.println("Adding write protection to the pdf...");
-	try {
-	    System.setProperty("org.apache.pdfbox.baseParser.pushBackSize",
-		    "2024768");
-	    InputStream dataStream = new FileInputStream(new File(pdfname));
-	    PDDocument doc = PDDocument.load(dataStream);
-	    dataStream.close();
-	    AccessPermission ap = new AccessPermission();
-	    ap.setCanModify(false);
-	    ap.setCanExtractContent(true);
-	    ap.setCanPrint(true);
-	    ap.setCanPrintDegraded(true);
-	    ap.setReadOnly();
-	    StandardProtectionPolicy spp = new StandardProtectionPolicy(UUID
-		    .randomUUID().toString(), "", ap);
-	    doc.protect(spp);
-	    OutputStream out = new FileOutputStream(new File(pdfname));
-	    doc.save(out);
-	    doc.close();
-	    out.close();
-	} catch (Throwable e) {
-	    e.printStackTrace();
-	    System.err.println("Setting write protect to the pdf failed");
-	    System.exit(1);
+	if (pdfProtect) {
+	    // Write-protect the pdf
+	    System.out.println("Adding write protection to the pdf...");
+	    try {
+		System.setProperty("org.apache.pdfbox.baseParser.pushBackSize",
+			"2024768");
+		InputStream dataStream = new FileInputStream(new File(pdfname));
+		PDDocument doc = PDDocument.load(dataStream);
+		dataStream.close();
+		AccessPermission ap = new AccessPermission();
+		ap.setCanModify(false);
+		ap.setCanExtractContent(true);
+		ap.setCanPrint(true);
+		ap.setCanPrintDegraded(true);
+		ap.setReadOnly();
+		StandardProtectionPolicy spp = new StandardProtectionPolicy(
+			UUID.randomUUID().toString(), "", ap);
+		doc.protect(spp);
+		OutputStream out = new FileOutputStream(new File(pdfname));
+		doc.save(out);
+		doc.close();
+		out.close();
+	    } catch (Throwable e) {
+		e.printStackTrace();
+		System.err.println("Setting write protect to the pdf failed");
+		System.exit(1);
+	    }
 	}
     }
 
@@ -721,7 +730,7 @@ public class LaTeX_Compiler {
     }
 
     private static void processVisual(Overlay o) {
-	if (CompleteRun_HTML.includeRes) {
+	if (PDBF_Compiler.includeRes) {
 	    Chart c = (Chart) o.type;
 	    cleanupfiles.add(baseDirData + o.name + ".html");
 	    cleanupfiles.add(baseDir + o.name + ".json");

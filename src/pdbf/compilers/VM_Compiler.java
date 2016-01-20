@@ -1,4 +1,4 @@
-package pdbf.vm;
+package pdbf.compilers;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -6,7 +6,7 @@ import java.text.DecimalFormat;
 
 import org.apache.commons.io.FileUtils;
 
-import pdbf.common.Tools;
+import pdbf.tools.Tools;
 
 public class VM_Compiler {
 

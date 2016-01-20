@@ -1,4 +1,8 @@
-package pdbf.latex;
+package pdbf.json.alasql;
+
+/*
+ * JSON class defining a column for alasql
+ */
 
 public class Column {
     String columnid;

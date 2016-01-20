@@ -1,4 +1,4 @@
-package pdbf.common;
+package pdbf.json;
 
 import java.lang.reflect.Type;
 
@@ -10,6 +10,10 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+
+/*
+ * This class determines the class of an overlay by comparing the I string to all known classes
+ */
 
 public class VisualizationTypeAdapter implements JsonSerializer<Visualization>, JsonDeserializer<Visualization> {
     private static final String CLASSNAME = "C";

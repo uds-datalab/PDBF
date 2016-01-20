@@ -1,4 +1,4 @@
-package pdbf.latex;
+package pdbf.json.alasql;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -8,6 +8,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
+/*
+ * JSON class defining an alasql database
+ */
+
+//TODO: support views for alasql
 public class Alasql implements JsonSerializer<Alasql> {
     String databaseid = "alasql";
     private ArrayList<Table> tables = new ArrayList<Table>();

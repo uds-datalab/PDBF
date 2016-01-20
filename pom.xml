@@ -28,7 +28,7 @@
           <archive>
             <manifest>
               <addClasspath>true</addClasspath>
-              <mainClass>pdbf.html.CompleteRun_HTML</mainClass>
+              <mainClass>pdbf.PDBF_Compiler</mainClass>
             </manifest>
           </archive>
           <appendAssemblyId>false</appendAssemblyId>
@@ -53,7 +53,7 @@
             <index>true</index>
             <manifest>
               <addClasspath>true</addClasspath>
-              <mainClass>pdbf.html.CompleteRun_HTML</mainClass>
+              <mainClass>pdbf.PDBF_Compiler</mainClass>
             </manifest>
           </archive>
           <appendAssemblyId>false</appendAssemblyId>

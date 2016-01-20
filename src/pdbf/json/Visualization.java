@@ -1,11 +1,14 @@
-package pdbf.common;
+package pdbf.json;
+
+/*
+ * Keep all options here. This is beneficial because then you can also set
+ * options on how other representations of this visualization should look
+ * like
+ */
 
 public abstract class Visualization {
-    /*Keep all options here. 
-     * This is beneficial because then you can also set options 
-     * on how other representations of this visualization should look like*/
-    
-    //Multiplot
+
+    // Multiplot
     public int xCount;
     public int yCount;
     public String leftArr;
@@ -17,8 +20,8 @@ public abstract class Visualization {
     public boolean yFirst;
     public boolean forceXequal;
     public boolean forceYequal;
-    
-    //LineChart and BarChart
+
+    // LineChart and BarChart
     public boolean logScale;
     public String legendpos;
     public String xUnitName;
@@ -27,19 +30,19 @@ public abstract class Visualization {
     public boolean drawPoints;
     public boolean fillGraph;
     public boolean showRangeSelector;
-    
-    //BarChart
+
+    // BarChart
     public int overlap;
-    
-    //Pivot
+
+    // Pivot
     public String rows;
     public String cols;
     public String aggregation;
     public String aggregationattribute;
     public String aggregationBig;
     public String aggregationattributeBig;
-    
-    //Common
+
+    // Common
     public String query;
     public String queryB;
     public double x1;
@@ -51,16 +54,16 @@ public abstract class Visualization {
     public double quality;
     public double fontsize;
     public String name;
-    
-    //DataText
+
+    // DataText
     public String linkTo;
     public String linkSelector;
     public String linkLabel;
-    
-    //Chart
+
+    // Chart
     public String chartType;
-    
-    //DataTable
+
+    // DataTable
     public String verticalLines;
     public String horizontalLinesHeader;
     public String horizontalLinesBody;

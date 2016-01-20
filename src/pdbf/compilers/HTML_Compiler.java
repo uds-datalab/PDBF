@@ -1,12 +1,12 @@
-package pdbf.html;
+package pdbf.compilers;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
 
-import pdbf.common.Tools;
-import pdbf.latex.LaTeX_Compiler;
+import pdbf.PDBF_Compiler;
+import pdbf.tools.Tools;
 
 public class HTML_Compiler {
 
@@ -29,7 +29,7 @@ public class HTML_Compiler {
 	    String viewerTAIL = FileUtils.readFileToString(new File(baseDirData
 		    + "template-tail-alasql.html"), Tools.utf8);
 	    String add;
-	    if (CompleteRun_HTML.includeRes) {
+	    if (PDBF_Compiler.includeRes) {
 		add = "</script>";
 	    } else {
 		add = "</script> <link rel=\"stylesheet\" href=\"viewer.css\"/>"
@@ -76,7 +76,7 @@ public class HTML_Compiler {
 		    + "dbjson_base64 = \""
 		    + Tools.escapeSpecialChars(new File(baseDir
 			    + "pdbf-db.json")) + "\";\r\n" + preload + "\r\n"
-		    + (CompleteRun_HTML.includeRes ? (all + "\r\n") : (""))
+		    + (PDBF_Compiler.includeRes ? (all + "\r\n") : (""))
 		    + add + viewerTAIL;
 	    String insert1 = "%ª«¬­<!DOCTYPE html><html dir=\"ltr\" mozdisallowselectionprint moznomarginboxes>"
 		    + "<head><meta charset=\"utf-8\"><script>\n";

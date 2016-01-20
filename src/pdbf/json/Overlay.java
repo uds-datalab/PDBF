@@ -1,4 +1,9 @@
-package pdbf.common;
+package pdbf.json;
+
+/*
+ * This is a wrapper object for all informations that are passes from LaTeX. 
+ * A pdbf-config.json consists of an array of overlays
+ */
 
 public class Overlay {
     public String name;

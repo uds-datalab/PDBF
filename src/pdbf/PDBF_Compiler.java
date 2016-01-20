@@ -1,4 +1,4 @@
-package pdbf.html;
+package pdbf;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,18 +11,44 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import pdbf.common.Tools;
-import pdbf.latex.LaTeX_Compiler;
-import pdbf.vm.VM_Compiler;
+import pdbf.compilers.HTML_Compiler;
+import pdbf.compilers.LaTeX_Compiler;
+import pdbf.compilers.TAR_Compiler;
+import pdbf.compilers.VM_Compiler;
+import pdbf.tools.MinifyResources;
+import pdbf.tools.Tools;
 
-public class CompleteRun_HTML {
+public class PDBF_Compiler {
 
+    // Debug Flag. Cannot be changed by User
     public static boolean includeRes = true;
 
+    private static void showHelp() {
+	System.out
+		.println("Usage:\n"
+			+ "java -jar pdbf.jar LaTeX_file [options]\n"
+			+ "Possible options:\n"
+			+ "--no-pdf-protection : Disables the protection of the pdf part of the PDBF file\n"
+			+ "OR\n"
+			+ "java -jar pdbf.jar --vm  PDBF_File.html VM_File.ova\n"
+			+ "For further help visit: https://github.com/uds-datalab/PDBF");
+	System.exit(0);
+    }
+
+    public static void compile(String[] args) {
+	if (includeRes) {
+	    MinifyResources.main(args);
+	}
+	LaTeX_Compiler.main(args);
+	HTML_Compiler.main(args);
+    }
+
     public static void main(String[] args) {
+	// Apache PDFBox uses the Logger class and we need to configure it
 	BasicConfigurator.configure();
 	Logger.getRootLogger().setLevel(Level.ERROR);
 
+	//
 	LaTeX_Compiler.suffix = Tools.getOS();
 
 	String version = null;
@@ -50,22 +76,13 @@ public class CompleteRun_HTML {
 	    // Do nothing
 	}
 
+	// To minimize the possibility that i forget to turn off includeRes
+	// before building a release ;)
 	if (!includeRes) {
 	    System.out.println("!!!!Warning!!!! includeRes is off");
 	}
-
-	if (args.length > 4 || args.length < 1
-		|| args[0].equalsIgnoreCase("--help")) {
-	    System.out
-		    .println("Usage:\n"
-			    + "java -jar pdbf.jar LaTeX_file [options]\n"
-			    + "Possible options:\n"
-			    + "--no-pdf-protection : Disables the protection of the pdf part of the PDBF file\n"
-			    + "OR\n"
-			    + "java -jar pdbf.jar --vm  PDBF_File.html VM_File.ova\n"
-			    + "For further help visit: https://github.com/uds-datalab/PDBF");
-	    System.exit(0);
-	}
+	// Get current time to measure the time it takes to complete the task
+	long begin = System.currentTimeMillis();
 
 	if (args[0].equalsIgnoreCase("--version")) {
 	    System.out
@@ -73,25 +90,25 @@ public class CompleteRun_HTML {
 			    + version
 			    + "\nVisit https://github.com/uds-datalab/PDBF for more information");
 	    System.exit(0);
-	}
-
-	if (args[0].equalsIgnoreCase("--vm")) {
+	} else if (args[0].equalsIgnoreCase("--help")) {
+	    showHelp();
+	} else if (args[0].equalsIgnoreCase("--tar") && args.length == 3) {
+	    TAR_Compiler.main(args);
+	    System.exit(0);
+	} else if (args[0].equalsIgnoreCase("--vm") && args.length == 3) {
 	    VM_Compiler.main(args);
 	    System.exit(0);
+	} else if (args.length == 1) {
+	    LaTeX_Compiler.pdfProtect = true;
+	    compile(args);
+	} else if (args.length == 2
+		&& args[1].equalsIgnoreCase("--no-pdf-protection")) {
+	    LaTeX_Compiler.pdfProtect = false;
+	    compile(args);
 	}
-
-	long begin = System.currentTimeMillis();
-
-	if (includeRes) {
-	    MinifyResources.main(args);
-	}
-
-	LaTeX_Compiler.main(args);
-	HTML_Compiler.main(args);
 
 	System.out.println("Finished!");
 	System.out.println("Took " + (System.currentTimeMillis() - begin)
 		+ "ms");
     }
-
 }

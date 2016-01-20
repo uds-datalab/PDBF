@@ -1,4 +1,11 @@
-package pdbf.common;
+package pdbf.json.pdbf;
+
+import pdbf.json.Visualization;
+
+/*
+ * Defines the properties that are exclusive to Database
+ * For simplicity Database elements are also considered to be Visualizations
+ */
 
 public class Database extends Visualization {
     public int type;
@@ -9,8 +16,8 @@ public class Database extends Visualization {
     public String[] headers;
     public char quote;
     public char seperator;
-    
+
     public Database() {
     }
-    
+
 }

@@ -8,12 +8,12 @@ import org.apache.commons.io.FileUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import pdbf.common.Tools;
-import pdbf.latex.Alasql;
-import pdbf.latex.Column;
-import pdbf.latex.Data;
-import pdbf.latex.DatabaseContainer;
-import pdbf.latex.Table;
+import pdbf.json.alasql.Alasql;
+import pdbf.json.alasql.Column;
+import pdbf.json.alasql.Data;
+import pdbf.json.alasql.DatabaseContainer;
+import pdbf.json.alasql.Table;
+import pdbf.tools.Tools;
 
 public class DatabaseJSONTest {
 

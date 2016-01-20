@@ -23,9 +23,9 @@ import org.apache.pdfbox.preflight.ValidationResult.ValidationError;
 import org.apache.pdfbox.preflight.exception.SyntaxValidationException;
 import org.apache.pdfbox.preflight.parser.PreflightParser;
 
-import pdbf.common.Tools;
-import pdbf.html.CompleteRun_HTML;
-import pdbf.vm.VM_Compiler;
+import pdbf.PDBF_Compiler;
+import pdbf.compilers.VM_Compiler;
+import pdbf.tools.Tools;
 
 public class CompileAndCheckIT {
     // TODO: write test for database with ugly "\"values\""
@@ -39,7 +39,7 @@ public class CompileAndCheckIT {
 	protected void starting(Description description) {
 	    System.out.println("Starting test: " + description.getMethodName());
 	    startTime = System.currentTimeMillis();
-	    if (!CompleteRun_HTML.includeRes) {
+	    if (!PDBF_Compiler.includeRes) {
 		System.out.println("Test failed because includeRes is off!");
 		fail();
 	    }

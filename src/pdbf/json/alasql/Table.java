@@ -1,4 +1,4 @@
-package pdbf.latex;
+package pdbf.json.alasql;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -10,6 +10,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
+
+/*
+ * JSON class defining a table for alasql
+ */
 
 public class Table implements JsonSerializer<Table> {
     public ArrayList<Column> columns = new ArrayList<Column>();

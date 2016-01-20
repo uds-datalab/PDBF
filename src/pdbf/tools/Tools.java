@@ -1,4 +1,4 @@
-package pdbf.common;
+package pdbf.tools;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -20,7 +20,7 @@ import java.util.zip.InflaterOutputStream;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 
-import pdbf.html.CompleteRun_HTML;
+import pdbf.PDBF_Compiler;
 
 public class Tools {
 
@@ -93,7 +93,7 @@ public class Tools {
 	String tmp = null;
 
 	try {
-	    CodeSource codeSource = CompleteRun_HTML.class.getProtectionDomain().getCodeSource();
+	    CodeSource codeSource = PDBF_Compiler.class.getProtectionDomain().getCodeSource();
 	    File jarFile = new File(codeSource.getLocation().toURI().getPath());
 	    tmp = jarFile.getParentFile().getPath() + File.separator;
 	} catch (URISyntaxException e) {
