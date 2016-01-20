@@ -29,6 +29,7 @@ public class CreateReferencePictures {
 	    }
 	}
 
+	//TODO: generalize this to arbitrary tests
 	for (File f : Tools.deleteList) {
 	    f.delete();
 	}

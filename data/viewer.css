@@ -458,9 +458,7 @@ html[dir='rtl'] #toolbarSidebar {
 #toolbarContainer, .findbar, .secondaryToolbar {
   position: relative;
   height: 32px;
-  background-color: #474747; /* fallback */
-  background-image: url('data:image/png;base64,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'),
-                    linear-gradient(hsla(0,0%,32%,.99), hsla(0,0%,27%,.95));
+  background-color: #888888;
 }
 html[dir='ltr'] #toolbarContainer, .findbar, .secondaryToolbar {
   box-shadow: inset 1px 0 0 hsla(0,0%,100%,.08),
@@ -1897,91 +1895,61 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
   display: none;
 }
 
-@media all and (max-width: 960px) {
-  html[dir='ltr'] #outerContainer.sidebarMoving .outerCenter,
-  html[dir='ltr'] #outerContainer.sidebarOpen .outerCenter {
-    float: left;
-    left: 205px;
-  }
-  html[dir='rtl'] #outerContainer.sidebarMoving .outerCenter,
-  html[dir='rtl'] #outerContainer.sidebarOpen .outerCenter {
-    float: right;
-    right: 205px;
-  }
-}
-
-@media all and (max-width: 900px) {
-  .sidebarOpen .hiddenLargeView {
-    display: none;
-  }
-  .sidebarOpen .visibleLargeView {
-    display: inherit;
-  }
-}
-
-@media all and (max-width: 860px) {
-  .sidebarOpen .hiddenMediumView {
-    display: none;
-  }
-  .sidebarOpen .visibleMediumView {
-    display: inherit;
-  }
-}
-
-@media all and (max-width: 770px) {
-  #sidebarContainer {
+#sidebarContainer {
     top: 32px;
     z-index: 100;
-  }
-  .loadingInProgress #sidebarContainer {
-    top: 37px;
-  }
-  #sidebarContent {
-    top: 32px;
-    background-color: hsla(0,0%,0%,.7);
-  }
+}
+.loadingInProgress #sidebarContainer {
+  top: 37px;
+}
+#sidebarContent {
+  top: 32px;
+  background-color: hsla(0,0%,0%,.7);
+}
 
-  html[dir='ltr'] #outerContainer.sidebarOpen > #mainContainer {
-    left: 0px;
-  }
-  html[dir='rtl'] #outerContainer.sidebarOpen > #mainContainer {
-    right: 0px;
-  }
+html[dir='ltr'] #outerContainer.sidebarOpen > #mainContainer {
+  left: 0px;
+}
+html[dir='rtl'] #outerContainer.sidebarOpen > #mainContainer {
+  right: 0px;
+}
 
-  html[dir='ltr'] .outerCenter {
-    float: left;
-    left: 205px;
-  }
-  html[dir='rtl'] .outerCenter {
-    float: right;
-    right: 205px;
-  }
+#outerContainer .hiddenLargeView,
+#outerContainer .hiddenMediumView {
+  display: inherit;
+}
+#outerContainer .visibleLargeView,
+#outerContainer .visibleMediumView {
+  display: none;
+}
 
-  #outerContainer .hiddenLargeView,
-  #outerContainer .hiddenMediumView {
-    display: inherit;
-  }
-  #outerContainer .visibleLargeView,
-  #outerContainer .visibleMediumView {
-    display: none;
+@media all and (max-width: 870px) {
+  .toolbarButtonSpacer {
+    width: 0;
   }
 }
 
-@media all and (max-width: 700px) {
+@media all and (max-width: 810px) {
   #outerContainer .hiddenLargeView {
     display: none;
   }
   #outerContainer .visibleLargeView {
     display: inherit;
   }
+  #scaleSelectContainer {
+  	display: none;
+  }
 }
 
-@media all and (max-width: 660px) {
+@media all and (max-width: 690px) {
   #outerContainer .hiddenMediumView {
     display: none;
   }
   #outerContainer .visibleMediumView {
     display: inherit;
+  }
+  #scaleSelectContainer, #pageNumberLabel {
+  	display: none;
   }
 }
 
@@ -1992,23 +1960,26 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
   .visibleSmallView {
     display: inherit;
   }
-  html[dir='ltr'] #outerContainer.sidebarMoving .outerCenter,
-  html[dir='ltr'] #outerContainer.sidebarOpen .outerCenter,
-  html[dir='ltr'] .outerCenter {
-    left: 156px;
-  }
-  html[dir='rtl'] #outerContainer.sidebarMoving .outerCenter,
-  html[dir='rtl'] #outerContainer.sidebarOpen .outerCenter,
-  html[dir='rtl'] .outerCenter {
-    right: 156px;
-  }
-  .toolbarButtonSpacer {
-    width: 0;
+  #scaleSelectContainer, #pageNumberLabel {
+  	display: none;
   }
 }
 
-@media all and (max-width: 510px) {
-  #scaleSelectContainer, #pageNumberLabel {
+@media all and (max-width: 540px) {
+  #scaleSelectContainer, #pageNumberLabel, #pageNumber, #numPages {
     display: none;
   }
 }
+
+@media all and (max-width: 370px) {
+  #scaleSelectContainer, #pageNumberLabel, #pageNumber, #numPages, #toolbarViewerLeft .splitToolbarButton {
+    display: none;
+  }
+}
+
+/*
+pdbflabel
+
+pageNumber
+#numPages
+*/
