@@ -327,7 +327,8 @@
 }
 
 \NewDocumentCommand\sql{O{} o m}{%
-{\pdbf@sqlmult{\IfValueTF{#2}{#2}{#3}}{#3}{pdbf.common.Text}{#1}}%
+\StrSubstitute{#3}{_}{$\string_$}[\pdbf@tmpstore]
+{\pdbf@sqlmult{\IfValueTF{#2}{#2}{\pdbf@tmpstore}}{#3}{pdbf.common.Text}{#1}}%
 }
 
 \def\pdbf@csxdefaux#1{%
