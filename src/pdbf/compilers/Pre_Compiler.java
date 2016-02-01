@@ -126,7 +126,7 @@ public class Pre_Compiler {
 	File latex = new File(latexPath);
 	if (!latex.exists()) {
 	    System.err.println("Error: LaTeX file does not exist!");
-	    System.exit(-1);
+	    System.exit(1);
 	}
 
 	latexFolder = latex.getAbsoluteFile().getParent();
@@ -155,13 +155,13 @@ public class Pre_Compiler {
 	    if (tmp.size() == 0 || tmp.get(tmp.size() - 1).equals("DELETE ME")) {
 		System.err.println("Warning: You have to first adjust the config.cfg file before you can use this tool.\n"
 			+ "Did you forgot to remove the \"DELETE ME\" at the end of the config file? Exiting...");
-		System.exit(-1);
+		System.exit(1);
 	    }
 	    br.close();
 	    pathToLaTeXScript = tmp.toArray(pathToLaTeXScript);
 	} catch (IOException e4) {
 	    e4.printStackTrace();
-	    System.exit(-1);
+	    System.exit(1);
 	}
 
 	// Hint user for known issues
@@ -174,7 +174,7 @@ public class Pre_Compiler {
 	// ".tex"
 	if (!latexPath.endsWith(".tex")) {
 	    System.err.println("Error: Specified file has the wrong extension. Only .tex is supported!");
-	    System.exit(-1);
+	    System.exit(1);
 	}
 
 	ArrayList<String> commands = new ArrayList<String>(Arrays.asList(pathToLaTeXScript));
@@ -192,7 +192,7 @@ public class Pre_Compiler {
 			+ "have to compile phantom-js yourself and then replace the binary for "
 			+ "your system in the external-tools folder. Instructions on how to "
 			+ "compile phantom-js you can find here: http://phantomjs.org/build.html.");
-		System.exit(-1);
+		System.exit(1);
 	    }
 	} catch (Exception e) {
 	    e.printStackTrace();
@@ -210,7 +210,7 @@ public class Pre_Compiler {
 		FileUtils.copyFile(fi11, fi22);
 	    } catch (IOException e3) {
 		e3.printStackTrace();
-		System.exit(-1);
+		System.exit(1);
 	    }
 	}
 
@@ -224,11 +224,11 @@ public class Pre_Compiler {
 	    p.waitFor();
 	    if (p.exitValue() != 0) {
 		System.err.println("Latex compiler exited with error!");
-		System.exit(-1);
+		System.exit(1);
 	    }
 	} catch (Exception e) {
 	    System.err.println("Error: LaTeX compilation failed! Reason: \n" + e.getMessage());
-	    System.exit(-1);
+	    System.exit(1);
 	}
 
 	// Read the config.json
@@ -246,13 +246,13 @@ public class Pre_Compiler {
 	if (f.exists()) {
 	    if (!f.delete()) {
 		System.out.println("pdbf-db.sql could not be deleted! Exiting...");
-		System.exit(-1);
+		System.exit(1);
 	    }
 	}
 	if (f2.exists()) {
 	    if (!f2.delete()) {
 		System.out.println("pdbf-db.json could not be deleted! Exiting...");
-		System.exit(-1);
+		System.exit(1);
 	    }
 	}
 	try {
@@ -303,7 +303,7 @@ public class Pre_Compiler {
 			    for (Process p2 : processes) {
 				p2.destroy();
 			    }
-			    System.exit(-1);
+			    System.exit(1);
 			}
 		    } catch (InterruptedException e) {
 			e.printStackTrace();
@@ -322,7 +322,7 @@ public class Pre_Compiler {
 		    for (Process p2 : processes) {
 			p2.destroy();
 		    }
-		    System.exit(-1);
+		    System.exit(1);
 		}
 	    } catch (InterruptedException e) {
 		e.printStackTrace();
@@ -375,17 +375,17 @@ public class Pre_Compiler {
 	    p.waitFor();
 	    if (p.exitValue() != 0) {
 		System.err.println("Latex compiler exited with error!");
-		System.exit(-1);
+		System.exit(1);
 	    }
 	} catch (Exception e) {
 	    System.err.println("Error: LaTeX compilation failed! Reason: \n" + e.getMessage());
-	    System.exit(-1);
+	    System.exit(1);
 	}
 	try {
 	    FileUtils.moveFile(new File(pdfname), new File(pdfname.substring(0, pdfname.length() - 4) + "Embed.pdf"));
 	} catch (IOException e2) {
 	    e2.printStackTrace();
-	    System.exit(-1);
+	    System.exit(1);
 	}
 
 	// Copy images to latex file folder
@@ -411,11 +411,11 @@ public class Pre_Compiler {
 	    p.waitFor();
 	    if (p.exitValue() != 0) {
 		System.err.println("Latex compiler exited with error!");
-		System.exit(-1);
+		System.exit(1);
 	    }
 	} catch (Exception e) {
 	    System.err.println("Error: LaTeX compilation failed! Reason: \n" + e.getMessage());
-	    System.exit(-1);
+	    System.exit(1);
 	}
 
 	if (new File(baseDir + "pdbf-config.json").exists()) {
@@ -512,7 +512,7 @@ public class Pre_Compiler {
 	}
 	if (pdbfElementContainers == null) {
 	    System.err.println("Error: Deserialization failed!");
-	    System.exit(-1);
+	    System.exit(1);
 	}
 	return pdbfElementContainers;
     }
@@ -548,7 +548,7 @@ public class Pre_Compiler {
 
 		    if (alasql.containsTable(curTable)) {
 			System.err.println("Error: Database already contains a table with name \"" + curTable + "\"");
-			System.exit(-1);
+			System.exit(1);
 		    }
 
 		    try {
@@ -572,7 +572,7 @@ public class Pre_Compiler {
 			alasql.addTable(table, curTable);
 		    } catch (PSQLException e) {
 			System.err.println(e.getMessage());
-			System.exit(-1);
+			System.exit(1);
 		    }
 		}
 		conn.close();
@@ -595,7 +595,7 @@ public class Pre_Compiler {
 
 		if (alasql.containsTable(curTable)) {
 		    System.err.println("Error: Database already contains a table with name \"" + curTable + "\"");
-		    System.exit(-1);
+		    System.exit(1);
 		}
 
 		int cols = parser.getHeaderMap().size();
@@ -788,7 +788,7 @@ public class Pre_Compiler {
 	    p.waitFor();
 	    if (p.exitValue() != 0) {
 		System.err.println("Phantomjs exited with error!");
-		System.exit(-1);
+		System.exit(1);
 	    }
 	} catch (Exception e) {
 	    e.printStackTrace();

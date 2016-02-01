@@ -3,6 +3,10 @@ package pdbf.tests;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
 import pdbf.misc.Tools;
 
 public class CreateReferencePictures {
@@ -13,6 +17,10 @@ public class CreateReferencePictures {
     public static String suffix = Tools.getOS();
 
     public static void main(String[] args) throws InterruptedException, IOException {
+	// Apache PDFBox uses the Logger class and we need to configure it
+	BasicConfigurator.configure();
+	Logger.getRootLogger().setLevel(Level.ERROR);
+	
 	String[] documents = { "charts", "pdbf-doc", "minimal", "no_pdbf" };
 	String[] documentsDir = { testDir, baseDir, baseDir, testDir };
 

@@ -17,6 +17,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.apache.pdfbox.preflight.PreflightDocument;
 import org.apache.pdfbox.preflight.ValidationResult;
 import org.apache.pdfbox.preflight.ValidationResult.ValidationError;
@@ -30,6 +33,12 @@ import pdbf.misc.Tools;
 public class CompileAndCheckIT {
     // TODO: write test for database with ugly "\"values\""
 
+    static  {
+	// Apache PDFBox uses the Logger class and we need to configure it
+	BasicConfigurator.configure();
+	Logger.getRootLogger().setLevel(Level.ERROR);
+    }
+    
     @Rule
     public TimeTestWatcher watcher = new TimeTestWatcher();
 

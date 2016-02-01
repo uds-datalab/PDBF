@@ -73,7 +73,7 @@ public class Tools {
 	    return "bsd";
 	} else {
 	    System.err.println("Sorry, your operating system is not supported!");
-	    System.exit(-1);
+	    System.exit(1);
 	    return null;
 	}
     }
@@ -88,7 +88,7 @@ public class Tools {
 	    encodedfile = Base64.encodeBase64String(bytes);
 	} catch (Exception e) {
 	    e.printStackTrace();
-	    System.exit(-1);
+	    System.exit(1);
 	}
 	return encodedfile;
     }
@@ -123,7 +123,7 @@ public class Tools {
 	    tmp = jarFile.getParentFile().getPath() + File.separator;
 	} catch (URISyntaxException e) {
 	    e.printStackTrace();
-	    System.exit(-1);
+	    System.exit(1);
 	}
 	return tmp;
     }

@@ -18,11 +18,11 @@ public class VM_Compiler {
 	String a = new File(args[1]).getName();
 	if (!a.toUpperCase().endsWith(".HTML")) {
 	    System.err.println("Error: Only .HTML files are supported as first argument!");
-	    System.exit(-1);
+	    System.exit(1);
 	}
 	if (!args[2].toUpperCase().endsWith(".OVA")) {
 	    System.err.println("Error: Only .OVA files are supported as second argument!");
-	    System.exit(-1);
+	    System.exit(1);
 	}
 	String basename = args[1].substring(0, args[1].length() - 5);
 
@@ -31,7 +31,7 @@ public class VM_Compiler {
 	    if (vmcontent.toLowerCase().contains("</script>")) {
 		System.err
 			.println("The ova file cannot be used to generate a pdbf document! Try to change the content of the ova file such that it doesnt contain the string \"</script>\" and then try again.");
-		System.exit(-1);
+		System.exit(1);
 	    }
 	    StringBuilder sb = new StringBuilder(vmcontent);
 	    String replace = "%PDF-1.5\n%ª«¬­.ovf\0\n1 0 obj\nstream\n<head><meta charset=UTF-8><script>";
@@ -63,7 +63,11 @@ public class VM_Compiler {
 
 	    tarHeaderLength(sb, von, html.length() + diffLength);
 	    tarHeaderChecksum(sb, von);
-	    tarPadding(sb);
+	    //Special PDF padding with % because PDF does not like zero bytes after %%EOF
+	    int i = sb.lastIndexOf("%%EOF");
+	    while (sb.length() % 512 != 0) {
+		sb.insert(i, '%');
+	    }
 
 	    FileUtils.writeStringToFile(new File(basename + ".ova"), sb.toString(), StandardCharsets.ISO_8859_1);
 	} catch (Exception e) {

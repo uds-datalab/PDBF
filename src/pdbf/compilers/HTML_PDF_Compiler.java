@@ -58,7 +58,7 @@ public class HTML_PDF_Compiler {
 	    if (pdfcontent.toLowerCase().contains("</script>")) {
 		System.err.println("The generated pdf cannot be used to generate a pdbf document!"
 			+ " Try to either change some content in your tex file or try to " + "add \\pdfcompresslevel=8 to your tex file.");
-		System.exit(-1);
+		System.exit(1);
 	    }
 	    StringBuilder sb = new StringBuilder(pdfcontent);
 	    int pdfmarker = sb.indexOf("%PDF-");

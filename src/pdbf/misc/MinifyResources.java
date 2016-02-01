@@ -27,7 +27,7 @@ public class MinifyResources {
 	    p.waitFor();
 	    if (p.exitValue() != 0) {
 		System.err.println("Google closure compiler exited with error!");
-		System.exit(-1);
+		System.exit(1);
 	    }
 	} catch (Exception e) {
 	    e.printStackTrace();

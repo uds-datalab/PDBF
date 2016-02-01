@@ -21,11 +21,11 @@ public class TAR_Compiler {
 	String a = new File(args[1]).getName();
 	if (!a.toUpperCase().endsWith(".HTML")) {
 	    System.err.println("Error: Only .HTML files are supported as first argument!");
-	    System.exit(-1);
+	    System.exit(1);
 	}
 	if (!args[2].toUpperCase().endsWith(".TAR")) {
 	    System.err.println("Error: Only .TAR files are supported as second argument!");
-	    System.exit(-1);
+	    System.exit(1);
 	}
 	String basename = args[1].substring(0, args[1].length() - 5);
 
@@ -34,7 +34,7 @@ public class TAR_Compiler {
 	    if (vmcontent.toLowerCase().contains("</script>")) {
 		System.err
 			.println("The tar file cannot be used to generate a pdbf document! Try to change the content of the tar file such that it doesnt contain the string \"</script>\" and then try again.");
-		System.exit(-1);
+		System.exit(1);
 	    }
 	    StringBuilder sb = new StringBuilder(vmcontent);
 

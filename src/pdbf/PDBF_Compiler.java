@@ -59,7 +59,7 @@ public class PDBF_Compiler {
 		    + "VERSION.md"));
 	} catch (IOException e1) {
 	    e1.printStackTrace();
-	    System.exit(-1);
+	    System.exit(1);
 	}
 
 	// Check for updates
