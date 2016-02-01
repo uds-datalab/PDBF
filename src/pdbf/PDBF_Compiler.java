@@ -11,12 +11,12 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import pdbf.compilers.HTML_Compiler;
-import pdbf.compilers.LaTeX_Compiler;
+import pdbf.compilers.HTML_PDF_Compiler;
+import pdbf.compilers.Pre_Compiler;
 import pdbf.compilers.TAR_Compiler;
 import pdbf.compilers.VM_Compiler;
-import pdbf.tools.MinifyResources;
-import pdbf.tools.Tools;
+import pdbf.misc.MinifyResources;
+import pdbf.misc.Tools;
 
 public class PDBF_Compiler {
 
@@ -31,6 +31,8 @@ public class PDBF_Compiler {
 			+ "--no-pdf-protection : Disables the protection of the pdf part of the PDBF file\n"
 			+ "OR\n"
 			+ "java -jar pdbf.jar --vm  PDBF_File.html VM_File.ova\n"
+			+ "OR\n"
+			+ "java -jar pdbf.jar --tar  PDBF_File.html TAR_File.tar\n"
 			+ "For further help visit: https://github.com/uds-datalab/PDBF");
 	System.exit(0);
     }
@@ -39,8 +41,8 @@ public class PDBF_Compiler {
 	if (includeRes) {
 	    MinifyResources.main(args);
 	}
-	LaTeX_Compiler.main(args);
-	HTML_Compiler.main(args);
+	Pre_Compiler.main(args);
+	HTML_PDF_Compiler.main(args);
     }
 
     public static void main(String[] args) {
@@ -49,7 +51,7 @@ public class PDBF_Compiler {
 	Logger.getRootLogger().setLevel(Level.ERROR);
 
 	//
-	LaTeX_Compiler.suffix = Tools.getOS();
+	Pre_Compiler.suffix = Tools.getOS();
 
 	String version = null;
 	try {
@@ -99,11 +101,11 @@ public class PDBF_Compiler {
 	    VM_Compiler.main(args);
 	    System.exit(0);
 	} else if (args.length == 1) {
-	    LaTeX_Compiler.pdfProtect = true;
+	    Pre_Compiler.pdfProtect = true;
 	    compile(args);
 	} else if (args.length == 2
 		&& args[1].equalsIgnoreCase("--no-pdf-protection")) {
-	    LaTeX_Compiler.pdfProtect = false;
+	    Pre_Compiler.pdfProtect = false;
 	    compile(args);
 	}
 

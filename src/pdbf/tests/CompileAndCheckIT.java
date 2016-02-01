@@ -25,7 +25,7 @@ import org.apache.pdfbox.preflight.parser.PreflightParser;
 
 import pdbf.PDBF_Compiler;
 import pdbf.compilers.VM_Compiler;
-import pdbf.tools.Tools;
+import pdbf.misc.Tools;
 
 public class CompileAndCheckIT {
     // TODO: write test for database with ugly "\"values\""
@@ -48,17 +48,13 @@ public class CompileAndCheckIT {
 	protected void finished(Description description) {
 	    long elapsed = System.currentTimeMillis() - startTime;
 	    String testName = description.getMethodName();
-	    System.out.println(String.format("Test %s took %d ms.", testName,
-		    elapsed));
+	    System.out.println(String.format("Test %s took %d ms.", testName, elapsed));
 	}
     };
 
-    public static String baseDir = new File(Tools.getBaseDir()).getParent()
-	    + File.separator;
-    public static String testDir = baseDir + "src" + File.separator + "pdbf"
-	    + File.separator + "tests" + File.separator;
-    public static String refDir = baseDir + "src" + File.separator + "pdbf"
-	    + File.separator + "referenceImages" + File.separator;
+    public static String baseDir = new File(Tools.getBaseDir()).getParent() + File.separator;
+    public static String testDir = baseDir + "src" + File.separator + "pdbf" + File.separator + "tests" + File.separator;
+    public static String refDir = baseDir + "src" + File.separator + "pdbf" + File.separator + "referenceImages" + File.separator;
 
     public static void compareImages(BufferedImage i1, BufferedImage i2) {
 	int height = i1.getHeight();
@@ -80,8 +76,7 @@ public class CompileAndCheckIT {
 		int g2 = (color2 & 0x00FF00) >> 8;
 		int b1 = (color1 & 0x0000FF);
 		int b2 = (color2 & 0x0000FF);
-		sum += Math.abs(r1 - r2) + Math.abs(g1 - g2)
-			+ Math.abs(b1 - b2);
+		sum += Math.abs(r1 - r2) + Math.abs(g1 - g2) + Math.abs(b1 - b2);
 	    }
 	}
 	double n = width * height * 3;
@@ -94,10 +89,8 @@ public class CompileAndCheckIT {
 	}
     }
 
-    public static void compile(String texDir, String texName)
-	    throws IOException, InterruptedException {
-	ProcessBuilder pb = new ProcessBuilder("java", "-jar", baseDir
-		+ "pdbf.jar", texName);
+    public static void compile(String texDir, String texName) throws IOException, InterruptedException {
+	ProcessBuilder pb = new ProcessBuilder("java", "-jar", baseDir + "pdbf.jar", texName);
 	pb.directory(new File(texDir));
 	pb.inheritIO();
 	Process p = pb.start();
@@ -107,8 +100,7 @@ public class CompileAndCheckIT {
 	}
     }
 
-    public static void compareImages(String jsName, String htmlDir,
-	    String htmlName) throws IOException, InterruptedException {
+    public static void compareImages(String jsName, String htmlDir, String htmlName) throws IOException, InterruptedException {
 	Tools.processes.clear();
 	Tools.deleteList.clear();
 	// Create current images
@@ -140,14 +132,12 @@ public class CompileAndCheckIT {
 	}
     }
 
-    public static void checkHTML(String htmlDir, String htmlName)
-	    throws IOException, InterruptedException {
+    public static void checkHTML(String htmlDir, String htmlName) throws IOException, InterruptedException {
 	compareImages("capturePages.js", htmlDir, htmlName);
 	compareImages("captureOverlays.js", htmlDir, htmlName);
     }
 
-    public static void checkPDF(String pdfDir, String pdfName)
-	    throws IOException {
+    public static void checkPDF(String pdfDir, String pdfName) throws IOException {
 	ValidationResult result = null;
 
 	FileDataSource fd = new FileDataSource(pdfDir + pdfName);
@@ -169,19 +159,16 @@ public class CompileAndCheckIT {
 	} else {
 	    System.err.println("The file is not valid, error(s) :");
 	    for (ValidationError error : result.getErrorsList()) {
-		System.err.println(error.getErrorCode() + " : "
-			+ error.getDetails());
+		System.err.println(error.getErrorCode() + " : " + error.getDetails());
 		fail(error.getErrorCode() + " : " + error.getDetails());
 	    }
 	    fail("PDF file not valid, but no validation error was output");
 	}
     }
 
-    public static void checkTAR(String tarDir, String tarName)
-	    throws IOException {
+    public static void checkTAR(String tarDir, String tarName) throws IOException {
 	String tarFile = tarDir + tarName;
-	TarArchiveInputStream tis = new TarArchiveInputStream(
-		new BufferedInputStream(new FileInputStream(tarFile)));
+	TarArchiveInputStream tis = new TarArchiveInputStream(new BufferedInputStream(new FileInputStream(tarFile)));
 	while (tis.getNextEntry() != null) {
 	    byte data[] = new byte[8192];
 	    while (tis.read(data) != -1) {
@@ -192,8 +179,7 @@ public class CompileAndCheckIT {
 	System.out.println("Finished checkTAR successfully");
     }
 
-    public static void documentTest(String baseDir, String baseName,
-	    boolean withVM) throws IOException, InterruptedException {
+    public static void documentTest(String baseDir, String baseName, boolean withVM) throws IOException, InterruptedException {
 	File f = new File(baseDir + baseName + ".html");
 	File f2 = new File(baseDir + baseName + ".pdf");
 	File f3 = new File(baseDir + baseName + ".ova");
@@ -205,8 +191,7 @@ public class CompileAndCheckIT {
 	    fail("Compile failed");
 	}
 	if (withVM) {
-	    String[] args = { "", baseDir + baseName + ".html",
-		    CompileAndCheckIT.baseDir + "vldb-Invaders.ova" };
+	    String[] args = { "", baseDir + baseName + ".html", CompileAndCheckIT.baseDir + "vldb-Invaders.ova" };
 	    VM_Compiler.main(args);
 	    f.delete();
 	    FileUtils.moveFile(f3, f);
@@ -250,8 +235,7 @@ public class CompileAndCheckIT {
 	// Create Folder and copy tex file
 	String otherFolder = baseDir + "otherFolder" + File.separator;
 	new File(otherFolder).mkdirs();
-	FileUtils.copyFile(new File(baseDir + "minimal.tex"), new File(
-		otherFolder + "minimal.tex"));
+	FileUtils.copyFile(new File(baseDir + "minimal.tex"), new File(otherFolder + "minimal.tex"));
 	documentTest(otherFolder, "minimal", false);
 	if (!new File(otherFolder + "minimal.html").exists()) {
 	    fail("Compile failed");

@@ -79,7 +79,7 @@ function display(json, page, phantomJS) {
 	}
 	
 	switch (json.type.C) {
-		case "pdbf.common.MultiplotChart":
+		case "pdbf.json.MultiplotChart":
 			if (!phantomJS) {
 				var fullscreen = getFullscreenDiv();
 				container.appendChild(fullscreen);
@@ -109,7 +109,7 @@ function display(json, page, phantomJS) {
 				}; // TODO:
 			}
 			break;
-		case "pdbf.common.Chart":
+		case "pdbf.json.Chart":
 			if (!phantomJS) {
 				var fullscreen = getFullscreenDiv();
 				container.appendChild(fullscreen);
@@ -140,7 +140,7 @@ function display(json, page, phantomJS) {
 				};
 			}
 			break;
-		case "pdbf.common.DataTable":
+		case "pdbf.json.DataTable":
 			if (phantomJS) {
 				var text = buildDataTable(container, json, zoomFactor, style, containerOver);
 				if (text != undefined) {
@@ -164,7 +164,7 @@ function display(json, page, phantomJS) {
 			style += 'cursor: pointer;';
 			container.setAttribute('style', style);
 			break;
-		case "pdbf.common.DataText":
+		case "pdbf.json.DataText":
 			if (phantomJS) {
 				var text = buildDataText(container, json, zoomFactor, style, containerOver);
 				if (text != undefined) {
@@ -211,7 +211,7 @@ function display(json, page, phantomJS) {
 				});
 			}
 			// Fallthrough
-		case "pdbf.common.Text":
+		case "pdbf.json.Text":
 			if (!phantomJS) {
 				container.addEventListener("click", function() {
 					if (containerOver == null) {
@@ -229,7 +229,7 @@ function display(json, page, phantomJS) {
 			style += 'cursor: pointer;';
 			container.setAttribute('style', style);
 			break;
-		case "pdbf.common.Pivot":
+		case "pdbf.json.Pivot":
 			if (!phantomJS) {
 				var fullscreen = getFullscreenDiv();
 				container.appendChild(fullscreen);
@@ -1631,16 +1631,16 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 			containerOver.removeChild(containerOver.firstChild);
 		}
 		switch (json.type.C) {
-			case "pdbf.common.MultiplotChart":
-			case "pdbf.common.Chart":
+			case "pdbf.json.MultiplotChart":
+			case "pdbf.json.Chart":
 				buildContainerChartBig(json, containerOver, true);
 				break;
-			case "pdbf.common.Text":
-			case "pdbf.common.DataText":
-			case "pdbf.common.DataTable":
+			case "pdbf.json.Text":
+			case "pdbf.json.DataText":
+			case "pdbf.json.DataTable":
 				buildContainerTableBig(json, containerOver);
 				break;
-			case "pdbf.common.Pivot":
+			case "pdbf.json.Pivot":
 				buildContainerPivotBig(json, containerOver, true);
 				break;
 		}
@@ -1694,7 +1694,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 	containerLabel.innerHTML = 'Switch representation:<br />';
 	containerSwitch.appendChild(containerLabel);
 	
-	if (json.type.C != 'pdbf.common.Pivot') {
+	if (json.type.C != 'pdbf.json.Pivot') {
 		var buttonChart = document.createElement('input');
 		buttonChart.type = 'button';
 		buttonChart.value = 'Chart';
@@ -1755,7 +1755,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 	editor.setValue(prettifySQL(json.type.I.query));
 	editor.on('blur', update);
 	
-	if (json.type.C == 'pdbf.common.MultiplotChart') {
+	if (json.type.C == 'pdbf.json.MultiplotChart') {
 		var xValues;
 		try {
 			xValues = JSON.parse(json.type.I.xValues);

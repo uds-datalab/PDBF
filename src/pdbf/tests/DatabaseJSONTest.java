@@ -13,7 +13,7 @@ import pdbf.json.alasql.Column;
 import pdbf.json.alasql.Data;
 import pdbf.json.alasql.DatabaseContainer;
 import pdbf.json.alasql.Table;
-import pdbf.tools.Tools;
+import pdbf.misc.Tools;
 
 public class DatabaseJSONTest {
 

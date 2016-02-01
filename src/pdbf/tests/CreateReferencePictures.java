@@ -3,7 +3,7 @@ package pdbf.tests;
 import java.io.File;
 import java.io.IOException;
 
-import pdbf.tools.Tools;
+import pdbf.misc.Tools;
 
 public class CreateReferencePictures {
 

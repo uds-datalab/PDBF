@@ -182,7 +182,7 @@
 		\fi%
 		\immediate\write\pdbf@tempfile{\space\space\space\space"name": "Overlay\arabic{visual}",}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space"type": \@charlb}%
-		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.common.#4",}%
+		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.json.#4",}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"name": "\pdbf@name",}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"linkTo": "\pdbf@linkTo",}%
@@ -328,7 +328,7 @@
 
 \NewDocumentCommand\sql{O{} o m}{%
 \StrSubstitute{#3}{_}{$\string_$}[\pdbf@tmpstore]
-{\pdbf@sqlmult{\IfValueTF{#2}{#2}{\pdbf@tmpstore}}{#3}{pdbf.common.Text}{#1}}%
+{\pdbf@sqlmult{\IfValueTF{#2}{#2}{\pdbf@tmpstore}}{#3}{pdbf.json.Text}{#1}}%
 }
 
 \def\pdbf@csxdefaux#1{%
@@ -340,12 +340,12 @@
 
 \NewDocumentCommand\dataText{O{} m}{%
 {\expandafter\ifx\csname pdbf@Overlay\arabic{visual}\endcsname\relax\pdbf@csxdefaux{dummy}\else\pdbf@csxdefaux{\csname pdbf@Overlay\arabic{visual}\endcsname}\fi%
-\pdbf@sqlmult{\csname pdbf@Overlay\arabic{visual}\endcsname}{#2}{pdbf.common.DataText}{#1}}%
+\pdbf@sqlmult{\csname pdbf@Overlay\arabic{visual}\endcsname}{#2}{pdbf.json.DataText}{#1}}%
 }
 
 \NewDocumentCommand\dataTable{O{} m}{%
 {\expandafter\ifx\csname pdbf@Overlay\arabic{visual}\endcsname\relax\pdbf@csxdefaux{dummy}\else\pdbf@csxdefaux{\csname pdbf@Overlay\arabic{visual}\endcsname}\fi%
-\pdbf@sqlmult{\csname pdbf@Overlay\arabic{visual}\endcsname}{#2}{pdbf.common.DataTable}{#1}}%
+\pdbf@sqlmult{\csname pdbf@Overlay\arabic{visual}\endcsname}{#2}{pdbf.json.DataTable}{#1}}%
 }
 
 %Database
@@ -362,7 +362,7 @@
 	\fi%
 	\immediate\write\pdbf@tempfile{\space\space\space\space"name": "Database",}%
 	\immediate\write\pdbf@tempfile{\space\space\space\space"type": \@charlb}%
-	\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.common.Database",}%
+	\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.json.Database",}%
 	\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}%
 	\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"type": #6,}%
 	\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"value1": "\pdbf@valueA",}%

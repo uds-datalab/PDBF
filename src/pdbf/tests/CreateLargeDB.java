@@ -6,7 +6,7 @@ import java.util.Random;
 
 import org.apache.commons.io.FileUtils;
 
-import pdbf.tools.Tools;
+import pdbf.misc.Tools;
 
 public class CreateLargeDB {
 

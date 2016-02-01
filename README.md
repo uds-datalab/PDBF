@@ -1,5 +1,5 @@
 #PDBF - A Toolkit for Creating Janiform Data Documents
-Version 1.2.2
+Version 1.2.3
 
 ##Bugs, Suggestions, Feature requests
 If you encounter bugs, have suggestions or have a feature request, then please go to the [issue page](https://github.com/uds-datalab/PDBF/issues) open a new issue if necessary and explain your concern.
@@ -15,6 +15,7 @@ PDBF files are created from LaTeX source code and a relational database. The raw
 PDBF toolkit is written in Java and LaTeX and can be used to compile documents on Windows, Mac, and Linux. PDBF documents are also platform independent and run on any desktop OS (Windows, Linux, Mac) with a browser/PDF viewer.
 
 A [demo paper](https://infosys.uni-saarland.de/publications/p1972-dittrich.html) of our tool appeared at [VLDB 2015](http://www.vldb.org/2015/). 
+Note: The paper was build with an old version of PDBF. To see an up to date example of PDBF look at the [documentation](http://uds-datalab.github.io/PDBF/).
 
 ##License
 This toolkit is licensed unter the MIT License (see [here](https://github.com/uds-datalab/PDBF/blob/gh-pages/LICENSE.md))
@@ -26,9 +27,15 @@ This toolkit is licensed unter the MIT License (see [here](https://github.com/ud
 * Adjust config.cfg
 * Try to compile minimal.tex file with this command: **java -jar pdbf.jar minimal.tex**
 * Open minimal.html, this is the final output of the compilation process, if you rename it to ".pdf" it is also a valid pdf-document
+
 * Optionally you can attach the included vldb-Invaders.ova (Space invaders clone) or [download the dsl.ova](https://github.com/uds-datalab/PDBF/releases/download/1.0.1/dsl.ova) (Damn small linux) VirtualBox image and attach it to the compiled PDBF file with this command: **java -jar pdbf.jar --vm minimal.html vldb-Invaders.ova**
 * Open minimal.ova (if you have VirtualBox installed), this is the final output with the attached ova file. Its still a valid pdf and html at the same time.
+
+* Optionally you can attach tar archive file to the compiled PDBF file with this command: **java -jar pdbf.jar --tar minimal.html TAR_file.tar**
+* Open minimal.tar, this is the final output with the attached tar file. Its still a valid pdf and html at the same time.
+
 * You can play around with the minimal.tex file. It contains a small example on how to specify PDBF elements in LaTeX
+
 * For further information take a look at the [documentation](http://uds-datalab.github.io/PDBF/)
 
 ##Features
