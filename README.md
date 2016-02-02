@@ -21,6 +21,7 @@ Note: The paper was build with an old version of PDBF. To see an up to date exam
 This toolkit is licensed unter the MIT License (see [here](https://github.com/uds-datalab/PDBF/blob/gh-pages/LICENSE.md))
 
 ##Getting started
+#####Normal usage
 * Make sure you have a Java Runtime (version >= 1.7) and a LaTeX distribution installed
 * [Download the latest version](https://github.com/uds-datalab/PDBF/archive/gh-pages.zip)
 * Extract zip and change workingdir to extracted folder
@@ -28,14 +29,16 @@ This toolkit is licensed unter the MIT License (see [here](https://github.com/ud
 * Try to compile minimal.tex file with this command: **java -jar pdbf.jar minimal.tex**
 * Open minimal.html, this is the final output of the compilation process, if you rename it to ".pdf" it is also a valid pdf-document
 
+#####Attach a VirtualBox image
 * Optionally you can attach the included vldb-Invaders.ova (Space invaders clone) or [download the dsl.ova](https://github.com/uds-datalab/PDBF/releases/download/1.0.1/dsl.ova) (Damn small linux) VirtualBox image and attach it to the compiled PDBF file with this command: **java -jar pdbf.jar --vm minimal.html vldb-Invaders.ova**
 * Open minimal.ova (if you have VirtualBox installed), this is the final output with the attached ova file. Its still a valid pdf and html at the same time.
 
+#####Attach a Tar archive
 * Optionally you can attach tar archive file to the compiled PDBF file with this command: **java -jar pdbf.jar --tar minimal.html TAR_file.tar**
 * Open minimal.tar, this is the final output with the attached tar file. Its still a valid pdf and html at the same time.
 
+#####Learn how to use the PDBF framework 
 * You can play around with the minimal.tex file. It contains a small example on how to specify PDBF elements in LaTeX
-
 * For further information take a look at the [documentation](http://uds-datalab.github.io/PDBF/)
 
 ##Features
