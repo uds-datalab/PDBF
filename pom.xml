@@ -253,4 +253,12 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
+  <issueManagement>
+  	<system>GitHub</system>
+  	<url>https://github.com/uds-datalab/PDBF/issues</url>
+  </issueManagement>
+  <url>https://github.com/uds-datalab/PDBF/</url>
+  <scm>
+  	<url>git@github.com:uds-datalab/PDBF.git</url>
+  </scm>
 </project>
