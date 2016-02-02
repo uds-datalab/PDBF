@@ -6,7 +6,7 @@ If you encounter bugs, have suggestions or have a feature request, then please g
 You can also write us an email (ichbinkeinreh at t-online.de or jens.dittrich at cs.uni-saarland.de).
 
 ##Presentation video
-[![PDBF presentation](http://img.youtube.com/vi/f4iKwdERXhI/0.jpg)](https://www.youtube.com/watch?v=f4iKwdERXhI "PDBF presentation")
+<a href="https://www.youtube.com/watch?v=f4iKwdERXhI" target="_blank" title="PDBF presentation"><img src="http://img.youtube.com/vi/f4iKwdERXhI/0.jpg" /></a>
 
 ##Abstract
 PDBF documents are a hybrid format. They are a valid PDF and a valid HTML page at the same time. You can now optionally add an VirtualBox OVA file with a complete operating system to the PDBF document. Yes, this means that the resulting file is a valid PDF, HTML, and OVA file at the same time. If you change the file extension to PDF and open it with an PDF viewer, you can see the static part of the document. If you change the file extension to HTML and open it with a Browser (currently Chrome/Firefox/Safari/IE 10 supported), you can see the dynamic part of the document. And if an ova file is attached you can also change the file extension to OVA and install and run the attached operating system.
