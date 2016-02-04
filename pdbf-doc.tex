@@ -89,6 +89,7 @@ This approach works completely offline. No internet connection is required, neit
 \newpage
 
 \section{Getting started}
+\subsection{Normal usage}
 \begin{itemize}
 \item Make sure you have a Java Runtime (version $>=$ 1.7) and a LaTeX distribution installed
 \item \href{https://github.com/uds-datalab/PDBF/archive/gh-pages.zip}{Download the latest version}
@@ -96,8 +97,19 @@ This approach works completely offline. No internet connection is required, neit
 \item Adjust config.cfg
 \item Try to compile minimal.tex file with this command: \texttt{java -jar pdbf.jar minimal.tex}
 \item Open minimal.html, this is the final output of the compilation process, if you rename it to ".pdf" it is also a valid pdf-document
+\end{itemize}
+\subsection{Attach a VirtualBox image}
+\begin{itemize}
 \item Optionally you can attach the included vldb-Invaders.ova (Space invaders clone) or \href{https://github.com/uds-datalab/PDBF/releases/download/1.0.1/dsl.ova}{download the dsl.ova} (Damn small linux) VirtualBox image and attach it to the compiled PDBF file with this command: \texttt{java -jar pdbf.jar --vm minimal.html vldb-Invaders.ova}.
-\item Open minimal.ova, this is the final output with the attached ova file. Its still a valid pdf and html at the same time.
+\item Open minimal.ova, this is the final output with the attached ova file. Its still a valid pdf and html file at the same time.
+\end{itemize}
+\subsection{Attach a tar archive}
+\begin{itemize}
+\item Optionally you can attach a tar archive file to the compiled PDBF file with this command: \texttt{java -jar pdbf.jar --tar minimal.html TAR\_file.tar}
+\item Open minimal.tar, this is the final output with the attached tar file. Its still a valid pdf and html file at the same time.
+\end{itemize}
+\subsection{Learn how to use the PDBF framework}
+\begin{itemize}
 \item You can play around with the minimal.tex file. It contains a small example on how to specify PDBF elements in LaTeX
 \item For further information take a look at the \href{http://uds-datalab.github.io/PDBF/}{documentation}
 \end{itemize}
@@ -154,7 +166,7 @@ Right now there are only three modes: \\[4pt]
 -- The VM mode which attaches a VirtualBox .ova file to an existing PDBF document:\\
 \verb|java -jar PDBF.jar --vm PDBF_File.html VM_File.ova|\\[2pt]
 \textbf{Note:} Currently there is a hard size limit of 1.9GB for .ova files!
-\textbf{Note:} The compiled document can be found in the same folder as the html file and has the same name as the html file but ".ova" as filename extension.
+\textbf{Note:} The compiled document can be found in the same folder as the html file and has the same name as the html file but ".ova" as filename extension.\\[8pt]
 -- The TAR mode which attaches a tar archive file to an existing PDBF document:\\
 \verb|java -jar PDBF.jar --tar PDBF_File.html TAR_File.tar|\\[2pt]
 \textbf{Note:} The compiled document can be found in the same folder as the html file and has the same name as the html file but ".tar" as filename extension.

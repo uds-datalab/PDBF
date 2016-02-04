@@ -31,11 +31,11 @@ This toolkit is licensed unter the MIT License (see [here](https://github.com/ud
 
 #####Attach a VirtualBox image
 * Optionally you can attach the included vldb-Invaders.ova (Space invaders clone) or [download the dsl.ova](https://github.com/uds-datalab/PDBF/releases/download/1.0.1/dsl.ova) (Damn small linux) VirtualBox image and attach it to the compiled PDBF file with this command: **java -jar pdbf.jar --vm minimal.html vldb-Invaders.ova**
-* Open minimal.ova (if you have VirtualBox installed), this is the final output with the attached ova file. Its still a valid pdf and html at the same time.
+* Open minimal.ova (if you have VirtualBox installed), this is the final output with the attached ova file. Its still a valid pdf and html file at the same time.
 
-#####Attach a Tar archive
-* Optionally you can attach tar archive file to the compiled PDBF file with this command: **java -jar pdbf.jar --tar minimal.html TAR_file.tar**
-* Open minimal.tar, this is the final output with the attached tar file. Its still a valid pdf and html at the same time.
+#####Attach a tar archive
+* Optionally you can attach a tar archive file to the compiled PDBF file with this command: **java -jar pdbf.jar --tar minimal.html TAR_file.tar**
+* Open minimal.tar, this is the final output with the attached tar file. Its still a valid pdf and html file at the same time.
 
 #####Learn how to use the PDBF framework 
 * You can play around with the minimal.tex file. It contains a small example on how to specify PDBF elements in LaTeX
