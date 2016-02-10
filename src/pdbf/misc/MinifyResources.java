@@ -19,7 +19,7 @@ public class MinifyResources {
 		baseDirData + "diff_match_patch.js", baseDirData + "jquery-3.0.0-beta1.min.js", baseDirData + "pivot.js",
 		baseDirData + "jquery-ui-1.9.2.custom.min.js", baseDirData + "l10n.js", baseDirData + "viewer.js", baseDirData + "main.js",
 		baseDirData + "preMain.js", baseDirData + "compatibility.js", baseDirData + "jstat.js", baseDirData + "pdf.js",
-		baseDirData + "jquery.dataTables.js", baseDirData + "codemirror-compressed.js", "--js_output_file", baseDirData + "all.js", "--language_in",
+		baseDirData + "jquery.dataTables.js", "--js_output_file", baseDirData + "all.js", "--language_in",
 		"ECMASCRIPT5", "--compilation_level", "WHITESPACE_ONLY", "--charset", "UTF-8" };
 
 	try {
@@ -70,9 +70,11 @@ public class MinifyResources {
 	    // TODO: for unknown reasons pdfworkerjs breaks on minification with
 	    // the google closure compiler
 	    String pdfworkerJS = FileUtils.readFileToString(new File(baseDirData + "pdf.worker.js"), Tools.utf8);
+	    // TODO: for unknown reasons codemirror breaks on minification with google closure compiler (the cursor displays wrong)
+	    String codemirror = FileUtils.readFileToString(new File(baseDirData + "codemirror-compressed.js"), Tools.utf8);
 	    String allCSS = FileUtils.readFileToString(new File(baseDirData + "all.css"), Tools.utf8);
 
-	    String out = pdfworkerJS + "\n" + allJS + "\n" + "</script><style>" + allCSS + "</style>";
+	    String out = codemirror + "\n" + pdfworkerJS + "\n" + allJS + "\n" + "</script><style>" + allCSS + "</style>";
 	    new File(baseDirData + "all").delete();
 	    FileUtils.writeStringToFile(new File(baseDirData + "all"), out, Tools.utf8, false);
 	} catch (IOException e) {
