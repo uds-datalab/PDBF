@@ -1754,6 +1754,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 	});
 	editor.setValue(prettifySQL(json.type.I.query));
 	editor.on('blur', update);
+	$(".CodeMirror-cursor").text("");
 	
 	if (json.type.C == 'pdbf.json.MultiplotChart') {
 		var xValues;
@@ -2264,5 +2265,5 @@ function isInt(x) {
 }
 
 function prettifySQL(sql) {
-	return alasql.pretty(sql, true);
+	return sql; //TODO: Currently we dont support pretty printing sql because pretty printing of alasql breaks quoted literals
 }

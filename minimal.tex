@@ -2,7 +2,7 @@
 \usepackage{pdbf}
 \usepackage[a4paper]{geometry}
 
-\dbSQLText{CREATE TABLE test(a int, b int, c int); INSERT INTO test VALUES(1, 1, 1); INSERT INTO test VALUES(2, 2, 4); INSERT INTO test VALUES(3, 3, 8); INSERT INTO test VALUES(4, 4, 16);}
+\dbSQLText{CREATE TABLE test(a int, b int, [attribute with space] int); INSERT INTO test VALUES(1, 1, 1); INSERT INTO test VALUES(2, 2, 4); INSERT INTO test VALUES(3, 3, 8); INSERT INTO test VALUES(4, 4, 16);}
 %\dbSQLFile{somedb.sql}
 %\dbSQLJDBC{jdbc:postgresql://localhost:5432/postgres}{postgres}{test}{testtable}%
 %\dbCSVFile{result.csv}{test}
@@ -12,8 +12,8 @@
 \sql{SELECT * FROM test;}\\[3pt]
 The table ``test'' contains \dataText{SELECT COUNT(*) FROM test;} tuples.\\[3pt]
 The following points are linked to the chart on the left side below: \dataText[linkTo=testname, linkSelector=2, linkLabel=Value at 2]{SELECT * FROM test WHERE a=2;}, \dataText[linkTo=testname, linkSelector=3, linkLabel=Value at 3]{SELECT * FROM test WHERE a=3;}.\\[3pt]
-\chart[width=0.45\textwidth, height=0.3\textwidth, logscale=true, chartType=line, name=testname]{SELECT * FROM test;}
-\chart[width=0.45\textwidth, height=0.3\textwidth, chartType=bar]{SELECT * FROM test;}\\[3pt]
+\chart[width=0.45\textwidth, height=0.3\textwidth, logscale=true, chartType=line, name=testname]{SELECT a, b, [attribute with space] FROM test;}
+\chart[width=0.45\textwidth, height=0.3\textwidth, chartType=bar]{SELECT a, b, [attribute with space] FROM test;}\\[3pt]
 {\fontfamily{phv} \tiny \selectfont
 \noindent
 Change the font before this line to Helvetica and fontsize to tiny.\\[3pt]

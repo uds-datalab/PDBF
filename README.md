@@ -86,3 +86,4 @@ Note: The compiled pdbf.jar is automatically copied from target to the main fold
 * PDF.js (https://github.com/mozilla/pdf.js)
 * google-closure-compiler (https://github.com/google/closure-compiler)
 * lz-string (https://github.com/pieroxy/lz-string)
+* YUI Compressor (https://github.com/yui/yuicompressor)

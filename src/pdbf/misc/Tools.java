@@ -243,6 +243,8 @@ public class Tools {
 	    m.find();
 	    sb.replace(m.start(1), m.end(1), Integer.toString(newxref.length()));
 	}
+	
+	//Fix classical xref
 	Pattern p = Pattern.compile("(\r\n?|\n)xref(\r\n?|\n)");
 	Matcher m = p.matcher(sb.toString());
 	if (m.find()) {
@@ -250,13 +252,13 @@ public class Tools {
 	    b = m.end();
 	    int x;
 	    // skip first entry
-	    p = Pattern.compile("\\d{10,10}");
+	    p = Pattern.compile("(\\d{10,10}) \\d{5,5} .");
 	    m = p.matcher(sb.toString()).region(b + 1, sb.length());
 	    m.find();
 	    e = m.end();
 	    while (m.find()) {
-		b = m.start(0);
-		e = m.end(0);
+		b = m.start(1);
+		e = m.end(1);
 		String tmp = sb.substring(b, e);
 		x = Integer.parseInt(tmp);
 		sb.replace(b, e, df.format(x + offset));

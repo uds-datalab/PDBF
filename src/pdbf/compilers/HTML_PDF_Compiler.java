@@ -38,10 +38,10 @@ public class HTML_PDF_Compiler {
 	    } else {
 		add = "</script> <link rel=\"stylesheet\" href=\"viewer.css\"/>" + "<link rel=\"stylesheet\" href=\"pivot.css\"/>"
 			+ "<link rel=\"stylesheet\" href=\"codemirror.css\"/>" + "<link rel=\"stylesheet\" href=\"jquery.dataTables.css\"/>"
-			+ "<link rel=\"stylesheet\" href=\"c3.css\"/>" + "<script src=\"lz-string.min.js\"></script>" + "<script src=\"base64.js\"></script>"
+			+ "<link rel=\"stylesheet\" href=\"c3.css\"/>" + "<script src=\"lz-string.js\"></script>" + "<script src=\"base64.js\"></script>"
 			+ "<script src=\"d3.js\"></script>" + "<script src=\"alasql.js\"></script>" + "<script src=\"codemirror-compressed.js\"></script>"
 			+ "<script src=\"c3.js\"></script>" + "<script src=\"excanvas.compiled.js\"></script>"
-			+ "<script src=\"diff_match_patch.js\"></script>" + "<script src=\"jquery-1.11.2.min.js\"></script>"
+			+ "<script src=\"diff_match_patch.js\"></script>" + "<script src=\"jquery-3.0.0-beta1.min.js\"></script>"
 			+ "<script src=\"pivot.js\"></script>" + "<script src=\"jquery-ui-1.9.2.custom.min.js\"></script>"
 			+ "<script src=\"jquery.dataTables.js\"></script>" + "<script src=\"main.js\"></script>" + "<script src=\"preMain.js\"></script>"
 			+ "<script src=\"jstat.js\"></script>" + "" + "<script src=\"compatibility.js\"></script>" + "<script src=\"l10n.js\"></script>"
