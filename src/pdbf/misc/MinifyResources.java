@@ -24,6 +24,13 @@ public class MinifyResources {
 
 	try {
 	    new File(baseDirData + "all.js").delete();
+	    
+	    // TODO: for unknown reasons pdfworkerjs breaks on minification with
+	    // the google closure compiler
+	    String pdfworkerJS = FileUtils.readFileToString(new File(baseDirData + "pdf.worker.js"), Tools.utf8);
+	    // TODO: for unknown reasons codemirror breaks on minification with google closure compiler (the cursor displays wrong)
+	    String codemirror = FileUtils.readFileToString(new File(baseDirData + "codemirror-compressed.js"), Tools.utf8);
+	    
 	    ProcessBuilder pb = new ProcessBuilder(Arrays.asList(command));
 	    pb.inheritIO();
 	    Process p = pb.start();
@@ -32,8 +39,13 @@ public class MinifyResources {
 		System.err.println("Google closure compiler exited with error!");
 		System.exit(1);
 	    }
+	    
+	    String allJS = FileUtils.readFileToString(new File(baseDirData + "all.js"), Tools.utf8);
+	    
+	    FileUtils.writeStringToFile(new File(baseDirData + "all.js"), pdfworkerJS + "\n" + codemirror + "\n" + allJS, Tools.utf8);
 	} catch (Exception e) {
 	    e.printStackTrace();
+	    System.exit(1);
 	}
 
 	new File(baseDirData + "all.css").delete();
@@ -63,18 +75,14 @@ public class MinifyResources {
 	    }
 	} catch (Exception e) {
 	    e.printStackTrace();
+	    System.exit(1);
 	}
 
 	try {
 	    String allJS = FileUtils.readFileToString(new File(baseDirData + "all.js"), Tools.utf8);
-	    // TODO: for unknown reasons pdfworkerjs breaks on minification with
-	    // the google closure compiler
-	    String pdfworkerJS = FileUtils.readFileToString(new File(baseDirData + "pdf.worker.js"), Tools.utf8);
-	    // TODO: for unknown reasons codemirror breaks on minification with google closure compiler (the cursor displays wrong)
-	    String codemirror = FileUtils.readFileToString(new File(baseDirData + "codemirror-compressed.js"), Tools.utf8);
 	    String allCSS = FileUtils.readFileToString(new File(baseDirData + "all.css"), Tools.utf8);
 
-	    String out = codemirror + "\n" + pdfworkerJS + "\n" + allJS + "\n" + "</script><style>" + allCSS + "</style>";
+	    String out = allJS + "\n" + "</script><style>" + allCSS + "</style>";
 	    new File(baseDirData + "all").delete();
 	    FileUtils.writeStringToFile(new File(baseDirData + "all"), out, Tools.utf8, false);
 	} catch (IOException e) {
