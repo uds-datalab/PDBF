@@ -1472,9 +1472,10 @@ function getChartOptions(json, zoomFactor, values, chart) {
 			position : 'bottom'
 		},
 		onresize : function() {
+			$(chart).css('max-height', "100%");
 			this.api.resize({
-				height : $(this.bindto).height(),
-				width : $(this.bindto).width()
+				height : $(chart).height(),
+				width : $(chart).width()
 			});
 		},
 	};
