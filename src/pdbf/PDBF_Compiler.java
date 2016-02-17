@@ -21,7 +21,7 @@ import pdbf.misc.Tools;
 public class PDBF_Compiler {
 
     // Debug Flag. Cannot be changed by User
-    public static boolean includeRes = true;
+    public static boolean includeRes = false;
 
     private static void showHelp() {
 	System.out
@@ -38,9 +38,6 @@ public class PDBF_Compiler {
     }
 
     public static void compile(String[] args) {
-	if (includeRes) {
-	    MinifyResources.main(args);
-	}
 	Pre_Compiler.main(args);
 	HTML_PDF_Compiler.main(args);
     }

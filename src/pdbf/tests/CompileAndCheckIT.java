@@ -63,7 +63,7 @@ public class CompileAndCheckIT {
 
     public static String baseDir = new File(Tools.getBaseDir()).getParent() + File.separator;
     public static String testDir = baseDir + "src" + File.separator + "pdbf" + File.separator + "tests" + File.separator;
-    public static String refDir = baseDir + "src" + File.separator + "pdbf" + File.separator + "referenceImages" + File.separator;
+    public static String refDir = baseDir + "referenceImages" + File.separator;
 
     public static void compareImages(BufferedImage i1, BufferedImage i2) {
 	int height = i1.getHeight();

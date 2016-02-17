@@ -33,7 +33,6 @@ public class Tools {
     public static Charset utf8 = Charset.forName("UTF-8");
 
     public static String baseDir = new File(getBaseDir()).getParent() + File.separator;
-    public static String refDir = baseDir + "src" + File.separator + "pdbf" + File.separator + "referenceImages" + File.separator;
     public static String testDir = baseDir + "src" + File.separator + "pdbf" + File.separator + "tests" + File.separator;
     public static String suffix = getOS();
 

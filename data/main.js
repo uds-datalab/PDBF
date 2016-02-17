@@ -291,6 +291,7 @@ function buildContainerChartBig(json, containerOver, initial) {
 			error.innerHTML = 'Query status: Error! ' + json.chartdataBig.error;
 			containerOptions.style.visibility = 'hidden';
 			containerChart.style.visibility = 'hidden';
+			return;
 		} else {
 			error.innerHTML = 'Query status: OK';
 			containerOptions.style.visibility = 'visible';
@@ -587,14 +588,15 @@ function buildContainerPivotBig(json, containerOver, initial) {
 	var basetextsize = 8;
 	
 	var updateData = function() {
-		json.type.I.queryB = ref.editor.getValue();
+		json.jsonBig.type.I.queryB = ref.editor.getValue();
 		// TODO: save pivot table settings (aggr, aggrAtt, renderer)
 		var r = getPivotTableData(json.jsonBig, true);
 		json.resultBig = r.res;
 		if (r.error != undefined) {
-			error.innerHTML = 'Query status: Error! ' + err;
+			error.innerHTML = 'Query status: Error! ' + r.error;
 			containerOptions.style.visibility = 'hidden';
 			containerChart.style.visibility = 'hidden';
+			return;
 		} else {
 			error.innerHTML = 'Query status: OK';
 			containerOptions.style.visibility = 'visible';
@@ -626,9 +628,10 @@ function buildContainerPivotBig(json, containerOver, initial) {
 	var r = getPivotTableData(json.jsonBig, true);
 	json.resultBig = r.res;
 	if (r.error != undefined) {
-		error.innerHTML = 'Query status: Error! ' + err;
+		error.innerHTML = 'Query status: Error! ' + r.error;
 		containerOptions.style.visibility = 'hidden';
 		containerChart.style.visibility = 'hidden';
+		return;
 	} else {
 		error.innerHTML = 'Query status: OK';
 		containerOptions.style.visibility = 'visible';
@@ -647,10 +650,7 @@ function buildContainerPivotBig(json, containerOver, initial) {
 		aggregatorName : aggrName
 	});
 	
-	containerOver.update = function() {
-		
-	};
-	
+	containerOver.update = updateData;
 	containerOver.updateData = updateData;
 }
 
@@ -718,6 +718,7 @@ function buildContainerTableBig(json, containerOver) {
 			error.innerHTML = 'Query status: Error! ' + err;
 			containerOptions.style.visibility = 'hidden';
 			containerChart.style.visibility = 'hidden';
+			return;
 		} else {
 			error.innerHTML = 'Query status: OK';
 			containerOptions.style.visibility = 'visible';
@@ -746,6 +747,7 @@ function buildContainerTableBig(json, containerOver) {
 		error.innerHTML = 'Query status: Error! ' + err;
 		containerOptions.style.visibility = 'hidden';
 		containerChart.style.visibility = 'hidden';
+		return;
 	} else {
 		error.innerHTML = 'Query status: OK';
 		containerOptions.style.visibility = 'visible';
@@ -1622,7 +1624,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 	var def = document.createElement('input');
 	def.type = 'button';
 	def.value = 'Restore Default';
-	def.setAttribute('style', 'font-size:inherit;');
+	def.setAttribute('style', 'font-size:inherit; white-space: normal;');
 	def.addEventListener('click', function() {
 		delete json.jsonBig;
 		json.jsonBig = jQuery.extend(true, {}, json);
@@ -1662,7 +1664,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 	var download = document.createElement('input');
 	download.type = 'button';
 	download.value = 'Download query result as CSV';
-	download.setAttribute('style', 'font-size:inherit;');
+	download.setAttribute('style', 'font-size:inherit; white-space: normal;');
 	download.addEventListener('click', function() {
 		var cols = [];
 		for ( var key in json.resultBig[0]) {
