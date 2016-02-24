@@ -2,8 +2,12 @@ package pdbf;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.HashSet;
+
 import org.apache.commons.cli.AlreadySelectedException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -24,6 +28,7 @@ import pdbf.compilers.Pre_Compiler;
 import pdbf.compilers.TAR_Compiler;
 import pdbf.compilers.VM_Compiler;
 import pdbf.misc.Tools;
+import pdbf.tests.CreateReferencePictures;
 
 public class PDBF_Compiler {
 
@@ -64,20 +69,42 @@ public class PDBF_Compiler {
 
 	// Parse command line
 	CommandLineParser parser = new DefaultParser();
-	HelpFormatter formatter = new HelpFormatter();
+	HelpFormatter formatter = new HelpFormatter() {
+	    String[] filteredOpts = { "cri" }; // Commandline options we want to hide from the user
+	    HashSet<String> filtered = new HashSet<String>(Arrays.asList(filteredOpts));
+	    
+	    @Override
+	    public void printHelp(PrintWriter pw, int width, String cmdLineSyntax, String header, Options options, int leftPad, int descPad, String footer,
+		    boolean autoUsage) {
+		Options filteredOptions = new Options();
+		for (Option o : options.getOptions()) {
+		    if (!filtered.contains(o.getOpt())) {
+			filteredOptions.addOption(o);
+		    }
+		}
+		super.printHelp(pw, width, cmdLineSyntax, header, filteredOptions, leftPad, descPad, footer, autoUsage);
+	    }
+	};
+
 	Options options = new Options();
 	OptionGroup optionsGroup = new OptionGroup();
-	options.addOptionGroup(optionsGroup);
 	optionsGroup.addOption(Option.builder("c").longOpt("compile").numberOfArgs(1).argName("LaTeX_File.tex")
 		.desc("Compile a tex file to a PDBF document. This is the default option.").build());
+	optionsGroup.addOption(Option.builder("t").longOpt("tar").numberOfArgs(2).argName("PDBF_File.html> <TAR_File.tar")
+		.desc("Appends a tar archive to an existing PDBF document. Only exactly one ova or tar file can be appended to an PDBF document.").build());
+	optionsGroup.addOption(Option.builder("v").longOpt("vm").numberOfArgs(2).argName("PDBF_File.html> <OVA_File.ova")
+		.desc("Appends a VirtualBox ova file to an existing PDBF document. Only exactly one ova or tar file can be appended to an PDBF document.")
+		.build());
+	optionsGroup.addOption(Option.builder("cri").longOpt("create-reference-images").numberOfArgs(0)
+		.desc("Appends a VirtualBox ova file to an existing PDBF document. Only exactly one ova or tar file can be appended to an PDBF document.")
+		.build());
+	options.addOptionGroup(optionsGroup);
 	options.addOption("npp", "no-pdf-protection", false,
 		"Disables the write protection of the pdf part of the PDBF document. Can only be used with the compile option.");
 	options.addOption("nir", "no-include-res", false, "Disables the inclusion of all js and css files."
 		+ " Produces a PDBF document that can only be opened when placed in the data folder of the PDBF framework."
 		+ " Can only be used with the compile option.");
-	optionsGroup.addOption(Option.builder("t").longOpt("tar").numberOfArgs(2).argName("PDBF_File.html> <TAR_File.tar")
-		.desc("Appends a tar archive to an existing PDBF document.").build());
-	options.addOption("v", "version", false, "Display version number");
+	options.addOption("ver", "version", false, "Display version number");
 	options.addOption("h", "help", false, "Display this help message");
 
 	try {
@@ -101,6 +128,7 @@ public class PDBF_Compiler {
 		System.exit(0);
 	    } else if (line.hasOption("help")) {
 		formatter.printHelp("java -jar pdbf.jar [options]", options);
+		System.exit(0);
 	    } else if (line.hasOption("tar")) {
 		TAR_Compiler.main(line.getOptionValues("tar"));
 	    } else if (line.hasOption("vm")) {
@@ -108,6 +136,8 @@ public class PDBF_Compiler {
 	    } else if (line.hasOption("compile")) {
 		Pre_Compiler.main(line.getOptionValues("compile"));
 		HTML_PDF_Compiler.main(line.getOptionValues("compile"));
+	    } else if (line.hasOption("create-reference-images")) {
+		CreateReferencePictures.main(null);
 	    } else if (args.length == 1) {
 		Pre_Compiler.main(args);
 		HTML_PDF_Compiler.main(args);
