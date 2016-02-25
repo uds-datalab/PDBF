@@ -61,7 +61,7 @@ public class CompileAndCheckIT {
 	}
     };
 
-    public static String baseDir = new File(Tools.getBaseDir()).getParent() + File.separator;
+    public static String baseDir = Tools.getBaseDir();
     public static String testDir = baseDir + "src" + File.separator + "pdbf" + File.separator + "tests" + File.separator;
     public static String refDir = baseDir + "referenceImages" + File.separator;
 

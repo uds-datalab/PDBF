@@ -104,7 +104,7 @@
 				<version>2.7</version>
 				<executions>
 					<execution>
-						<id>copy-resources1</id>
+						<id>copy-main-folder</id>
 						<phase>package</phase>
 						<goals>
 							<goal>copy-resources</goal>
@@ -130,7 +130,7 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>copy-resources2</id>
+						<id>copy-external-tools</id>
 						<phase>package</phase>
 						<goals>
 							<goal>copy-resources</goal>
@@ -146,7 +146,7 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>copy-resources3</id>
+						<id>copy-data</id>
 						<phase>package</phase>
 						<goals>
 							<goal>copy-resources</goal>
@@ -156,6 +156,38 @@
 							<resources>
 								<resource>
 									<directory>data</directory>
+									<filtering>false</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-tests</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/src/pdbf/tests</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/pdbf/tests</directory>
+									<filtering>false</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-reference-images</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/referenceImages</outputDirectory>
+							<resources>
+								<resource>
+									<directory>referenceImages</directory>
 									<filtering>false</filtering>
 								</resource>
 							</resources>

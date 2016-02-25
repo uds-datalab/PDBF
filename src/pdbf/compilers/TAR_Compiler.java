@@ -7,7 +7,7 @@ import java.text.DecimalFormat;
 import org.apache.commons.io.FileUtils;
 
 import pdbf.misc.Tools;
-
+import pdbf.tests.CheckAttached;
 import static pdbf.compilers.VM_Compiler.*;
 import static pdbf.compilers.HTML_PDF_Compiler.pdfHTML_Header;
 
@@ -18,19 +18,24 @@ public class TAR_Compiler {
     public static void main(String[] args) {
 	System.out.println("Compiling VM...");
 
-	String a = new File(args[1]).getName();
+	String a = new File(args[0]).getName();
 	if (!a.toUpperCase().endsWith(".HTML")) {
 	    System.err.println("Error: Only .HTML files are supported as first argument!");
 	    System.exit(1);
 	}
-	if (!args[2].toUpperCase().endsWith(".TAR")) {
+	if (!args[1].toUpperCase().endsWith(".TAR")) {
 	    System.err.println("Error: Only .TAR files are supported as second argument!");
 	    System.exit(1);
 	}
-	String basename = args[1].substring(0, args[1].length() - 5);
+	String basename = args[0].substring(0, args[0].length() - 5);
 
+	if (CheckAttached.checkAttached(new File(args[0]))) {
+	    System.err.println("Error: This PDBF file has already an tar or ova file attached!");
+	    System.exit(1);
+	}
+	
 	try {
-	    String vmcontent = FileUtils.readFileToString(new File(args[2]), StandardCharsets.ISO_8859_1);
+	    String vmcontent = FileUtils.readFileToString(new File(args[1]), StandardCharsets.ISO_8859_1);
 	    if (vmcontent.toLowerCase().contains("</script>")) {
 		System.err
 			.println("The tar file cannot be used to generate a pdbf document! Try to change the content of the tar file such that it doesnt contain the string \"</script>\" and then try again.");
@@ -54,7 +59,7 @@ public class TAR_Compiler {
 	    // Add new file to tar
 	    String removeFromHTML = "%PDF-1.X\n" + pdfHTML_Header;
 	    String addToHTML = "";
-	    String html = FileUtils.readFileToString(new File(args[1]), StandardCharsets.ISO_8859_1).substring(removeFromHTML.length());
+	    String html = FileUtils.readFileToString(new File(args[0]), StandardCharsets.ISO_8859_1).substring(removeFromHTML.length());
 	    html = addToHTML + html;
 
 	    String vm = sb.toString();

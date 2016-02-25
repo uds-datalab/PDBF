@@ -28,6 +28,7 @@ import pdbf.compilers.Pre_Compiler;
 import pdbf.compilers.TAR_Compiler;
 import pdbf.compilers.VM_Compiler;
 import pdbf.misc.Tools;
+import pdbf.tests.CheckAttached;
 import pdbf.tests.CreateReferencePictures;
 
 public class PDBF_Compiler {
@@ -70,9 +71,11 @@ public class PDBF_Compiler {
 	// Parse command line
 	CommandLineParser parser = new DefaultParser();
 	HelpFormatter formatter = new HelpFormatter() {
-	    String[] filteredOpts = { "cri" }; // Commandline options we want to hide from the user
+	    String[] filteredOpts = { "cri", "it" }; // Commandline options which
+						     // we want to
+						     // hide from the user
 	    HashSet<String> filtered = new HashSet<String>(Arrays.asList(filteredOpts));
-	    
+
 	    @Override
 	    public void printHelp(PrintWriter pw, int width, String cmdLineSyntax, String header, Options options, int leftPad, int descPad, String footer,
 		    boolean autoUsage) {
@@ -98,6 +101,8 @@ public class PDBF_Compiler {
 	optionsGroup.addOption(Option.builder("cri").longOpt("create-reference-images").numberOfArgs(0)
 		.desc("Appends a VirtualBox ova file to an existing PDBF document. Only exactly one ova or tar file can be appended to an PDBF document.")
 		.build());
+	optionsGroup.addOption(Option.builder("ca").longOpt("check-attached").numberOfArgs(1).argName("PDBF_file")
+		.desc("Checks if a given PDBF document has an ova or tar file attached.").build());
 	options.addOptionGroup(optionsGroup);
 	options.addOption("npp", "no-pdf-protection", false,
 		"Disables the write protection of the pdf part of the PDBF document. Can only be used with the compile option.");
@@ -137,8 +142,10 @@ public class PDBF_Compiler {
 		Pre_Compiler.main(line.getOptionValues("compile"));
 		HTML_PDF_Compiler.main(line.getOptionValues("compile"));
 	    } else if (line.hasOption("create-reference-images")) {
-		CreateReferencePictures.main(null);
-	    } else if (args.length == 1) {
+		CreateReferencePictures.main(line.getOptionValues("create-reference-images"));
+	    } else if (line.hasOption("check-attached")) {
+		CheckAttached.main(line.getOptionValues("check-attached"));
+	    }  else if (args.length == 1) {
 		Pre_Compiler.main(args);
 		HTML_PDF_Compiler.main(args);
 	    } else {
