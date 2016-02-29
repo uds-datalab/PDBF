@@ -32,8 +32,7 @@ public class Tools {
 
     public static Charset utf8 = Charset.forName("UTF-8");
 
-    public static String baseDir = new File(getBaseDir()).getParent() + File.separator;
-    public static String refDir = baseDir + "src" + File.separator + "pdbf" + File.separator + "referenceImages" + File.separator;
+    public static String baseDir = getBaseDir();
     public static String testDir = baseDir + "src" + File.separator + "pdbf" + File.separator + "tests" + File.separator;
     public static String suffix = getOS();
 
@@ -243,6 +242,8 @@ public class Tools {
 	    m.find();
 	    sb.replace(m.start(1), m.end(1), Integer.toString(newxref.length()));
 	}
+	
+	//Fix classical xref
 	Pattern p = Pattern.compile("(\r\n?|\n)xref(\r\n?|\n)");
 	Matcher m = p.matcher(sb.toString());
 	if (m.find()) {
@@ -250,13 +251,13 @@ public class Tools {
 	    b = m.end();
 	    int x;
 	    // skip first entry
-	    p = Pattern.compile("\\d{10,10}");
+	    p = Pattern.compile("(\\d{10,10}) \\d{5,5} .");
 	    m = p.matcher(sb.toString()).region(b + 1, sb.length());
 	    m.find();
 	    e = m.end();
 	    while (m.find()) {
-		b = m.start(0);
-		e = m.end(0);
+		b = m.start(1);
+		e = m.end(1);
 		String tmp = sb.substring(b, e);
 		x = Integer.parseInt(tmp);
 		sb.replace(b, e, df.format(x + offset));

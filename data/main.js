@@ -101,12 +101,14 @@ function display(json, page, phantomJS) {
 				});
 			}
 			container.setAttribute('style', style);
-			buildContainerMultiplotChart(container, json, zoomFactor, style, containerOver);
-			if (json.type.I.name != null && json.type.I.name != "") {
-				namedContainers[json.type.I.name] = {
-					type : "MultiplotChart",
-					elem : undefined
-				}; // TODO:
+			if (json.type.I.customImage == null) {
+				buildContainerMultiplotChart(container, json, zoomFactor, style, containerOver);
+				if (json.type.I.name != null && json.type.I.name != "") {
+					namedContainers[json.type.I.name] = {
+						type : "MultiplotChart",
+						elem : undefined
+					}; // TODO:
+				}
 			}
 			break;
 		case "pdbf.json.Chart":
@@ -131,13 +133,15 @@ function display(json, page, phantomJS) {
 				});
 			}
 			container.setAttribute('style', style);
-			buildContainerChart(container, json, zoomFactor, style, containerOver);
-			if (json.type.I.name != null && json.type.I.name != "") {
-				namedContainers[json.type.I.name] = {
-					type : "Chart",
-					elem : json.chartInPage,
-					opt : json.options
-				};
+			if (json.type.I.customImage == null) {
+				buildContainerChart(container, json, zoomFactor, style, containerOver);
+				if (json.type.I.name != null && json.type.I.name != "") {
+					namedContainers[json.type.I.name] = {
+						type : "Chart",
+						elem : json.chartInPage,
+						opt : json.options
+					};
+				}
 			}
 			break;
 		case "pdbf.json.DataTable":
@@ -247,21 +251,23 @@ function display(json, page, phantomJS) {
 				});
 			}
 			container.setAttribute('style', style);
-			buildContainerPivot(container, json, zoomFactor, style, containerOver);
-			if (json.type.I.name != null && json.type.I.name != "") {
-				namedContainers[json.type.I.name] = {
-					type : "Pivot",
-					elem : undefined
-				}; // TODO:
-			}
-			if (false && phantomJS) { // TODO: reenable this
-				// Check if Pivot table fits into the div. If not then decrease
-				// the font-size until it fits
-				while ($(container).children().last().children().width() >= $(container).width()) {
-					zoomFactor = zoomFactor - 0.001;
-					$(container).css('font-size', (zoomFactor * 12.0) + "pt");
+			if (json.type.I.customImage == null) {
+				buildContainerPivot(container, json, zoomFactor, style, containerOver);
+				if (json.type.I.name != null && json.type.I.name != "") {
+					namedContainers[json.type.I.name] = {
+						type : "Pivot",
+						elem : undefined
+					}; // TODO:
 				}
-				// TODO: propagate final zoomFactor back to pdbf-config.json
+				if (false && phantomJS) { // TODO: reenable this
+					// Check if Pivot table fits into the div. If not then decrease
+					// the font-size until it fits
+					while ($(container).children().last().children().width() >= $(container).width()) {
+						zoomFactor = zoomFactor - 0.001;
+						$(container).css('font-size', (zoomFactor * 12.0) + "pt");
+					}
+					// TODO: propagate final zoomFactor back to pdbf-config.json
+				}
 			}
 			break;
 		default:
@@ -291,6 +297,7 @@ function buildContainerChartBig(json, containerOver, initial) {
 			error.innerHTML = 'Query status: Error! ' + json.chartdataBig.error;
 			containerOptions.style.visibility = 'hidden';
 			containerChart.style.visibility = 'hidden';
+			return;
 		} else {
 			error.innerHTML = 'Query status: OK';
 			containerOptions.style.visibility = 'visible';
@@ -587,14 +594,15 @@ function buildContainerPivotBig(json, containerOver, initial) {
 	var basetextsize = 8;
 	
 	var updateData = function() {
-		json.type.I.queryB = ref.editor.getValue();
+		json.jsonBig.type.I.queryB = ref.editor.getValue();
 		// TODO: save pivot table settings (aggr, aggrAtt, renderer)
 		var r = getPivotTableData(json.jsonBig, true);
 		json.resultBig = r.res;
 		if (r.error != undefined) {
-			error.innerHTML = 'Query status: Error! ' + err;
+			error.innerHTML = 'Query status: Error! ' + r.error;
 			containerOptions.style.visibility = 'hidden';
 			containerChart.style.visibility = 'hidden';
+			return;
 		} else {
 			error.innerHTML = 'Query status: OK';
 			containerOptions.style.visibility = 'visible';
@@ -626,9 +634,10 @@ function buildContainerPivotBig(json, containerOver, initial) {
 	var r = getPivotTableData(json.jsonBig, true);
 	json.resultBig = r.res;
 	if (r.error != undefined) {
-		error.innerHTML = 'Query status: Error! ' + err;
+		error.innerHTML = 'Query status: Error! ' + r.error;
 		containerOptions.style.visibility = 'hidden';
 		containerChart.style.visibility = 'hidden';
+		return;
 	} else {
 		error.innerHTML = 'Query status: OK';
 		containerOptions.style.visibility = 'visible';
@@ -647,10 +656,7 @@ function buildContainerPivotBig(json, containerOver, initial) {
 		aggregatorName : aggrName
 	});
 	
-	containerOver.update = function() {
-		
-	};
-	
+	containerOver.update = updateData;
 	containerOver.updateData = updateData;
 }
 
@@ -718,6 +724,7 @@ function buildContainerTableBig(json, containerOver) {
 			error.innerHTML = 'Query status: Error! ' + err;
 			containerOptions.style.visibility = 'hidden';
 			containerChart.style.visibility = 'hidden';
+			return;
 		} else {
 			error.innerHTML = 'Query status: OK';
 			containerOptions.style.visibility = 'visible';
@@ -746,6 +753,7 @@ function buildContainerTableBig(json, containerOver) {
 		error.innerHTML = 'Query status: Error! ' + err;
 		containerOptions.style.visibility = 'hidden';
 		containerChart.style.visibility = 'hidden';
+		return;
 	} else {
 		error.innerHTML = 'Query status: OK';
 		containerOptions.style.visibility = 'visible';
@@ -1470,9 +1478,10 @@ function getChartOptions(json, zoomFactor, values, chart) {
 			position : 'bottom'
 		},
 		onresize : function() {
+			$(chart).css('max-height', "100%");
 			this.api.resize({
-				height : $(this.bindto).height(),
-				width : $(this.bindto).width()
+				height : $(chart).height(),
+				width : $(chart).width()
 			});
 		},
 	};
@@ -1622,7 +1631,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 	var def = document.createElement('input');
 	def.type = 'button';
 	def.value = 'Restore Default';
-	def.setAttribute('style', 'font-size:inherit;');
+	def.setAttribute('style', 'font-size:inherit; white-space: normal;');
 	def.addEventListener('click', function() {
 		delete json.jsonBig;
 		json.jsonBig = jQuery.extend(true, {}, json);
@@ -1662,7 +1671,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 	var download = document.createElement('input');
 	download.type = 'button';
 	download.value = 'Download query result as CSV';
-	download.setAttribute('style', 'font-size:inherit;');
+	download.setAttribute('style', 'font-size:inherit; white-space: normal;');
 	download.addEventListener('click', function() {
 		var cols = [];
 		for ( var key in json.resultBig[0]) {
@@ -1754,6 +1763,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 	});
 	editor.setValue(prettifySQL(json.type.I.query));
 	editor.on('blur', update);
+	$(".CodeMirror-cursor").text("");
 	
 	if (json.type.C == 'pdbf.json.MultiplotChart') {
 		var xValues;
@@ -2264,5 +2274,6 @@ function isInt(x) {
 }
 
 function prettifySQL(sql) {
-	return alasql.pretty(sql, true);
+	return sql; // TODO: Currently we dont support pretty printing sql because
+	// pretty printing of alasql breaks quoted literals
 }

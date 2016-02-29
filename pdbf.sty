@@ -84,6 +84,7 @@
 \define@key{pdbf}{quality}{\def\pdbfQuality{#1}}
 \def\pdbf@chartType{Line}
 \define@key{pdbf}{chartType}{\StrSubstitute{\detokenize{#1}}{"}{\@backslashchar"}[\pdbf@chartType]}
+\define@key{pdbf}{customImage}{\def\pdbf@customImage{#1}}
 
 %LineChart und BarChart
 \def\pdbfLogscale{false}
@@ -167,11 +168,15 @@
 		% Place Image
 		\begin{tabular}{ccc}%
 		\pdbf@save{Overlay\arabic{visual}1}&&\\%
-		\IfFileExists{./Overlay\arabic{visual}.pdf}{%
-	    		&\includegraphics[width=\pdbf@width, height=\pdbf@height, page=1]{./Overlay\arabic{visual}.pdf}&\\%
-		}{%
-	    		&\includegraphics[width=\pdbf@width, height=\pdbf@height, page=1]{./dummy.pdf}&\\%
-		}%
+		\ifdefined\pdbf@customImage%
+				&\includegraphics[width=\pdbf@width, height=\pdbf@height]{\pdbf@customImage}&\\%
+		\else%
+				\IfFileExists{./Overlay\arabic{visual}.pdf}{%
+			    		&\includegraphics[width=\pdbf@width, height=\pdbf@height, page=1]{./Overlay\arabic{visual}.pdf}&\\%
+				}{%
+			    		&\includegraphics[width=\pdbf@width, height=\pdbf@height, page=1]{./dummy.pdf}&\\%
+				}%
+		\fi%
 		&&\zsavepos{Overlay\arabic{visual}2}\\%
 		\end{tabular}%
 		% Write part of pdbf-config.json
@@ -184,6 +189,9 @@
 		\immediate\write\pdbf@tempfile{\space\space\space\space"type": \@charlb}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space"C": "pdbf.json.#4",}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}%
+		\ifdefined\pdbf@customImage%
+				\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"customImage": "\pdbf@customImage",}%
+		\fi%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"name": "\pdbf@name",}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"linkTo": "\pdbf@linkTo",}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"linkSelector": "\pdbf@linkSelector",}%
@@ -274,6 +282,9 @@
 		\immediate\write\pdbf@tempfile{\space\space\space\space"type": \@charlb}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space"C": "#3",}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space"I": \@charlb}%
+		\ifdefined\pdbf@customImage%
+				\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"customImage": "\pdbf@customImage",}%
+		\fi%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"name": "\pdbf@name",}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"linkTo": "\pdbf@linkTo",}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"linkSelector": "\pdbf@linkSelector",}%

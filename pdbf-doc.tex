@@ -3,6 +3,7 @@
 \usepackage{pdbf}
 \usepackage{wrapfig}
 \usepackage[hidelinks]{hyperref}
+\usepackage{listings}
 \usepackage[a4paper,vmargin={20mm,40mm},hmargin={20mm,20mm}]{geometry}
 
 \title{\href{https://github.com/uds-datalab/PDBF}{PDBF} Documentation}
@@ -89,6 +90,7 @@ This approach works completely offline. No internet connection is required, neit
 \newpage
 
 \section{Getting started}
+\subsection{Normal usage}
 \begin{itemize}
 \item Make sure you have a Java Runtime (version $>=$ 1.7) and a LaTeX distribution installed
 \item \href{https://github.com/uds-datalab/PDBF/archive/gh-pages.zip}{Download the latest version}
@@ -96,8 +98,19 @@ This approach works completely offline. No internet connection is required, neit
 \item Adjust config.cfg
 \item Try to compile minimal.tex file with this command: \texttt{java -jar pdbf.jar minimal.tex}
 \item Open minimal.html, this is the final output of the compilation process, if you rename it to ".pdf" it is also a valid pdf-document
+\end{itemize}
+\subsection{Attach a VirtualBox image}
+\begin{itemize}
 \item Optionally you can attach the included vldb-Invaders.ova (Space invaders clone) or \href{https://github.com/uds-datalab/PDBF/releases/download/1.0.1/dsl.ova}{download the dsl.ova} (Damn small linux) VirtualBox image and attach it to the compiled PDBF file with this command: \texttt{java -jar pdbf.jar --vm minimal.html vldb-Invaders.ova}.
-\item Open minimal.ova, this is the final output with the attached ova file. Its still a valid pdf and html at the same time.
+\item Open minimal.ova, this is the final output with the attached ova file. Its still a valid pdf and html file at the same time.
+\end{itemize}
+\subsection{Attach a tar archive}
+\begin{itemize}
+\item Optionally you can attach a tar archive file to the compiled PDBF file with this command: \texttt{java -jar pdbf.jar --tar minimal.html TAR\_file.tar}
+\item Open minimal.tar, this is the final output with the attached tar file. Its still a valid pdf and html file at the same time.
+\end{itemize}
+\subsection{Learn how to use the PDBF framework}
+\begin{itemize}
 \item You can play around with the minimal.tex file. It contains a small example on how to specify PDBF elements in LaTeX
 \item For further information take a look at the \href{http://uds-datalab.github.io/PDBF/}{documentation}
 \end{itemize}
@@ -143,6 +156,7 @@ pivottable (\url{https://github.com/nicolaskruchten/pivottable})\\
 PDF.js (\url{https://github.com/mozilla/pdf.js})\\
 google-closure-compiler (\url{https://github.com/google/closure-compiler})\\
 lz-string (\url{https://github.com/pieroxy/lz-string})\\
+YUI Compressor (\url{https://github.com/yui/yuicompressor})\\
 
 \newpage
 
@@ -154,7 +168,7 @@ Right now there are only three modes: \\[4pt]
 -- The VM mode which attaches a VirtualBox .ova file to an existing PDBF document:\\
 \verb|java -jar PDBF.jar --vm PDBF_File.html VM_File.ova|\\[2pt]
 \textbf{Note:} Currently there is a hard size limit of 1.9GB for .ova files!
-\textbf{Note:} The compiled document can be found in the same folder as the html file and has the same name as the html file but ".ova" as filename extension.
+\textbf{Note:} The compiled document can be found in the same folder as the html file and has the same name as the html file but ".ova" as filename extension.\\[8pt]
 -- The TAR mode which attaches a tar archive file to an existing PDBF document:\\
 \verb|java -jar PDBF.jar --tar PDBF_File.html TAR_File.tar|\\[2pt]
 \textbf{Note:} The compiled document can be found in the same folder as the html file and has the same name as the html file but ".tar" as filename extension.
@@ -669,7 +683,18 @@ A.: Most likely you use pages with different sizes in your document or you use t
 \item Q.: I get \verb|Error: paperwidth value missing! Did you forgot to specify the| \\ \verb|papersize via the geometry package?| when compiling my document.\\
 A.: You need to explicitly specify the papersize of your document via the geometry package (e.g. \verb|\usepackage[letterpaper]{geometry}|)
 \item Q.: I get \verb|\unhbox \voidb@x \bgroup \let \unhbox \voidb@x \setbox \@tempboxa \hbox| \verb|{u\global \mathchardef \accent@spacefactor \spacefactor }\accent 127 u\egroup| \newline \verb|\spacefactor \accent@spacefactor| or a similar string in a error message.\\
-A.: Chances are high that you use the \verb|\usepackage[utf8]{inputenc}| package or a similar package. These are not fully compatible with PDBF. If you really have to use the utf8 package then you cant use special characters inside options and queries of the PDBF package.
+A.: Chances are high that you use the \verb|\usepackage[utf8]{inputenc}| package or a similar package. These are not fully compatible with PDBF. If you really have to use the utf8 package then you cant use special characters inside options and queries of the PDBF package.\\
+\item Q.: I get strange errors when running "maven verify".\\
+A.: If you are using TexLive 2014 or earlier and get the following errors when running "maven verify":
+\begin{lstlisting}[breaklines]
+The file is not valid, error(s) :
+1.2.1 : Body Syntax error, Single space expected [offset=2786901; key=2786901; line=5 0 obj <<; object=COSObject{5, 0}]
+1.2.1 : Body Syntax error, Single space expected [offset=2786635; key=2786635; line=11 0 obj <<; object=COSObject{11, 0}]
+1.2.1 : Body Syntax error, EOL expected before the 'endobj' keyword at offset 2786894
+1.2.1 : Body Syntax error, Single space expected [offset=2761071; key=2761071; line=3 0 obj <<; object=COSObject{3, 0}]
+1.2.1 : Body Syntax error, Single space expected [offset=2761433; key=2761433; line=8 0 obj <<; object=COSObject{8, 0}]
+1.2.1 : Body Syntax error, Single space expected [offset=2787764; key=2787764; line=12 0 obj <<; object=COSObject{12, 0}]
+\end{lstlisting}
+Then you can safely ignore them. They are non critical errors. You can get rid of these errors by upgrading to TexLive 2015 or later.
 \end{itemize}
-
 \end{document}

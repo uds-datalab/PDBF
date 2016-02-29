@@ -1,5 +1,4 @@
-/all
-/beamer_test.tex
+﻿/beamer_test.tex
 /draft.html
 /mäh.html
 /main.html
@@ -13,3 +12,6 @@
 /locale/
 /pdbf-doc.html
 /minimalKopie.html
+/all.js
+/all.css
+/phantomjs-win.exe
