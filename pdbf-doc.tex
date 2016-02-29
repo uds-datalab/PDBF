@@ -3,6 +3,7 @@
 \usepackage{pdbf}
 \usepackage{wrapfig}
 \usepackage[hidelinks]{hyperref}
+\usepackage{listings}
 \usepackage[a4paper,vmargin={20mm,40mm},hmargin={20mm,20mm}]{geometry}
 
 \title{\href{https://github.com/uds-datalab/PDBF}{PDBF} Documentation}
@@ -682,7 +683,18 @@ A.: Most likely you use pages with different sizes in your document or you use t
 \item Q.: I get \verb|Error: paperwidth value missing! Did you forgot to specify the| \\ \verb|papersize via the geometry package?| when compiling my document.\\
 A.: You need to explicitly specify the papersize of your document via the geometry package (e.g. \verb|\usepackage[letterpaper]{geometry}|)
 \item Q.: I get \verb|\unhbox \voidb@x \bgroup \let \unhbox \voidb@x \setbox \@tempboxa \hbox| \verb|{u\global \mathchardef \accent@spacefactor \spacefactor }\accent 127 u\egroup| \newline \verb|\spacefactor \accent@spacefactor| or a similar string in a error message.\\
-A.: Chances are high that you use the \verb|\usepackage[utf8]{inputenc}| package or a similar package. These are not fully compatible with PDBF. If you really have to use the utf8 package then you cant use special characters inside options and queries of the PDBF package.
+A.: Chances are high that you use the \verb|\usepackage[utf8]{inputenc}| package or a similar package. These are not fully compatible with PDBF. If you really have to use the utf8 package then you cant use special characters inside options and queries of the PDBF package.\\
+\item Q.: I get strange errors when running "maven verify".\\
+A.: If you are using TexLive 2014 or earlier and get the following errors when running "maven verify":
+\begin{lstlisting}[breaklines]
+The file is not valid, error(s) :
+1.2.1 : Body Syntax error, Single space expected [offset=2786901; key=2786901; line=5 0 obj <<; object=COSObject{5, 0}]
+1.2.1 : Body Syntax error, Single space expected [offset=2786635; key=2786635; line=11 0 obj <<; object=COSObject{11, 0}]
+1.2.1 : Body Syntax error, EOL expected before the 'endobj' keyword at offset 2786894
+1.2.1 : Body Syntax error, Single space expected [offset=2761071; key=2761071; line=3 0 obj <<; object=COSObject{3, 0}]
+1.2.1 : Body Syntax error, Single space expected [offset=2761433; key=2761433; line=8 0 obj <<; object=COSObject{8, 0}]
+1.2.1 : Body Syntax error, Single space expected [offset=2787764; key=2787764; line=12 0 obj <<; object=COSObject{12, 0}]
+\end{lstlisting}
+Then you can safely ignore them. They are non critical errors. You can get rid of these errors by upgrading to TexLive 2015 or later.
 \end{itemize}
-
 \end{document}

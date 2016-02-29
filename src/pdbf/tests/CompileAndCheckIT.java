@@ -27,18 +27,17 @@ import org.apache.pdfbox.preflight.exception.SyntaxValidationException;
 import org.apache.pdfbox.preflight.parser.PreflightParser;
 
 import pdbf.PDBF_Compiler;
-import pdbf.compilers.VM_Compiler;
 import pdbf.misc.Tools;
 
 public class CompileAndCheckIT {
     // TODO: write test for database with ugly "\"values\""
 
-    static  {
+    static {
 	// Apache PDFBox uses the Logger class and we need to configure it
 	BasicConfigurator.configure();
 	Logger.getRootLogger().setLevel(Level.ERROR);
     }
-    
+
     @Rule
     public TimeTestWatcher watcher = new TimeTestWatcher();
 
@@ -200,8 +199,14 @@ public class CompileAndCheckIT {
 	    fail("Compile failed");
 	}
 	if (withVM) {
-	    String[] args = { "", baseDir + baseName + ".html", CompileAndCheckIT.baseDir + "vldb-Invaders.ova" };
-	    VM_Compiler.main(args);
+	    ProcessBuilder pb = new ProcessBuilder("java", "-jar", baseDir + "pdbf.jar", "--vm", baseDir + baseName + ".html", CompileAndCheckIT.baseDir + "vldb-Invaders.ova");
+	    pb.directory(new File(baseDir));
+	    pb.inheritIO();
+	    Process p = pb.start();
+	    p.waitFor();
+	    if (p.exitValue() != 0) {
+		fail("PDBF compiler exited with error!");
+	    }
 	    f.delete();
 	    FileUtils.moveFile(f3, f);
 	}

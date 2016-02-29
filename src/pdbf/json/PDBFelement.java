@@ -53,6 +53,7 @@ public abstract class PDBFelement {
     public double quality;
     public double fontsize;
     public String name;
+    public String customImage;
 
     // DataText
     public String linkTo;

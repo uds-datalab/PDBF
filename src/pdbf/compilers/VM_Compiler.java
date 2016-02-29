@@ -79,8 +79,6 @@ public class VM_Compiler {
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
-
-	System.out.println("Finished...");
     }
 
     static void tarHeaderChecksum(StringBuilder sb, int offset) {

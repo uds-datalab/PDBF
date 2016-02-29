@@ -27,6 +27,7 @@ import pdbf.compilers.HTML_PDF_Compiler;
 import pdbf.compilers.Pre_Compiler;
 import pdbf.compilers.TAR_Compiler;
 import pdbf.compilers.VM_Compiler;
+import pdbf.misc.MinifyResources;
 import pdbf.misc.Tools;
 import pdbf.tests.CheckAttached;
 import pdbf.tests.CreateReferencePictures;
@@ -58,7 +59,7 @@ public class PDBF_Compiler {
 	    URL url = new URL("https://raw.githubusercontent.com/uds-datalab/PDBF/gh-pages/VERSION.md");
 	    String currentVersion = IOUtils.toString(url.openStream(), StandardCharsets.UTF_8);
 	    if (!version.equals(currentVersion)) {
-		System.err.println(currentVersion + " of PDBF compiler available.\n"
+		System.err.println(currentVersion + " of PDBF compiler is available.\n"
 			+ "Please visit https://github.com/uds-datalab/PDBF and download the latest version\n");
 	    }
 	} catch (Throwable t) {
@@ -103,6 +104,8 @@ public class PDBF_Compiler {
 		.build());
 	optionsGroup.addOption(Option.builder("ca").longOpt("check-attached").numberOfArgs(1).argName("PDBF_file")
 		.desc("Checks if a given PDBF document has an ova or tar file attached.").build());
+	optionsGroup.addOption(Option.builder("ur").longOpt("update-resources").numberOfArgs(0)
+		.desc("Updates the js and css files that the PDBF compiler puts into PDBF files.").build());
 	options.addOptionGroup(optionsGroup);
 	options.addOption("npp", "no-pdf-protection", false,
 		"Disables the write protection of the pdf part of the PDBF document. Can only be used with the compile option.");
@@ -145,7 +148,9 @@ public class PDBF_Compiler {
 		CreateReferencePictures.main(line.getOptionValues("create-reference-images"));
 	    } else if (line.hasOption("check-attached")) {
 		CheckAttached.main(line.getOptionValues("check-attached"));
-	    }  else if (args.length == 1) {
+	    } else if (line.hasOption("update-resources")) {
+		MinifyResources.main(line.getOptionValues("update-resources"));
+	    } else if (args.length == 1) {
 		Pre_Compiler.main(args);
 		HTML_PDF_Compiler.main(args);
 	    } else {

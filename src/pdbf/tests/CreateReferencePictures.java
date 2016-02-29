@@ -1,6 +1,8 @@
 package pdbf.tests;
 
 import java.io.File;
+import java.util.regex.Pattern;
+
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -36,7 +38,7 @@ public class CreateReferencePictures {
 		}
 	    }
 
-	    // TODO: generalize this to arbitrary tests
+	    // Clean up
 	    for (File f : Tools.deleteList) {
 		f.delete();
 	    }
@@ -44,11 +46,15 @@ public class CreateReferencePictures {
 	    new File(testDir + "no_pdbf.log").delete();
 	    new File(testDir + "no_pdbf.html").delete();
 	    new File(testDir + "charts.html").delete();
-	    for (int i = 0; i < 72; ++i) {
-		new File(testDir + "Overlay" + (i + 1) + ".png").delete();
+	    for (String s : new File(testDir).list()) {
+		if (Pattern.matches("Overlay\\d+(Tmp|).(pdf|json|data)", s)) {
+		    new File(testDir + s).delete();
+		}
 	    }
-	    for (int i = 0; i < 72; ++i) {
-		new File(baseDir + "Overlay" + (i + 1) + ".png").delete();
+	    for (String s : new File(baseDir).list()) {
+		if (Pattern.matches("Overlay\\d+(Tmp|).(pdf|json|data)", s)) {
+		    new File(baseDir + s).delete();
+		}
 	    }
 	    new File(testDir + "dummy.pdf").delete();
 	    new File(testDir + "pdbf.sty").delete();

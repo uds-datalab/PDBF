@@ -286,7 +286,7 @@ public class Pre_Compiler {
 	// Produce necessary data and auxiliary files
 	System.out.println("Generating images, latex tables, and text...\n" + count + " PDBF elements to process");
 	for (int i = 0; i < pdbfElementContainers.length; ++i) {
-	    if (pdbfElementContainers[i].type instanceof VisualPDBFelement) {
+	    if (pdbfElementContainers[i].type instanceof VisualPDBFelement && pdbfElementContainers[i].type.customImage == null) {
 		processVisual(pdbfElementContainers[i]);
 	    } else if (pdbfElementContainers[i].type instanceof Text) {
 		System.out.println("Finished " + pdbfElementContainers[i].name);
