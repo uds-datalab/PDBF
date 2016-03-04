@@ -55,7 +55,7 @@ function display(json, page, phantomJS) {
 	container.className = "overlay";
 	var style;
 	if (phantomJS) {
-		style = "width: 100%; height: 100%; margin-bottom: 0.2em;";
+		style = "width: 100%; height: 100%; margin: 0px;";
 	} else {
 		style = "position: absolute; width:" + (json.type.I.x2 - json.type.I.x1 + 0.001) * 100 + "%; height:" + (json.type.I.y1 - json.type.I.y2 + 0.001) * 100 + "%; left:" + json.type.I.x1 * 100 + "%; bottom:" + (json.type.I.y2 - 0.001) * 100 + "%;";
 	}
@@ -259,15 +259,19 @@ function display(json, page, phantomJS) {
 						elem : undefined
 					}; // TODO:
 				}
-				if (false && phantomJS) { // TODO: reenable this
-					// Check if Pivot table fits into the div. If not then decrease
-					// the font-size until it fits
-					while ($(container).children().last().children().width() >= $(container).width()) {
-						zoomFactor = zoomFactor - 0.001;
-						$(container).css('font-size', (zoomFactor * 12.0) + "pt");
-					}
-					// TODO: propagate final zoomFactor back to pdbf-config.json
+				// Check if Pivot table fits into the div. If not then decrease
+				// the font-size until it fits or until we reach a negative zoomFactor
+				var container = $(container).children().last().children();
+				var cur = 0.1;
+				container.css('font-size', cur + "pt");
+				var width = container.width();
+				var height = container.height();
+				while ((container.width() == width && container.height() == height) && cur <= zoomFactor * 12.0) {
+					cur = cur + 0.1;
+					$(container).css('font-size', cur + "pt");
 				}
+				cur = cur - 0.1;
+				$(container).css('font-size', cur + "pt");
 			}
 			break;
 		default:

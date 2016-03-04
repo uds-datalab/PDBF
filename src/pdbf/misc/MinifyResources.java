@@ -59,7 +59,7 @@ public class MinifyResources {
 	for (String cssFile : cssFiles) {
 	    try {
 		String out = FileUtils.readFileToString(new File(cssFile), Tools.utf8);
-		FileUtils.writeStringToFile(new File(baseDirData + "all.css"), out, Tools.utf8, true);
+		FileUtils.writeStringToFile(new File(baseDirData + "all.css"), out + "\n", Tools.utf8, true);
 	    } catch (IOException e) {
 		e.printStackTrace();
 		System.exit(1);

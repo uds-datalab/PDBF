@@ -251,7 +251,7 @@
 }
 
 \NewDocumentCommand\pivotTable{O{} o m}{%
-{\pdbf@chart[#1]{\detokenize{#3}}{\IfValueTF{#2}{\detokenize{#2}}{\detokenize{#3}}}{Pivot}}%
+{\pdbf@chart[#1]{#3}{\IfValueTF{#2}{#2}{#3}}{Pivot}}%
 }
 
 \NewDocumentCommand\multiplotChart{O{} o m}{%
