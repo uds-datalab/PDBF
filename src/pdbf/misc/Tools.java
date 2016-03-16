@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
@@ -165,6 +166,117 @@ public class Tools {
      * Repairs the XREF table of our polyglot PDBF file
      */
     public static void fixXref(StringBuilder sb, int offset) throws IOException {
+	int b, e;
+	int start;
+	int end;
+	if ((start = e = sb.lastIndexOf("/Type /XRef")) != -1) {
+	    end = sb.indexOf("endstream", start) + "endstream".length();
+	    // xref stream
+	    //TODO: If the first element is zero, the type field shall not be present, and shall default to type 1.
+	    Pattern p = Pattern.compile("/W \\[(\\d+) (\\d+) (\\d+)\\]");
+	    Matcher m = p.matcher(sb.toString()).region(start, end);
+	    m.find();
+	    int f1Len = Integer.parseInt(m.group(1));
+	    int f2Len = Integer.parseInt(m.group(2));
+	    int f3Len = Integer.parseInt(m.group(3));
+	    int newlength = 8;
+	    sb.replace(m.start(1), m.end(3), "" + newlength + " " + newlength + " " + newlength);
+	    b = skipNewline(sb, sb.indexOf("stream", start) + "stream".length(), true);
+	    e = skipNewline(sb, sb.indexOf("endstream", start), false);
+	    int from = b;
+	    int to = e;
+	    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	    InflaterOutputStream ios = new InflaterOutputStream(baos);
+	    ios.write(sb.substring(b, e).getBytes(StandardCharsets.ISO_8859_1));
+	    ios.close();
+	    baos.close();
+	    ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+
+	    ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
+	    DeflaterOutputStream dos = new DeflaterOutputStream(baos2, new Deflater(7, false));
+
+	    ByteBuffer bb = ByteBuffer.allocate(newlength);
+	    while (bais.available() > 0) {
+		for (int i = 0; i < newlength; ++i) {
+		    if (i >= newlength - f1Len) {
+			bb.put((byte) bais.read());
+		    } else {
+			bb.put((byte) 0);
+		    }
+		}
+		bb.rewind();
+		long bd1 = bb.getLong();
+		dos.write(bb.array(), 0, newlength);
+		bb.clear();
+		for (int i = 0; i < newlength; ++i) {
+		    if (i >= newlength - f2Len) {
+			bb.put((byte) bais.read());
+		    } else {
+			bb.put((byte) 0);
+		    }
+		}
+		bb.rewind();
+		long bd2 = bb.getLong();
+		if (bd1 == 1) {
+		    bd2 += offset;
+		    bb.clear();
+		    bb.putLong(bd2);
+		}
+		dos.write(bb.array(), 0, newlength);
+		bb.clear();
+		for (int i = 0; i < newlength; ++i) {
+		    if (i >= newlength - f3Len) {
+			bb.put((byte) bais.read());
+		    } else {
+			bb.put((byte) 0);
+		    }
+		}
+		dos.write(bb.array(), 0, newlength);
+		bb.clear();
+	    }
+	    baos.close();
+	    dos.close();
+	    String newxref = baos2.toString("ISO_8859_1");
+	    sb.replace(from, to, newxref);
+	    p = Pattern.compile("/Length (\\d+)");
+	    m = p.matcher(sb.toString()).region(start, end);
+	    m.find();
+	    sb.replace(m.start(1), m.end(1), Integer.toString(newxref.length()));
+	}
+	
+	//Fix classical xref
+	Pattern p = Pattern.compile("(\r\n?|\n)xref(\r\n?|\n)");
+	Matcher m = p.matcher(sb.toString());
+	if (m.find()) {
+	    // xref table
+	    b = m.end();
+	    int x;
+	    // skip first entry
+	    p = Pattern.compile("(\\d{10,10}) \\d{5,5} .");
+	    m = p.matcher(sb.toString()).region(b + 1, sb.length());
+	    m.find();
+	    e = m.end();
+	    while (m.find()) {
+		b = m.start(1);
+		e = m.end(1);
+		String tmp = sb.substring(b, e);
+		x = Integer.parseInt(tmp);
+		sb.replace(b, e, df.format(x + offset));
+	    }
+	}
+	b = sb.lastIndexOf("startxref\n") + "startxref\n".length();
+	e = sb.indexOf("\n", b);
+	sb.replace(b, e, "" + (Integer.parseInt(sb.substring(b, e)) + offset));
+    }
+    
+    /*
+     * Repairs the XREF table of our polyglot PDBF file
+     */
+    public static void fixXrefStream(RandomAccessFile raf, int offset) throws IOException {
+	//TODO: !!!
+	raf.seek(raf.length() - 1024*1024*PDBF_Compiler.bytearray.length);
+	raf.readFully(PDBF_Compiler.bytearray);
+	StringBuilder sb = new StringBuilder(new String(PDBF_Compiler.bytearray, StandardCharsets.ISO_8859_1));
 	int b, e;
 	int start;
 	int end;

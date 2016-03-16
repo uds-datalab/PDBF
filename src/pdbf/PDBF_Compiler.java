@@ -34,6 +34,9 @@ import pdbf.tests.CreateReferencePictures;
 
 public class PDBF_Compiler {
 
+    private static int bufferSizeInMB = 50; //TODO: make option to change this. Add F.A.Q entry for java.lang.OutOfMemoryError: Java heap space 
+    public static byte[] bytearray = new byte[1024*1024*PDBF_Compiler.bufferSizeInMB];
+    
     // This flag indicates if all js and css files from data folder are included
     // in the compiled PDBF document
     public static boolean includeRes = true;
