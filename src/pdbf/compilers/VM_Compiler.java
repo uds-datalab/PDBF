@@ -15,26 +15,23 @@ public class VM_Compiler {
 
     public static DecimalFormat df = new DecimalFormat("0000000000");
 
-    private static int longToIntClamp(long i) {
-	if (i > (long) Integer.MAX_VALUE) {
-	    return Integer.MAX_VALUE;
-	} else {
-	    return (int) i;
-	}
-    }
+    public static String fileType = "ova";
 
     public static void main(String[] args) {
 	System.out.println("Compiling VM...");
 
 	String a = new File(args[0]).getName();
-	//TODO: sanity checks. compare beginning of html/pdbf file with "removeFromHTML".
+	// TODO: sanity checks. compare beginning of html/pdbf file with
+	// "removeFromHTML".
 	if (!a.toUpperCase().endsWith(".HTML")) {
 	    System.err.println("Error: Only .HTML files are supported as first argument!");
 	    System.exit(1);
 	}
-	//TODO: sanity checks. use "testTar" to check if ova file is valid. maybe we should even test if name of the first file in tar ends with ".ovf"  
-	if (!args[1].toUpperCase().endsWith(".OVA")) {
-	    System.err.println("Error: Only .OVA files are supported as second argument!");
+	// TODO: sanity checks. use "testTar" to check if ova/tar file is valid.
+	// for ova we should even test if name of the first file in tar ends
+	// with ".ovf"
+	if (!args[1].toUpperCase().endsWith("." + fileType)) {
+	    System.err.println("Error: Only ." + fileType + " files are supported as second argument!");
 	    System.exit(1);
 	}
 	String basename = args[0].substring(0, args[0].length() - 5);
@@ -45,31 +42,35 @@ public class VM_Compiler {
 	}
 
 	try {
-	    //The order of contents in the outFile is the following: first ova, then html, then pdf
-	    RandomAccessFile outFile = new RandomAccessFile(new File(basename + ".ova"), "rw");
+	    // The order of contents in the outFile is the following: first
+	    // ova/tar, then html, then pdf
+	    RandomAccessFile outFile = new RandomAccessFile(new File(basename + "." + fileType), "rw");
 	    outFile.setLength(0);
-	    
-	    //For keeping track of progress
+
+	    // For keeping track of progress
 	    String removeFromHTML = "%PDF-1.5\n%ª«¬­<!DOCTYPE html><html dir=\"ltr\" mozdisallowselectionprint moznomarginboxes>" + "<head><meta charset=\"utf-8\"><!--\n1337 0 obj\nstream";
 	    String addToHTML = "</script>";
-	    RandomAccessFile ovaFile = new RandomAccessFile(new File(args[1]), "rw");
+	    RandomAccessFile ovaOrTarFile = new RandomAccessFile(new File(args[1]), "rw");
 	    RandomAccessFile pdbfFile = new RandomAccessFile(new File(args[0]), "rw");
 	    NumberFormat nf = NumberFormat.getPercentInstance();
 	    nf.setMinimumFractionDigits(2);
-	    double totalRemaining = ovaFile.length() + pdbfFile.length() + addToHTML.length() - removeFromHTML.length();
-	    
-	    //Replace beginning of the ovaFile file with our ova/pdf/html file header
-	    String replaceInOva = "%PDF-1.5\n%ª«¬­.ovf\0\n1 0 obj\nstream\n<head><meta charset=UTF-8><script>";
-	    ovaFile.seek(replaceInOva.length());
-	    outFile.write(replaceInOva.getBytes(StandardCharsets.ISO_8859_1));
-	    
-	    //Read the ovaFile in chunks, check that it doesnt contain "</script>", and then write it to outFile
-	    //We read the file in overlapping chunks to avoid missing something at the chunk boundaries
+	    double totalRemaining = ovaOrTarFile.length() + pdbfFile.length() + addToHTML.length() - removeFromHTML.length();
+
+	    // Replace beginning of the ovaOrTarFile file with our
+	    // (ova/tar)/pdf/html file header
+	    String replaceInOvaOrTar = "%PDF-1.5\n%ª«¬­.ovf\0\n1 0 obj\nstream\n<head><meta charset=UTF-8><script>";
+	    ovaOrTarFile.seek(replaceInOvaOrTar.length());
+	    outFile.write(replaceInOvaOrTar.getBytes(StandardCharsets.ISO_8859_1));
+
+	    // Read the ovaOrTarFile in chunks, check that it doesnt contain
+	    // "</script>", and then write it to outFile
+	    // We read the file in overlapping chunks to avoid missing something
+	    // at the chunk boundaries
 	    Pattern p = Pattern.compile("</script>", Pattern.CASE_INSENSITIVE);
 	    int halfbuffer = PDBF_Compiler.bytearray.length / 2;
-	    long remaining = ovaFile.length() - replaceInOva.length();
+	    long remaining = ovaOrTarFile.length() - replaceInOvaOrTar.length();
 	    int readbytes = (int) Math.min(halfbuffer, remaining);
-	    ovaFile.readFully(PDBF_Compiler.bytearray, halfbuffer, readbytes);
+	    ovaOrTarFile.readFully(PDBF_Compiler.bytearray, halfbuffer, readbytes);
 	    remaining -= readbytes;
 	    outFile.write(PDBF_Compiler.bytearray, halfbuffer, readbytes);
 
@@ -77,20 +78,23 @@ public class VM_Compiler {
 		System.out.println(nf.format(outFile.length() / totalRemaining) + " done");
 		System.arraycopy(PDBF_Compiler.bytearray, halfbuffer, PDBF_Compiler.bytearray, 0, halfbuffer);
 		readbytes = (int) Math.min(halfbuffer, remaining);
-		ovaFile.readFully(PDBF_Compiler.bytearray, halfbuffer, readbytes);
+		ovaOrTarFile.readFully(PDBF_Compiler.bytearray, halfbuffer, readbytes);
 		remaining -= readbytes;
 		outFile.write(PDBF_Compiler.bytearray, halfbuffer, readbytes);
 		String search = new String(PDBF_Compiler.bytearray, StandardCharsets.ISO_8859_1);
 		Matcher m = p.matcher(search);
 		if (m.matches()) {
-		    System.err.println("The ova file cannot be used to generate a pdbf document! Try to change the content of the ova file such that it doesnt contain the string \"</script>\" and then try again.");
+		    System.err.println("The " + fileType + " file cannot be used to generate a pdbf document! Try to change the content of the " + fileType + " file such that it doesnt contain the string \"</script>\" and then try again.");
 		    outFile.close();
-		    new File(basename + ".ova").delete();
+		    new File(basename + "." + fileType).delete();
 		    System.exit(1);
 		}
 	    } while (remaining > 0);
 
-	    //TODO: Not very pretty but it works
+	    // We use a 512 byte buffer for the tar/ova header
+	    // The checksum in the tar header of the first file in the tar has
+	    // to be fixed because we changed the name of the file (see variable
+	    // "replaceInOvaOrTar")
 	    StringBuilder sb = new StringBuilder(512);
 	    byte[] tmp = new byte[512];
 	    long oldPos = outFile.getFilePointer();
@@ -102,29 +106,23 @@ public class VM_Compiler {
 	    tmp = sb.toString().getBytes(StandardCharsets.ISO_8859_1);
 	    outFile.write(tmp);
 	    outFile.seek(oldPos);
-	    
-	    // TODO: 3. reprogram tarHeaderChecksum
-	    // TODO: 4. ...
-	    // TODO: 5. Profit!
 
-	    
-	    /*
-
-	    // Add new file to tar
+	    // Add dummy file to tar which holds the html/pdf data
 	    String name = "DO_NOT_DELETE\0";
+	    sb.replace(0, name.length(), name);
 	    String n = name + sb.substring(name.length(), 512);
-	    int von = sb.length();
+	    long von = outFile.length();
 	    sb.append(n);
 
 	    String html = FileUtils.readFileToString(new File(args[0]), StandardCharsets.ISO_8859_1).substring(removeFromHTML.length());
 	    html = addToHTML + html;
 
-	    int vm = sb.length();
+	    long vm = outFile.length();
 
 	    sb.append(html);
-	    int oldLength = sb.length();
+	    long oldLength = sb.length();
 
-	    int offset = (vm - removeFromHTML.length() + addToHTML.length());
+	    long offset = (vm - removeFromHTML.length() + addToHTML.length());
 	    Tools.fixXref(sb, offset);
 
 	    int diffLength = sb.length() - oldLength;
@@ -138,9 +136,7 @@ public class VM_Compiler {
 		sb.insert(i, '%');
 	    }
 
-	    FileUtils.writeStringToFile(new File(basename + ".ova"), sb.toString(), StandardCharsets.ISO_8859_1);
-*/
-	    ovaFile.close();
+	    ovaOrTarFile.close();
 	    outFile.close();
 	} catch (Throwable e) {
 	    e.printStackTrace();
