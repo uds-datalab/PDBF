@@ -187,6 +187,14 @@ pre {
   margin: 0;
 }
 
+#scaleSelectContainer {
+	margin-top: 5px;
+}
+
+.page, .dropdownToolbarButton {
+	box-sizing: initial;
+}
+
 html {
   height: 100%;
   /* Font size is needed to make the activity bar the correct size. */
