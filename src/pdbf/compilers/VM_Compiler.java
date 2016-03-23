@@ -5,10 +5,12 @@ import java.io.RandomAccessFile;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import pdbf.PDBF_Compiler;
+import pdbf.misc.Tools;
 import pdbf.tests.CheckAttached;
 
 public class VM_Compiler {
@@ -23,14 +25,14 @@ public class VM_Compiler {
 	String a = new File(args[0]).getName();
 	// TODO: sanity checks. compare beginning of html/pdbf file with
 	// "removeFromHTML".
-	if (!a.toUpperCase().endsWith(".HTML")) {
-	    System.err.println("Error: Only .HTML files are supported as first argument!");
+	if (!a.toLowerCase().endsWith(".html")) {
+	    System.err.println("Error: Only .html files are supported as first argument!");
 	    System.exit(1);
 	}
 	// TODO: sanity checks. use "testTar" to check if ova/tar file is valid.
 	// for ova we should even test if name of the first file in tar ends
 	// with ".ovf"
-	if (!args[1].toUpperCase().endsWith("." + fileType)) {
+	if (!args[1].toLowerCase().endsWith("." + fileType)) {
 	    System.err.println("Error: Only ." + fileType + " files are supported as second argument!");
 	    System.exit(1);
 	}
@@ -48,17 +50,18 @@ public class VM_Compiler {
 	    outFile.setLength(0);
 
 	    // For keeping track of progress
-	    String removeFromHTML = "%PDF-1.5\n%ª«¬­<!DOCTYPE html><html dir=\"ltr\" mozdisallowselectionprint moznomarginboxes>" + "<head><meta charset=\"utf-8\"><!--\n1337 0 obj\nstream";
-	    String addToHTML = "</script>";
+	    String removeFromPdbf = "%PDF-1.5\n%ª«¬­<!DOCTYPE html><html dir=\"ltr\" mozdisallowselectionprint moznomarginboxes>"
+		    + "<head><meta charset=\"utf-8\"><script>\n1337 0 obj\nstream\n</script>\n";
+	    String addToPdbf = "</script>";
 	    RandomAccessFile ovaOrTarFile = new RandomAccessFile(new File(args[1]), "rw");
 	    RandomAccessFile pdbfFile = new RandomAccessFile(new File(args[0]), "rw");
 	    NumberFormat nf = NumberFormat.getPercentInstance();
 	    nf.setMinimumFractionDigits(2);
-	    double totalRemaining = ovaOrTarFile.length() + pdbfFile.length() + addToHTML.length() - removeFromHTML.length();
+	    long totalRemaining = ovaOrTarFile.length() + pdbfFile.length() + addToPdbf.length() - removeFromPdbf.length() + 512;
 
 	    // Replace beginning of the ovaOrTarFile file with our
 	    // (ova/tar)/pdf/html file header
-	    String replaceInOvaOrTar = "%PDF-1.5\n%ª«¬­.ovf\0\n1 0 obj\nstream\n<head><meta charset=UTF-8><script>";
+	    String replaceInOvaOrTar = "%PDF-1.5\n%ª«¬­.ovf\0\n1337 0 obj\nstream\n<head><meta charset=UTF-8><script>";
 	    ovaOrTarFile.seek(replaceInOvaOrTar.length());
 	    outFile.write(replaceInOvaOrTar.getBytes(StandardCharsets.ISO_8859_1));
 
@@ -75,7 +78,7 @@ public class VM_Compiler {
 	    outFile.write(PDBF_Compiler.bytearray, halfbuffer, readbytes);
 
 	    do {
-		System.out.println(nf.format(outFile.length() / totalRemaining) + " done");
+		System.out.println(nf.format((double)outFile.length() / totalRemaining) + " done");
 		System.arraycopy(PDBF_Compiler.bytearray, halfbuffer, PDBF_Compiler.bytearray, 0, halfbuffer);
 		readbytes = (int) Math.min(halfbuffer, remaining);
 		ovaOrTarFile.readFully(PDBF_Compiler.bytearray, halfbuffer, readbytes);
@@ -84,7 +87,8 @@ public class VM_Compiler {
 		String search = new String(PDBF_Compiler.bytearray, StandardCharsets.ISO_8859_1);
 		Matcher m = p.matcher(search);
 		if (m.matches()) {
-		    System.err.println("The " + fileType + " file cannot be used to generate a pdbf document! Try to change the content of the " + fileType + " file such that it doesnt contain the string \"</script>\" and then try again.");
+		    System.err.println("The " + fileType + " file cannot be used to generate a pdbf document! Try to change the content of the " + fileType
+			    + " file such that it doesnt contain the string \"</script>\" and then try again.");
 		    outFile.close();
 		    new File(basename + "." + fileType).delete();
 		    System.exit(1);
@@ -103,40 +107,69 @@ public class VM_Compiler {
 	    sb.append(new String(tmp, StandardCharsets.ISO_8859_1));
 	    tarHeaderChecksum(sb, 0);
 	    outFile.seek(0);
-	    tmp = sb.toString().getBytes(StandardCharsets.ISO_8859_1);
-	    outFile.write(tmp);
+	    outFile.write(sb.toString().getBytes(StandardCharsets.ISO_8859_1));
 	    outFile.seek(oldPos);
 
 	    // Add dummy file to tar which holds the html/pdf data
 	    String name = "DO_NOT_DELETE\0";
 	    sb.replace(0, name.length(), name);
-	    String n = name + sb.substring(name.length(), 512);
+	    String n = sb.toString();
 	    long von = outFile.length();
-	    sb.append(n);
+	    outFile.write(n.getBytes(StandardCharsets.ISO_8859_1));
 
-	    String html = FileUtils.readFileToString(new File(args[0]), StandardCharsets.ISO_8859_1).substring(removeFromHTML.length());
-	    html = addToHTML + html;
-
+	    // write pdbfFile to outFile
+	    pdbfFile.seek(removeFromPdbf.length());
+	    long pdbfLength = pdbfFile.length() - removeFromPdbf.length() + addToPdbf.length();
 	    long vm = outFile.length();
+	    outFile.write(addToPdbf.getBytes(StandardCharsets.ISO_8859_1));
+	    // write pdbfFile to outFile
 
-	    sb.append(html);
-	    long oldLength = sb.length();
+	    remaining = pdbfFile.length() - removeFromPdbf.length();
+	    readbytes = (int) Math.min(halfbuffer, remaining);
+	    pdbfFile.readFully(PDBF_Compiler.bytearray, halfbuffer, readbytes);
+	    remaining -= readbytes;
+	    outFile.write(PDBF_Compiler.bytearray, halfbuffer, readbytes);
+	    do {
+		System.out.println(nf.format((double)outFile.length() / totalRemaining) + " done");
+		System.arraycopy(PDBF_Compiler.bytearray, halfbuffer, PDBF_Compiler.bytearray, 0, halfbuffer);
+		Arrays.fill(PDBF_Compiler.bytearray, halfbuffer, 2*halfbuffer, (byte)0);
+		readbytes = (int) Math.min(halfbuffer, remaining);
+		pdbfFile.readFully(PDBF_Compiler.bytearray, halfbuffer, readbytes);
+		remaining -= readbytes;
+		outFile.write(PDBF_Compiler.bytearray, halfbuffer, readbytes);
+		String search = new String(PDBF_Compiler.bytearray, StandardCharsets.ISO_8859_1);
+		StringBuilder sb2 = new StringBuilder(search);
+		int i = sb2.lastIndexOf("%%EOF\n");
+		sb2.setLength(i + "%%EOF\n".length());
 
-	    long offset = (vm - removeFromHTML.length() + addToHTML.length());
-	    Tools.fixXref(sb, offset);
-
-	    int diffLength = sb.length() - oldLength;
-
-	    tarHeaderLength(sb, von, html.length() + diffLength);
-	    tarHeaderChecksum(sb, von);
-	    // Special PDF padding with % because PDF does not like zero bytes
-	    // after %%EOF
-	    int i = sb.lastIndexOf("%%EOF");
-	    while (sb.length() % 512 != 0) {
-		sb.insert(i, '%');
-	    }
+		long oldLength = sb2.length();
+		long offset = (vm - removeFromPdbf.length() + addToPdbf.length());
+		if (remaining == 0) {
+		    if (!Tools.fixXref(sb2, offset)) {
+			System.err.println("Fix XREF failed!");
+			System.exit(1);
+		    }
+		    outFile.seek(outFile.length() - oldLength);
+		    // Special PDF padding with % because PDF does not like zero bytes
+		    // after %%EOF
+		    i = sb2.lastIndexOf("%%EOF");
+		    while ((outFile.length() - oldLength + sb2.length()) % 512 != 0) {
+			sb2.insert(i, '\n');
+		    }
+		    outFile.write(sb2.toString().getBytes(StandardCharsets.ISO_8859_1));
+		    //Fix tar header
+		    long diffLength = sb2.length() - oldLength;
+		    tarHeaderLength(sb, 0, (int)(pdbfLength + diffLength)); //Assuming we have a pdbfFile under 4GB
+		    tarHeaderChecksum(sb, 0);
+		    long curPos = outFile.getFilePointer();
+		    outFile.seek(von);
+		    outFile.write(sb.toString().getBytes(StandardCharsets.ISO_8859_1));
+		    outFile.seek(curPos);
+		}
+	    } while (remaining > 0);
 
 	    ovaOrTarFile.close();
+	    pdbfFile.close();
 	    outFile.close();
 	} catch (Throwable e) {
 	    e.printStackTrace();

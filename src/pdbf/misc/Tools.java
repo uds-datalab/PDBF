@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
@@ -165,218 +164,125 @@ public class Tools {
     /*
      * Repairs the XREF table of our polyglot PDBF file
      */
-    public static void fixXref(StringBuilder sb, int offset) throws IOException {
-	int b, e;
-	int start;
-	int end;
-	if ((start = e = sb.lastIndexOf("/Type /XRef")) != -1) {
-	    end = sb.indexOf("endstream", start) + "endstream".length();
-	    // xref stream
-	    //TODO: If the first element is zero, the type field shall not be present, and shall default to type 1.
-	    Pattern p = Pattern.compile("/W \\[(\\d+) (\\d+) (\\d+)\\]");
-	    Matcher m = p.matcher(sb.toString()).region(start, end);
-	    m.find();
-	    int f1Len = Integer.parseInt(m.group(1));
-	    int f2Len = Integer.parseInt(m.group(2));
-	    int f3Len = Integer.parseInt(m.group(3));
-	    int newlength = 8;
-	    sb.replace(m.start(1), m.end(3), "" + newlength + " " + newlength + " " + newlength);
-	    b = skipNewline(sb, sb.indexOf("stream", start) + "stream".length(), true);
-	    e = skipNewline(sb, sb.indexOf("endstream", start), false);
-	    int from = b;
-	    int to = e;
-	    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	    InflaterOutputStream ios = new InflaterOutputStream(baos);
-	    ios.write(sb.substring(b, e).getBytes(StandardCharsets.ISO_8859_1));
-	    ios.close();
-	    baos.close();
-	    ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+    public static boolean fixXref(StringBuilder sb, long offset) {
+	try {
+	    Pattern p3 = Pattern.compile("/Type /XRef(?: ?\r| ?\n|\r\n).*?(?: ?\r| ?\n|\r\n)stream(?: ?\r| ?\n|\r\n).*?(?: ?\r| ?\n|\r\n)endstream(?: ?\r| ?\n|\r\n).*?startxref(?: ?\r| ?\n|\r\n)(\\d+)(?: ?\r| ?\n|\r\n)%*EOF", Pattern.DOTALL);
+	    Matcher m3 = p3.matcher(sb);
+	    if (m3.find()) {
+		int b, e;
+		int start;
+		int end;
+		if ((start = e = sb.lastIndexOf("/Type /XRef")) != -1) {
+		    end = sb.indexOf("endstream", start) + "endstream".length();
+		    // xref stream
+		    // TODO: If the first element is zero, the type field shall
+		    // not
+		    // be
+		    // present, and shall default to type 1.
+		    Pattern p = Pattern.compile("/W \\[(\\d+) (\\d+) (\\d+)\\]");
+		    Matcher m = p.matcher(sb.toString()).region(start, end);
+		    m.find();
+		    int f1Len = Integer.parseInt(m.group(1));
+		    int f2Len = Integer.parseInt(m.group(2));
+		    int f3Len = Integer.parseInt(m.group(3));
+		    int newlength = 8;
+		    sb.replace(m.start(1), m.end(3), "" + newlength + " " + newlength + " " + newlength);
+		    b = skipNewline(sb, sb.indexOf("stream", start) + "stream".length(), true);
+		    e = skipNewline(sb, sb.indexOf("endstream", start), false);
+		    int from = b;
+		    int to = e;
+		    // TODO: if /Filter /FlateDecode is missing we dont need to
+		    // inflate/deflate
+		    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		    InflaterOutputStream ios = new InflaterOutputStream(baos);
+		    ios.write(sb.substring(b, e).getBytes(StandardCharsets.ISO_8859_1));
+		    ios.close();
+		    baos.close();
+		    ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 
-	    ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
-	    DeflaterOutputStream dos = new DeflaterOutputStream(baos2, new Deflater(7, false));
+		    ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
+		    DeflaterOutputStream dos = new DeflaterOutputStream(baos2, new Deflater(7, false));
 
-	    ByteBuffer bb = ByteBuffer.allocate(newlength);
-	    while (bais.available() > 0) {
-		for (int i = 0; i < newlength; ++i) {
-		    if (i >= newlength - f1Len) {
-			bb.put((byte) bais.read());
-		    } else {
-			bb.put((byte) 0);
+		    ByteBuffer bb = ByteBuffer.allocate(newlength);
+		    while (bais.available() > 0) {
+			for (int i = 0; i < newlength; ++i) {
+			    if (i >= newlength - f1Len) {
+				bb.put((byte) bais.read());
+			    } else {
+				bb.put((byte) 0);
+			    }
+			}
+			bb.rewind();
+			long bd1 = bb.getLong();
+			dos.write(bb.array(), 0, newlength);
+			bb.clear();
+			for (int i = 0; i < newlength; ++i) {
+			    if (i >= newlength - f2Len) {
+				bb.put((byte) bais.read());
+			    } else {
+				bb.put((byte) 0);
+			    }
+			}
+			bb.rewind();
+			long bd2 = bb.getLong();
+			if (bd1 == 1) {
+			    bd2 += offset;
+			    bb.clear();
+			    bb.putLong(bd2);
+			}
+			dos.write(bb.array(), 0, newlength);
+			bb.clear();
+			for (int i = 0; i < newlength; ++i) {
+			    if (i >= newlength - f3Len) {
+				bb.put((byte) bais.read());
+			    } else {
+				bb.put((byte) 0);
+			    }
+			}
+			dos.write(bb.array(), 0, newlength);
+			bb.clear();
 		    }
-		}
-		bb.rewind();
-		long bd1 = bb.getLong();
-		dos.write(bb.array(), 0, newlength);
-		bb.clear();
-		for (int i = 0; i < newlength; ++i) {
-		    if (i >= newlength - f2Len) {
-			bb.put((byte) bais.read());
-		    } else {
-			bb.put((byte) 0);
-		    }
-		}
-		bb.rewind();
-		long bd2 = bb.getLong();
-		if (bd1 == 1) {
-		    bd2 += offset;
-		    bb.clear();
-		    bb.putLong(bd2);
-		}
-		dos.write(bb.array(), 0, newlength);
-		bb.clear();
-		for (int i = 0; i < newlength; ++i) {
-		    if (i >= newlength - f3Len) {
-			bb.put((byte) bais.read());
-		    } else {
-			bb.put((byte) 0);
-		    }
-		}
-		dos.write(bb.array(), 0, newlength);
-		bb.clear();
-	    }
-	    baos.close();
-	    dos.close();
-	    String newxref = baos2.toString("ISO_8859_1");
-	    sb.replace(from, to, newxref);
-	    p = Pattern.compile("/Length (\\d+)");
-	    m = p.matcher(sb.toString()).region(start, end);
-	    m.find();
-	    sb.replace(m.start(1), m.end(1), Integer.toString(newxref.length()));
-	}
-	
-	//Fix classical xref
-	Pattern p = Pattern.compile("(\r\n?|\n)xref(\r\n?|\n)");
-	Matcher m = p.matcher(sb.toString());
-	if (m.find()) {
-	    // xref table
-	    b = m.end();
-	    int x;
-	    // skip first entry
-	    p = Pattern.compile("(\\d{10,10}) \\d{5,5} .");
-	    m = p.matcher(sb.toString()).region(b + 1, sb.length());
-	    m.find();
-	    e = m.end();
-	    while (m.find()) {
-		b = m.start(1);
-		e = m.end(1);
-		String tmp = sb.substring(b, e);
-		x = Integer.parseInt(tmp);
-		sb.replace(b, e, df.format(x + offset));
-	    }
-	}
-	b = sb.lastIndexOf("startxref\n") + "startxref\n".length();
-	e = sb.indexOf("\n", b);
-	sb.replace(b, e, "" + (Integer.parseInt(sb.substring(b, e)) + offset));
-    }
-    
-    /*
-     * Repairs the XREF table of our polyglot PDBF file
-     */
-    public static void fixXrefStream(RandomAccessFile raf, int offset) throws IOException {
-	//TODO: !!!
-	raf.seek(raf.length() - 1024*1024*PDBF_Compiler.bytearray.length);
-	raf.readFully(PDBF_Compiler.bytearray);
-	StringBuilder sb = new StringBuilder(new String(PDBF_Compiler.bytearray, StandardCharsets.ISO_8859_1));
-	int b, e;
-	int start;
-	int end;
-	if ((start = e = sb.lastIndexOf("/Type /XRef")) != -1) {
-	    end = sb.indexOf("endstream", start) + "endstream".length();
-	    // xref stream
-	    //TODO: If the first element is zero, the type field shall not be present, and shall default to type 1.
-	    Pattern p = Pattern.compile("/W \\[(\\d+) (\\d+) (\\d+)\\]");
-	    Matcher m = p.matcher(sb.toString()).region(start, end);
-	    m.find();
-	    int f1Len = Integer.parseInt(m.group(1));
-	    int f2Len = Integer.parseInt(m.group(2));
-	    int f3Len = Integer.parseInt(m.group(3));
-	    int newlength = 8;
-	    sb.replace(m.start(1), m.end(3), "" + newlength + " " + newlength + " " + newlength);
-	    b = skipNewline(sb, sb.indexOf("stream", start) + "stream".length(), true);
-	    e = skipNewline(sb, sb.indexOf("endstream", start), false);
-	    int from = b;
-	    int to = e;
-	    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	    InflaterOutputStream ios = new InflaterOutputStream(baos);
-	    ios.write(sb.substring(b, e).getBytes(StandardCharsets.ISO_8859_1));
-	    ios.close();
-	    baos.close();
-	    ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+		    baos.close();
+		    dos.close();
+		    String newxref = baos2.toString("ISO_8859_1");
+		    sb.replace(from, to, newxref);
+		    p = Pattern.compile("/Length (\\d+)");
+		    m = p.matcher(sb.toString()).region(start, end);
+		    m.find();
+		    sb.replace(m.start(1), m.end(1), Integer.toString(newxref.length()));
 
-	    ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
-	    DeflaterOutputStream dos = new DeflaterOutputStream(baos2, new Deflater(7, false));
+		    m3 = p3.matcher(sb);
+		    m3.find();
+		    long x = Long.parseLong(m3.group(1));
+		    sb.replace(m3.start(1), m3.end(1), "" + (x + offset));
+		    return true;
+		}
+	    }
 
-	    ByteBuffer bb = ByteBuffer.allocate(newlength);
-	    while (bais.available() > 0) {
-		for (int i = 0; i < newlength; ++i) {
-		    if (i >= newlength - f1Len) {
-			bb.put((byte) bais.read());
-		    } else {
-			bb.put((byte) 0);
-		    }
+	    // Fix classical xref
+	    Pattern p = Pattern
+		    .compile("((?: ?\r| ?\n|\r\n)xref(?: ?\r| ?\n|\r\n).*?)((?:\\d{10,10} \\d{5,5} [nf](?: \r| \n|\r\n))+)(.*?(?: ?\r| ?\n|\r\n)startxref(?: ?\r| ?\n|\r\n))(\\d+)((?: ?\r| ?\n|\r\n)%*EOF)", Pattern.DOTALL);
+	    Matcher m = p.matcher(sb);
+	    if (m.find()) {
+		// xref table
+		long x;
+		// skip first entry
+		Pattern p2 = Pattern.compile("(\\d{10,10}) \\d{5,5}");
+		Matcher m2 = p2.matcher(sb).region(m.start(2), m.end(2));
+		m2.find();
+		while (m2.find()) {
+		    x = Long.parseLong(m2.group(1));
+		    sb.replace(m2.start(1), m2.end(1), df.format(x + offset));
 		}
-		bb.rewind();
-		long bd1 = bb.getLong();
-		dos.write(bb.array(), 0, newlength);
-		bb.clear();
-		for (int i = 0; i < newlength; ++i) {
-		    if (i >= newlength - f2Len) {
-			bb.put((byte) bais.read());
-		    } else {
-			bb.put((byte) 0);
-		    }
-		}
-		bb.rewind();
-		long bd2 = bb.getLong();
-		if (bd1 == 1) {
-		    bd2 += offset;
-		    bb.clear();
-		    bb.putLong(bd2);
-		}
-		dos.write(bb.array(), 0, newlength);
-		bb.clear();
-		for (int i = 0; i < newlength; ++i) {
-		    if (i >= newlength - f3Len) {
-			bb.put((byte) bais.read());
-		    } else {
-			bb.put((byte) 0);
-		    }
-		}
-		dos.write(bb.array(), 0, newlength);
-		bb.clear();
+		x = Long.parseLong(m.group(4));
+		sb.replace(m.start(4), m.end(4), "" + (x + offset));
+		return true;
 	    }
-	    baos.close();
-	    dos.close();
-	    String newxref = baos2.toString("ISO_8859_1");
-	    sb.replace(from, to, newxref);
-	    p = Pattern.compile("/Length (\\d+)");
-	    m = p.matcher(sb.toString()).region(start, end);
-	    m.find();
-	    sb.replace(m.start(1), m.end(1), Integer.toString(newxref.length()));
+	} catch (Exception e) {
+	    System.err.println("Fix XREF failed!");
+	    e.printStackTrace();
+	    System.exit(1);
 	}
-	
-	//Fix classical xref
-	Pattern p = Pattern.compile("(\r\n?|\n)xref(\r\n?|\n)");
-	Matcher m = p.matcher(sb.toString());
-	if (m.find()) {
-	    // xref table
-	    b = m.end();
-	    int x;
-	    // skip first entry
-	    p = Pattern.compile("(\\d{10,10}) \\d{5,5} .");
-	    m = p.matcher(sb.toString()).region(b + 1, sb.length());
-	    m.find();
-	    e = m.end();
-	    while (m.find()) {
-		b = m.start(1);
-		e = m.end(1);
-		String tmp = sb.substring(b, e);
-		x = Integer.parseInt(tmp);
-		sb.replace(b, e, df.format(x + offset));
-	    }
-	}
-	b = sb.lastIndexOf("startxref\n") + "startxref\n".length();
-	e = sb.indexOf("\n", b);
-	sb.replace(b, e, "" + (Integer.parseInt(sb.substring(b, e)) + offset));
+	return false;
     }
 }
