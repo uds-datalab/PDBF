@@ -14,7 +14,7 @@ import pdbf.misc.Tools;
 public class HTML_PDF_Compiler {
 
     public static String pdfHTML_Header = "%ª«¬­<!DOCTYPE html><html dir=\"ltr\" mozdisallowselectionprint moznomarginboxes>"
-	    + "<head><meta charset=\"utf-8\"><script>\n" + "1337 0 obj\n" + "stream\n";
+	    + "<head><meta charset=\"utf-8\"><script>\n" + "1337 0 obj\n" + "stream\n" + "</script>\n";
 
     public static void main(String[] args) {
 	String baseDir = Tools.getBaseDir();
@@ -53,7 +53,7 @@ public class HTML_PDF_Compiler {
 		    + "\";\r\n" + "db_base64 = \"\";\r\n" + "json_base64 = \"" + Tools.encodeFileToBase64Binary(new File(baseDir + "pdbf-config.json"))
 		    + "\";\r\n" + "dbjson_base64 = \"" + Tools.escapeSpecialChars(new File(baseDir + "pdbf-db.json")) + "\";\r\n" + preload + "\r\n"
 		    + (PDBF_Compiler.includeRes ? (all + "\r\n") : ("")) + add + viewerTAIL;
-	    String insert = pdfHTML_Header + "</script>\n" + viewer + "<script>\n" + "endstream\n" + "endobj\n";
+	    String insert = pdfHTML_Header + viewer + "<script>\n" + "endstream\n" + "endobj\n";
 	    String pdfcontent = FileUtils.readFileToString(new File(pdfname), StandardCharsets.ISO_8859_1);
 	    if (pdfcontent.toLowerCase().contains("</script>")) {
 		System.err.println("The generated pdf cannot be used to generate a pdbf document!"

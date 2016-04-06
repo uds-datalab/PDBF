@@ -76,7 +76,7 @@ Default:& #4\\
 If you encounter bugs, have suggestions or have a feature request, then please go to the issue page open a new issue if necessary and explain your concern. You can also write us an email (ichbinkeinreh at t-online.de or jens.dittrich at cs.uni-saarland.de).
 
 \section{Abstract}
-PDBF documents are a hybrid format. They are a valid PDF and a valid HTML page at the same time. You can now optionally add an VirtualBox OVA file with a complete operating system to the PDBF document. Yes, this means that the resulting file is a valid PDF, HTML, and OVA file at the same time. If you change the file extension to PDF and open it with an PDF viewer, you can see the static part of the document. If you change the file extension to HTML and open it with a Browser (currently Chrome/Firefox/Safari/IE 10 supported), you can see the dynamic part of the document. And if an ova file is attached you can also change the file extension to OVA and install and run the attached operating system.\\
+PDBF documents are a hybrid format. They are a valid PDF and a valid HTML page at the same time. You can now optionally add an Open Virtual Appliance (OVA) file with a complete operating system to the PDBF document. Yes, this means that the resulting file is a valid PDF, HTML, and OVA file at the same time. If you change the file extension to PDF and open it with an PDF viewer, you can see the static part of the document. If you change the file extension to HTML and open it with a Browser (currently Chrome/Firefox/Safari/IE 10 supported), you can see the dynamic part of the document. And if an ova file is attached you can also change the file extension to OVA and install and run the attached operating system.\\
 The difference between the PDF and the HTML version is that the PDF version contains static version of all PDBF elements, whereas the HTML version is dynamic. For example you can zoom into graphs, temporarly remove dataseries from the graph, inspect and change the underling query of the PDBF element and see the result of the change directly in the browser.\\
 This approach works completely offline. No internet connection is required, neither at compile time, nor at viewing time.
 
@@ -101,12 +101,13 @@ This approach works completely offline. No internet connection is required, neit
 \item Try to compile minimal.tex file with this command: \texttt{java -jar pdbf.jar minimal.tex}
 \item Open minimal.html, this is the final output of the compilation process, if you rename it to ".pdf" it is also a valid pdf-document
 \end{itemize}
-\subsection{Attach a VirtualBox image}
+\subsection{Attach a Open Virtual Appliance (OVA) file}
 \begin{itemize}
-\item Optionally you can attach the included vldb-Invaders.ova (Space invaders clone) or \href{https://github.com/uds-datalab/PDBF/releases/download/1.0.1/dsl.ova}{download the dsl.ova} (Damn small linux) VirtualBox image and attach it to the compiled PDBF file with this command: \texttt{java -jar pdbf.jar --vm minimal.html vldb-Invaders.ova}.
+\item Optionally you can attach the included vldb-Invaders.ova (Space invaders clone) or \href{https://github.com/uds-datalab/PDBF/releases/download/1.0.1/dsl.ova}{download the dsl.ova} (Damn small linux) Open Virtual Appliance (OVA) file and attach it to the compiled PDBF file with this command: \texttt{java -jar pdbf.jar --vm minimal.html vldb-Invaders.ova}.
 \item Open minimal.ova, this is the final output with the attached ova file. Its still a valid pdf and html file at the same time.
 \end{itemize}
 \subsection{Attach a tar archive}
+\textbf{Note:} compressed tar.gz archives are not supported. You can only wrap your tar.gz file in another tar and then attach it.
 \begin{itemize}
 \item Optionally you can attach a tar archive file to the compiled PDBF file with this command: \texttt{java -jar pdbf.jar --tar minimal.html TAR\_file.tar}
 \item Open minimal.tar, this is the final output with the attached tar file. Its still a valid pdf and html file at the same time.
@@ -163,18 +164,16 @@ YUI Compressor (\url{https://github.com/yui/yuicompressor})\\
 \newpage
 
 \section{How to use the PDBF compiler}
-Right now there are only three modes: \\[4pt]
 -- The standart mode which compiles a tex file into the janiform PDBF format:\\
-\verb|java -jar PDBF.jar LaTeX_file| \\[2pt]
+\verb|java -jar PDBF.jar LaTeX_file| \\[4pt]
 \textbf{Note:} The compiled document can be found in the same folder as the tex file and has the same name as the tex file but ".html" as filename extension.\\[8pt]
--- The VM mode which attaches a VirtualBox .ova file to an existing PDBF document:\\
-\verb|java -jar PDBF.jar --vm PDBF_File.html VM_File.ova|\\[2pt]
-\textbf{Note:} Currently there is a hard size limit of 1.9GB for .ova files!
+-- The VM mode which attaches a Open Virtual Appliance (OVA) file to an existing PDBF document:\\
+\verb|java -jar PDBF.jar --vm PDBF_File.html VM_File.ova|\\[4pt]
 \textbf{Note:} The compiled document can be found in the same folder as the html file and has the same name as the html file but ".ova" as filename extension.\\[8pt]
 -- The TAR mode which attaches a tar archive file to an existing PDBF document:\\
-\verb|java -jar PDBF.jar --tar PDBF_File.html TAR_File.tar|\\[2pt]
-\textbf{Note:} The compiled document can be found in the same folder as the html file and has the same name as the html file but ".tar" as filename extension.
-\textbf{Note:} Currently there is a hard size limit of 1.9GB for .tar files!
+\verb|java -jar PDBF.jar --tar PDBF_File.html TAR_File.tar|\\[4pt]
+\textbf{Note:} The compiled document can be found in the same folder as the html file and has the same name as the html file but ".tar" as filename extension.\\[2pt]
+\textbf{Note:} compressed tar.gz archives are not supported. You can only wrap your tar.gz file in another tar and then attach it.
 
 \section{Requirements}
 The following \LaTeX~packages are required for PDBF documents:

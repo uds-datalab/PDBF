@@ -166,7 +166,7 @@ public class Tools {
      */
     public static boolean fixXref(StringBuilder sb, long offset) {
 	try {
-	    Pattern p3 = Pattern.compile("/Type /XRef(?: ?\r| ?\n|\r\n).*?(?: ?\r| ?\n|\r\n)stream(?: ?\r| ?\n|\r\n).*?(?: ?\r| ?\n|\r\n)endstream(?: ?\r| ?\n|\r\n).*?startxref(?: ?\r| ?\n|\r\n)(\\d+)(?: ?\r| ?\n|\r\n)%*EOF", Pattern.DOTALL);
+	    Pattern p3 = Pattern.compile("/Type /XRef(?: ?\r| ?\n|\r\n).*?(?: ?\r| ?\n|\r\n)stream(?: ?\r| ?\n|\r\n).*?(?: ?\r| ?\n|\r\n)endstream(?: ?\r| ?\n|\r\n).*?startxref(?: ?\r| ?\n|\r\n)(\\d+)(?: ?\r| ?\n|\r\n)%*EOF(?: ?\r| ?\n|\r\n)*$", Pattern.DOTALL);
 	    Matcher m3 = p3.matcher(sb);
 	    if (m3.find()) {
 		int b, e;
@@ -176,9 +176,7 @@ public class Tools {
 		    end = sb.indexOf("endstream", start) + "endstream".length();
 		    // xref stream
 		    // TODO: If the first element is zero, the type field shall
-		    // not
-		    // be
-		    // present, and shall default to type 1.
+		    // not be present, and shall default to type 1.
 		    Pattern p = Pattern.compile("/W \\[(\\d+) (\\d+) (\\d+)\\]");
 		    Matcher m = p.matcher(sb.toString()).region(start, end);
 		    m.find();
@@ -261,7 +259,7 @@ public class Tools {
 
 	    // Fix classical xref
 	    Pattern p = Pattern
-		    .compile("((?: ?\r| ?\n|\r\n)xref(?: ?\r| ?\n|\r\n).*?)((?:\\d{10,10} \\d{5,5} [nf](?: \r| \n|\r\n))+)(.*?(?: ?\r| ?\n|\r\n)startxref(?: ?\r| ?\n|\r\n))(\\d+)((?: ?\r| ?\n|\r\n)%*EOF)", Pattern.DOTALL);
+		    .compile("((?: ?\r| ?\n|\r\n)xref(?: ?\r| ?\n|\r\n).*?)((?:\\d{10,10} \\d{5,5} [nf](?: \r| \n|\r\n))+)(.*?(?: ?\r| ?\n|\r\n)startxref(?: ?\r| ?\n|\r\n))(\\d+)((?: ?\r| ?\n|\r\n)%*EOF(?: ?\r| ?\n|\r\n)*)$", Pattern.DOTALL);
 	    Matcher m = p.matcher(sb);
 	    if (m.find()) {
 		// xref table

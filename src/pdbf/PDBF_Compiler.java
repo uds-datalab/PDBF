@@ -25,8 +25,7 @@ import org.apache.log4j.Logger;
 
 import pdbf.compilers.HTML_PDF_Compiler;
 import pdbf.compilers.Pre_Compiler;
-import pdbf.compilers.TAR_Compiler;
-import pdbf.compilers.VM_Compiler;
+import pdbf.compilers.VM_TAR_Compiler;
 import pdbf.misc.MinifyResources;
 import pdbf.misc.Tools;
 import pdbf.tests.CheckAttached;
@@ -34,7 +33,7 @@ import pdbf.tests.CreateReferencePictures;
 
 public class PDBF_Compiler {
 
-    private static int bufferSizeInMB = 50; //TODO: make option to change this. Add F.A.Q entry for java.lang.OutOfMemoryError: Java heap space 
+    private static int bufferSizeInMB = 2; //TODO: make option to change this. Add F.A.Q entry for java.lang.OutOfMemoryError: Java heap space 
     public static byte[] bytearray = new byte[1024*1024*PDBF_Compiler.bufferSizeInMB];
     
     // This flag indicates if all js and css files from data folder are included
@@ -100,11 +99,9 @@ public class PDBF_Compiler {
 	optionsGroup.addOption(Option.builder("t").longOpt("tar").numberOfArgs(2).argName("PDBF_File.html> <TAR_File.tar")
 		.desc("Appends a tar archive to an existing PDBF document. Only exactly one ova or tar file can be appended to an PDBF document.").build());
 	optionsGroup.addOption(Option.builder("v").longOpt("vm").numberOfArgs(2).argName("PDBF_File.html> <OVA_File.ova")
-		.desc("Appends a VirtualBox ova file to an existing PDBF document. Only exactly one ova or tar file can be appended to an PDBF document.")
+		.desc("Appends a Open Virtual Appliance (OVA) file to an existing PDBF document. Only exactly one ova or tar file can be appended to an PDBF document.")
 		.build());
-	optionsGroup.addOption(Option.builder("cri").longOpt("create-reference-images").numberOfArgs(0)
-		.desc("Appends a VirtualBox ova file to an existing PDBF document. Only exactly one ova or tar file can be appended to an PDBF document.")
-		.build());
+	optionsGroup.addOption(Option.builder("cri").longOpt("create-reference-images").numberOfArgs(0).build());
 	optionsGroup.addOption(Option.builder("ca").longOpt("check-attached").numberOfArgs(1).argName("PDBF_file")
 		.desc("Checks if a given PDBF document has an ova or tar file attached.").build());
 	optionsGroup.addOption(Option.builder("ur").longOpt("update-resources").numberOfArgs(0)
@@ -141,9 +138,11 @@ public class PDBF_Compiler {
 		formatter.printHelp("java -jar pdbf.jar [options]", options);
 		System.exit(0);
 	    } else if (line.hasOption("tar")) {
-		TAR_Compiler.main(line.getOptionValues("tar"));
+		VM_TAR_Compiler.fileType = "tar";
+		VM_TAR_Compiler.main(line.getOptionValues("tar"));
 	    } else if (line.hasOption("vm")) {
-		VM_Compiler.main(line.getOptionValues("vm"));
+		VM_TAR_Compiler.fileType = "ova";
+		VM_TAR_Compiler.main(line.getOptionValues("vm"));
 	    } else if (line.hasOption("compile")) {
 		Pre_Compiler.main(line.getOptionValues("compile"));
 		HTML_PDF_Compiler.main(line.getOptionValues("compile"));
