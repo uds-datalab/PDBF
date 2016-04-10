@@ -8029,8 +8029,7 @@ yy.Select.prototype.compileGroup = function(query) {
 			if (col instanceof yy.AggrValue) { 
 				var pre = '', post = '';
 				if(col.distinct) {
-			 		var pre = 'if(typeof '+colexp+'!="undefined" && (!g[\'$$_VALUES_'+colas+'\']['+colexp+'])) \
-				 		 {';
+			 		var pre = 'if(typeof '+colexp+'!="undefined" && (!g[\'$$_VALUES_'+colas+'\']['+colexp+'])) {';
 				 	var post = 'g[\'$$_VALUES_'+colas+'\']['+colexp+']=true;}';
 				} 
 				if (col.aggregatorid === 'SUM') { 
