@@ -18,6 +18,7 @@ public class CheckAttached {
 		byte[] b = new byte[512];
 		fis.read(b, 0, b.length);
 		start = new String(b, StandardCharsets.ISO_8859_1);
+		fis.close();
 	    } catch (Exception e) {
 		e.printStackTrace();
 		System.exit(1);

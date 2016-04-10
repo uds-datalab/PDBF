@@ -111,6 +111,14 @@ public class CompileAndCheckIT {
     public static void compareImages(String jsName, String htmlDir, String htmlName) throws IOException, InterruptedException {
 	Tools.processes.clear();
 	Tools.deleteList.clear();
+	// Clear old images
+	File dir = new File(baseDir);
+	for (File file : dir.listFiles()) {
+	    String name = file.getName();
+	    if (name.startsWith(htmlName) && name.endsWith(".png")) {
+		file.delete();
+	    }
+	}
 	// Create current images
 	Tools.runJsFile(jsName, htmlDir, htmlName, baseDir);
 	for (Process p : Tools.processes) {
@@ -126,7 +134,6 @@ public class CompileAndCheckIT {
 	    f.delete();
 	}
 	// Compare current images to reference images
-	File dir = new File(baseDir);
 	for (File file : dir.listFiles()) {
 	    String name = file.getName();
 	    if (name.startsWith(htmlName) && name.endsWith(".png")) {

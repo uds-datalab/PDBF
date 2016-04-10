@@ -1598,7 +1598,7 @@ function prepopulateContainerOver(containerOver, viewerContainer, tip, jsonArr, 
 	var containerChart = document.createElement('div');
 	var style;
 	if (fixed) {
-		style = 'width:58%; height:85.5%; -moz-border-radius: 1%; -webkit-border-radius: 1%; border-radius: 1%; padding:2%; background:white; margin:1%; margin-top:2em; display: inline-block; vertical-align:top; white-space: normal;';
+		style = 'width:66%; height:95%; -moz-border-radius: 1%; -webkit-border-radius: 1%; border-radius: 1%; padding:2%; background:white; margin:1%; margin-top:2em; display: inline-block; vertical-align:top; white-space: normal;';
 	} else {
 		style = '-moz-border-radius: 1%; -webkit-border-radius: 1%; border-radius: 1%; padding:2%; background:white; margin:1%; margin-top:2em; display: inline-block; vertical-align:top; white-space: normal;';
 	}

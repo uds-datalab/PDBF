@@ -79,16 +79,18 @@ public class VM_TAR_Compiler {
 		ovaOrTarFile.read(b, 0, b.length);
 		StringBuilder tarHeader = new StringBuilder(new String(b, StandardCharsets.ISO_8859_1));
 		tarHeader.replace(0, tar_Header.length(), tar_Header);
+		tarHeader.replace(156, 157, "0"); // could be a pax header block
+						  // http://pubs.opengroup.org/onlinepubs/009695399/utilities/pax.html#tag_04_100_13_02
 		tarHeaderLength(tarHeader, 0, 0);
 		ovaOrTarFile.seek(0);
-		// outFile.write(tarHeader.toString().getBytes(StandardCharsets.ISO_8859_1));
+		outFile.write(tarHeader.toString().getBytes(StandardCharsets.ISO_8859_1));
 	    }
 
 	    // Read the ovaOrTarFile in chunks, check that it doesnt contain
 	    // "</script>" or "endstream", and then write it to outFile
 	    // We read the file in overlapping chunks to avoid missing something
 	    // at the chunk boundaries
-	    Pattern p = Pattern.compile("(?:</script>|endstream)", Pattern.CASE_INSENSITIVE);
+	    Pattern p = Pattern.compile("(?:</script>|(?: ?\r| ?\n|\r\n)endstream(?: ?\r| ?\n|\r\n))", Pattern.CASE_INSENSITIVE);
 	    int halfbuffer = PDBF_Compiler.bytearray.length / 2;
 	    long remaining = ovaOrTarFile.length() - replaceInOvaOrTar.length();
 	    int readbytes = (int) Math.min(halfbuffer, remaining);
@@ -110,10 +112,10 @@ public class VM_TAR_Compiler {
 			System.err.println("The OVA file cannot be used to generate a pdbf document! Try to change the content of the OVA"
 				+ " file such that it doesnt contain the string \"</script>\" or \"endobj\" and then try again.");
 		    } else {
-			System.err.println("The TAR file cannot be used to generate a pdbf document! You can try to put the data into a "
-				+ "compressed fileformat such as tar.gz or zip and then wrap that file again into a tar archive and then try again with that file.");
+			System.err
+				.println("The TAR file cannot be used to generate a pdbf document! You can try to put the data into a "
+					+ "compressed fileformat such as tar.gz or zip and then wrap that file again into a tar archive and then try again with that file.");
 		    }
-
 		    outFile.close();
 		    new File(basename + "." + fileType).delete();
 		    System.exit(1);

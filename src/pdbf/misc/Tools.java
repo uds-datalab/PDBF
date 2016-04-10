@@ -259,15 +259,18 @@ public class Tools {
 
 	    // Fix classical xref
 	    Pattern p = Pattern
-		    .compile("((?: ?\r| ?\n|\r\n)xref(?: ?\r| ?\n|\r\n).*?)((?:\\d{10,10} \\d{5,5} [nf](?: \r| \n|\r\n))+)(.*?(?: ?\r| ?\n|\r\n)startxref(?: ?\r| ?\n|\r\n))(\\d+)((?: ?\r| ?\n|\r\n)%*EOF(?: ?\r| ?\n|\r\n)*)$", Pattern.DOTALL);
+		    .compile("((?: ?\r| ?\n|\r\n)xref(?: ?\r| ?\n|\r\n)\\d+ \\d+(?: ?\r| ?\n|\r\n))((?:\\d\\d\\d\\d\\d\\d\\d\\d\\d\\d \\d\\d\\d\\d\\d [nf](?: ?\r| ?\n|\r\n)).*?)((?: ?\r| ?\n|\r\n)startxref(?: ?\r| ?\n|\r\n))(\\d+)((?: ?\r| ?\n|\r\n)%*EOF(?: ?\r| ?\n|\r\n)*)$", Pattern.DOTALL);
 	    Matcher m = p.matcher(sb);
 	    if (m.find()) {
 		// xref table
 		long x;
 		// skip first entry
-		Pattern p2 = Pattern.compile("(\\d{10,10}) \\d{5,5}");
+		Pattern p2 = Pattern.compile("(\\d\\d\\d\\d\\d\\d\\d\\d\\d\\d) \\d\\d\\d\\d\\d");
 		Matcher m2 = p2.matcher(sb).region(m.start(2), m.end(2));
-		m2.find();
+		if (!m2.find()) {
+		    System.err.println("Fix XREF failed!");
+		    System.exit(1);
+		}
 		while (m2.find()) {
 		    x = Long.parseLong(m2.group(1));
 		    sb.replace(m2.start(1), m2.end(1), df.format(x + offset));

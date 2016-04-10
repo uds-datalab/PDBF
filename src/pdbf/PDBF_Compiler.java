@@ -29,6 +29,7 @@ import pdbf.compilers.VM_TAR_Compiler;
 import pdbf.misc.MinifyResources;
 import pdbf.misc.Tools;
 import pdbf.tests.CheckAttached;
+import pdbf.tests.CompileAndCheckIT;
 import pdbf.tests.CreateReferencePictures;
 
 public class PDBF_Compiler {
@@ -74,7 +75,7 @@ public class PDBF_Compiler {
 	// Parse command line
 	CommandLineParser parser = new DefaultParser();
 	HelpFormatter formatter = new HelpFormatter() {
-	    String[] filteredOpts = { "cri", "it" }; // Commandline options which
+	    String[] filteredOpts = { "cri", "cp" }; // Commandline options which
 						     // we want to
 						     // hide from the user
 	    HashSet<String> filtered = new HashSet<String>(Arrays.asList(filteredOpts));
@@ -106,6 +107,8 @@ public class PDBF_Compiler {
 		.desc("Checks if a given PDBF document has an ova or tar file attached.").build());
 	optionsGroup.addOption(Option.builder("ur").longOpt("update-resources").numberOfArgs(0)
 		.desc("Updates the js and css files that the PDBF compiler puts into PDBF files.").build());
+	optionsGroup.addOption(Option.builder("cp").longOpt("check-pdf").numberOfArgs(1).argName("file")
+		.desc("Checks if a file is a valid pdf").build());
 	options.addOptionGroup(optionsGroup);
 	options.addOption("npp", "no-pdf-protection", false,
 		"Disables the write protection of the pdf part of the PDBF document. Can only be used with the compile option.");
@@ -134,6 +137,13 @@ public class PDBF_Compiler {
 	    if (line.hasOption("version")) {
 		System.out.println("PDBF " + version + "\nVisit https://github.com/uds-datalab/PDBF for more information");
 		System.exit(0);
+	    } else if (line.hasOption("check-pdf")) {
+		try {
+		    CompileAndCheckIT.checkPDF("", line.getOptionValues("check-pdf")[0]);
+		} catch (IOException e) {
+		    e.printStackTrace();
+		    System.exit(1);
+		}
 	    } else if (line.hasOption("help")) {
 		formatter.printHelp("java -jar pdbf.jar [options]", options);
 		System.exit(0);
