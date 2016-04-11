@@ -10,6 +10,7 @@ rm -f -R .gitignore
 rm -f -R data/.gitignore
 rm -f -R prepare-ctan-submit.sh
 rm -f -R index.html
+rm -f -R CONTRIBUTING.md
 zip -r -9 pdbf-src src referenceImages pom.xml
 rm -f -R referenceImages
 rm -f -R src
