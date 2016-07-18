@@ -7,9 +7,6 @@
 %\dbSQLJDBC{jdbc:postgresql://localhost:5432/postgres}{postgres}{test}{testtable}%
 %\dbCSVFile{result.csv}{test}
 
-\jsonDirectory{examples/json}
-\jsonFile{examples/json/nested/cake.json}{cake}
-
 \begin{document}
 \noindent
 
@@ -28,16 +25,5 @@ The following points are linked to the chart on the left side below: \dataText[l
 	\pivotTable[width=0.10\textwidth, height=0.15\textwidth, rows={["a"]}, aggregationattribute=b]{SELECT * FROM test;}
 	\dataTable[verticalLines=i, horizontalLinesHeader=b hh, horizontalLinesBody=i]{SELECT * FROM test;}\\[3pt]
 }
-
-The following Chart uses information from JSON-files. \\[3pt]
-\chart[width=0.45\textwidth, height=0.3\textwidth, logscale=true, chartType=line]{SELECT a, b, c FROM json_files WHERE json_filename LIKE 'run\%';}
-\chart[width=0.45\textwidth, height=0.3\textwidth, logscale=true, chartType=line, name=testname]{SELECT a, b, c FROM json_files WHERE c > 5 AND json_filename LIKE 'run\%';} \\[3pt]
-
-To check if the results from JSON-files contain correct data, one can insert his own data for comparision. Examples to drag and drop can be found in the examples folder.
-\begin{itemize}
-\item This JSON has correct values \json{run1}
-\item Here some values are changed \json{run4}
-\item And here are many nested values \json{cake}
-\end{itemize}
 
 \end{document}
