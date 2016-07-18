@@ -10,6 +10,24 @@ function fixOverlaySize() {
 
 var namedContainers = [];
 
+// for Compare (Parameter)
+var maximum_files = 100;
+var foundDatasource = false, additive = false;
+var useTextCompare = false, distanceWithoutBrackets = true;
+var logFileFounds = false;
+var useTextDiff = 60;
+
+var dmp = new diff_match_patch();
+
+// For FileReading
+var reader;
+var number_files = 0;
+
+// Database Information
+var JSON_TABLE = "json_files";
+var JSON_COMPARE_TABLE = "json_compare_files";
+var JSON_FILENAME = "json_filename";
+
 // Performance measurement functions
 // var tictime;
 /*
@@ -25,6 +43,14 @@ function toc(msg) {
 
 function replaceAll(str, s, r) {
 	return str.split(s).join(r);
+}
+
+function endsWith(str, suffix) {
+	return str.indexOf(suffix, str.length - suffix.length) !== -1;
+}
+
+function contains(str, p) {
+	return str.indexOf(p) != -1;
 }
 
 function isValidDate(d) {
@@ -67,6 +93,9 @@ function display(json, page, phantomJS) {
 	page.appendChild(container);
 	
 	var containerOver = document.getElementById(json.name + "Big");
+	var containerOverCompare = document.getElementById(json.name + "Compare");
+	var containerOverSetting = document.getElementById(json.name + "Setting");
+
 	// if (containerOver != null) {
 	// containerOver.update();
 	// } TODO: reenable if textsize of overlays can be changed
@@ -76,6 +105,20 @@ function display(json, page, phantomJS) {
 		styleBig += "font-size: " + (rawZoomFactor * 12.0) + "pt; font-family: sans-serif;"
 	} else {
 		styleBig += "font-size: " + (rawZoomFactor * 12.0) + "pt; font-family: " + font_store[json.name] + ", sans-serif;"
+	}
+
+	var styleSmall = 'position:fixed; z-index:-1; border:1px solid black; padding:10px; background:#DDDDDD; width:314px; height:150px; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; white-space: nowrap;';
+	if (typeof font_store === "undefined" || typeof font_store[json.name] === "undefined") {
+		styleSmall += "font-size: " + (rawZoomFactor * 12.0) + "pt; font-family: sans-serif;"
+	} else {
+		styleSmall += "font-size: " + (rawZoomFactor * 12.0) + "pt; font-family: " + font_store[json.name] + ", sans-serif;"
+	}
+
+	var styleRight = 'position:fixed; z-index:-1; border:1px solid black; padding:10px; background:#DDDDDD; width:5%; height:87%; opacity:0; visibility:hidden; -webkit-transition:opacity 500ms ease-out; -moz-transition:opacity 500ms ease-out; -o-transition:opacity 500ms ease-out; transition:opacity 500ms ease-out; overflow:auto; overflow-y:scroll; white-space: nowrap;';
+	if (typeof font_store === "undefined" || typeof font_store[json.name] === "undefined") {
+		styleRight += "font-size: " + (rawZoomFactor * 12.0) + "pt; font-family: sans-serif;"
+	} else {
+		styleRight += "font-size: " + (rawZoomFactor * 12.0) + "pt; font-family: " + font_store[json.name] + ", sans-serif;"
 	}
 	
 	switch (json.type.C) {
@@ -114,7 +157,15 @@ function display(json, page, phantomJS) {
 		case "pdbf.json.Chart":
 			if (!phantomJS) {
 				var fullscreen = getFullscreenDiv();
+				var compare = getCompareDiv();
+				var setting = getSettingDiv();
 				container.appendChild(fullscreen);
+
+				if (contains(json.type.I.query, JSON_TABLE)) {
+					container.appendChild(compare);
+					container.appendChild(setting);
+				}
+
 				fullscreen.addEventListener("click", function() {
 					if (containerOver == null) {
 						containerOver = document.createElement('div');
@@ -126,6 +177,40 @@ function display(json, page, phantomJS) {
 					containerOver.style.visibility = 'visible';
 					containerOver.style['z-index'] = 9;
 					containerOver.style.opacity = 1;
+					$("svg").css('display', 'none');
+					$("svg").css('height');
+					$("svg").css('display', 'initial');// HACK for redraw of
+					// SVG
+				});
+
+				compare.addEventListener("click", function() {
+					if (containerOverCompare == null) {
+						containerOverCompare = document.createElement('div');
+						containerOverCompare.setAttribute('style', styleBig);
+						containerOverCompare.id = json.name + "Compare";
+						containerOverCompare.className = "centerhv";
+						buildContainerChartCompare(json, containerOverCompare, true);
+					}
+					containerOverCompare.style.visibility = 'visible';
+					containerOverCompare.style['z-index'] = 9;
+					containerOverCompare.style.opacity = 1;
+					$("svg").css('display', 'none');
+					$("svg").css('height');
+					$("svg").css('display', 'initial');// HACK for redraw of
+					// SVG
+				});
+
+				setting.addEventListener("click", function() {
+					if (containerOverSetting == null) {
+						containerOverSetting = document.createElement('div');
+						containerOverSetting.setAttribute('style', styleBig);
+						containerOverSetting.id = json.name + "Setting";
+						containerOverSetting.className = "centerhv";
+						buildContainerSettings(json, containerOverSetting, true);
+					}
+					containerOverSetting.style.visibility = 'visible';
+					containerOverSetting.style['z-index'] = 9;
+					containerOverSetting.style.opacity = 1;
 					$("svg").css('display', 'none');
 					$("svg").css('height');
 					$("svg").css('display', 'initial');// HACK for redraw of
@@ -224,6 +309,24 @@ function display(json, page, phantomJS) {
 						containerOver.id = json.name + "Big";
 						containerOver.className = "centerhv";
 						buildContainerTableBig(json, containerOver);
+					}
+					containerOver.style.visibility = 'visible';
+					containerOver.style['z-index'] = 9;
+					containerOver.style.opacity = 1;
+				});
+			}
+			style += 'cursor: pointer;';
+			container.setAttribute('style', style);
+			break;
+		case "pdbf.json.JSON":
+			if (!phantomJS) {
+				container.addEventListener("click", function() {
+					if (containerOver == null) {
+						containerOver = document.createElement('div');
+						containerOver.setAttribute('style', styleBig);
+						containerOver.id = json.name + "Big";
+						containerOver.className = "centerhv";
+						buildContainerJsonView(json, containerOver, undefined, useTextCompare);
 					}
 					containerOver.style.visibility = 'visible';
 					containerOver.style['z-index'] = 9;
@@ -360,34 +463,1206 @@ function buildContainerChartBig(json, containerOver, initial) {
 	containerOver.update();
 }
 
-function buildContainerChart(container, json, zoomFactor, style, containerOver) {
+
+function buildContainerChart(container, json, zoomFactor, style, containerOver, newDatasource) {
 	var chart = document.createElement('div');
 	chart.setAttribute('style', 'width:100%; height:100%;');
 	container.appendChild(chart);
-	
+
 	var chartdata;
-	if (json.result == undefined) {
-		chartdata = getChartData(json);
-		if (chartdata.error != undefined) {
-			alert(chartdata.error + '\nWhere: ' + json.name + '\nQuery was: ' + json.type.I.query);
-			return;
+
+	if(newDatasource) {
+		if(json.compareResult == undefined) {
+			chartdata = getChartData(json, true);
+			if (chartdata.error != undefined) {
+				alert(chartdata.error + '\nWhere: ' + json.name + '\nQuery was: ' + json.type.I.query);
+				return;
+			}
+
+			json.compareResult = chartdata;
+		} else {
+			chartdata = json.compareResult;
 		}
-		chartdata = chartdata.values;
-		
-		json.result = chartdata;
-	} else {
-		chartdata = json.result;
+	}else {
+		if (json.result == undefined) {
+			chartdata = getChartData(json);
+			if (chartdata.error != undefined) {
+				alert(chartdata.error + '\nWhere: ' + json.name + '\nQuery was: ' + json.type.I.query);
+				return;
+			}
+			chartdata = chartdata.values;
+
+			json.result = chartdata;
+		} else {
+			chartdata = json.result;
+		}
 	}
-	
+
 	style = "background: white;" + style;
 	container.setAttribute('style', style);
-	
+
 	var options = getChartOptions(json, zoomFactor, chartdata, chart);
-	
+
 	json.options = options;
-	
+
 	json.chartInPage = c3.generate(options);
 }
+
+function buildContainerChartCompare(json, containerOver, initial) {
+	var viewerContainer = document.getElementById("viewerContainer");
+	viewerContainer.appendChild(containerOver);
+
+	var styleParent = 'position: fixed; z-index: 9; border: 1px solid black; padding: 10px; width: 49%; height: 87%; '
+		+ 'opacity: 1; visibility: visible; transition: opacity 500ms ease-out; overflow-x: auto; overflow-y: scroll; white-space: nowrap;';
+
+	var style = 'width: 48%; height: 80%; padding:2%; background:white; margin:1%; margin-top:2em; display: inline-block; text-align: left; white-space: normal;';
+
+	var containerLeft = document.createElement('div');
+
+	// Closing
+	var containerClose = getClosingTitle(containerOver);
+	containerOver.appendChild(containerClose);
+
+	// Charts
+	containerLeft.setAttribute('style', styleParent);
+	containerOver.appendChild(containerLeft);
+
+	// Left Graph (Original)
+	buildContainerChart(containerLeft, json, zoomFactor, style, containerOver); //  + " float:left;"
+
+	// Set Right Graph, if a file is given
+	var containerRight = document.createElement('div');
+	containerRight.setAttribute('style', styleParent);
+	containerRight.id = "right";
+	containerOver.appendChild(containerRight);
+
+	if(foundDatasource) {
+		// Right Graph
+		if(initial) {
+			json["compareDB"] = JSON_COMPARE_TABLE;
+			json["compareResult"] = json.result;
+			json["compareResult"] = undefined;
+			json["compareFile"] = "jsons";
+		}
+
+		var containerSource = document.createElement('span');
+		var source = 'Source for this Graph: ';
+
+		if(foundDatasource) {
+			buildContainerChart(containerRight, json, zoomFactor, style + "float:right;", containerOver, true);
+
+			if(file_name.length == 1) {
+				source += file_name[0];
+			} else {
+				source += "multiple json files";
+				source += "\n" + file_name[0] + ", ...";
+			}
+		}
+
+		containerSource.innerHTML = source;
+		containerRight.appendChild(containerSource);
+
+		createDropField("right", json, containerOver, true, "chart");
+		//createFileSelector(containerRight, json, containerOver, true, "chart");
+	}
+
+	// Create Drag & Drop Field
+	else {
+		checkFileAPI();
+
+		var styleRed = 'width:100%; height:100%; background:red; text-align:center; vertical-align:middle';
+
+		// Div File
+		var containerFileDrop = document.createElement("div");
+		containerFileDrop.id = "files";
+		containerFileDrop.setAttribute('style', styleRed);
+		containerFileDrop.innerHTML = "<br><br>Drop your Files here, that you want to compare.";
+
+		containerRight.appendChild(containerFileDrop);
+
+		createDropField("files", json, containerOver, true, "chart");
+		//createFileSelector(containerRight, json, containerOver, true, "chart");
+
+		containerRight.setAttribute('style',  "background: white;" + style + "float:right;");
+	}
+
+
+	// Switch additive input
+	var buttonAdd = document.createElement('input');
+	buttonAdd.type = 'button';
+	buttonAdd.value = 'Addtitive Input';
+	buttonAdd.setAttribute('style', 'font-size:inherit;');
+	buttonAdd.addEventListener('click', function() {
+		additive = !additive;
+
+		if(additive)
+			console.log("Enabled additive mode");
+		else
+			console.log("Disabled additive mode");
+	});
+	// TODO find the rigt position
+	// containerOver.appendChild(buttonAdd);
+
+	fixOverlaySize();
+}
+
+function buildContainerSettings(json, containerOver, initial) {
+	var viewerContainer = document.getElementById("viewerContainer");
+	viewerContainer.appendChild(containerOver);
+
+	var styleParent = 'position: fixed; z-index: 9; border: 1px solid black; padding: 10px; width: 49%; height: 97%; '
+		+ 'opacity: 1; visibility: visible; transition: opacity 500ms ease-out; overflow-x: auto; overflow-y: scroll; white-space: nowrap;';
+
+	var style = 'width: 48%; height: 90%; padding:2%; background:white; margin:1%; margin-top:2em; display: inline-block; text-align: left; white-space: normal;';
+
+	var containerLeft = document.createElement('div');
+	var containerRight = document.createElement('div');
+
+	// Closing
+	var containerClose = getClosingTitle(containerOver);
+	containerOver.appendChild(containerClose);
+
+	// Left
+	containerLeft.setAttribute('style', styleParent+ "float:left;");
+	containerLeft.innerHTML = bold("JSON Files given by the author") + "<br>";
+	containerLeft.id = "left";
+	containerOver.appendChild(containerLeft);
+
+	// File Left Container with available JSON Files
+	var results;
+	var content = "";
+
+	var originalJsons = {};
+	var originalNames = [];
+//	var newJsons = {};
+	var newNames = [];
+
+	try {
+		results = alasqlQuery("SELECT * FROM " + JSON_TABLE + "  ORDER BY " + JSON_FILENAME + "  ASC;");
+	}catch (e) {
+		return {
+			error: e.message
+		};
+	}
+
+	for(i = 0; i < results.length; i++) {
+		var val = results[i];
+		var name = val[JSON_FILENAME];
+
+		var container = document.createElement('div');
+		container.id = json + "compareLeft" + i;
+
+		// TODO open window
+		container.addEventListener('click', function() {
+			// TODO
+		});
+
+		var preparedVal = prepareJson(name, val);
+		container.innerHTML = preparedVal;
+
+		containerLeft.appendChild(container);
+
+		originalJsons[name] = val;
+		originalNames.push(name);
+	}
+
+	// Right
+	containerRight.setAttribute('style', styleParent+ "float:right;");
+	containerRight.innerHTML = bold("JSON Files you inserted") + "<br>";
+	containerRight.id = "right";
+	containerOver.appendChild(containerRight);
+
+	createDropField("right", json, containerOver, true, "settings");
+	// createFileSelector(containerRight, json, containerOver, true, "settings");
+
+	// File Right Container with available JSON Files
+	content = "";
+
+	try {
+		results = alasqlQuery("SELECT * FROM " + JSON_COMPARE_TABLE + "  ORDER BY " + JSON_FILENAME + "  ASC;");
+	}catch (e) {
+		return {
+			error: e.message
+		};
+	}
+
+	for(var i = 0; i < results.length; i++) {
+		val = results[i];
+		name = val[JSON_FILENAME];
+
+		container = document.createElement('div');
+		container.id = json + "compareRight" + i;
+
+		// TODO
+		container.addEventListener('click', function() {
+			// TODO
+		});
+
+		var coloredVal = compareJsons(originalJsons, name, val);
+		newNames.push(name);
+
+		container.innerHTML += coloredVal;
+		containerRight.appendChild(container);
+	}
+
+	var missingNames=[], extraNames=[], n;
+
+	for(i = 0; i < originalNames.length; i++) {
+		n = originalNames[i];
+
+		if(newNames.indexOf(n) == -1) {
+			missingNames.push(n);
+		}
+	}
+
+	for(i = 0; i < newNames.length; i++) {
+		n = newNames[i];
+
+		if(originalNames.indexOf(n) == -1) {
+			extraNames.push(n);
+		}
+	}
+
+	for(i = 0; i < missingNames.length; i++) {
+		if(i == 0)
+			containerRight.innerHTML += "<br>" + bold("Items that are missing in your files:") + "<br>";
+
+		n = missingNames[i];
+		container = document.createElement('div');
+		container.id = json + "missing" + i;
+
+		// TODO
+		container.addEventListener('click', function() {
+			// TODO
+		});
+
+		container.innerHTML += bold(n) + "<br>";
+		containerRight.appendChild(container);
+	}
+
+	for(i = 0; i < extraNames.length; i++) {
+		if(i == 0)
+			containerRight.innerHTML += "<br>" + bold("Items that are only in your files:") + "<br>";
+
+		n = extraNames[i];
+		container = document.createElement('div');
+		container.id = json + "extra" + i;
+
+		// TODO
+		container.addEventListener('click', function() {
+			// TODO
+		});
+
+		container.innerHTML += bold(n) + "<br>";
+		containerRight.appendChild(container);
+	}
+
+	// Button for additive method
+	var buttonAdd = document.createElement('input');
+	buttonAdd.type = 'button';
+	buttonAdd.value = 'Addtitive Input';
+	buttonAdd.setAttribute('style', 'font-size:inherit;');
+	buttonAdd.addEventListener('click', function() {
+		additive = !additive;
+
+		if(additive)
+			console.log("Enabled additive mode");
+		else
+			console.log("Disabled additive mode");
+	});
+	containerOver.appendChild(buttonAdd);
+
+	// Button for deletion
+	var buttonDel = document.createElement('input');
+	buttonDel.type = 'button';
+	buttonDel.value = 'Delete inserted Files';
+	buttonDel.setAttribute('style', 'font-size:inherit;');
+	buttonDel.addEventListener('click', function() {
+		number_files = 0;
+
+		console.log("Deleting inserted files");
+		var queryDrop = "DROP TABLE " + JSON_COMPARE_TABLE + ";\n";
+		var queryCreate = "CREATE TABLE " + JSON_COMPARE_TABLE + ";\n";
+
+		alasqlQuery(queryDrop + queryCreate);
+
+		while (containerOver.firstChild) {
+			containerOver.removeChild(containerOver.firstChild);
+		}
+		buildContainerSettings(json, containerOver, initial);
+	});
+	containerOver.appendChild(buttonDel);
+
+
+	containerLeft.setAttribute('style',  "background: white;" + style + "float:left;");
+	containerRight.setAttribute('style',  "background: white;" + style + "float:right;");
+
+	fixOverlaySize();
+}
+
+function buildContainerJsonView(json, containerOver, name, textCompare, similarityValue) {
+	var viewerContainer = document.getElementById("viewerContainer");
+	viewerContainer.appendChild(containerOver);
+
+	var styleParent = 'position: fixed; z-index: 9; border: 1px solid black; padding: 10px; width: 32%; height: 97%; '
+		+ 'opacity: 1; visibility: visible; transition: opacity 500ms ease-out; overflow-x: auto; overflow-y: scroll; white-space: nowrap;';
+
+	var style = 'width: 31.3%; height: 92%; padding:2%; background:white; margin:1%; margin-top:2em; display: inline-block; text-align: left; white-space: normal;';
+
+	var containerLeft = document.createElement('div');
+	var containerRight = document.createElement('div');
+	var containerDiff = document.createElement('div');
+
+	// Closing
+	var containerClose = getClosingTitle(containerOver);
+	containerOver.appendChild(containerClose);
+
+	// Left
+	containerLeft.setAttribute('style', styleParent + "float:left;");
+	containerLeft.innerHTML = bold("JSON File given by the author") + "<br>";
+	containerLeft.id = "left";
+	containerOver.appendChild(containerLeft);
+
+	// Right
+	containerRight.setAttribute('style', styleParent + "float:left;");
+	containerRight.innerHTML = bold("JSON File you have given") + "<br>";
+	containerRight.id = "right";
+	containerOver.appendChild(containerRight);
+
+	// JSON Diff
+	containerDiff.setAttribute('style', styleParent + "float:right;");
+	containerDiff.innerHTML = bold("JSON Difference") + "<br>";
+	containerDiff.id = "diff";
+	containerOver.appendChild(containerDiff);
+
+	var jsonName;
+	if(name !== undefined)
+		jsonName = name;
+	else
+		jsonName = deleteExtension(json.type.I.query, ".json");
+
+	// Get Left
+	var originalJson = "";
+	var foundLeft = true;
+
+	try {
+		originalJson = getJson(jsonName, JSON_TABLE);
+	} catch (e) {
+		foundLeft = false;
+	}
+
+	// Get Right
+	var compareJson = "";
+	var foundRight = true;
+
+	try {
+		compareJson = getJson(jsonName, JSON_COMPARE_TABLE);
+	} catch (e) {
+		foundRight = false;
+	}
+
+	// Difference
+	delete originalJson[JSON_FILENAME];
+	delete compareJson[JSON_FILENAME];
+	var originalJsonString = JSON.stringify(originalJson);
+	var compareJsonString = JSON.stringify(compareJson);
+
+	var diffs = dmp.diff_main(originalJsonString, compareJsonString, false);
+	var pretty = dmp.diff_prettyHtml(diffs);
+
+
+	var levenshtein = dmp.diff_levenshtein(diffs);
+	var dsimilarity = 100 - (levenshtein / Math.max(originalJsonString.length, compareJsonString.length) * 100);
+
+	if(distanceWithoutBrackets) {
+		var s1 = replaceAll(replaceAll(originalJsonString, "{", ""), "}", "");
+		var s2 = replaceAll(replaceAll(compareJsonString,  "{", ""), "}", "");
+
+		levenshtein = dmp.diff_levenshtein(dmp.diff_main(s1, s2, false));
+		dsimilarity = 100 - (levenshtein / Math.max(s1.length, s2.length) * 100);
+	}
+
+	var inputLeft = bold("was not found");
+	var inputRight = bold("was not found");
+	var inputDiff = "";
+
+	var left = removeJsonName(originalJson);
+	var right = removeJsonName(compareJson);
+
+	inputLeft = prepareJsonBig(jsonName, originalJson);
+	inputRight = prepareJsonBig(jsonName, compareJson);
+	inputDiff = adjustColor(prepareJsonBig(jsonName, pretty, true));
+
+	similarityValue = typeof(similarityValue) === 'undefined' ? 0 : similarityValue;
+
+	if(foundLeft && foundRight) { // Add the slider
+		var distance = document.createElement('div');
+		var sim = object_similarity(originalJson, compareJson);
+		//distance.innerHTML = "Similarity: " + sim + "%";
+		distance.innerHTML = "Use the Slider below, to change Error Tolerance";
+		containerDiff.appendChild(distance);
+
+		var compareSlider = document.createElement('input');
+		compareSlider.type = 'range';
+		compareSlider.id = 'slider';
+		compareSlider.min = 0;
+		compareSlider.max = 100;
+		compareSlider.value = similarityValue;
+		compareSlider.addEventListener('change', function() {
+			similarityValue = compareSlider.value;
+
+			frame.srcdoc=createDiffHTML(left, right, similarityValue, useTextDiff);
+
+			if(similarityValue == 0)
+				description.innerHTML = " Highlight all changes";
+			else
+				description.innerHTML = " Only highlight changes with a deviation of more than " + similarityValue + " %";
+		});
+		containerDiff.appendChild(compareSlider);
+
+		var description = document.createElement('div');
+		if(similarityValue == 0)
+			description.innerHTML = " Highlight all changes";
+		else
+			description.innerHTML = " Only highlight changes with a deviation of more than " + similarityValue + " %";
+		containerDiff.appendChild(description);
+
+		var emptyLine = document.createElement('div');
+		emptyLine.innerHTML = "<p><br></p>";
+		containerDiff.appendChild(emptyLine);
+	}
+
+	containerLeft.innerHTML += inputLeft;
+	containerRight.innerHTML += inputRight;
+
+	if(textCompare) {
+		containerDiff.innerHTML += inputDiff;
+	}
+	else if(foundRight && foundLeft) {
+		// TODO TODO TODO ugly workaround
+		// can be solved be importing jsondiffpatch.js
+		// but this is somwhow complicated
+		var frame = document.createElement('iframe');
+		frame.name="targetframe";
+		frame.allowTransparency="true";
+		frame.scrolling="yes";
+		frame.frameborder="0";
+		frame.srcdoc=createDiffHTML(left, right, similarityValue, useTextDiff);
+		frame.height = "84%";
+		frame.width = "99%";
+		containerDiff.appendChild(frame);
+
+		var emptyLine = document.createElement('div');
+		emptyLine.innerHTML = "<p><br></p>";
+		containerDiff.appendChild(emptyLine);
+	}
+	else {
+		containerDiff.innerHTML += " ";
+	}
+
+	// Style
+	createDropField("left", json, containerOver, true, "jsonView");
+	createDropField("right", json, containerOver, true, "jsonView");
+	createDropField("diff", json, containerOver, true, "jsonView");
+	containerLeft.setAttribute('style', "background: white;" + style + "float:left;");
+	containerRight.setAttribute('style', "background: white;" + style);
+	containerDiff.setAttribute('style', "background: white;" + style + "float:right;");
+
+	if(foundLeft) {
+		// Button for copy (left)
+		var buttonCopyLeft = document.createElement('input');
+		buttonCopyLeft.type = 'button';
+		buttonCopyLeft.value = 'Copy to clipboard';
+		buttonCopyLeft.setAttribute('style', 'font-size:inherit;');
+		buttonCopyLeft.addEventListener('click', function () {
+			copyToClipboard(JSON.stringify(originalJson))
+		});
+		containerLeft.appendChild(buttonCopyLeft);
+	}
+
+	if(foundRight) {
+		// Button for copy (right)
+		var buttonCopyRight = document.createElement('input');
+		buttonCopyRight.type = 'button';
+		buttonCopyRight.value = 'Copy to clipboard';
+		buttonCopyRight.setAttribute('style', 'font-size:inherit;');
+		buttonCopyRight.addEventListener('click', function() {
+			copyToClipboard(JSON.stringify(compareJson))
+		});
+		containerRight.appendChild(buttonCopyRight);
+	}
+
+	if(JSON.stringify(originalJson) != JSON.stringify(compareJson)
+		&& JSON.stringify(compareJson) != '\"\"') { // TODO always this?
+		// Button for copy (diff)
+		var buttonCopyDiff = document.createElement('input');
+		buttonCopyDiff.type = 'button';
+		buttonCopyDiff.value = 'Enlarge';
+		buttonCopyDiff.setAttribute('style', 'font-size:inherit;');
+		buttonCopyDiff.addEventListener('click', function() {
+			while (containerOver.firstChild) {
+				containerOver.removeChild(containerOver.firstChild);
+			}
+
+			buildContainerDiff(json, containerOver, originalJson, compareJson, textCompare, false, similarityValue);
+		});
+		containerDiff.appendChild(buttonCopyDiff);
+	}
+
+	fixOverlaySize();
+}
+
+function buildContainerLevenshtein(json, containerOver, name, textCompare) {
+
+	var container = document.createElement('div');
+	container.style = 'width: 45%; height: 60%; padding:2%; background:white; margin:1%; margin-top:2em; display: inline-block; text-align: left; white-space: normal;';
+
+	container.innerHTML =
+		bold("Levenshtein Distance:") +
+		"<p>The Levenshtein distance is a string metric for measuring the difference between two sequences." +
+		"Informally, the Levenshtein distance between two words is the minimum number of single-character edits<" +
+		"(i.e. insertions, deletions or substitutions) required to change one word into the other.<br>" +
+		"Levenshtein distance may also be referred to as edit distance," +
+		"although that may also denote a larger family of distance metrics." +
+		"It is closely related to pairwise string alignments.<br>" +
+		"(from Wikipedia 14.06.2016)</p><br>" +
+		bold("Similarity:") +
+		"<p>100 - (levenshtein(s1, s2) / Math.max(s1.length, s2.length) * 100);</p><br>";
+
+	containerOver.appendChild(container);
+
+	// Button for return
+	var buttonReturn = document.createElement('input');
+	buttonReturn.type = 'button';
+	buttonReturn.value = 'Return';
+	buttonReturn.setAttribute('style', 'font-size:inherit;');
+	buttonReturn.addEventListener('click', function() {
+		while (containerOver.firstChild) {
+			containerOver.removeChild(containerOver.firstChild);
+		}
+
+		buildContainerJsonView(json, containerOver, undefined, textCompare);
+	});
+	container.appendChild(buttonReturn);
+
+	fixOverlaySize();
+}
+
+function buildContainerDiff(json, containerOver, originalJson, compareJson, textCompare, fromSettings, similarityValue) {
+	//var niceDiff = createDiffHTML(left, right);
+
+	var viewerContainer = document.getElementById("viewerContainer");
+	viewerContainer.appendChild(containerOver);
+
+	var styleParent = 'position: fixed; z-index: 9; border: 1px solid black; padding: 10px; width: 97%; height: 97%; '
+		+ 'opacity: 1; visibility: visible; transition: opacity 500ms ease-out; overflow-x: auto; overflow-y: scroll; white-space: nowrap;';
+
+	var style = 'width: 97%; height: 90%; padding:2%; background:white; margin:1%; margin-top:2em; display: inline-block; text-align: left; white-space: normal;';
+
+	var container = document.createElement('div');
+
+	var left = JSON.stringify(originalJson);
+	var right = JSON.stringify(compareJson);
+
+	// Closing
+	var containerClose = getClosingTitle(containerOver);
+	containerOver.appendChild(containerClose);
+
+	// Left
+	container.setAttribute('style', styleParent);
+	container.innerHTML = bold("JSON Differences") + "<br>";
+	container.id = "left";
+	containerOver.appendChild(container);
+
+	var distance = document.createElement('div');
+	var sim = object_similarity(originalJson, compareJson);
+	//distance.innerHTML = "Similarity: " + sim + "%";
+	distance.innerHTML = "Use the Slider below, to change Error Tolerance";
+	container.appendChild(distance);
+
+	similarityValue = typeof(similarityValue) === 'undefined' ? 0 : similarityValue;
+
+	var compareSlider = document.createElement('input');
+	compareSlider.type = 'range';
+	compareSlider.id = 'slider';
+	compareSlider.min = 0;
+	compareSlider.max = 100;
+	compareSlider.value = similarityValue;
+	compareSlider.addEventListener('change', function() {
+		similarityValue = compareSlider.value;
+		frame.srcdoc=createDiffHTML(left, right, similarityValue, useTextDiff);
+
+		if(similarityValue == 0)
+			description.innerHTML = " Highlight all changes";
+		else
+			description.innerHTML = " Only highlight changes with a deviation of more than " + similarityValue + " %";
+	});
+	container.appendChild(compareSlider);
+
+	var description = document.createElement('div');
+	if(similarityValue == 0)
+		description.innerHTML = " Highlight all changes";
+	else
+		description.innerHTML = " Only highlight changes with a deviation of more than " + similarityValue + " %";
+	container.appendChild(description);
+
+	var emptyLine = document.createElement('div');
+	emptyLine.innerHTML = "<p><br></p>";
+	container.appendChild(emptyLine);
+
+	var frame = document.createElement('iframe');
+	frame.name="targetframe" + left;
+	frame.allowTransparency="true";
+	frame.scrolling="yes";
+	frame.frameborder="0";
+	frame.srcdoc=createDiffHTML(left, right, similarityValue, useTextDiff);
+	frame.height = "87%";
+	frame.width = "99%";
+	container.appendChild(frame);
+
+	var emptyLine2 = document.createElement('div');
+	emptyLine2.innerHTML = "<p><br></p>";
+	container.appendChild(emptyLine2);
+
+	if(true) { // TODO always this?
+		// Button for copy (diff)
+		var buttonCopyDiff = document.createElement('input');
+		buttonCopyDiff.type = 'button';
+		buttonCopyDiff.value = 'Return';
+		buttonCopyDiff.setAttribute('style', 'font-size:inherit;');
+		buttonCopyDiff.addEventListener('click', function() {
+			while (containerOver.firstChild) {
+				containerOver.removeChild(containerOver.firstChild);
+			}
+
+			if(fromSettings)
+				buildContainerSettings(json, containerOver);
+			else
+				buildContainerJsonView(json, containerOver, undefined, textCompare, similarityValue);
+		});
+		container.appendChild(buttonCopyDiff);
+	}
+
+	createDropField("left", json, containerOver, true, "jsonView");
+	container.setAttribute('style', "background: white;" + style);
+
+	fixOverlaySize();
+}
+
+function createDiffHTML(left, right, similarity, textDiff) {
+	textDiff = typeof(textDiff) === 'undefined' ? 60 : textDiff;
+
+	var minifiedHead = "<!DOCTYPE html>" +
+		"\n" + "<html>" +
+		"\n" + "<head>" +
+		"\n" + "<script src=\"jsondiffpatch.min.js\"></script>" +
+		"\n" + "<script src=\"jsondiffpatch-formatters.min.js\"></script>" +
+		"\n" + "<script src=\"diff_match_patch.js\"></script>" +
+		"\n" + "<link rel=\"stylesheet\" href=\"html.css\" type=\"text/css\" />" +
+		"\n" + "<link rel=\"stylesheet\" href=\"annotated.css\" type=\"text/css\" />" +
+		"\n" + "</head>";
+
+	var normalHead = "<!DOCTYPE html>" +
+		"\n" + "<html>" +
+		"\n" + "<head>" +
+		"\n" + "<script src=\"data/jsondiffpatch.min.js\"></script>" +
+		"\n" + "<script src=\"data/jsondiffpatch-formatters.min.js\"></script>" +
+		"\n" + "<script src=\"data/diff_match_patch.js\"></script>" +
+		"\n" + "<link rel=\"stylesheet\" href=\"data/html.css\" type=\"text/css\" />" +
+		"\n" + "<link rel=\"stylesheet\" href=\"data/annotated.css\" type=\"text/css\" />" +
+		"\n" + "</head>";
+
+	var additionalJavaScript = "" +
+		"\n" + "delta = cleanDelta(delta);";
+
+	var additionalFunctions = "" +
+		"\n" + "function deviation(x, y) {" +
+		"\n" + "  return Math.abs((x-y)/x * 100);" +
+		"\n" + "}" + "\n" +
+		"\n" + "function levenshtein(x, y) {" +
+		"\n" + "  var s1 = JSON.stringify(x);" +
+		"\n" + "  var s2 = JSON.stringify(y);" +
+		"\n" + "  var lev = dmp.diff_levenshtein(dmp.diff_main(s1, s2, false));" +
+		"\n" + "  return 100 - (lev / Math.max(s1.length, s2.length) * 100);" +
+		"\n" + "}" + "\n" +
+		// x is the old value
+		// y is the new value
+		// z is given (= 0) if there is no new value
+		//
+		// if only x is given, there is no old value
+		"\n" + "function cleanDelta(delta, is_array) {" +
+		"\n" + "  var similarity = " + similarity + ";" +
+		"\n" + "  if(is_array) {" +
+		"\n" + "    var i = 0, len = (Object.keys(delta).length -1);" +
+		"\n" + "    for(i = 0; i < len / 2; i++) { " +
+		"\n" + "      var z1 = delta[i], z2 = delta['_' + i];" +
+		"\n" + "      if(typeof(z1) === 'undefined' || typeof(z2) === 'undefined') " +
+		"\n" + "        continue;" +
+		"\n" +
+		"\n" + "      var x1 = z1[0], x2 = z2[0]; " +
+		"\n" + "      if(typeof(x1) === 'number' && typeof(x2) === 'number') { "+
+		"\n" + "        if(deviation(x1, x2) <= " + 'similarity' + ") {" +
+		"\n" + "          delete delta[i]; delete(delta['_' + i]); " +
+		"\n" + "        }" +
+		"\n" + "      }" +
+		"\n" + "      else if(typeof(x1) === 'string' && typeof(x2) === 'string') {" +
+		"\n" + "        if(levenshtein(x1, x2) <= " + 'similarity' + ") {" +
+		"\n" + "          delete delta[i]; delete(delta['_' + i]); " +
+		"\n" + "        }" +
+		"\n" + "      }" +
+		"\n" + "      else if(typeof(x1) === 'object' && typeof(x2) === 'object' ) {" +	// Array
+		"\n" + "        cleanDelta(delta[key], true);" +
+		"\n" + "      }" +
+		"\n" + "      else if(typeof(x1) === 'undefined' && typeof(x2) === 'undefined' ) {" +	// Nested
+		"\n" + "        cleanDelta(delta[key]);" +
+		"\n" + "      }" +
+		"\n" + "      else if(typeof(x) === 'object' && typeof(y) === 'undefined') { " +
+		"\n" + "        cleanDelta(delta[key]); " +
+		"\n" + "      }" +
+		"\n" + "    }" +
+		"\n" + "  } " +
+		"\n" + "  else { "	+
+		"\n" + "    for(var key in delta) {" +
+		"\n" + "      var element = delta[key];" +
+		"\n" + "      var x = element['0'], y = element['1'], z = element['2'];" +
+		"\n" + "      if(typeof(x) === 'number' && typeof(y) === 'number' && typeof(z) === 'undefined' ) {" +
+		"\n" + "        if(deviation(x, y) <= " + 'similarity' + ") {" +
+		"\n" + "          delete delta[key]; " +
+		"\n" + "        }"	+
+		"\n" + "      }"	+
+		"\n" + "      else if(typeof(x) === 'string' && typeof(y) === 'string' && typeof(z) === 'undefined' ) {" +
+		"\n" + "        if(levenshtein(x, y) <= " + 'similarity' + ") {" +
+		"\n" + "          delete delta[key]; " +
+		"\n" + "        }" +
+		"\n" + "      }" +
+		"\n" + "      else if(typeof(x) === 'object' && typeof(y) === 'object' && typeof(z) === 'undefined' ) {" +	// Array
+		"\n" + "        cleanDelta(delta[key], true);" +
+		"\n" + "      }" +
+		"\n" + "      else if(typeof(x) === 'undefined' && typeof(y) === 'undefined' && typeof(z) === 'undefined' ) {" +	// Nested
+		"\n" + "        cleanDelta(delta[key]);" +
+		"\n" + "      }"  +
+		"\n" + "      else if(typeof(x) === 'object' && typeof(y) === 'undefined') { " +
+		"\n" + "        cleanDelta(delta[key]); " +
+		"\n" + "      }" +
+		"\n" + "    }" +
+		"\n" + "  }" +
+		"\n" + "  return delta;" +
+		"\n" + "}";
+
+	var additionalDiffSettings = "" +
+		"\n" + "var customDiff = jsondiffpatch.create({" +
+		"\n" + "  textDiff: {" +
+		"\n" + "    minLength: " + textDiff +
+		"\n" + "  }," +
+		"\n" + "  arrays: {" +
+		"\n" + "    detectMove: true," +
+		"\n" + "    includeValueOnMove: false" +
+		"\n" + "  }" +
+		"\n" + "});";
+
+	var body = "\n" + "<body>" +
+		"\n" + "<div id=\"visual\"></div>" +
+		"\n" + "<hr/>" +
+		"\n" + "<div id=\"annotated\"></div>" +
+		"\n" + "<script>" + "\n" +
+		"\n" + "var left = " + (left) + ";" + "\n" +
+		"\n" + "var right = " + (right) + ";" + "\n" +
+		"\n" + "var sim = 0;" +
+		"\n" +  additionalDiffSettings +
+		"\n" + "var delta = customDiff.diff(left, right);" +
+		"\n" + "var dmp = new diff_match_patch();" +
+		"\n" +  additionalJavaScript +
+		"\n" + "document.getElementById(\"visual\").innerHTML = jsondiffpatch.formatters.html.format(delta, left);" +
+		"\n" + "document.getElementById(\"annotated\").innerHTML = jsondiffpatch.formatters.annotated.format(delta, left);" +
+		"\n" +  additionalFunctions + "\n" +
+		"\n" + "</script>" +
+		"\n" + "</body>" +
+		"\n" + "</html>";
+
+	//console.log(minifiedHead + body);
+
+	if(endsWith(getScriptPath(), "data"))
+		return minifiedHead + body;
+	else
+		return normalHead + body;
+}
+
+function deviation(x, y) {
+	return Math.abs((x-y)/x * 100);
+}
+
+function levenshtein_distance(x, y) {
+	var s1 = JSON.stringify(x);
+	var s2 = JSON.stringify(y);
+	var lev = dmp.diff_levenshtein(dmp.diff_main(s1, s2, false));
+	return (lev / Math.max(s1.length, s2.length) * 100);
+}
+
+function object_similarity(left, right) {
+	var sim = 100 - object_deviation(left, right)
+	return Number(sim).toFixed(2);
+}
+
+function object_deviation(left, right) {
+	var obj = {}, n_keys = 0, key;
+	for(key in  left) { obj[key] =  left[key]; }
+	for(key in right) { obj[key] = right[key]; }
+	for(key in   obj) { n_keys++;}
+
+	var sim = 100*n_keys;
+
+	for(key in left) {
+		var l_element = left[key];
+		var r_element = right[key];
+
+		if(typeof(r_element) === 'undefined') {
+			sim -= 100;
+		}
+		else if(typeof(r_element) !== typeof(l_element)) {
+			sim -= 100;
+		}
+		else if(typeof(r_element) === 'number') {
+			sim -= Math.min(deviation(l_element, r_element), 100);
+		}
+		else if(typeof(r_element) === 'string') {
+			sim -= Math.min(levenshtein_distance(l_element, r_element), 100);
+		}
+		else if(typeof(r_element) === 'object') {
+			sim -= object_deviation(l_element, r_element);
+		}
+
+	}
+
+	return deviation(n_keys*100, sim);
+}
+
+function adjustColor(str) {
+	var green_toReplace = '#e6ffe6';
+	var red_toReplace   = '#ffe6e6';
+
+	var green_correct = '#33ff33';
+	var red_correct   = '#ff3333';
+
+	str = replaceAll(str, green_toReplace, green_correct);
+	str = replaceAll(str, red_toReplace, red_correct);
+
+	return str;
+}
+
+function getJson(name, table) {
+	var q =  "SELECT * FROM " + table + " WHERE " + JSON_FILENAME + " = '" + name + "';";
+	var results;
+
+	try {
+		results = alasqlQuery(q);
+	} catch (e) {
+		alert(e.message);
+		return;
+	}
+
+	if (results.length == 0) {
+		throw new JsonException("not found");
+	}
+	if (results[0] instanceof Array) {
+		throw new JsonException("multiple");
+	}
+
+	return results[0];
+}
+
+function JsonException(message) {
+	this.message = message;
+	this.name = "JsonException";
+}
+
+
+function increaseFontSize(str, size) {
+	str = "<font size=\"+" + size + "\">" + str + "</font>";
+	return str;
+}
+
+function removeJsonName(str) {
+	if(JSON.stringify(str) == "")
+		return str;
+
+	delete str[JSON_FILENAME];
+	return JSON.stringify(str);
+}
+
+function prepareJson(name, val, withoutName) {
+	delete val[JSON_FILENAME];
+
+	var content = "<br>" + "<p style=\"font-family:'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', Monaco, Courier, " +
+		"monospace;font-size:12px;margin:0;padding:0;display:inline-block;\">" + JSON.stringify(val) + "</p>" + "<br>";
+
+	if(withoutName)
+		return content;
+	else
+		return "<br>" + bold(name) + content;
+}
+
+function prepareJsonBig(name, val, diffed) {
+	if(val == "" || val === undefined)
+		return "";
+
+	return "<br>" + bold(name) + "<br>" + expandJson(JSON.stringify(val), diffed) + "<br>";
+}
+
+function compareJsons(originalJsons, name, val) {
+	delete val[JSON_FILENAME];
+	var content = JSON.stringify(val);
+	var color = "black";
+
+	// Is it given by the author?
+	if(originalJsons[name] == undefined)
+		color = "orange";
+
+	// Is the same JSON String?
+	else if(JSON.stringify(originalJsons[name]) === content)
+		color = "green";
+
+	// Nah, it must be something else
+	else
+		color = "red";
+
+	content = prepareJson(name, val, true);
+
+	var colored = "<font color=\"" + color + "\">" + content + "</font>";
+
+	return "<br>" + bold(name) + colored;
+}
+
+function expandJson(str, diffed) {
+	var spacesToAdd = 4;
+	var spaces = 0;
+	var output = "";
+	var inArray = false;
+
+	if(diffed) {
+		str = str.substring(1, str.length-1);
+		str = replaceAll(str, "\\\"", "\"");
+	}
+
+	for (var i = 0, len = str.length; i < len; i++) {
+		var char = str[i];
+
+		if (char === '{' || char === '[') {
+			spaces += spacesToAdd;
+			output += char + "<br>";
+			output = addSpaces(output, spaces);
+		}
+		else if(char === ','){
+			output += char + "<br>";
+			output = addSpaces(output, spaces);
+		}
+		else if(char === '}' || char === ']') {
+			spaces -= spacesToAdd;
+			output += "<br>" + addSpaces(char, spaces, true);
+		}
+		else {
+			output += char;
+		}
+	}
+	return output + "<br>&nbsp;";
+}
+
+
+function checkFileAPI() {
+	if (window.File && window.FileReader && window.FileList && window.Blob) {
+		reader = new FileReader();
+		return true;
+	} else {
+		alert('The File APIs are not fully supported by your browser. Fallback required.');
+		return false;
+	}
+}
+
+function createDropField(containerID, json, containerOver, initial, settings) {
+	var target = document.getElementById(containerID);
+
+	target.addEventListener("dragover", function(event) {
+		event.preventDefault();
+	}, false);
+
+	target.addEventListener("drop", function(event) {
+
+		// cancel default actions
+		event.preventDefault();
+
+		var files = event.dataTransfer.files;
+		var i = 0, len = files.length;
+
+
+		if (len < 1) {
+//			alert("You need to drop at least one File!");
+		} else if(len >= 1) {
+			console.log("You dropped " + len + " file(s)");
+
+			if(!additive) {
+				number_files = 0;
+
+				console.log("Resetting Tables");
+				var queryDrop = "DROP TABLE " + JSON_COMPARE_TABLE + ";\n";
+				var queryCreate = "CREATE TABLE " + JSON_COMPARE_TABLE + ";\n";
+
+				alasqlQuery(queryDrop + queryCreate);
+			}
+
+			readFiles(files, number_files, number_files + len, json, containerOver, true, settings);
+		}
+	}, false);
+}
+
+function createFileSelector(containerTarget, json, containerOver, initial, settings) {
+	// File Selector
+	var containerFileSelect = document.createElement('input');
+	containerFileSelect.type =  "file";
+	containerFileSelect.id = "fileSelection";
+	containerTarget.appendChild(containerFileSelect);
+	containerFileSelect.onchange = function (event) {
+		checkFileAPI();
+
+		var filePath = this;
+		if(filePath.files && filePath.files[0]) {
+
+			if(!additive) {
+				number_files = 0;
+
+				var queryDrop = "DROP TABLE " + JSON_COMPARE_TABLE + ";\n";
+				var queryCreate = "CREATE TABLE " + JSON_COMPARE_TABLE + ";\n";
+
+				alasqlQuery(queryDrop + queryCreate);
+			}
+
+			readFiles(filePath.files, number_files, filePath.files.length, json, containerOver, true, settings);
+		}//end if html5 filelist support
+		else if(filePath && false) { //fallback to IE 6-8 support via ActiveX TODO multiple files, later
+			try {
+				reader = new ActiveXObject("Scripting.FileSystemObject");
+				var fileSelected = reader.OpenTextFile(filePath, 1); //ActiveX File Object
+				file_content[number_files] = fileSelected.ReadAll(); //text contents of file
+				file_extension[number_files] = fileSelected.getExtension();
+				fileSelected.Close(); //close file "input stream"
+
+				foundDatasource = true;
+
+				while (containerOver.firstChild) {
+					containerOver.removeChild(containerOver.firstChild);
+				}
+
+				buildContainerChartCompare(json, containerOver, true)
+			} catch (e) {
+				if (e.number == -2146827859) {
+					alert('Unable to access local files due to browser security settings. ' +
+						'To overcome this, go to Tools->Internet Options->Security->Custom Level. ' +
+						'Find the setting for "Initialize and script ActiveX controls not marked as safe" and change it to "Enable" or "Prompt"');
+				}
+			}
+		} else {
+			alert("Your browser does not support HTML5");
+		}
+
+
+	}
+}
+
+function readFiles(files, current, len, json, containerOver, initial, settings) {
+	if (current >= number_files && current < len) { // if we still have files left
+		var file = files[current-number_files];
+		current++;
+		reader = new FileReader();
+
+		reader.onload = function (e) {
+			file_content[number_files] = e.target.result;
+			file_name[number_files] = file.name;
+			file_type[number_files] = file.type;
+			file_size[number_files] = file.size;
+			file_extension[number_files] = getFileExtension(file_name);
+
+			logFile(number_files);
+
+			var query = "INSERT INTO " + JSON_COMPARE_TABLE + " VALUES @";
+			query += normalizeJson(file_content[number_files], file.name);
+
+			// TODO currently only json files
+			if(contains(file_name[number_files], ".json"))
+				alasqlQuery(query);
+			else
+				alert("Only .json files are supported, Your input: ." + file_extension[number_files]);
+
+			if(current == len) {
+				foundDatasource = true;
+				number_files++;
+
+				while (containerOver.firstChild) {
+					containerOver.removeChild(containerOver.firstChild);
+				}
+
+				if(settings == "settings")
+					buildContainerSettings(json, containerOver, initial);
+				else if(settings == "chart")
+					buildContainerChartCompare(json, containerOver, initial);
+				else if(settings == "jsonView")
+					buildContainerJsonView(json, containerOver, undefined, useTextCompare);
+			}
+		};
+
+		reader.readAsText(file);
+		readFiles(files, current, len, json, containerOver, initial, settings);
+	}
+}
+
+function normalizeJson(json, name) {
+
+	json = replaceAll(json, "[", "@[");
+
+	if(!contains(json, "{") || !contains(json, "}")) {
+		if(!json.trim().match("^{"))
+			return "\"" + json + "\"";
+		else
+			return json;
+	}
+
+	json = json.trim();
+
+	while(!json.match("}$")) {
+		json = json.substring(0, json.length-1);
+	}
+
+	json = json.substring(0, json.length-1);
+	json += ", \"" + JSON_FILENAME + "\": \"" + deleteExtension(name, ".json") + "\"}";
+
+	return json;
+}
+
+function copyToClipboard(text) {
+	window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
+}
+
+function addSpaces(str, x, before) {
+	for(var i = 0; i < x; i++) {
+		if(before)
+			str = "&nbsp;" + str;
+		else
+			str += "&nbsp;";
+	}
+	return str;
+}
+
+function getScriptPath() {
+	var scripts = document.getElementsByTagName('SCRIPT');
+	var path = '';
+	if(scripts && scripts.length>0) {
+		for(var i in scripts) {
+			if(scripts[i].src && scripts[i].src.match(/\/main\.js$/)) {
+				path = scripts[i].src.replace(/(.*)\/main\.js$/, '$1');
+				break;
+			}
+
+		}
+	}
+	return path;
+};
 
 function buildDataText(container, json, zoomFactor, style, containerOver) {
 	var results;
@@ -1589,6 +2864,11 @@ function getChartOptions(json, zoomFactor, values, chart) {
 		cssText += ' }																			';
 		css.innerHTML = cssText;
 	}
+
+	// TODO this should be done somehow in a different way
+	if(options.data.values != undefined) {
+		options.data = options.data.values;
+	}
 	
 	return options;
 }
@@ -1867,25 +3147,37 @@ function getSpacer() {
 	return document.createElement('br');
 }
 
-function getChartData(json) {
+function getChartData(json, newDatasource) {
 	var results;
+	var query = json.type.I.query.trim();
+
+	if(contains(query, JSON_TABLE)) {
+		query = query.substring(0, query.length-1);
+		query += "  ORDER BY " + JSON_FILENAME + "  ASC;"
+	}
+
+	if(newDatasource) {
+		query = replaceAll(query, JSON_TABLE, JSON_COMPARE_TABLE);
+	}
+
 	try {
-		results = alasqlQuery(json.type.I.query);
-	} catch (e) {
+		results = alasqlQuery(query);
+	}catch (e) {
 		return {
-			error : e.message
+			error: e.message
 		};
 	}
+
 	var error;
 	if (results.length == 0) {
 		return {
-			error : "Query \"" + json.type.I.query + "\" returns empty result!"
+			error : "Query \"" + query + "\" returns empty result!"
 		};
-		
+
 	}
 	if (results[0] instanceof Array) {
 		return {
-			error : "Query \"" + json.type.I.query + "\" contains multiple statements!"
+			error : "Query \"" + query+ "\" contains multiple statements!"
 		};
 	}
 	var columns = [];
@@ -1903,7 +3195,7 @@ function getChartData(json) {
 		error : error,
 		res : results
 	};
-	
+
 	// logscale
 	if (json.type.I.logScale == true) {
 		for (var i = 0; i < ret.values.json.length; i++) {
@@ -1914,16 +3206,16 @@ function getChartData(json) {
 					continue;
 				}
 				var logVal = logscaleValues[logId];
-				
+
 				if (isNaN(logVal)) {
 					throw "Error! Logscale is active and chart contains negative values!";
 				}
-				
+
 				ret.values.json[i][logId] = Math.log(logVal);
 			}
 		}
 	}
-	
+
 	return ret;
 }
 
@@ -2013,6 +3305,41 @@ function getFullscreenDiv() {
 		this.style.opacity = 0.3;
 	});
 	return fullscreen;
+}
+
+function getCompareDiv() {
+	var compare = document.createElement('div');
+	var rawZoomFactor = PDFViewerApplication.pdfViewer._currentScale;
+	compare.setAttribute('style', 'z-index:4; position:absolute; left: 10%; opacity:0.3; -webkit-transition:opacity 200ms ease-out; -moz-transition:opacity 200ms ease-out; -o-transition:opacity 200ms ease-out; transition:opacity 200ms ease-out;');
+	compare.innerHTML = "<img style=\"width:" + 17 * rawZoomFactor + "px; height:" + 17 * rawZoomFactor + "px;\" src=\"data:image/png;base64,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\"/>";
+	$(compare).hover(function () {
+		this.style.opacity = 0.8;
+	}, function () {
+		this.style.opacity = 0.3;
+	});
+	return compare;
+}
+
+function getSettingDiv() {
+	var setting = document.createElement('div');
+	var rawZoomFactor = PDFViewerApplication.pdfViewer._currentScale;
+	setting.setAttribute('style', 'z-index:4; position:absolute; left: 20%; opacity:0.3; -webkit-transition:opacity 200ms ease-out; -moz-transition:opacity 200ms ease-out; -o-transition:opacity 200ms ease-out; transition:opacity 200ms ease-out;');
+	setting.innerHTML = "<img style=\"width:" + 17 * rawZoomFactor + "px; height:" + 17 * rawZoomFactor + "px;\" src=\"data:image/png;base64,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\"/>";
+	$(setting).hover(function () {
+		this.style.opacity = 0.8;
+	}, function () {
+		this.style.opacity = 0.3;
+	});
+	return setting;
+	/*
+	 var setting = document.createElement('input');
+	 setting.type = "file";
+	 setting.onchange = function (event) {
+	 alert(this.value);
+	 }
+	 setting.setAttribute('style', 'z-index:4; position:absolute; left: 20%;');
+	 return setting;
+	 */
 }
 
 function GRUBBS_FILTER(arr, alpha) {
@@ -2267,11 +3594,49 @@ function compareToBest(valuesArr) {
 	}
 }
 
+// TODO improve
+function deleteExtension(str, ext) {
+	if(contains(str, ext))
+		return str.substring(0, str.length - ext.length);
+
+	return str;
+}
+
+function logFile(value) {
+	if(!logFileFounds)
+		return;
+
+	console.log("Found new Datasource");
+	console.log("\tFilename: " + file_name[value]);
+	console.log("\tType: " + file_type[value]);
+//	console.log("\tExtension: " + file_extension[value]);
+	console.log("\tSize: " + file_size[value] + " bytes");
+//	console.log("----");
+}
+
+function getFileExtension(fileName) {
+	var re = /(?:\.([^.]+))?$/; // To get the extension
+	return replaceAll(re.exec(fileName)[1],",", "");
+}
+
+function bold(str) {
+	return "<b>" + str + "</b>"
+}
+
 function alasqlQuery(q) {
+//	console.log("Executing " + q);
 	var results = alasql(q);
+//	console.log(results);
 	return results;
 }
 
+function getClosingTitle(containerOver) {
+	var containerClose = document.createElement('div');
+	containerClose.innerHTML = 'Click here to close this window (or press Escape) [X]';
+	containerClose.setAttribute('style', 'cursor: pointer; font-weight: bold;');
+	addClickCloseHandler(containerClose, containerOver);
+	return containerClose;
+}
 function isInt(x) {
 	var y = parseInt(x, 10);
 	return !isNaN(y) && x == y && x.toString() == y.toString();
