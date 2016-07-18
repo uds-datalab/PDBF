@@ -72,6 +72,8 @@
 %Common
 \define@key{pdbf}{name}{\def\pdbf@name{#1}}
 \def\pdbf@name{}
+\define@key{pdbf}{datasource}{\def\pdbf@datasource{#1}}
+\def\pdbf@datasource{}
 \define@key{pdbf}{width}{\def\pdbf@width{#1}}
 \define@key{pdbf}{height}{\def\pdbf@height{#1}}
 \def\pdbf@xunitname{}
@@ -193,6 +195,7 @@
 				\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"customImage": "\pdbf@customImage",}%
 		\fi%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"name": "\pdbf@name",}%
+		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"datasource": "\pdbf@datasource",}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"linkTo": "\pdbf@linkTo",}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"linkSelector": "\pdbf@linkSelector",}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"linkLabel": "\pdbf@linkLabel",}%
@@ -286,6 +289,7 @@
 				\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"customImage": "\pdbf@customImage",}%
 		\fi%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"name": "\pdbf@name",}%
+		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"datasource": "\pdbf@datasource",}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"linkTo": "\pdbf@linkTo",}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"linkSelector": "\pdbf@linkSelector",}%
 		\immediate\write\pdbf@tempfile{\space\space\space\space\space\space\space\space\space\space\space\space"linkLabel": "\pdbf@linkLabel",}%
@@ -359,6 +363,11 @@
 \pdbf@sqlmult{\csname pdbf@Overlay\arabic{visual}\endcsname}{#2}{pdbf.json.DataTable}{#1}}%
 }
 
+\NewDocumentCommand\json{O{} o m}{%
+\StrSubstitute{#3}{_}{$\string_$}[\pdbf@tmpstore]
+{\pdbf@sqlmult{\IfValueTF{#2}{#2}{\pdbf@tmpstore}}{#3}{pdbf.json.JSON}{#1}}%
+}
+
 %Database
 \NewDocumentCommand\pdbf@db{O{} m m m m m}{%
 	\setkeys{pdbfCSV}{#1}%
@@ -403,6 +412,18 @@
 
 \NewDocumentCommand\dbCSVFile{O{} m m}{%
 	\pdbf@db[#1]{#2}{#3}{}{}{4}
+}
+
+\NewDocumentCommand\jsonString{m m}{%
+	\pdbf@db{#1}{#2}{}{}{5}
+}
+
+\NewDocumentCommand\jsonFile{m m}{%
+	\pdbf@db{#1}{#2}{}{}{6}
+}
+
+\NewDocumentCommand\jsonDirectory{m}{%
+	\pdbf@db{#1}{}{}{}{7}
 }
 
 \endinput
