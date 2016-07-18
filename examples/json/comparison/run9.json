@@ -1,0 +1,11 @@
+{
+  "a": 9,
+  "b": 8,
+  "c": 13,
+  "res_arr": [2, 4, 6, 8],
+  "options": {
+    "multiple": true,
+    "limit": 9000,
+    "output": "output/file9"
+  }
+}

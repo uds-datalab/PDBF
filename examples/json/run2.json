@@ -1,0 +1,11 @@
+{
+  "a": 2,
+  "b": 5,
+  "c": 3,
+  "res_arr": [2, 4, 6, 8],
+  "options": {
+    "multiple": false,
+    "limit": 2000,
+    "output": "output/file2"
+  }
+}
