@@ -575,8 +575,8 @@ function buildContainerChartCompare(json, containerOver, initial) {
 		// Div File
 		var containerFileDrop = document.createElement("div");
 		containerFileDrop.id = "files";
-		containerFileDrop.setAttribute('style', styleRed);
-		containerFileDrop.innerHTML = "<br><br>Drop your Files here, that you want to compare.";
+		containerFileDrop.setAttribute('style', style);
+		containerFileDrop.innerHTML = "<br><br>You can drag & drop your own files here<br>";
 
 		containerRight.appendChild(containerFileDrop);
 
@@ -669,6 +669,7 @@ function buildContainerSettings(json, containerOver, initial) {
 	// Right
 	containerRight.setAttribute('style', styleParent+ "float:right;");
 	containerRight.innerHTML = bold("JSON Files you inserted") + "<br>";
+	containerRight.innerHTML += "You can drag & drop your own files here" + "<br>";
 	containerRight.id = "right";
 	containerOver.appendChild(containerRight);
 
@@ -957,7 +958,8 @@ function buildContainerJsonView(json, containerOver, name, textCompare, similari
 		containerDiff.appendChild(emptyLine);
 	}
 	else {
-		containerDiff.innerHTML += " ";
+		containerDiff.innerHTML += "You can drag & drop your own files here";
+		containerRight.innerHTML += "You can drag & drop your own files here";
 	}
 
 	// Style
