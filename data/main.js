@@ -863,8 +863,11 @@ function buildContainerJsonView(json, containerOver, name, textCompare, similari
 	}
 
 	// Difference
-	delete originalJson[JSON_FILENAME];
-	delete compareJson[JSON_FILENAME];
+	if(typeof(originalJson) != undefined)
+		delete originalJson[JSON_FILENAME];
+	if(typeof(compareJson) != undefined)
+		delete compareJson[JSON_FILENAME];
+
 	var originalJsonString = JSON.stringify(originalJson);
 	var compareJsonString = JSON.stringify(compareJson);
 
