@@ -200,7 +200,7 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${basedir}/target/examples</outputDirectory>
+							<outputDirectory>${basedir}/target/otherFolder/examples</outputDirectory>
 							<resources>
 								<resource>
 									<directory>examples</directory>
