@@ -208,7 +208,22 @@
 								</resource>
 							</resources>
 						</configuration>
-					</execution>
+					</execution><execution>
+					<id>copy-examples2</id>
+					<phase>package</phase>
+					<goals>
+						<goal>copy-resources</goal>
+					</goals>
+					<configuration>
+						<outputDirectory>${basedir}/target/examples</outputDirectory>
+						<resources>
+							<resource>
+								<directory>examples</directory>
+								<filtering>false</filtering>
+							</resource>
+						</resources>
+					</configuration>
+				</execution>
 				</executions>
 			</plugin>
 			<plugin>
