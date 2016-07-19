@@ -1,9 +1,9 @@
 #PDBF - A Toolkit for Creating Janiform Data Documents
-Version 1.2.5
+Version 1.2.6
 
 ##Bugs, Suggestions, Feature requests
 If you encounter bugs, have suggestions or have a feature request, then please go to the [issue page](https://github.com/uds-datalab/PDBF/issues) open a new issue if necessary and explain your concern.
-You can also write us an email (ichbinkeinreh at t-online.de or jens.dittrich at cs.uni-saarland.de).
+You can also write us an email ({s9lslang, s9mumali}@stud.uni-saarland.de or jens.dittrich at cs.uni-saarland.de).
 
 ##Presentation video
 <a href="https://www.youtube.com/watch?v=f4iKwdERXhI" target="_blank" title="PDBF presentation"><img src="http://img.youtube.com/vi/f4iKwdERXhI/0.jpg" /></a>
@@ -51,6 +51,9 @@ With PDBF you don't need to manually generate these kinds of elements. The PDBF 
 #####Generate your document directly from the results of your experiment
 The idea of PDBF is to store the results of the experiment directly in the document and to make it more transparent how this chart, pivot table, etc. was generated from the result data. Therefore we currently support CSV files, SQL files, and SQL servers as data sources and use SQL as description language for the transformation of the raw result data to the final representation in the document.
 
+#####Enable the comparison of your results to other users
+To make your own results even more transparent, you can let other users input their own result files. If there is a difference, the PDBF will recognize it, and will automaticly create a highlighted view of changes. However right now, this option is only avaible for JSON-files as choosen datasource. 
+
 #####Compile LaTeX to single HTML file
 You can also use the PDBF compiler to compile your LaTeX files to a single HTML file.
 To do so just run the compiler as on any other document (you dont need to include the pdbf package in your tex file):
@@ -77,6 +80,7 @@ Note: The compiled pdbf.jar is automatically copied from target to the main fold
 * D3 (https://github.com/mbostock/d3)
 * Codemirror (https://github.com/codemirror/codemirror)
 * google-diff-match-patch (https://code.google.com/p/google-diff-match-patch/)
+* jsondiffpatch (https://github.com/benjamine/jsondiffpatch)
 * explorercanvas (https://code.google.com/p/explorercanvas/)
 * DataTables (https://github.com/DataTables/DataTables)
 * jQuery (https://github.com/jquery/jquery)

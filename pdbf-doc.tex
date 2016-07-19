@@ -10,8 +10,8 @@
 
 \title{\href{https://github.com/uds-datalab/PDBF}{PDBF} Documentation}
 \author{
- Patrick Bender\\
-  \texttt{s9pabend@stud.uni-saarland.de}
+ Patrick Bender \hspace{2cm} Lukas Lange \hspace{2cm} Shoaib Malik\\
+  \texttt{\{s9pabend, s9lslang, s9mumali\}@stud.uni-saarland.de}
 }
 \date{}
 
@@ -125,6 +125,9 @@ With PDBF you don't need to manually generate these kinds of elements. The PDBF 
 \subsection{Generate your document directly from the results of your experiment}
 The idea of PDBF is to store the results of the experiment directly in the document and to make it more transparent how this chart, pivot table, etc. was generated from the result data. Therefore we currently support CSV files, SQL files, and SQL servers as data sources and use SQL as description language for the transformation of the raw result data to the final representation in the document.
 
+\subsection{Enable the comparison of your results to other users}
+To make your own results even more transparent, you can let other users input their own result files. If there is a difference, the PDBF will recognize it, and will automaticly create a highlighted view of changes. However right now, this option is only avaible for JSON-files as datasource. 
+
 \subsection{Compile LaTeX to single HTML file}
 You can also use the PDBF compiler to compile your LaTeX files to a single HTML file.
 To do so just run the compiler as on any other document (you dont need to include the pdbf package in your tex file):\\[3pt]
@@ -150,6 +153,7 @@ C3 (\url{https://github.com/masayuki0812/c3})\\
 D3 (\url{https://github.com/mbostock/d3})\\
 Codemirror (\url{https://github.com/codemirror/codemirror})\\
 google-diff-match-patch (\url{https://code.google.com/p/google-diff-match-patch/})\\
+jsondiffpatch (\url{https://github.com/benjamine/jsondiffpatch}) \\
 explorercanvas (\url{https://code.google.com/p/explorercanvas/})\\
 DataTables (\url{https://github.com/DataTables/DataTables})\\
 jQuery (\url{https://github.com/jquery/jquery})\\
@@ -288,12 +292,20 @@ PDBF uses AlaSQL as database engine. For all available features of the database 
 
 \subsection{SQL}
 \noindent Macros: \\[3pt]
-\verb|\dbSQLText{sqlQueryString}| \\
-\verb|\dbSQLFile{fileWithSQLQueries}| \\
+\verb|\jsonFile{path/to/file}{filename} | \\
+\verb|\jsonDirectory{path/to/directory}| \\
 \textbf{Note:} Relative filepaths are relative to the tex file.\\
 \verb|\dbSQLJDBC{jdbcConnectionURL}{user}{password}{commaSeperatedListOfTableNames}| \\
 \textbf{Note:} jdbcConnectionURL consist of jdbc followed by the name of the dbms (only postgresql and mysql are currently supported) followed by the url of the dbms followed by the database name (e.g. jdbc:postgresql://localhost:5432/postgres).\\
 \textbf{Note:} jdbcConnectionURL, user, and password are not stored in the output documents.\\[4pt]
+
+\subsection{JSON}
+\noindent Macros: \\[3pt]
+\verb|\dbSQLText{sqlQueryString}| \\
+\verb|\dbSQLFile{fileWithSQLQueries}| \\
+\textbf{Note:} Relative filepaths are relative to the tex file.\\
+\textbf{Note:} The \verb|\dbSQLFile{fileWithSQLQueries}|-command will search the whole directory (it will not scan deeper file structures), and chooses the filename according to existing filename. \\
+\textbf{Note:} You can insert as many JSON-commands as you like. \\[3pt]
 
 \subsection{CSV}
 \textbf{Note:} By default the first line of the CSV file is used as attribute names for the table. You can use the header option to manually specify attribute names.\\[3pt]
@@ -439,6 +451,8 @@ PDBF uses AlaSQL as database engine. For all available features of the database 
 %{\texttt{TODO: ...}}
 %{\texttt{TODO: ...}}
 %
+
+\noindent\textbf{Note:} To choose JSON-files as your datasource for charts, add to your SQL-FROM clause \texttt{json-files} and to your SQL-WHERE clause \texttt{filename LIKE \%What You Want\%) \\[3pt]
 
 \subsection{Multiplot Chart}
 \begin{figure}[h!]%
