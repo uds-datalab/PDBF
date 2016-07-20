@@ -11,7 +11,6 @@ function fixOverlaySize() {
 var namedContainers = [];
 
 // for Compare (Parameter)
-var maximum_files = 100;
 var foundDatasource = false, additive = false;
 var useTextCompare = false, distanceWithoutBrackets = true;
 var logFileFounds = false;
@@ -21,7 +20,6 @@ var dmp = new diff_match_patch();
 
 // For FileReading
 var reader;
-var number_files = 0;
 
 // Database Information
 var JSON_TABLE = "json_files";
@@ -550,13 +548,7 @@ function buildContainerChartCompare(json, containerOver, initial) {
 
 		if(foundDatasource) {
 			buildContainerChart(containerRight, json, zoomFactor, style + "float:right;", containerOver, true);
-
-			if(file_name.length == 1) {
-				source += file_name[0];
-			} else {
-				source += "multiple json files";
-				source += "\n" + file_name[0] + ", ...";
-			}
+			source += "are json files";
 		}
 
 		containerSource.innerHTML = source;
@@ -1531,8 +1523,6 @@ function createFileSelector(containerTarget, json, containerOver, initial, setti
 		if(filePath.files && filePath.files[0]) {
 
 			if(!additive) {
-				number_files = 0;
-
 				var queryDrop = "DROP TABLE " + JSON_COMPARE_TABLE + ";\n";
 				var queryCreate = "CREATE TABLE " + JSON_COMPARE_TABLE + ";\n";
 
@@ -1542,6 +1532,8 @@ function createFileSelector(containerTarget, json, containerOver, initial, setti
 			readFiles(filePath.files, number_files, filePath.files.length, json, containerOver, true, settings);
 		}//end if html5 filelist support
 		else if(filePath && false) { //fallback to IE 6-8 support via ActiveX TODO multiple files, later
+			alert("Your browser does not support HTML5");
+			/*
 			try {
 				reader = new ActiveXObject("Scripting.FileSystemObject");
 				var fileSelected = reader.OpenTextFile(filePath, 1); //ActiveX File Object
@@ -1563,6 +1555,7 @@ function createFileSelector(containerTarget, json, containerOver, initial, setti
 						'Find the setting for "Initialize and script ActiveX controls not marked as safe" and change it to "Enable" or "Prompt"');
 				}
 			}
+			*/
 		} else {
 			alert("Your browser does not support HTML5");
 		}
@@ -1578,22 +1571,22 @@ function readFiles(files, current, len, json, containerOver, initial, settings) 
 		reader = new FileReader();
 
 		reader.onload = function (e) {
-			file_content[number_files] = e.target.result;
-			file_name[number_files] = file.name;
-			file_type[number_files] = file.type;
-			file_size[number_files] = file.size;
-			file_extension[number_files] = getFileExtension(file_name);
+			var file_content = e.target.result;
+			var file_name  = file.name;
+			var file_type = file.type;
+			var file_size = file.size;
+			var file_extension = getFileExtension(file_name);
 
 			logFile(number_files);
 
 			var query = "INSERT INTO " + JSON_COMPARE_TABLE + " VALUES @";
-			query += normalizeJson(file_content[number_files], file.name);
+			query += normalizeJson(file_content, file.name);
 
 			// TODO currently only json files
-			if(contains(file_name[number_files], ".json"))
+			if(contains(file_name, ".json"))
 				alasqlQuery(query);
 			else
-				alert("Only .json files are supported, Your input: ." + file_extension[number_files]);
+				alert("Only .json files are supported, Your input: ." + file_extension);
 
 			if(current == len) {
 				foundDatasource = true;
@@ -3612,10 +3605,6 @@ function logFile(value) {
 		return;
 
 	console.log("Found new Datasource");
-	console.log("\tFilename: " + file_name[value]);
-	console.log("\tType: " + file_type[value]);
-//	console.log("\tExtension: " + file_extension[value]);
-	console.log("\tSize: " + file_size[value] + " bytes");
 //	console.log("----");
 }
 
