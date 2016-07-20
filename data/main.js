@@ -771,8 +771,6 @@ function buildContainerSettings(json, containerOver, initial) {
 	buttonDel.value = 'Delete inserted Files';
 	buttonDel.setAttribute('style', 'font-size:inherit;');
 	buttonDel.addEventListener('click', function() {
-		number_files = 0;
-
 		console.log("Deleting inserted files");
 		var queryDrop = "DROP TABLE " + JSON_COMPARE_TABLE + ";\n";
 		var queryCreate = "CREATE TABLE " + JSON_COMPARE_TABLE + ";\n";
@@ -1496,8 +1494,6 @@ function createDropField(containerID, json, containerOver, initial, settings) {
 			console.log("You dropped " + len + " file(s)");
 
 			if(!additive) {
-				number_files = 0;
-
 				console.log("Resetting Tables");
 				var queryDrop = "DROP TABLE " + JSON_COMPARE_TABLE + ";\n";
 				var queryCreate = "CREATE TABLE " + JSON_COMPARE_TABLE + ";\n";
@@ -1505,7 +1501,7 @@ function createDropField(containerID, json, containerOver, initial, settings) {
 				alasqlQuery(queryDrop + queryCreate);
 			}
 
-			readFiles(files, number_files, number_files + len, json, containerOver, true, settings);
+			readFiles(files, 0, len, json, containerOver, true, settings);
 		}
 	}, false);
 }
@@ -1529,7 +1525,7 @@ function createFileSelector(containerTarget, json, containerOver, initial, setti
 				alasqlQuery(queryDrop + queryCreate);
 			}
 
-			readFiles(filePath.files, number_files, filePath.files.length, json, containerOver, true, settings);
+			readFiles(filePath.files, 0, filePath.files.length, json, containerOver, true, settings);
 		}//end if html5 filelist support
 		else if(filePath && false) { //fallback to IE 6-8 support via ActiveX TODO multiple files, later
 			alert("Your browser does not support HTML5");
@@ -1565,8 +1561,8 @@ function createFileSelector(containerTarget, json, containerOver, initial, setti
 }
 
 function readFiles(files, current, len, json, containerOver, initial, settings) {
-	if (current >= number_files && current < len) { // if we still have files left
-		var file = files[current-number_files];
+	if (current >= 0 && current < len) { // if we still have files left
+		var file = files[current];
 		current++;
 		reader = new FileReader();
 
@@ -1576,8 +1572,6 @@ function readFiles(files, current, len, json, containerOver, initial, settings) 
 			var file_type = file.type;
 			var file_size = file.size;
 			var file_extension = getFileExtension(file_name);
-
-			logFile(number_files);
 
 			var query = "INSERT INTO " + JSON_COMPARE_TABLE + " VALUES @";
 			query += normalizeJson(file_content, file.name);
@@ -1590,7 +1584,6 @@ function readFiles(files, current, len, json, containerOver, initial, settings) 
 
 			if(current == len) {
 				foundDatasource = true;
-				number_files++;
 
 				while (containerOver.firstChild) {
 					containerOver.removeChild(containerOver.firstChild);
