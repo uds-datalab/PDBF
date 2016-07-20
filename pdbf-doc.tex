@@ -64,6 +64,8 @@ Default:& #4\\
 
 \dbSQLText{CREATE TABLE test(a int, b int); INSERT INTO test VALUES(1, 10); INSERT INTO test VALUES(2, 100); INSERT INTO test VALUES(3, 120); INSERT INTO test VALUES(4, 100);}
 
+\jsonFile{examples/json/nested/cake.json}{cake}
+
 \begin{document}
 \maketitle
 \noindent \textbf{Website:} \url{https://github.com/uds-datalab/PDBF}\\
@@ -292,8 +294,8 @@ PDBF uses AlaSQL as database engine. For all available features of the database 
 
 \subsection{SQL}
 \noindent Macros: \\[3pt]
-\verb|\jsonFile{path/to/file}{filename} | \\
-\verb|\jsonDirectory{path/to/directory}| \\
+\verb|\dbSQLText{sqlQueryString}| \\
+\verb|\dbSQLFile{fileWithSQLQueries}| \\
 \textbf{Note:} Relative filepaths are relative to the tex file.\\
 \verb|\dbSQLJDBC{jdbcConnectionURL}{user}{password}{commaSeperatedListOfTableNames}| \\
 \textbf{Note:} jdbcConnectionURL consist of jdbc followed by the name of the dbms (only postgresql and mysql are currently supported) followed by the url of the dbms followed by the database name (e.g. jdbc:postgresql://localhost:5432/postgres).\\
@@ -301,10 +303,10 @@ PDBF uses AlaSQL as database engine. For all available features of the database 
 
 \subsection{JSON}
 \noindent Macros: \\[3pt]
-\verb|\dbSQLText{sqlQueryString}| \\
-\verb|\dbSQLFile{fileWithSQLQueries}| \\
+\verb|\jsonFile{path/to/file}{filename} | \\
+\verb|\jsonDirectory{path/to/directory}| \\
 \textbf{Note:} Relative filepaths are relative to the tex file.\\
-\textbf{Note:} The \verb|\dbSQLFile{fileWithSQLQueries}|-command will search the whole directory (it will not scan deeper file structures), and chooses the filename according to existing filename. \\
+\textbf{Note:} The \verb|\jsonDirectory|-command will search the whole directory (it will not scan deeper file structures), and chooses the filename according to existing filename. \\
 \textbf{Note:} You can insert as many JSON-commands as you like. \\[3pt]
 
 \subsection{CSV}
@@ -656,6 +658,23 @@ The table ``test'' contains the following tuples: \dataText{SELECT * FROM test;}
 {The text that is displayed near the highlighted area.}
 {String}
 {\texttt{undefined}}
+
+\subsection{JSON}
+Clickable JSON-statement, that will open a seperated view for JSON files. Within this view, other user can input their own JSON files and a highlighted verison, showing differences between the files, will be automatically generated. \\[3pt]
+\textbf{Note:} Currently JSON is limited to one line of text. No line breaks are possible.\\
+Example:\\[3pt]
+You can compare the the cake.json in \textit{examples/comparison/} to this json: \json{cake}\\[3pt]
+%
+\noindent Macros: \\[3pt]
+\verb|\json{filename}| \\
+
+\noindent Options: \\[3pt]
+
+\option
+{color}
+{The textcolor of the displayed text.}
+{\texttt{white}, \texttt{black}, \texttt{red}, \texttt{green}, \texttt{blue}, \texttt{cyan}, \texttt{magenta}, \texttt{yellow} or xcolor syntax (see \href{http://mirror.unicorncloud.org/CTAN/macros/latex/contrib/xcolor/xcolor.pdf}{here}). Can also be redefined globally (\texttt{pdbfDynamicTextColor})}
+{\texttt{blue}}
 
 \subsection{DataTable}
 Write a \LaTeX\space table that is the result of a SQL-statement.\\[3pt]
