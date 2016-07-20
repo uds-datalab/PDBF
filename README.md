@@ -3,7 +3,7 @@ Version 1.2.6
 
 ##Bugs, Suggestions, Feature requests
 If you encounter bugs, have suggestions or have a feature request, then please go to the [issue page](https://github.com/uds-datalab/PDBF/issues) open a new issue if necessary and explain your concern.
-You can also write us an email ({s9lslang, s9mumali}@stud.uni-saarland.de or jens.dittrich at cs.uni-saarland.de).
+You can also write us an email ({s9lslang, s9mumali} at stud.uni-saarland.de or jens.dittrich at cs.uni-saarland.de).
 
 ##Presentation video
 <a href="https://www.youtube.com/watch?v=f4iKwdERXhI" target="_blank" title="PDBF presentation"><img src="http://img.youtube.com/vi/f4iKwdERXhI/0.jpg" /></a>
