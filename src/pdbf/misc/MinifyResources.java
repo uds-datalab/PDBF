@@ -27,7 +27,10 @@ public class MinifyResources {
 
 	try {
 	    new File(baseDirData + "all.js").delete();
-
+	    String raphaelMinJS = FileUtils.readFileToString(new File(baseDirData + "raphael-min.js"), Tools.utf8);
+	   	String jQueryJS = FileUtils.readFileToString(new File(baseDirData + "jquery-1.4.2.min.js"), Tools.utf8);
+		String draculaGraffleJS = FileUtils.readFileToString(new File(baseDirData + "dracula_graffle.js"), Tools.utf8);
+	   	String draculaGraph = FileUtils.readFileToString(new File(baseDirData + "dracula_graph.js"), Tools.utf8);
 	    // TODO: for unknown reasons pdfworkerjs breaks on minification with
 	    // the google closure compiler
 	    String pdfworkerJS = FileUtils.readFileToString(new File(baseDirData + "pdf.worker.js"), Tools.utf8);
@@ -45,9 +48,9 @@ public class MinifyResources {
 	    }
 
 	    String allJS = FileUtils.readFileToString(new File(baseDirData + "all.js"), Tools.utf8);
-
-	    FileUtils.writeStringToFile(new File(baseDirData + "all.js"), pdfworkerJS + "\n" + codemirror + "\n" + allJS, Tools.utf8);
-	} catch (Exception e) {
+	    FileUtils.writeStringToFile(new File(baseDirData + "all.js"), pdfworkerJS + "\n" + codemirror + "\n" + allJS +
+	    		"\n" + raphaelMinJS + "\n" + jQueryJS + "\n" + draculaGraffleJS + "\n" + draculaGraph, Tools.utf8);
+	    } catch (Exception e) {
 	    e.printStackTrace();
 	    System.exit(1);
 	}

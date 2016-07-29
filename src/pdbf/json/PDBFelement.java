@@ -67,4 +67,19 @@ public abstract class PDBFelement {
     public String verticalLines;
     public String horizontalLinesHeader;
     public String horizontalLinesBody;
+    
+    //Attachment & Graph
+    public String filePath;
+    public String base64encodedFile;
+    
+    // Attachment
+    public String attachmentID;
+    public String fileText;
+    public String target; 
+    public String storage;
+    public String fileName;
+    
+    //Graph
+    public String graphID;
+    public String edgeList;
 }

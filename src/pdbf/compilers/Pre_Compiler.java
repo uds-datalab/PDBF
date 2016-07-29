@@ -1,13 +1,22 @@
 package pdbf.compilers;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
+import java.net.Socket;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -15,10 +24,13 @@ import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.UUID;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.csv.CSVFormat;
@@ -34,8 +46,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import pdbf.PDBF_Compiler;
+import pdbf.json.Attachment;
 import pdbf.json.Database;
 import pdbf.json.Dimension;
+import pdbf.json.Graph;
 import pdbf.json.PDBFelement;
 import pdbf.json.PDBFelementContainer;
 import pdbf.json.PDBFelementTypeAdapter;
@@ -78,6 +92,14 @@ public class Pre_Compiler {
     private static final String JSON_FILENAME = "json_filename";
 
     public static boolean pdfProtect = true;
+    
+	private static HashMap<Integer, String> attachments = new HashMap<Integer, String>();
+	private static HashMap<Integer, String> attachmentFileNames = new HashMap<Integer, String>();
+	private static int attachmentCounter = 0;
+	private static HashMap<Integer, String> graphs = new HashMap<Integer, String>();
+	private static int graphCounter = 0;
+	private static HashMap<Integer, String> customImageGraphs = new HashMap<Integer, String>();
+    
 
     /*
      * Initialize the json reader/writer
@@ -295,7 +317,10 @@ public class Pre_Compiler {
                 processVisual(pdbfElementContainers[i]);
             } else if (pdbfElementContainers[i].type instanceof Text) {
                 System.out.println("Finished " + pdbfElementContainers[i].name);
-            } else if (pdbfElementContainers[i].type instanceof TextualPDBFelement) {
+            } else if (pdbfElementContainers[i].type instanceof Attachment) {
+				processAttachment(pdbfElementContainers[i]);
+			} 
+            else if (pdbfElementContainers[i].type instanceof TextualPDBFelement) {
                 processData(pdbfElementContainers[i]);
             }
             // TODO: we need a better solution to limit the process count
@@ -478,7 +503,263 @@ public class Pre_Compiler {
         }
     }
 
-    private static PDBFelementContainer[] readJSONconfig() {
+    private static void processAttachment(PDBFelementContainer o) {
+		Attachment attachment = (Attachment) o.type;
+		String filePath = attachment.filePath;
+		if(!(attachment.target.equals("download") || attachment.target.equals("view"))) {
+			System.out.println("Unknown target specified.");
+			System.exit(1);
+		}
+		else if(!(attachment.storage.equals("local") || attachment.storage.equals("web"))) {
+			System.out.println("Unknown srotage specified.");
+			System.exit(1);
+		}
+		else{
+			String storage = attachment.storage;
+			readAttachmentFile(attachment, storage, filePath);
+		}
+	}
+    
+    public static byte[] readLocalFile(String fileName, String filePath, File file) {
+		int length = (int) file.length();
+		BufferedInputStream reader = null;
+		try {
+			reader = new BufferedInputStream(new FileInputStream(file));
+		} catch(FileNotFoundException e) {
+			System.out.println(filePath + " does not exists.");
+			System.exit(1);
+		}
+		byte[] bytes = new byte[length];
+		try {
+			reader.read(bytes, 0, length);
+		} catch (IOException e) {
+			System.out.println("Cannot read from input stream for " + fileName);
+			System.exit(1);
+		}
+		try {
+			reader.close();
+		} catch (IOException e) {
+			System.out.println("Cannot close input stream for " + fileName);
+			System.exit(1);
+		}
+		return bytes;
+	}
+    
+    private static void readAttachmentFile(Attachment attachment, String storage, String filePath) {
+		byte[] bytes = null;
+		String fileName = null;
+		String fileFormat = null;
+		File file = null;
+		if(storage.equals("local")) {
+			file = new File(filePath);
+			fileName = file.getName();
+			fileFormat = fileName.substring(fileName.lastIndexOf('.')+1);
+			checkAttachmentFileFormat(attachment, fileFormat);
+			bytes = readLocalFile(fileName, filePath, file);
+		}
+		else if (storage.equals("web")) {
+			checkInternetConnection(filePath);
+			URL url = null;
+			try {
+				url = new URL(filePath);
+			} catch (MalformedURLException e) {
+				System.out.println(filePath + " is a Malformed URL.");
+				System.exit(1);
+			}
+			HttpURLConnection httpConn = null;
+			try {
+				httpConn = (HttpURLConnection) url.openConnection();
+	            httpConn.addRequestProperty("Host", "www.google.de");
+	            httpConn.addRequestProperty("Connection", "keep-alive");
+	            httpConn.addRequestProperty("Cache-Control", "max-age=0");
+	            httpConn.addRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+	            httpConn.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36");
+	            httpConn.addRequestProperty("Accept-Encoding", "deflate,sdch");
+	            httpConn.addRequestProperty("Accept-Language", "en-EN,en;q=0.8");
+	            httpConn.addRequestProperty("Cookie", "JSESSIONID=EC0F373FCC023CD3B8B9C1E2E2F7606C; lang=tr; __utma=169322547.1217782332.1386173665.1386173665.1386173665.1; __utmb=169322547.1.10.1386173665; __utmc=169322547; __utmz=169322547.1386173665.1.1.utmcsr=stackoverflow.com|utmccn=(referral)|utmcmd=referral|utmcct=/questions/8616781/how-to-get-a-web-pages-source-code-from-java; __gads=ID=3ab4e50d8713e391:T=1386173664:S=ALNI_Mb8N_wW0xS_wRa68vhR0gTRl8MwFA; scrElm=body");
+	            HttpURLConnection.setFollowRedirects(false);
+	            httpConn.setInstanceFollowRedirects(false);
+	            httpConn.setDoOutput(true);
+	            httpConn.setUseCaches(true);
+	            httpConn.setRequestMethod("GET");
+			} catch (IOException e) {
+				System.out.println("Cannot open HTTP connection for " + filePath);
+				System.exit(1);
+			}
+			int responseCode = 0;
+			try {
+				responseCode = httpConn.getResponseCode();
+			} catch (IOException e) {
+				System.out.println("Cannot get response code for " + filePath);
+				System.exit(1);
+			}
+			file = new File(filePath);
+			fileName = file.getName();
+			if (responseCode == HttpURLConnection.HTTP_OK) {
+				String contentType = httpConn.getContentType();
+				Pattern pattern = Pattern.compile("/([\\d\\w]*)");
+				Matcher matcher = pattern.matcher(contentType);
+				while (matcher.find()) {
+					fileFormat = matcher.group().replace("/", "");
+				}
+				checkAttachmentFileFormat(attachment, fileFormat);
+				fileName = fileName.substring(0, fileName.indexOf('.')) + "." + fileFormat;
+				InputStream inputStream = null;
+				try {
+					inputStream = httpConn.getInputStream();
+				} catch (IOException e) {
+					System.out.println("Cannot get input stream for " + filePath);
+					System.exit(1);
+				}
+				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+				int bytesRead = -1;
+				byte[] buffer = new byte[4096];
+				try {
+					while ((bytesRead = inputStream.read(buffer)) != -1) {
+						outputStream.write(buffer, 0, bytesRead);
+					}
+				} catch (IOException e) {
+					System.out.println("Cannot read from input stream for " + filePath);
+					System.exit(1);
+				}
+				bytes = outputStream.toByteArray();
+				try {
+					outputStream.close();
+				} catch (IOException e) {
+					System.out.println("Cannot close output stream for " + filePath);
+					System.exit(1);
+				}
+				try {
+					inputStream.close();
+				} catch (IOException e) {
+					System.out.println("Cannot close input stream for " + filePath);
+					System.exit(1);
+				}
+			} else {
+				bytes = ("No file to download. Server replied HTTP code: " + responseCode).getBytes();
+				fileFormat = "txt";
+				fileName = fileName.substring(0, fileName.lastIndexOf('.')) + "." + fileFormat;
+			}
+			httpConn.disconnect();
+		}
+		
+		byte[] encodedBytes = Base64.getEncoder().encode(bytes);
+		String encodedString = new String(encodedBytes);
+		attachments.put(attachmentCounter, encodedString);
+		attachmentFileNames.put(attachmentCounter, fileName);
+		attachmentCounter++;
+	}
+
+	private static void checkInternetConnection(String filePath) {
+		Socket sock = new Socket();
+		InetSocketAddress address = new InetSocketAddress("www.google.com", 80);
+		try {
+			sock.connect(address, 3000);
+		}
+		catch(Exception e) {
+			System.out.println("Error in processing attachment " + filePath + ". " + "Are you connected to internet?");
+			System.exit(1);
+		}
+		finally {
+			try {
+				sock.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}
+
+	private static void checkAttachmentFileFormat(Attachment attachment, String fileFormat) {
+		if(attachment.target.equals("view")) {
+			if(!(fileFormat.equals("html") || fileFormat.equals("txt") || fileFormat.equals("png") ||
+					fileFormat.equals("jpg") || fileFormat.equals("jpeg") || fileFormat.equals("pdf"))) {
+				System.out.println("The target='view' is not supported for " + fileFormat + " file format.");
+				System.exit(1);
+			}
+		}
+	}
+	
+	private static void processGraph(PDBFelementContainer o) {
+		Graph graph = (Graph) o.type;
+		if(graph.customImage == null) {
+			String filePath = graph.filePath;
+			if(filePath.equals("")) {
+				System.out.println("filePath for graph command is missing.");
+				System.exit(1);
+			}
+			File file = new File(filePath);
+			String fileName = file.getName();
+			byte[] bytes = readLocalFile(fileName, filePath, file);
+			String graphFile = null;
+			try {
+				graphFile = new String(bytes, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				System.out.println("UnsupportedEncodingException for graph file + " + fileName);
+				System.exit(1);
+			}
+			String[] edges = graphFile.split(System.lineSeparator());
+			String edgeList = "";
+			for(String e: edges) {
+				Pattern pattern = Pattern.compile(".+(\\t).+");
+				Matcher matcher = pattern.matcher(e);
+				if(matcher.find() && e.split("\\t").length == 2) {
+					String node1 = e.split("\t")[0].trim();
+					String node2 = e.split("\t")[1].trim();
+					if(!(edgeList.contains(node1+"_"+node2) || edgeList.contains(node2+"_"+node1))) {
+						if(edgeList.equals("")) {
+							edgeList += (node1+"_"+node2);
+						}
+						else{
+							edgeList += (","+node1+"_"+node2);
+						}
+					}
+				}
+				else{
+					System.out.println("Error in graph file " + fileName + ".\n" + 
+					"Only .txt file format is supported with tab seperated nodeID pair on each line representing an edge; \n" +
+					"nodeA<tab>nodeB \n" +
+					"nodeB<tab>nodeC \n" +
+					"nodeA<tab>nodeC \n" +
+					". \n" +
+					". \n" +
+					"."
+					);
+					System.exit(1);
+				}
+				
+			}
+			o.type.edgeList = edgeList;
+			graphs.put(graphCounter, edgeList);
+		}
+		else if(graph.filePath.equals("") && graph.customImage != null){
+			String filePath = graph.customImage;
+			File file = new File(filePath);
+			String fileName = file.getName();
+			String fileFormat = fileName.substring(fileName.lastIndexOf('.')+1);
+			checkGraphCustomImageFormat(fileFormat);
+			byte[] bytes = readLocalFile(fileName, filePath, file);
+			byte[] encodedBytes = Base64.getEncoder().encode(bytes);
+			String encodedString = new String(encodedBytes);
+			o.type.base64encodedFile = encodedString;
+			customImageGraphs.put(graphCounter, encodedString);
+		}
+		else{
+			System.out.println("Invalid graph command.");
+			System.exit(1);
+		}
+		graphCounter++;
+	}
+
+	private static void checkGraphCustomImageFormat(String fileFormat) {
+		if(!(fileFormat.equals("png") || fileFormat.equals("jpg") || fileFormat.equals("jpeg"))) {
+			System.out.println("Invalid file format for customImage option for graph command.");
+			System.exit(1);
+		}
+	}
+
+	private static PDBFelementContainer[] readJSONconfig() {
         // Read JSON
         PDBFelementContainer[] pdbfElementContainers = null;
         try {
@@ -791,12 +1072,17 @@ public class Pre_Compiler {
 
 
     private static void processVisual(PDBFelementContainer o) {
+		if (o.type instanceof Graph) {
+			processGraph(o);
+		}
         if (PDBF_Compiler.includeRes) {
             VisualPDBFelement c = (VisualPDBFelement) o.type;
             cleanupfiles.add(baseDirData + o.name + ".html");
             cleanupfiles.add(baseDir + o.name + ".json");
-            preloadfiles.add(baseDir + o.name + ".json");
-            copyfiles.add(baseDir + o.name + ".pdf");
+			if (!(o.type instanceof Graph)) {
+				preloadfiles.add(baseDir + o.name + ".json");
+			}
+			copyfiles.add(baseDir + o.name + ".pdf");
 
             String a = new File(arg0).getName();
             String filename = a.substring(0, a.length() - 4);
@@ -908,4 +1194,20 @@ public class Pre_Compiler {
             return filename.substring(index + 1);
         }
     }
+
+	public HashMap<Integer, String> getEncodedAttachments() {
+		return attachments;
+	}
+
+	public HashMap<Integer, String> getAttachmentFileNames() {
+		return attachmentFileNames;
+	}
+
+	public HashMap<Integer, String> getGraphs() {
+		return graphs;
+	}
+
+	public HashMap<Integer, String> getCustomImageGraphs() {
+		return customImageGraphs;
+	}
 }

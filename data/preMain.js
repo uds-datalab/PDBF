@@ -63,12 +63,32 @@ function parse(json) {
 // var a;
 // }
 
+function savePDBF() {
+    var link = document.createElement("a");
+    var page = document.getElementById("pageContainer" + 1);
+    page.appendChild(link);
+    var linkText = document.createTextNode("save PDBF");
+    link.appendChild(linkText);
+    link.id = "savePDBF";
+    link.style = "position: absolute; top:10%; left:10%; color:blue;";
+    link.href = "";
+    link.download = "file.html";
+    link.addEventListener('click', function() {
+          var source = document.getElementsByTagName('html')[0].outerHTML;
+          var encodedSource = btoa(unescape(encodeURIComponent(source))) + pdf_to_port;
+          var contentType = 'application/octet-stream';
+          var url = "data:"+contentType+";base64,"+encodedSource;
+          var downloadLink = document.getElementById("savePDBF");
+          downloadLink.href = url;
+    }, false);
+}
+
 function overlay(pageNr) {
 	if (init) {
 		rawZoomFactor = 0.8;// PDFViewerApplication.pdfViewer._currentScale;
 		init = false;
 	}
-
+    //savePDBF();
 	if (typeof pageOverlays[pageNr] != 'undefined') {
 		var page = document.getElementById("pageContainer" + pageNr);
 		for (var i = 0; i < pageOverlays[pageNr].length; ++i) {

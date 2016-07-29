@@ -217,7 +217,9 @@ public class CompileAndCheckIT {
 	    f.delete();
 	    FileUtils.moveFile(f3, f);
 	}
-	checkHTML(baseDir, baseName + ".html");
+	if(!baseName.equals("attachment")) {
+		checkHTML(baseDir, baseName + ".html");
+	}
 	FileUtils.moveFile(f, f2);
 	checkPDF(baseDir, baseName + ".pdf");
 	FileUtils.moveFile(f2, f);
@@ -241,6 +243,16 @@ public class CompileAndCheckIT {
     @Test(timeout = 1800000)
     public void charts() throws IOException, InterruptedException {
 	documentTest(testDir, "charts", false);
+    }
+    
+    @Test(timeout = 1800000)
+    public void attachment() throws IOException, InterruptedException {
+    	documentTest(testDir, "attachment", false);
+    }
+    
+    @Test(timeout = 1800000)
+    public void graph() throws IOException, InterruptedException {
+    	documentTest(testDir, "graph", false);
     }
 
     @Test(timeout = 1800000)

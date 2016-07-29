@@ -1779,6 +1779,7 @@ PDFJS.disableWebGL = (PDFJS.disableWebGL === undefined ?
  * 
  * @var {boolean}
  */
+ 
 PDFJS.useOnlyCssZoom = (PDFJS.useOnlyCssZoom === undefined ?
                         false : PDFJS.useOnlyCssZoom);
 
