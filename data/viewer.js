@@ -6343,6 +6343,7 @@ function webViewerInitialized() {
       PDFViewerApplication.page++;
     });
 
+	/*
   document.getElementById('zoomIn').addEventListener('click',
     function() {
       PDFViewerApplication.zoomIn();
@@ -6352,7 +6353,7 @@ function webViewerInitialized() {
     function() {
       PDFViewerApplication.zoomOut();
     });
-
+	*/
   document.getElementById('pageNumber').addEventListener('click', function() {
     this.select();
   });
@@ -6635,6 +6636,7 @@ window.addEventListener('pagechange', function pagechange(evt) {
   PDFViewerApplication.pdfViewer.scrollPageIntoView(page);
 }, true);
 
+
 function handleMouseWheel(evt) {
   var MOUSE_WHEEL_DELTA_FACTOR = 40;
   var ticks = (evt.type === 'DOMMouseScroll') ? -evt.detail :
@@ -6650,8 +6652,9 @@ function handleMouseWheel(evt) {
   }
 }
 
-window.addEventListener('DOMMouseScroll', handleMouseWheel);
-window.addEventListener('mousewheel', handleMouseWheel);
+
+//window.addEventListener('DOMMouseScroll', handleMouseWheel);
+//window.addEventListener('mousewheel', handleMouseWheel);
 
 window.addEventListener('click', function click(evt) {
   if (!PresentationMode.active) {

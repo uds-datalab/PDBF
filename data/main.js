@@ -1600,7 +1600,7 @@ function buildContainerSettings(json, containerOver, initial) {
 		else
 			console.log("Disabled additive mode");
 	});
-	//containerOver.appendChild(buttonAdd);
+	containerOver.appendChild(buttonAdd);
 
 	// Button for deletion
 	var buttonDel = document.createElement('input');
@@ -4106,7 +4106,6 @@ function getPivotTableData(json, isBig) {
 	var aggrName = (isBig ? json.type.I.aggregationBig : json.type.I.aggregation);
 	try {
 		var aggr = $.pivotUtilities.aggregators[aggrName]([ aggrAttribute ]);
-		console.log(aggr);
 	} catch (e) {
 		return {
 			error : 'Aggregation function ' + aggrName + ' does not exist!'
@@ -4518,4 +4517,3 @@ function zoomGraphs() {
 		}
 	}
 }
-
