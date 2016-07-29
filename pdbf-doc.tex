@@ -4,6 +4,7 @@
 \usepackage{wrapfig}
 \usepackage[hidelinks]{hyperref}
 \usepackage{listings}
+\usepackage{tabto}
 \usepackage[a4paper,vmargin={20mm,40mm},hmargin={20mm,20mm}]{geometry}
 
 \pdfobjcompresslevel=2
@@ -121,14 +122,14 @@ This approach works completely offline. No internet connection is required, neit
 \end{itemize}
 
 \section{Features}
-\subsection{Automatic generation of Charts, Multiplot Charts, Pivot tables}
+\subsection{Automatic generation of Charts, Multiplot Charts, Pivot tables, Graphs}
 With PDBF you don't need to manually generate these kinds of elements. The PDBF compiler automatically generates a static version for the pdf and the dynamic version for the html part of the PDBF document. This also means that your document is always up to date! If you change something in the underlying data that generate your PDBF document and then recompile the document, then the data in the document is up to date. No need to manually update externally generated charts or pivot tables.
 
 \subsection{Generate your document directly from the results of your experiment}
-The idea of PDBF is to store the results of the experiment directly in the document and to make it more transparent how this chart, pivot table, etc. was generated from the result data. Therefore we currently support CSV files, SQL files, and SQL servers as data sources and use SQL as description language for the transformation of the raw result data to the final representation in the document.
+The idea of PDBF is to store the results of the experiment directly in the document and to make it more transparent how this chart, pivot table, graphs etc. was generated from the result data. Excluding graphs, we currently support CSV files, SQL files, and SQL servers as data sources and use SQL as description language for the transformation of the raw result data to the final representation in the document. For graphs, we use .txt files are the data source.
 
 \subsection{Enable the comparison of your results to other users}
-To make your own results even more transparent, you can let other users input their own result files. If there is a difference, the PDBF will recognize it, and will automaticly create a highlighted view of changes. However right now, this option is only avaible for JSON-files as datasource. 
+To make your own results even more transparent, you can let other users input their own result files. If there is a difference, the PDBF will recognize it, and will automaticly create a highlighted view of changes. However right now, this option is only avaible for JSON-files as datasource for charts and TXT-files as datasource for graphs. 
 
 \subsection{Compile LaTeX to single HTML file}
 You can also use the PDBF compiler to compile your LaTeX files to a single HTML file.
@@ -166,7 +167,7 @@ PDF.js (\url{https://github.com/mozilla/pdf.js})\\
 google-closure-compiler (\url{https://github.com/google/closure-compiler})\\
 lz-string (\url{https://github.com/pieroxy/lz-string})\\
 YUI Compressor (\url{https://github.com/yui/yuicompressor})\\
-
+Dracula.js (\url{https://www.graphdracula.net/})\\
 \newpage
 
 \section{How to use the PDBF compiler}
@@ -709,6 +710,68 @@ Example:\\[3pt]
 {Specifies the horizontal lines for the table body, excluding the border above the first tuple, which is controlled by horizontalLinesHeader.}
 {\texttt{a} for all, \texttt{i} for inner, \texttt{o} for outer, \texttt{n} for none, or you can specify a custom pattern that is repeatedly applied with the following format: h means line, b means no line, the space character delimits format specifiers. E.g. ``hh b'' means: double line followed by no line followed by double line followed by no line ... and so on}
 {\texttt{a}}
+
+\subsection{Undirected Graph}
+
+\begin{figure}[h!]%
+\hspace{-218pt}Example:\\
+    \centering
+    \begin{minipage}{.75\textwidth}
+    \graph[width=0.75\textwidth, height=0.5\textwidth]{examples/graphs/graph.txt} \\
+    \caption{An undirected graph}
+    \end{minipage}
+\end{figure}
+
+\noindent Macros: \\[3pt]
+\verb|\graph[options]{filePath}| \\
+\textbf{Note:} \verb|filePath| is the path to the .txt graph file with tab seperated nodeID pair on each line representing an edge as follows;\\
+nodeA \space\space\space\space\space nodeB \\
+nodeB \space\space\space\space\space nodeC \\
+nodeA \space\space\space\space\space nodeC \\ \\
+\noindent Options:\\[3pt]
+%
+
+\option
+{width}
+{Sets the width of the graph.}
+{\LaTeX~length}
+{No default value. Value must always be set!}
+
+\option
+{height}
+{Sets the height of the graph.}
+{\LaTeX~length}
+{No default value. Value must always be set!}
+
+\subsection{Attachment}
+\hspace{-218pt}Example:\\
+\attachment[click me][view][local]{examples/attachment/big\_mountain.png} to view big\_mountain.png embedded from local storage. \\
+\attachment[click me][view][web]{http://www.khazanah.com.my/khazanah/files/20/200f21f3-07ff-4903-ab99-7c0cb557eb51.pdf} to view pdf\_reference.pdf embedded from web storage. \\
+
+\noindent Macros: \\[3pt]
+\verb|\attachment[fileText][target][storage]{filePath}| \\
+\textbf{Note:} \verb|filePath| is the path to the file which you want to attach. \\
+
+\noindent Options:\\[3pt]
+%
+\newpage
+\option
+{fileText}
+{Sets the text that is appeared on the link in the PDBF document.}
+{Unquoted string}
+{No default value. Value must always be set!}
+
+\option
+{target}
+{Sets whether the attachment be viewed in a new tab or downloaded on local machine on link click in HTML.}
+{\textit{view} / \textit{download}. \textit{view} is only supported for a certain file formats such as png, jpg, jpeg, txt, pdf, html. \textit{download} is supported for all file formats.}
+{No default value. Value must always be set!}
+
+\option
+{target}
+{Sets whether the file to be embedded is present on local machine or on a web server.}
+{\textit{local} / \textit{web}. If storage is \textit{web}, then filePath is a URL to the file that you want to embed, else if storage is \textit{local}, filePath is simply a path to the file where it is located.}
+{No default value. Value must always be set!}
 
 \section{F.A.Q.}
 \begin{itemize}
