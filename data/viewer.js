@@ -2986,7 +2986,6 @@ var PageView = function pageView(container, id, scale, defaultViewport,
   div.className = 'page';
   div.style.width = Math.floor(this.viewport.width) + 'px';
   div.style.height = Math.floor(this.viewport.height) + 'px';
-
   container.appendChild(anchor);
   container.appendChild(div);
 
@@ -3091,7 +3090,7 @@ var PageView = function pageView(container, id, scale, defaultViewport,
     }
     this.reset(true);
   };
-
+  
   this.cssTransform = function pageCssTransform(canvas, redrawAnnotations) {
     // Scale canvas, canvas wrapper, and page container.
     var width = this.viewport.width;
@@ -4763,7 +4762,8 @@ var PDFViewerApplication = {
       PDFViewerApplication.initialized = true;
     });
   },
-
+  
+  /*
   zoomIn: function pdfViewZoomIn(ticks) {
     var newScale = this.pdfViewer.currentScale;
     do {
@@ -4783,7 +4783,8 @@ var PDFViewerApplication = {
     } while (--ticks && newScale > MIN_SCALE);
     this.setScale(newScale, true);
   },
-
+	*/
+	
   get currentScaleValue() {
     return this.pdfViewer.currentScaleValue;
   },
@@ -6295,7 +6296,7 @@ function webViewerInitialized() {
     PDFViewerApplication.fallback.bind(PDFViewerApplication));
 
   // Suppress context menus for some controls
-  document.getElementById('scaleSelect').oncontextmenu = noContextMenuHandler;
+  //document.getElementById('scaleSelect').oncontextmenu = noContextMenuHandler;
 
   var mainContainer = document.getElementById('mainContainer');
   var outerContainer = document.getElementById('outerContainer');
@@ -6342,7 +6343,8 @@ function webViewerInitialized() {
     function() {
       PDFViewerApplication.page++;
     });
-
+	
+	/*
   document.getElementById('zoomIn').addEventListener('click',
     function() {
       PDFViewerApplication.zoomIn();
@@ -6352,7 +6354,8 @@ function webViewerInitialized() {
     function() {
       PDFViewerApplication.zoomOut();
     });
-
+	*/
+	
   document.getElementById('pageNumber').addEventListener('click', function() {
     this.select();
   });
@@ -6366,11 +6369,13 @@ function webViewerInitialized() {
     }
   });
 
+  /*
   document.getElementById('scaleSelect').addEventListener('change',
     function() {
       PDFViewerApplication.setScale(this.value, false);
     });
-
+  */
+   
   document.getElementById('presentationMode').addEventListener('click',
     SecondaryToolbar.presentationModeClick.bind(SecondaryToolbar));
 
@@ -6487,7 +6492,7 @@ window.addEventListener('updateviewarea', function () {
     pageNumberInput.classList.add(PAGE_NUMBER_LOADING_INDICATOR);
   }
 }, true);
-
+/*
 window.addEventListener('resize', function webViewerResize(evt) {
   if (PDFViewerApplication.initialized &&
       (document.getElementById('pageWidthOption').selected ||
@@ -6501,7 +6506,7 @@ window.addEventListener('resize', function webViewerResize(evt) {
   // Set the 'max-height' CSS property of the secondary toolbar.
   SecondaryToolbar.setMaxHeight(document.getElementById('viewerContainer'));
 });
-
+*/
 window.addEventListener('hashchange', function webViewerHashchange(evt) {
   if (PDFHistory.isHashChangeUnlocked) {
     PDFViewerApplication.setHash(document.location.hash.substring(1));
@@ -6555,6 +6560,7 @@ function selectScaleOption(value) {
   return predefinedValueFound;
 }
 
+/*
 window.addEventListener('localized', function localized(evt) {
   document.getElementsByTagName('html')[0].dir = mozL10n.getDirection();
 
@@ -6580,7 +6586,9 @@ window.addEventListener('localized', function localized(evt) {
     SecondaryToolbar.setMaxHeight(document.getElementById('viewerContainer'));
   });
 }, true);
+*/
 
+/*
 window.addEventListener('scalechange', function scalechange(evt) {
   document.getElementById('zoomOut').disabled = (evt.scale === MIN_SCALE);
   document.getElementById('zoomIn').disabled = (evt.scale === MAX_SCALE);
@@ -6609,6 +6617,7 @@ window.addEventListener('scalechange', function scalechange(evt) {
   }
   updateViewarea();
 }, true);
+*/
 
 window.addEventListener('pagechange', function pagechange(evt) {
   var page = evt.pageNumber;
@@ -6646,7 +6655,7 @@ function handleMouseWheel(evt) {
     PDFViewerApplication.mouseScroll(ticks * MOUSE_WHEEL_DELTA_FACTOR);
   } else if (evt.ctrlKey) { // Only zoom the pages, not the entire viewer
     evt.preventDefault();
-    PDFViewerApplication[direction](Math.abs(ticks));
+    //PDFViewerApplication[direction](Math.abs(ticks));
   }
 }
 

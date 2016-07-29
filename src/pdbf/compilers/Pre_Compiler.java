@@ -313,7 +313,7 @@ public class Pre_Compiler {
         // Produce necessary data and auxiliary files
         System.out.println("Generating images, latex tables, and text...\n" + count + " PDBF elements to process");
         for (int i = 0; i < pdbfElementContainers.length; ++i) {
-            if (pdbfElementContainers[i].type instanceof VisualPDBFelement && pdbfElementContainers[i].type.customImage == null) {
+        	if (pdbfElementContainers[i].type instanceof VisualPDBFelement && pdbfElementContainers[i].type.customImage == null) {
                 processVisual(pdbfElementContainers[i]);
             } else if (pdbfElementContainers[i].type instanceof Text) {
                 System.out.println("Finished " + pdbfElementContainers[i].name);
@@ -1070,16 +1070,15 @@ public class Pre_Compiler {
         return true;
     }
 
-
     private static void processVisual(PDBFelementContainer o) {
-		if (o.type instanceof Graph) {
+   		if (o.type instanceof Graph) {
 			processGraph(o);
 		}
         if (PDBF_Compiler.includeRes) {
             VisualPDBFelement c = (VisualPDBFelement) o.type;
             cleanupfiles.add(baseDirData + o.name + ".html");
             cleanupfiles.add(baseDir + o.name + ".json");
-			if (!(o.type instanceof Graph)) {
+			if (!(o.type instanceof Graph) ) {
 				preloadfiles.add(baseDir + o.name + ".json");
 			}
 			copyfiles.add(baseDir + o.name + ".pdf");

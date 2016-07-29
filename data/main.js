@@ -104,7 +104,7 @@ function createGraph(json, edgeList, canvasId, phantomJS, display) {
         var renderer;
         if(canvasId == "canvas"+json.type.I.graphID) {
                 renderer = new Graph.Renderer.Raphael(canvasId, g, (json.type.I.x2 - json.type.I.x1 + 0.001) * 1000,
-                        (json.type.I.y1 - json.type.I.y2 + 0.001) * 1000 * 1.40, canvasId, false);
+                        (json.type.I.y1 - json.type.I.y2 + 0.001) * 1000 * 1.40, canvasId, true);
                 graphs[canvasId] = renderer;
         }
         else {
@@ -4106,6 +4106,7 @@ function getPivotTableData(json, isBig) {
 	var aggrName = (isBig ? json.type.I.aggregationBig : json.type.I.aggregation);
 	try {
 		var aggr = $.pivotUtilities.aggregators[aggrName]([ aggrAttribute ]);
+		console.log(aggr);
 	} catch (e) {
 		return {
 			error : 'Aggregation function ' + aggrName + ' does not exist!'
@@ -4471,7 +4472,7 @@ function prettifySQL(sql) {
 	// pretty printing of alasql breaks quoted literals
 }
 
-
+/*
 document.addEventListener("mousewheel", mouseWheelEvent);
 
 function mouseWheelEvent(event) {
@@ -4486,7 +4487,7 @@ function mouseWheelEvent(event) {
 
 	}
 }
-
+*/
 
 function zoomGraphs() {
 	for(var i = 0; i < Object.keys(edgeLists).length; i++) {

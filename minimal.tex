@@ -11,6 +11,23 @@
 \jsonFile{examples/json/nested/cake.json}{cake}
 
 \begin{document}
+\noindent
+
+\sql{SELECT * FROM test;}\\[3pt]
+The table ``test'' contains \dataText{SELECT COUNT(*) FROM test;} tuples.\\[3pt]
+
+The following points are linked to the chart on the left side below: \dataText[linkTo=testname, linkSelector=2, linkLabel=Value at 2]{SELECT * FROM test WHERE a=2;}, \dataText[linkTo=testname, linkSelector=3, linkLabel=Value at 3]{SELECT * FROM test WHERE a=3;}.\\[3pt]
+\chart[width=0.45\textwidth, height=0.3\textwidth, logscale=true, chartType=line, name=testname]{SELECT a, b, [attribute with space] FROM test;}
+\chart[width=0.45\textwidth, height=0.3\textwidth, chartType=bar]{SELECT a, b, [attribute with space] FROM test;}\\[3pt]
+
+{\fontfamily{phv} \tiny \selectfont
+	\noindent
+	Change the font before this line to Helvetica and fontsize to tiny.\\[3pt]
+	\chart[width=0.6\textwidth, height=0.25\textwidth, chartType=compareToBest]{SELECT b FROM test;}\\[3pt]
+	\multiplotChart[width=0.6\textwidth, height=0.5\textwidth, xCount=2, yCount=2, yValues={["b", "b*2"]}, xValues={["a <= 2", "a > 2"]}, topArr={["a smaller or equal 2", "a greater 2"]}, yFirst]{SELECT a,? FROM test WHERE ?;}\\[3pt]
+	\pivotTable[width=0.10\textwidth, height=0.15\textwidth, rows={["a"]}, aggregationattribute=b]{SELECT * FROM test;}
+	\dataTable[verticalLines=i, horizontalLinesHeader=b hh, horizontalLinesBody=i]{SELECT * FROM test;}\\[3pt]
+}
 
 The following Chart uses information from JSON-files. \\[3pt]
 \chart[width=0.45\textwidth, height=0.3\textwidth, logscale=true, chartType=line]{SELECT a, b, c FROM json_files WHERE json_filename LIKE 'run\%';}
@@ -23,17 +40,15 @@ To check if the results from JSON-files contain correct data, one can insert his
 \item And here are many nested values \json{cake}
 \end{itemize}
 
+
 \attachment[click me][view][local]{examples/attachment/pdf\_reference.pdf} to view pdf\_reference.pdf embedded from local storage. \\
 \attachment[click me][download][local]{examples/attachment/pdf\_reference.pdf} to download pdf\_reference.pdf embedded from local storage. \\
 \attachment[click me][view][local]{examples/attachment/big\_mountain.png} to view big\_mountain.png embedded from local storage. \\
-%\attachment[click me][view][web]{https://www.google.de/} to view Google.html embedded from web storage. \\
+\attachment[click me][view][web]{https://www.google.de/} to view Google.html embedded from web storage. \\
 \attachment[click me][download][local]{examples/attachment/Google.html} to download Google.html embedded from local storage. \\
-%\attachment[click me][view][web]{http://www.khazanah.com.my/khazanah/files/20/200f21f3-07ff-4903-ab99-7c0cb557eb51.pdf} to view pdf\_reference.pdf embedded from web storage. \\
-%\attachment[click me][download][web]{http://www.khazanah.com.my/khazanah/files/20/200f21f3-07ff-4903-ab99-7c0cb557eb51.pdf} to download pdf\_reference.pdf embedded from web storage. \\
+\attachment[click me][view][web]{http://www.khazanah.com.my/khazanah/files/20/200f21f3-07ff-4903-ab99-7c0cb557eb51.pdf} to view pdf\_reference.pdf embedded from web storage. \\
+\attachment[click me][download][web]{http://www.khazanah.com.my/khazanah/files/20/200f21f3-07ff-4903-ab99-7c0cb557eb51.pdf} to download pdf\_reference.pdf embedded from web storage. \\
 
 \graph[width=0.75\textwidth, height=0.5\textwidth]{examples/graphs/graph.txt} \\
-\graph[width=0.75\textwidth, height=0.5\textwidth]{examples/graphs/graph2.txt} \\
-\graph[width=0.75\textwidth, height=0.75\textwidth, customImage=examples/graphs/customGraph.png]{} \\
-
 
 \end{document}
