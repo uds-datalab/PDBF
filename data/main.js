@@ -1600,7 +1600,7 @@ function buildContainerSettings(json, containerOver, initial) {
 		else
 			console.log("Disabled additive mode");
 	});
-	containerOver.appendChild(buttonAdd);
+	//containerOver.appendChild(buttonAdd);
 
 	// Button for deletion
 	var buttonDel = document.createElement('input');
