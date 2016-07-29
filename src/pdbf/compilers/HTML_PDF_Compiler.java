@@ -48,7 +48,7 @@ public class HTML_PDF_Compiler {
 			+ "<script src=\"jquery.dataTables.js\"></script>" + "<script src=\"main.js\"></script>" + "<script src=\"preMain.js\"></script>"
 			+ "<script src=\"jstat.js\"></script>" + "" + "<script src=\"compatibility.js\"></script>" + "<script src=\"l10n.js\"></script>"
 			+ "<script src=\"pdf.js\"></script>" + "<script src=\"pdf.worker.js\"></script>" + "<script src=\"viewer.js\"></script>" 
-			+ "<script src=\"raphael-min.js\"></script>" + "<script src=\"dracula_graffle.js\"></script>" + "<script src=\"jquery-1.4.2.min.js\"></script>"
+			+ "<script src=\"raphael-min.js\"></script>" + "<script src=\"dracula_graffle.js\"></script>"
 			+ "<script src=\"dracula_graph.js\"></script>";
 		}
 	    String all = FileUtils.readFileToString(new File(baseDirData + "all"), Tools.utf8);
