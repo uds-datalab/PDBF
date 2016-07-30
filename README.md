@@ -1,5 +1,5 @@
 #PDBF - A Toolkit for Creating Janiform Data Documents
-Version 1.2.6
+Version 1.2.7
 
 ##Bugs, Suggestions, Feature requests
 If you encounter bugs, have suggestions or have a feature request, then please go to the [issue page](https://github.com/uds-datalab/PDBF/issues) open a new issue if necessary and explain your concern.
@@ -10,10 +10,9 @@ You can also write us an email ({s9lslang, s9mumali} at stud.uni-saarland.de or 
 
 ##Abstract
 PDBF documents are a hybrid format. They are a valid PDF and a valid HTML page at the same time. You can now optionally add an VirtualBox OVA file with a complete operating system to the PDBF document. Yes, this means that the resulting file is a valid PDF, HTML, and OVA file at the same time. If you change the file extension to PDF and open it with an PDF viewer, you can see the static part of the document. If you change the file extension to HTML and open it with a Browser (currently Chrome/Firefox/Safari/IE 10 supported), you can see the dynamic part of the document. And if an ova file is attached you can also change the file extension to OVA and install and run the attached operating system.
-The difference between the PDF and the HTML version is that the PDF version contains static version of all PDBF elements, whereas the HTML version is dynamic. For example you can zoom into graphs, temporarly remove dataseries from the graph, inspect and change the underling query of the PDBF element and see the result of the change directly in the browser.
-This approach works completely offline. No internet connection is required, neither at compile time, nor at viewing time.
+The difference between the PDF and the HTML version is that the PDF version contains static version of all PDBF elements, whereas the HTML version is dynamic. For example you can zoom into charts, temporarly remove dataseries from the chart, inspect and change the underling query of the PDBF element and see the result of the change directly in the browser.
 
-PDBF files are created from LaTeX source code and a relational database. The raw data can either be a SQL statement string, a file with SQL statements, or contained in a database (currently PostgreSQL/MySQL/MariaDB supported). In the LaTeX code you can then specify how the PDBF element (currently charts/pivot tables/multiplot charts/sql statements/dataTexts/dataTables are supported) is created from the raw data with options and an SQL query. Read more in the [documentation](http://uds-datalab.github.io/PDBF/), which is itself is a PDBF document.
+PDBF files are created from LaTeX source code and a relational database. The raw data can either be a SQL statement string, a file with SQL statements, or contained in a database (currently PostgreSQL/MySQL/MariaDB supported). In the LaTeX code you can then specify how the PDBF element (currently charts/pivot tables/multiplot charts/sql statements/dataTexts/dataTables/attachment/graph are supported) is created from the raw data with options and an SQL query or filePaths. Read more in the [documentation](http://uds-datalab.github.io/PDBF/), which is itself is a PDBF document.
 
 PDBF toolkit is written in Java and LaTeX and can be used to compile documents on Windows, Mac, and Linux. PDBF documents are also platform independent and run on any desktop OS (Windows, Linux, Mac) with a browser/PDF viewer.
 
@@ -45,14 +44,14 @@ This toolkit is licensed unter the MIT License (see [here](https://github.com/ud
 * For further information take a look at the [documentation](http://uds-datalab.github.io/PDBF/)
 
 ##Features
-#####Automatic generation of Charts, Multiplot Charts, Pivot tables
+#####Automatic generation of Charts, Multiplot Charts, Pivot tables and undirected Graphs
 With PDBF you don't need to manually generate these kinds of elements. The PDBF compiler automatically generates a static version for the pdf and the dynamic version for the html part of the PDBF document. This also means that your document is always up to date! If you change something in the underlying data that generate your PDBF document and then recompile the document, then the data in the document is up to date. No need to manually update externally generated charts or pivot tables.
 
 #####Generate your document directly from the results of your experiment
-The idea of PDBF is to store the results of the experiment directly in the document and to make it more transparent how this chart, pivot table, etc. was generated from the result data. Therefore we currently support CSV files, SQL files, and SQL servers as data sources and use SQL as description language for the transformation of the raw result data to the final representation in the document.
+The idea of PDBF is to store the results of the experiment directly in the document and to make it more transparent how this chart, pivot table, graph, etc. was generated from the result data. Therefore we currently support CSV files, SQL files, and SQL servers as data sources and use SQL as description language for the transformation of the raw result data to the final representation in the document. For graphs, we use .txt files as the data source.
 
 #####Enable the comparison of your results to other users
-To make your own results even more transparent, you can let other users input their own result files. If there is a difference, the PDBF will recognize it, and will automaticly create a highlighted view of changes. However right now, this option is only avaible for JSON-files as choosen datasource. 
+To make your own results even more transparent, you can let other users input their own result files. If there is a difference, the PDBF will recognize it, and will automaticly create a highlighted view of changes. However right now, this option is only avaible for JSON-files as choosen datasource and TXT-files as datasource for graphs. 
 
 #####Compile LaTeX to single HTML file
 You can also use the PDBF compiler to compile your LaTeX files to a single HTML file.
@@ -91,3 +90,4 @@ Note: The compiled pdbf.jar is automatically copied from target to the main fold
 * google-closure-compiler (https://github.com/google/closure-compiler)
 * lz-string (https://github.com/pieroxy/lz-string)
 * YUI Compressor (https://github.com/yui/yuicompressor)
+* Dracula.js (https://www.graphdracula.net/)
