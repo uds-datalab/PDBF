@@ -140,4 +140,6 @@ pdbf-doc.tar
 GIT.gz
 /pdbf.tar
 /minimal.tar
+!examples/attachment/pdf_reference.pdf
+!src/pdbf/tests/attachment/pdf_reference.pdf
 *~
