@@ -101,7 +101,7 @@ This approach works completely offline. No internet connection is required, neit
 \item \href{https://github.com/uds-datalab/PDBF/archive/gh-pages.zip}{Download the latest version}
 \item Extract zip and change workingdir to extracted folder
 \item Adjust config.cfg
-\item Try to compile minimal.tex file with this command: \texttt{java -jar pdbf.jar minimal.tex}
+\item Try to compile minimal.tex (with working internet connection) file with this command: \texttt{java -jar pdbf.jar minimal.tex}
 \item Open minimal.html, this is the final output of the compilation process, if you rename it to ".pdf" it is also a valid pdf-document
 \end{itemize}
 \subsection{Attach a Open Virtual Appliance (OVA) file}
@@ -140,7 +140,7 @@ The resulting HTML file is saved in the same folder with the same name but with 
 \section{Build Instructions}
 \begin{itemize}
 \item Run "mvn package" if you only want to compile pdbf.jar
-\item Run "mvn verify" if you want to compile pdbf.jar and run integration tests.
+\item Run "mvn verify" (with working internet connection) if you want to compile pdbf.jar and run integration tests.
 \end{itemize}
 
 \section{Thanks to}

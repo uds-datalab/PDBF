@@ -28,7 +28,7 @@ This toolkit is licensed unter the MIT License (see [here](https://github.com/ud
 * [Download the latest version](https://github.com/uds-datalab/PDBF/archive/gh-pages.zip)
 * Extract zip and change workingdir to extracted folder
 * Adjust config.cfg
-* Try to compile minimal.tex file with this command: **java -jar pdbf.jar minimal.tex**
+* Try to compile minimal.tex (with working internet connection) file with this command: **java -jar pdbf.jar minimal.tex**
 * Open minimal.html, this is the final output of the compilation process, if you rename it to ".pdf" it is also a valid pdf-document
 
 #####Attach a VirtualBox image
@@ -63,7 +63,7 @@ The resulting HTML file is saved in the same folder with the same name but html 
 
 ##Build Instructions
 * Run "mvn package" if you only want to compile pdbf.jar
-* Run "mvn verify" if you want to compile pdbf.jar and run integration tests.
+* Run "mvn verify" (with working internet connection) if you want to compile pdbf.jar and run integration tests.
 
 Note: The compiled pdbf.jar is automatically copied from target to the main folder.
 

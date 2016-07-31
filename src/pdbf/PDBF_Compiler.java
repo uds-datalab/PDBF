@@ -62,7 +62,7 @@ public class PDBF_Compiler {
 	    URL url = new URL("https://raw.githubusercontent.com/uds-datalab/PDBF/gh-pages/VERSION.md");
 	    String currentVersion = IOUtils.toString(url.openStream(), StandardCharsets.UTF_8);
 	    if (!version.equals(currentVersion)) {
-		System.err.println(currentVersion + " of PDBF compiler is available.\n"
+		System.err.println(currentVersion.replace(System.lineSeparator(), "") + " of PDBF compiler is available.\n"
 			+ "Please visit https://github.com/uds-datalab/PDBF and download the latest version\n");
 	    }
 	} catch (Throwable t) {
