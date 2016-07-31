@@ -6,6 +6,7 @@ pdbf-dim.json
 *.aux
 *.log
 *.out
+*.pdf
 *.synctex.gz
 0.html
 1.html
